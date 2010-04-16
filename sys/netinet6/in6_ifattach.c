@@ -67,10 +67,15 @@ __FBSDID("$FreeBSD: src/sys/netinet6/in6_ifattach.c,v 1.78 2009/10/12 18:54:02 h
 #include <netinet6/mld6_var.h>
 #include <netinet6/scope6_var.h>
 
-VNET_DEFINE(unsigned long, in6_maxmtu);
-VNET_DEFINE(int, ip6_auto_linklocal);
-VNET_DEFINE(struct callout, in6_tmpaddrtimer_ch);
+VNET_DEFINE(unsigned long, in6_maxmtu) = 0;
 
+#ifdef IP6_AUTO_LINKLOCAL
+VNET_DEFINE(int, ip6_auto_linklocal) = IP6_AUTO_LINKLOCAL;
+#else
+VNET_DEFINE(int, ip6_auto_linklocal) = 1;	/* enabled by default */
+#endif
+
+VNET_DEFINE(struct callout, in6_tmpaddrtimer_ch);
 #define	V_in6_tmpaddrtimer_ch		VNET(in6_tmpaddrtimer_ch)
 
 VNET_DECLARE(struct inpcbinfo, ripcbinfo);
