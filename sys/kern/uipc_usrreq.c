@@ -2141,8 +2141,14 @@ unp_gc(__unused void *arg, int pending)
 	 * struct files associated with these sockets but leave each socket
 	 * with one remaining ref.
 	 */
-	for (i = 0; i < unp_unreachable; i++)
-		sorflush(unref[i]->f_data);
+	for (i = 0; i < unp_unreachable; i++) {
+		struct socket *so;
+
+		so = unref[i]->f_data;
+		CURVNET_SET(so->so_vnet);
+		sorflush(so);
+		CURVNET_RESTORE();
+	}
 
 	/*
 	 * And finally release the sockets so they can be reclaimed.
