@@ -92,6 +92,13 @@
  * from a listen queue to a file descriptor, in order to prevent garbage
  * collection of the socket at an untimely moment.  For a number of reasons,
  * these interfaces are not preferred, and should be avoided.
+ * 
+ * NOTE: With regard to VNETs the general rule is that callers do not set
+ * curvnet. Exceptions to this rule include soabort(), sodisconnect(),
+ * sofree() (and with that sorele(), sotryfree()), as well as sonewconn()
+ * if not in SS_ISCONNECTED state and sorflush(), which are usually called
+ * from a pre-set VNET context. sopoll() currently does not need a VNET
+ * context to be set.
  */
 
 #include <sys/cdefs.h>
@@ -174,6 +181,10 @@ int	maxsockets;
 
 MALLOC_DEFINE(M_SONAME, "soname", "socket name");
 MALLOC_DEFINE(M_PCB, "pcb", "protocol control block");
+
+#define	VNET_SO_ASSERT(so)						\
+	VNET_ASSERT(curvnet != NULL,					\
+	    ("%s:%d curvnet is NULL, so=%p", __func__, __LINE__, (so)));
 
 static int somaxconn = SOMAXCONN;
 static int sysctl_somaxconn(SYSCTL_HANDLER_ARGS);
@@ -295,6 +306,8 @@ soalloc(struct vnet *vnet)
 	so->so_gencnt = ++so_gencnt;
 	++numopensockets;
 #ifdef VIMAGE
+	VNET_ASSERT(vnet != NULL, ("%s:%d vnet is NULL, so=%p",
+	    __func__, __LINE__, so));
 	vnet->vnet_sockcnt++;
 	so->so_vnet = vnet;
 #endif
@@ -318,6 +331,8 @@ sodealloc(struct socket *so)
 	so->so_gencnt = ++so_gencnt;
 	--numopensockets;	/* Could be below, but faster here. */
 #ifdef VIMAGE
+	VNET_ASSERT(so->so_vnet != NULL, ("%s:%d so_vnet is NULL, so=%p",
+	    __func__, __LINE__, so));
 	so->so_vnet->vnet_sockcnt--;
 #endif
 	mtx_unlock(&so_global_mtx);
@@ -426,7 +441,7 @@ struct socket *
 sonewconn(struct socket *head, int connstatus)
 {
 	struct socket *so;
-	int over;
+	int over, setvnet;
 
 	ACCEPT_LOCK();
 	over = (head->so_qlen > 3 * head->so_qlimit / 2);
@@ -437,6 +452,7 @@ sonewconn(struct socket *head, int connstatus)
 	if (over)
 #endif
 		return (NULL);
+	setvnet = connstatus;
 	VNET_ASSERT(head->so_vnet != NULL, ("%s:%d so_vnet is NULL, head=%p",
 	    __func__, __LINE__, head));
 	so = soalloc(head->so_vnet);
@@ -457,9 +473,15 @@ sonewconn(struct socket *head, int connstatus)
 #endif
 	knlist_init_mtx(&so->so_rcv.sb_sel.si_note, SOCKBUF_MTX(&so->so_rcv));
 	knlist_init_mtx(&so->so_snd.sb_sel.si_note, SOCKBUF_MTX(&so->so_snd));
+	/* Sockets connected to a peer have curvnet set; avoid recursion. */
+	if (setvnet != SS_ISCONNECTED)
+		CURVNET_SET(head->so_vnet);
+	VNET_SO_ASSERT(head);
 	if (soreserve(so, head->so_snd.sb_hiwat, head->so_rcv.sb_hiwat) ||
 	    (*so->so_proto->pr_usrreqs->pru_attach)(so, 0, NULL)) {
 		sodealloc(so);
+		if (setvnet != SS_ISCONNECTED)
+			CURVNET_RESTORE();
 		return (NULL);
 	}
 	so->so_rcv.sb_lowat = head->so_rcv.sb_lowat;
@@ -502,6 +524,8 @@ sonewconn(struct socket *head, int connstatus)
 		sorwakeup(head);
 		wakeup_one(&head->so_timeo);
 	}
+	if (setvnet != SS_ISCONNECTED)
+		CURVNET_RESTORE();
 	return (so);
 }
 
@@ -531,8 +555,12 @@ sobind(struct socket *so, struct sockaddr *nam, struct thread *td)
 int
 solisten(struct socket *so, int backlog, struct thread *td)
 {
+	int error;
 
-	return ((*so->so_proto->pr_usrreqs->pru_listen)(so, backlog, td));
+	CURVNET_SET(so->so_vnet);
+	error = (*so->so_proto->pr_usrreqs->pru_listen)(so, backlog, td);
+	CURVNET_RESTORE();
+	return error;
 }
 
 int
@@ -620,6 +648,7 @@ sofree(struct socket *so)
 	SOCK_UNLOCK(so);
 	ACCEPT_UNLOCK();
 
+	VNET_SO_ASSERT(so);
 	if (pr->pr_flags & PR_RIGHTS && pr->pr_domain->dom_dispose != NULL)
 		(*pr->pr_domain->dom_dispose)(so->so_rcv.sb_mb);
 	if (pr->pr_usrreqs->pru_detach != NULL)
@@ -746,6 +775,7 @@ soabort(struct socket *so)
 	KASSERT(so->so_state & SS_NOFDREF, ("soabort: !SS_NOFDREF"));
 	KASSERT((so->so_state & SQ_COMP) == 0, ("soabort: SQ_COMP"));
 	KASSERT((so->so_state & SQ_INCOMP) == 0, ("soabort: SQ_INCOMP"));
+	VNET_SO_ASSERT(so);
 
 	if (so->so_proto->pr_usrreqs->pru_abort != NULL)
 		(*so->so_proto->pr_usrreqs->pru_abort)(so);
@@ -763,7 +793,10 @@ soaccept(struct socket *so, struct sockaddr **nam)
 	KASSERT((so->so_state & SS_NOFDREF) != 0, ("soaccept: !NOFDREF"));
 	so->so_state &= ~SS_NOFDREF;
 	SOCK_UNLOCK(so);
+
+	CURVNET_SET(so->so_vnet);
 	error = (*so->so_proto->pr_usrreqs->pru_accept)(so, nam);
+	CURVNET_RESTORE();
 	return (error);
 }
 
@@ -801,8 +834,12 @@ soconnect(struct socket *so, struct sockaddr *nam, struct thread *td)
 int
 soconnect2(struct socket *so1, struct socket *so2)
 {
+	int error;
 
-	return ((*so1->so_proto->pr_usrreqs->pru_connect2)(so1, so2));
+	CURVNET_SET(so1->so_vnet);
+	error = (*so1->so_proto->pr_usrreqs->pru_connect2)(so1, so2);
+	CURVNET_RESTORE();
+	return (error);
 }
 
 int
@@ -814,6 +851,7 @@ sodisconnect(struct socket *so)
 		return (ENOTCONN);
 	if (so->so_state & SS_ISDISCONNECTING)
 		return (EALREADY);
+	VNET_SO_ASSERT(so);
 	error = (*so->so_proto->pr_usrreqs->pru_disconnect)(so);
 	return (error);
 }
@@ -1077,6 +1115,7 @@ sosend_dgram(struct socket *so, struct sockaddr *addr, struct uio *uio,
 	 * there are probably other places that this also happens.  We must
 	 * rethink this.
 	 */
+	VNET_SO_ASSERT(so);
 	error = (*so->so_proto->pr_usrreqs->pru_send)(so,
 	    (flags & MSG_OOB) ? PRUS_OOB :
 	/*
@@ -1264,6 +1303,7 @@ restart:
 			 * places that this also happens.  We must rethink
 			 * this.
 			 */
+			VNET_SO_ASSERT(so);
 			error = (*so->so_proto->pr_usrreqs->pru_send)(so,
 			    (flags & MSG_OOB) ? PRUS_OOB :
 			/*
@@ -1330,6 +1370,7 @@ soreceive_rcvoob(struct socket *so, struct uio *uio, int flags)
 	int error;
 
 	KASSERT(flags & MSG_OOB, ("soreceive_rcvoob: (flags & MSG_OOB) == 0"));
+	VNET_SO_ASSERT(so);
 
 	m = m_get(M_WAIT, MT_DATA);
 	error = (*pr->pr_usrreqs->pru_rcvoob)(so, m, flags & MSG_PEEK);
@@ -1438,8 +1479,10 @@ soreceive_generic(struct socket *so, struct sockaddr **psa, struct uio *uio,
 	if (mp != NULL)
 		*mp = NULL;
 	if ((pr->pr_flags & PR_WANTRCVD) && (so->so_state & SS_ISCONFIRMING)
-	    && uio->uio_resid)
+	    && uio->uio_resid) {
+		VNET_SO_ASSERT(so);
 		(*pr->pr_usrreqs->pru_rcvd)(so, 0);
+	}
 
 	error = sblock(&so->so_rcv, SBLOCKWAIT(flags));
 	if (error)
@@ -1586,6 +1629,7 @@ dontblock:
 			cm->m_next = NULL;
 			if (pr->pr_domain->dom_externalize != NULL) {
 				SOCKBUF_UNLOCK(&so->so_rcv);
+				VNET_SO_ASSERT(so);
 				error = (*pr->pr_domain->dom_externalize)
 				    (cm, controlp);
 				SOCKBUF_LOCK(&so->so_rcv);
@@ -1801,6 +1845,7 @@ dontblock:
 			 */
 			if (pr->pr_flags & PR_WANTRCVD) {
 				SOCKBUF_UNLOCK(&so->so_rcv);
+				VNET_SO_ASSERT(so);
 				(*pr->pr_usrreqs->pru_rcvd)(so, flags);
 				SOCKBUF_LOCK(&so->so_rcv);
 			}
@@ -1847,6 +1892,7 @@ dontblock:
 		if (!(flags & MSG_SOCALLBCK) &&
 		    (pr->pr_flags & PR_WANTRCVD)) {
 			SOCKBUF_UNLOCK(&so->so_rcv);
+			VNET_SO_ASSERT(so);
 			(*pr->pr_usrreqs->pru_rcvd)(so, flags);
 			SOCKBUF_LOCK(&so->so_rcv);
 		}
@@ -2043,6 +2089,7 @@ deliver:
 		    (((flags & MSG_WAITALL) && uio->uio_resid > 0) ||
 		     !(flags & MSG_SOCALLBCK))) {
 			SOCKBUF_UNLOCK(sb);
+			VNET_SO_ASSERT(so);
 			(*so->so_proto->pr_usrreqs->pru_rcvd)(so, flags);
 			SOCKBUF_LOCK(sb);
 		}
@@ -2248,9 +2295,13 @@ int
 soreceive(struct socket *so, struct sockaddr **psa, struct uio *uio,
     struct mbuf **mp0, struct mbuf **controlp, int *flagsp)
 {
+	int error;
 
-	return (so->so_proto->pr_usrreqs->pru_soreceive(so, psa, uio, mp0,
+	CURVNET_SET(so->so_vnet);
+	error = (so->so_proto->pr_usrreqs->pru_soreceive(so, psa, uio, mp0,
 	    controlp, flagsp));
+	CURVNET_RESTORE();
+	return (error);
 }
 
 int
@@ -2261,17 +2312,19 @@ soshutdown(struct socket *so, int how)
 
 	if (!(how == SHUT_RD || how == SHUT_WR || how == SHUT_RDWR))
 		return (EINVAL);
+
+	CURVNET_SET(so->so_vnet);
 	if (pr->pr_usrreqs->pru_flush != NULL) {
 	        (*pr->pr_usrreqs->pru_flush)(so, how);
 	}
 	if (how != SHUT_WR)
 		sorflush(so);
 	if (how != SHUT_RD) {
-		CURVNET_SET(so->so_vnet);
 		error = (*pr->pr_usrreqs->pru_shutdown)(so);
 		CURVNET_RESTORE();
 		return (error);
 	}
+	CURVNET_RESTORE();
 	return (0);
 }
 
@@ -2281,6 +2334,8 @@ sorflush(struct socket *so)
 	struct sockbuf *sb = &so->so_rcv;
 	struct protosw *pr = so->so_proto;
 	struct sockbuf asb;
+
+	VNET_SO_ASSERT(so);
 
 	/*
 	 * In order to avoid calling dom_dispose with the socket buffer mutex
@@ -2295,7 +2350,6 @@ sorflush(struct socket *so)
 	 * socket buffer.  Don't let our acquire be interrupted by a signal
 	 * despite any existing socket disposition on interruptable waiting.
 	 */
-	CURVNET_SET(so->so_vnet);
 	socantrcvmore(so);
 	(void) sblock(sb, SBL_WAIT | SBL_NOINTR);
 
@@ -2319,7 +2373,6 @@ sorflush(struct socket *so)
 	if (pr->pr_flags & PR_RIGHTS && pr->pr_domain->dom_dispose != NULL)
 		(*pr->pr_domain->dom_dispose)(asb.sb_mb);
 	sbrelease_internal(&asb, so);
-	CURVNET_RESTORE();
 }
 
 /*
@@ -2383,11 +2436,14 @@ sosetopt(struct socket *so, struct sockopt *sopt)
 	struct mac extmac;
 #endif
 
+	CURVNET_SET(so->so_vnet);
 	error = 0;
 	if (sopt->sopt_level != SOL_SOCKET) {
-		if (so->so_proto && so->so_proto->pr_ctloutput)
-			return ((*so->so_proto->pr_ctloutput)
-				  (so, sopt));
+		if (so->so_proto && so->so_proto->pr_ctloutput) {
+			error = (*so->so_proto->pr_ctloutput)(so, sopt);
+			CURVNET_RESTORE();
+			return (error);
+		}
 		error = ENOPROTOOPT;
 	} else {
 		switch (sopt->sopt_name) {
@@ -2573,6 +2629,7 @@ sosetopt(struct socket *so, struct sockopt *sopt)
 		}
 	}
 bad:
+	CURVNET_RESTORE();
 	return (error);
 }
 
@@ -2616,13 +2673,15 @@ sogetopt(struct socket *so, struct sockopt *sopt)
 	struct mac extmac;
 #endif
 
+	CURVNET_SET(so->so_vnet);
 	error = 0;
 	if (sopt->sopt_level != SOL_SOCKET) {
-		if (so->so_proto && so->so_proto->pr_ctloutput) {
-			return ((*so->so_proto->pr_ctloutput)
-				  (so, sopt));
-		} else
-			return (ENOPROTOOPT);
+		if (so->so_proto && so->so_proto->pr_ctloutput)
+			error = (*so->so_proto->pr_ctloutput)(so, sopt);
+		else
+			error = ENOPROTOOPT;
+		CURVNET_RESTORE();
+		return (error);
 	} else {
 		switch (sopt->sopt_name) {
 #ifdef INET
@@ -2706,11 +2765,11 @@ integer:
 			error = sooptcopyin(sopt, &extmac, sizeof(extmac),
 			    sizeof(extmac));
 			if (error)
-				return (error);
+				goto bad;
 			error = mac_getsockopt_label(sopt->sopt_td->td_ucred,
 			    so, &extmac);
 			if (error)
-				return (error);
+				goto bad;
 			error = sooptcopyout(sopt, &extmac, sizeof extmac);
 #else
 			error = EOPNOTSUPP;
@@ -2722,11 +2781,11 @@ integer:
 			error = sooptcopyin(sopt, &extmac, sizeof(extmac),
 			    sizeof(extmac));
 			if (error)
-				return (error);
+				goto bad;
 			error = mac_getsockopt_peerlabel(
 			    sopt->sopt_td->td_ucred, so, &extmac);
 			if (error)
-				return (error);
+				goto bad;
 			error = sooptcopyout(sopt, &extmac, sizeof extmac);
 #else
 			error = EOPNOTSUPP;
@@ -2749,8 +2808,10 @@ integer:
 			error = ENOPROTOOPT;
 			break;
 		}
-		return (error);
 	}
+bad:
+	CURVNET_RESTORE();
+	return (error);
 }
 
 /* XXX; prepare mbuf for (__FreeBSD__ < 3) routines. */
@@ -2884,6 +2945,10 @@ sopoll(struct socket *so, int events, struct ucred *active_cred,
     struct thread *td)
 {
 
+	/*
+	 * We do not need to set or assert curvnet as long as everyone uses
+	 * sopoll_generic().
+	 */
 	return (so->so_proto->pr_usrreqs->pru_sopoll(so, events, active_cred,
 	    td));
 }
