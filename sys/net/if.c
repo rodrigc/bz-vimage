@@ -2403,13 +2403,16 @@ ifioctl(struct socket *so, u_long cmd, caddr_t data, struct thread *td)
 	int error;
 	int oif_flags;
 
+	CURVNET_SET(so->so_vnet);
 	switch (cmd) {
 	case SIOCGIFCONF:
 	case OSIOCGIFCONF:
 #ifdef __amd64__
 	case SIOCGIFCONF32:
 #endif
-		return (ifconf(cmd, data));
+		error = ifconf(cmd, data);
+		CURVNET_RESTORE();
+		return (error);
 	}
 	ifr = (struct ifreq *)data;
 
@@ -2417,42 +2420,55 @@ ifioctl(struct socket *so, u_long cmd, caddr_t data, struct thread *td)
 #ifdef VIMAGE
 	case SIOCSIFRVNET:
 		error = priv_check(td, PRIV_NET_SETIFVNET);
-		if (error)
-			return (error);
-		return (if_vmove_reclaim(td, ifr->ifr_name, ifr->ifr_jid));
+		if (error == 0)
+			error = if_vmove_reclaim(td, ifr->ifr_name,
+			    ifr->ifr_jid);
+		CURVNET_RESTORE();
+		return (error);
 #endif
 	case SIOCIFCREATE:
 	case SIOCIFCREATE2:
 		error = priv_check(td, PRIV_NET_IFCREATE);
-		if (error)
-			return (error);
-		return (if_clone_create(ifr->ifr_name, sizeof(ifr->ifr_name),
-			cmd == SIOCIFCREATE2 ? ifr->ifr_data : NULL));
+		if (error == 0)
+			error = if_clone_create(ifr->ifr_name,
+			    sizeof(ifr->ifr_name),
+			    cmd == SIOCIFCREATE2 ? ifr->ifr_data : NULL);
+		CURVNET_RESTORE();
+		return (error);
 	case SIOCIFDESTROY:
 		error = priv_check(td, PRIV_NET_IFDESTROY);
-		if (error)
-			return (error);
-		return if_clone_destroy(ifr->ifr_name);
+		if (error == 0)
+			error = if_clone_destroy(ifr->ifr_name);
+		CURVNET_RESTORE();
+		return (error);
 
 	case SIOCIFGCLONERS:
-		return (if_clone_list((struct if_clonereq *)data));
+		error = if_clone_list((struct if_clonereq *)data);
+		CURVNET_RESTORE();
+		return (error);
 	case SIOCGIFGMEMB:
-		return (if_getgroupmembers((struct ifgroupreq *)data));
+		error = if_getgroupmembers((struct ifgroupreq *)data);
+		CURVNET_RESTORE();
+		return (error);
 	}
 
 	ifp = ifunit_ref(ifr->ifr_name);
-	if (ifp == NULL)
+	if (ifp == NULL) {
+		CURVNET_RESTORE();
 		return (ENXIO);
+	}
 
 	error = ifhwioctl(cmd, ifp, data, td);
 	if (error != ENOIOCTL) {
 		if_rele(ifp);
+		CURVNET_RESTORE();
 		return (error);
 	}
 
 	oif_flags = ifp->if_flags;
 	if (so->so_proto == NULL) {
 		if_rele(ifp);
+		CURVNET_RESTORE();
 		return (EOPNOTSUPP);
 	}
 #ifndef COMPAT_43
@@ -2527,6 +2543,7 @@ ifioctl(struct socket *so, u_long cmd, caddr_t data, struct thread *td)
 #endif
 	}
 	if_rele(ifp);
+	CURVNET_RESTORE();
 	return (error);
 }
 

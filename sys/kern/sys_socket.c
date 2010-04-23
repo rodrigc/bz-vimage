@@ -123,7 +123,6 @@ soo_ioctl(struct file *fp, u_long cmd, void *data, struct ucred *active_cred,
 	struct socket *so = fp->f_data;
 	int error = 0;
 
-	CURVNET_SET(so->so_vnet);
 	switch (cmd) {
 	case FIONBIO:
 		SOCK_LOCK(so);
@@ -210,14 +209,18 @@ soo_ioctl(struct file *fp, u_long cmd, void *data, struct ucred *active_cred,
 		 */
 		if (IOCGROUP(cmd) == 'i')
 			error = ifioctl(so, cmd, data, td);
-		else if (IOCGROUP(cmd) == 'r')
+		else if (IOCGROUP(cmd) == 'r') {
+			CURVNET_SET(so->so_vnet);
 			error = rtioctl_fib(cmd, data, so->so_fibnum);
-		else
+			CURVNET_RESTORE();
+		} else {
+			CURVNET_SET(so->so_vnet);
 			error = ((*so->so_proto->pr_usrreqs->pru_control)
 			    (so, cmd, data, 0, td));
+			CURVNET_RESTORE();
+		}
 		break;
 	}
-	CURVNET_RESTORE();
 	return (error);
 }
 
