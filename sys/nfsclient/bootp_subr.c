@@ -1623,6 +1623,7 @@ bootpc_init(void)
 	/*
 	 * Find a network interface.
 	 */
+	CURVNET_SET(TD_TO_VNET(td));
 #ifdef BOOTP_WIRED_TO
 	printf("bootpc_init: wired to interface '%s'\n",
 	       __XSTRING(BOOTP_WIRED_TO));
@@ -1632,7 +1633,6 @@ bootpc_init(void)
 	 * Preallocate interface context storage, if another interface
 	 * attaches and wins the race, it won't be eligible for bootp.
 	 */
-	CURVNET_SET(TD_TO_VNET(td));
 	IFNET_RLOCK();
 	for (ifp = TAILQ_FIRST(&V_ifnet), ifcnt = 0;
 	     ifp != NULL;

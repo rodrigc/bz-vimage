@@ -2809,7 +2809,9 @@ integer:
 			break;
 		}
 	}
+#ifdef MAC
 bad:
+#endif
 	CURVNET_RESTORE();
 	return (error);
 }
