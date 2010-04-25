@@ -1286,7 +1286,9 @@ unp_connect(struct socket *so, struct sockaddr *nam, struct thread *td)
 	}
 	if (so->so_proto->pr_flags & PR_CONNREQUIRED) {
 		if (so2->so_options & SO_ACCEPTCONN) {
+			CURVNET_SET(so2->so_vnet);
 			so3 = sonewconn(so2, 0);
+			CURVNET_RESTORE();
 		} else
 			so3 = NULL;
 		if (so3 == NULL) {

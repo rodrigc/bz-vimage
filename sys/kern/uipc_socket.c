@@ -96,9 +96,8 @@
  * NOTE: With regard to VNETs the general rule is that callers do not set
  * curvnet. Exceptions to this rule include soabort(), sodisconnect(),
  * sofree() (and with that sorele(), sotryfree()), as well as sonewconn()
- * if not in SS_ISCONNECTED state and sorflush(), which are usually called
- * from a pre-set VNET context. sopoll() currently does not need a VNET
- * context to be set.
+ * and sorflush(), which are usually called from a pre-set VNET context.
+ * sopoll() currently does not need a VNET context to be set.
  */
 
 #include <sys/cdefs.h>
@@ -441,7 +440,7 @@ struct socket *
 sonewconn(struct socket *head, int connstatus)
 {
 	struct socket *so;
-	int over, setvnet;
+	int over;
 
 	ACCEPT_LOCK();
 	over = (head->so_qlen > 3 * head->so_qlimit / 2);
@@ -452,7 +451,6 @@ sonewconn(struct socket *head, int connstatus)
 	if (over)
 #endif
 		return (NULL);
-	setvnet = connstatus;
 	VNET_ASSERT(head->so_vnet != NULL, ("%s:%d so_vnet is NULL, head=%p",
 	    __func__, __LINE__, head));
 	so = soalloc(head->so_vnet);
@@ -473,15 +471,10 @@ sonewconn(struct socket *head, int connstatus)
 #endif
 	knlist_init_mtx(&so->so_rcv.sb_sel.si_note, SOCKBUF_MTX(&so->so_rcv));
 	knlist_init_mtx(&so->so_snd.sb_sel.si_note, SOCKBUF_MTX(&so->so_snd));
-	/* Sockets connected to a peer have curvnet set; avoid recursion. */
-	if (setvnet != SS_ISCONNECTED)
-		CURVNET_SET(head->so_vnet);
 	VNET_SO_ASSERT(head);
 	if (soreserve(so, head->so_snd.sb_hiwat, head->so_rcv.sb_hiwat) ||
 	    (*so->so_proto->pr_usrreqs->pru_attach)(so, 0, NULL)) {
 		sodealloc(so);
-		if (setvnet != SS_ISCONNECTED)
-			CURVNET_RESTORE();
 		return (NULL);
 	}
 	so->so_rcv.sb_lowat = head->so_rcv.sb_lowat;
@@ -524,8 +517,6 @@ sonewconn(struct socket *head, int connstatus)
 		sorwakeup(head);
 		wakeup_one(&head->so_timeo);
 	}
-	if (setvnet != SS_ISCONNECTED)
-		CURVNET_RESTORE();
 	return (so);
 }
 
