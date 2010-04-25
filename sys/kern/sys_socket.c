@@ -80,9 +80,7 @@ soo_read(struct file *fp, struct uio *uio, struct ucred *active_cred,
 	if (error)
 		return (error);
 #endif
-	CURVNET_SET(so->so_vnet);
 	error = soreceive(so, 0, uio, 0, 0, 0);
-	CURVNET_RESTORE();
 	return (error);
 }
 
