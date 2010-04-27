@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.213 2010/04/11 16:06:09 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.214 2010/04/19 23:40:46 attilio Exp $");
 
 #include "opt_kdb.h"
 #include "opt_device_polling.h"
@@ -163,6 +163,7 @@ SYSCTL_PROC(_kern, OID_AUTO, cp_times, CTLTYPE_LONG|CTLFLAG_RD|CTLFLAG_MPSAFE,
 
 #ifdef DEADLKRES
 static const char *blessed[] = {
+	"getblk",
 	"so_snd_sx",
 	"so_rcv_sx",
 	NULL

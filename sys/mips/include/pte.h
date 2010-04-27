@@ -40,7 +40,7 @@
  *	from: Utah Hdr: pte.h 1.11 89/09/03
  *	from: @(#)pte.h 8.1 (Berkeley) 6/10/93
  *	JNPR: pte.h,v 1.1.4.1 2007/09/10 06:20:19 girish
- * $FreeBSD: src/sys/mips/include/pte.h,v 1.3 2010/01/10 19:50:24 imp Exp $
+ * $FreeBSD: src/sys/mips/include/pte.h,v 1.5 2010/04/17 09:42:07 jmallett Exp $
  */
 
 #ifndef _MACHINE_PTE_H_
@@ -83,7 +83,7 @@ struct tlb {
 	int	tlb_lo1;
 };
 
-typedef unsigned long pt_entry_t;
+typedef unsigned int pt_entry_t;
 typedef pt_entry_t *pd_entry_t;
 
 #define	PDESIZE		sizeof(pd_entry_t)	/* for assembly files */
@@ -126,7 +126,7 @@ typedef pt_entry_t *pd_entry_t;
 #define	pfn_to_vad(x)	(((x) & PTE_FRAME) << PTE_SHIFT)
 
 /* User virtual to pte offset in page table */
-#define	vad_to_pte_offset(adr)	(((adr) >> PGSHIFT) & (NPTEPG -1))
+#define	vad_to_pte_offset(adr)	(((adr) >> PAGE_SHIFT) & (NPTEPG -1))
 
 #define	mips_pg_v(entry)	((entry) & PTE_V)
 #define	mips_pg_wired(entry)	((entry) & PTE_WIRED)

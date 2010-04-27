@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.20 2009/12/09 20:27:06 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.21 2010/04/22 21:31:34 thompsa Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -108,7 +108,7 @@ static uether_fn_t cdce_setpromisc;
 
 static uint32_t	cdce_m_crc32(struct mbuf *, uint32_t, uint32_t);
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int cdce_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, cdce, CTLFLAG_RW, 0, "USB CDC-Ethernet");

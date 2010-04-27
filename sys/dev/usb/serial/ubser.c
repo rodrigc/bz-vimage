@@ -70,7 +70,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.15 2009/11/26 00:43:17 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.16 2010/04/22 21:31:34 thompsa Exp $");
 
 /*
  * BWCT serial adapter driver
@@ -115,7 +115,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.15 2009/11/26 00:43:17 th
 #define	VENDOR_SET_BREAK		0x02
 #define	VENDOR_CLEAR_BREAK		0x03
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int ubser_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, ubser, CTLFLAG_RW, 0, "USB ubser");

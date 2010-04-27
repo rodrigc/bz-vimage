@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/bpf_jit_machdep.c,v 1.21 2009/11/23 22:23:19 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/bpf_jit_machdep.c,v 1.22 2010/04/22 23:47:19 jkim Exp $");
 
 #ifdef _KERNEL
 #include "opt_bpf.h"
@@ -419,62 +419,77 @@ bpf_jit_compile(struct bpf_insn *prog, u_int nins, size_t *size)
 				break;
 
 			case BPF_JMP|BPF_JA:
-				JMP(stream.refs[stream.bpf_pc + ins->k] -
-				    stream.refs[stream.bpf_pc]);
+				JUMP(ins->k);
 				break;
 
 			case BPF_JMP|BPF_JGT|BPF_K:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPid(ins->k, EAX);
 				JCC(JA, JBE);
 				break;
 
 			case BPF_JMP|BPF_JGE|BPF_K:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPid(ins->k, EAX);
 				JCC(JAE, JB);
 				break;
 
 			case BPF_JMP|BPF_JEQ|BPF_K:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPid(ins->k, EAX);
 				JCC(JE, JNE);
 				break;
 
 			case BPF_JMP|BPF_JSET|BPF_K:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				TESTid(ins->k, EAX);
 				JCC(JNE, JE);
 				break;
 
 			case BPF_JMP|BPF_JGT|BPF_X:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPrd(EDX, EAX);
 				JCC(JA, JBE);
 				break;
 
 			case BPF_JMP|BPF_JGE|BPF_X:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPrd(EDX, EAX);
 				JCC(JAE, JB);
 				break;
 
 			case BPF_JMP|BPF_JEQ|BPF_X:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				CMPrd(EDX, EAX);
 				JCC(JE, JNE);
 				break;
 
 			case BPF_JMP|BPF_JSET|BPF_X:
-				if (ins->jt == 0 && ins->jf == 0)
+				if (ins->jt == ins->jf) {
+					JUMP(ins->jt);
 					break;
+				}
 				TESTrd(EDX, EAX);
 				JCC(JNE, JE);
 				break;

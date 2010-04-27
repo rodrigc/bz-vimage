@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)proc.h	7.1 (Berkeley) 5/15/91
- * $FreeBSD: src/sys/i386/include/proc.h,v 1.28 2008/09/12 09:53:29 kib Exp $
+ * $FreeBSD: src/sys/i386/include/proc.h,v 1.30 2010/04/27 09:48:43 kib Exp $
  */
 
 #ifndef _MACHINE_PROC_H_
@@ -56,6 +56,8 @@ struct mdthread {
 struct mdproc {
 	struct proc_ldt *md_ldt;	/* (t) per-process ldt */
 };
+
+#define	KINFO_PROC_SIZE 768
 
 #ifdef	_KERNEL
 

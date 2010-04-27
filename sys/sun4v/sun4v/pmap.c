@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.48 2009/10/21 18:38:02 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.49 2010/04/24 17:32:52 alc Exp $");
 
 #include "opt_kstack_pages.h"
 #include "opt_msgbuf.h"
@@ -1589,6 +1589,17 @@ boolean_t
 pmap_is_prefaultable(pmap_t pmap, vm_offset_t va)
 {
 	return (tte_hash_lookup(pmap->pm_hash, va) == 0);
+}
+
+/*
+ * Return whether or not the specified physical page was referenced
+ * in any physical maps.
+ */
+boolean_t
+pmap_is_referenced(vm_page_t m)
+{
+
+	return (tte_get_phys_bit(m, VTD_REF));
 }
 
 /*

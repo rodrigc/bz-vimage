@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/proc.h,v 1.16 2009/10/31 22:27:31 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/proc.h,v 1.18 2010/04/27 09:48:43 kib Exp $
  */
 
 #ifndef _MACHINE_PROC_H_
@@ -37,5 +37,8 @@ struct mdthread {
 struct mdproc {
 	int		__dummy;	/* Avoid having an empty struct. */
 };
+
+#define	KINFO_PROC_SIZE 1088
+#define	KINFO_PROC32_SIZE 768
 
 #endif /* !_MACHINE_PROC_H_ */

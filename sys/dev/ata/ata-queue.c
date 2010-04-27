@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-queue.c,v 1.90 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-queue.c,v 1.91 2010/04/26 11:58:15 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -513,9 +513,9 @@ ata_timeout(struct ata_request *request)
 	request->flags |= ATA_R_TIMEOUT;
 	if (ch->dma.unload)
 	    ch->dma.unload(request);
-#ifdef ATA_CAM
 	ch->running = NULL;
 	ch->state = ATA_IDLE;
+#ifdef ATA_CAM
 	ata_cam_end_transaction(ch->dev, request);
 #endif
 	mtx_unlock(&ch->state_mtx);

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.11 2009/09/28 08:13:50 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.12 2010/04/22 21:31:34 thompsa Exp $ */
 /*	$OpenBSD: umoscom.c,v 1.2 2006/10/26 06:02:43 jsg Exp $	*/
 
 /*
@@ -48,7 +48,7 @@
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int umoscom_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, umoscom, CTLFLAG_RW, 0, "USB umoscom");

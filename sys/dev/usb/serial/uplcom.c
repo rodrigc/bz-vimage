@@ -1,7 +1,7 @@
 /*	$NetBSD: uplcom.c,v 1.21 2001/11/13 06:24:56 lukem Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.16 2009/12/26 19:03:28 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.17 2010/04/22 21:31:34 thompsa Exp $");
 
 /*-
  * Copyright (c) 2001-2003, 2005 Shunsuke Akiyama <akiyama@jp.FreeBSD.org>.
@@ -116,7 +116,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.16 2009/12/26 19:03:28 t
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uplcom_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uplcom, CTLFLAG_RW, 0, "USB uplcom");

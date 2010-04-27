@@ -36,7 +36,7 @@
  *
  ***********************license end**************************************/
 
-/* $FreeBSD: src/sys/mips/cavium/dev/rgmii/octeon_fau.h,v 1.2 2010/01/28 20:46:40 imp Exp $ */
+/* $FreeBSD: src/sys/mips/cavium/dev/rgmii/octeon_fau.h,v 1.3 2010/04/17 03:08:13 jmallett Exp $ */
 
 /*------------------------------------------------------------------
  * octeon_fau.h        Fetch & Add Unit
@@ -215,11 +215,6 @@ static inline void octeon_fau_atomic_add64 (octeon_fau_reg_64_t reg, int64_t val
 {
     oct_write64_int64(octeon_fau_store_address(0, reg), value);
 }
-
-
-extern void octeon_fau_init(void);
-extern void octeon_fau_enable(void);
-extern void octeon_fau_disable(void);
 
 
 #endif  /* ___OCTEON_FAU__H___ */

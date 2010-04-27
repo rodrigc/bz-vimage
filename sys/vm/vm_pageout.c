@@ -73,7 +73,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.310 2010/04/06 10:43:01 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.312 2010/04/20 04:16:39 alc Exp $");
 
 #include "opt_vm.h"
 #include <sys/param.h>
@@ -350,7 +350,6 @@ more:
 		vm_page_test_dirty(p);
 		if (p->dirty == 0 ||
 		    p->queue != PQ_INACTIVE ||
-		    p->wire_count != 0 ||	/* may be held by buf cache */
 		    p->hold_count != 0) {	/* may be undergoing I/O */
 			ib = 0;
 			break;
@@ -378,7 +377,6 @@ more:
 		vm_page_test_dirty(p);
 		if (p->dirty == 0 ||
 		    p->queue != PQ_INACTIVE ||
-		    p->wire_count != 0 ||	/* may be held by buf cache */
 		    p->hold_count != 0) {	/* may be undergoing I/O */
 			break;
 		}
@@ -1124,7 +1122,8 @@ unlock_and_continue:
 			    m->act_count == 0) {
 				page_shortage--;
 				if (object->ref_count == 0) {
-					pmap_remove_all(m);
+					KASSERT(!pmap_page_is_mapped(m),
+				    ("vm_pageout_scan: page %p is mapped", m));
 					if (m->dirty == 0)
 						vm_page_cache(m);
 					else

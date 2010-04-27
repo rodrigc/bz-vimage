@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ddb/db_sym.c,v 1.39 2009/08/01 19:26:27 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/ddb/db_sym.c,v 1.40 2010/04/14 23:06:07 julian Exp $");
 
 #include <sys/param.h>
 #include <sys/pcpu.h>
@@ -64,12 +64,6 @@ static boolean_t	db_line_at_pc(c_db_sym_t, char **, int *, db_expr_t);
 static int db_cpu = -1;
 
 #ifdef VIMAGE
-extern uintptr_t	*__start_set_vnet;
-extern uintptr_t	*__stop_set_vnet;
-
-#define	VNET_START	(uintptr_t)&__start_set_vnet
-#define	VNET_STOP	(uintptr_t)&__stop_set_vnet
-
 static void *db_vnet = NULL;
 #endif
 

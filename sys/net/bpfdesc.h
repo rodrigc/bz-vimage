@@ -33,7 +33,7 @@
  *
  *      @(#)bpfdesc.h	8.1 (Berkeley) 6/10/93
  *
- * $FreeBSD: src/sys/net/bpfdesc.h,v 1.41 2009/08/12 17:28:53 jkim Exp $
+ * $FreeBSD: src/sys/net/bpfdesc.h,v 1.42 2010/04/25 16:43:41 kib Exp $
  */
 
 #ifndef _NET_BPFDESC_H_
@@ -97,6 +97,7 @@ struct bpf_d {
 	u_int64_t	bd_wfcount;	/* number of packets that matched write filter */
 	u_int64_t	bd_wdcount;	/* number of packets dropped during a write */
 	u_int64_t	bd_zcopy;	/* number of zero copy operations */
+	u_char		bd_compat32;	/* 32-bit stream on LP64 system */
 };
 
 /* Values for bd_state */

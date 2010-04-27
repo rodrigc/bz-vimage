@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.648 2010/04/12 21:33:06 imp Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.650 2010/04/14 20:45:33 yongari Exp $
 
 .include <bsd.own.mk>
 
@@ -252,6 +252,7 @@ SUBDIR=	${_3dfx} \
 	sdhci \
 	sem \
 	sf \
+	sge \
 	siba_bwn \
 	siis \
 	sis \
@@ -280,7 +281,7 @@ SUBDIR=	${_3dfx} \
 	twe \
 	tx \
 	txp \
-	${_uart} \
+	uart \
 	ubsec \
 	udf \
 	udf_iconv \
@@ -323,8 +324,6 @@ _vpo=		vpo
 # no BUS_SPACE_UNSPECIFIED
 # No barrier instruction support (specific to this driver)
 _sym=		sym
-# no uart_cpu_$MACHINE_ARCH
-_uart=		uart
 # intr_disable() is a macro, causes problems
 _cxgb=		cxgb
 .endif

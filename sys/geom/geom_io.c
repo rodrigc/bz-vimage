@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.83 2010/03/24 18:04:25 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.84 2010/04/15 08:39:56 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -309,8 +309,8 @@ g_io_check(struct bio *bp)
 	case BIO_READ:
 	case BIO_WRITE:
 	case BIO_DELETE:
-		/* Zero sectorsize is a probably lack of media */
-		if (pp->sectorsize == 0)
+		/* Zero sectorsize or mediasize is probably a lack of media. */
+		if (pp->sectorsize == 0 || pp->mediasize == 0)
 			return (ENXIO);
 		/* Reject I/O not on sector boundary */
 		if (bp->bio_offset % pp->sectorsize)

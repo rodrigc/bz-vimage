@@ -1,5 +1,5 @@
 #	From: @(#)bsd.prog.mk	5.26 (Berkeley) 6/25/91
-# $FreeBSD: src/sys/conf/kmod.mk,v 1.231 2010/04/02 06:55:31 netchild Exp $
+# $FreeBSD: src/sys/conf/kmod.mk,v 1.232 2010/04/22 09:24:01 netchild Exp $
 #
 # The include file <bsd.kmod.mk> handles building and installing loadable
 # kernel modules.
@@ -137,6 +137,10 @@ CFLAGS+=	-mlongcall -fno-omit-frame-pointer
 CFLAGS+=	-G0 -fno-pic -mno-abicalls -mlong-calls
 .endif
 
+.if defined(DEBUG) || defined(DEBUG_FLAGS)
+CTFFLAGS+=	-g
+.endif
+
 .if defined(FIRMWS)
 .if !exists(@)
 ${KMOD:S/$/.c/}: @
@@ -202,6 +206,7 @@ ${KMOD}.kld: ${OBJS}
 ${FULLPROG}: ${OBJS}
 .endif
 	${LD} ${LDFLAGS} -r -d -o ${.TARGET} ${OBJS}
+	@[ -z "${CTFMERGE}" -o -n "${NO_CTF}" ] || ${CTFMERGE} ${CTFFLAGS} -o ${.TARGET} ${OBJS}
 .if defined(EXPORT_SYMS)
 .if ${EXPORT_SYMS} != YES
 .if ${EXPORT_SYMS} == NO

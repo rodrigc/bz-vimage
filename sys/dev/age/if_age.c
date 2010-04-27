@@ -28,7 +28,7 @@
 /* Driver for Attansic Technology Corp. L1 Gigabit Ethernet. */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/age/if_age.c,v 1.12 2010/02/26 22:43:23 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/age/if_age.c,v 1.13 2010/04/19 22:10:40 yongari Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1629,22 +1629,8 @@ age_encap(struct age_softc *sc, struct mbuf **m_head)
 	}
 
 	m = *m_head;
-	/* Configure Tx IP/TCP/UDP checksum offload. */
-	if ((m->m_pkthdr.csum_flags & AGE_CSUM_FEATURES) != 0) {
-		cflags |= AGE_TD_CSUM;
-		if ((m->m_pkthdr.csum_flags & CSUM_TCP) != 0)
-			cflags |= AGE_TD_TCPCSUM;
-		if ((m->m_pkthdr.csum_flags & CSUM_UDP) != 0)
-			cflags |= AGE_TD_UDPCSUM;
-		/* Set checksum start offset. */
-		cflags |= (poff << AGE_TD_CSUM_PLOADOFFSET_SHIFT);
-		/* Set checksum insertion position of TCP/UDP. */
-		cflags |= ((poff + m->m_pkthdr.csum_data) <<
-		    AGE_TD_CSUM_XSUMOFFSET_SHIFT);
-	}
-
-	/* Configure TSO. */
 	if ((m->m_pkthdr.csum_flags & CSUM_TSO) != 0) {
+		/* Configure TSO. */
 		if (poff + (tcp->th_off << 2) == m->m_pkthdr.len) {
 			/* Not TSO but IP/TCP checksum offload. */
 			cflags |= AGE_TD_IPCSUM | AGE_TD_TCPCSUM;
@@ -1660,6 +1646,18 @@ age_encap(struct age_softc *sc, struct mbuf **m_head)
 		/* Set IP/TCP header size. */
 		cflags |= ip->ip_hl << AGE_TD_IPHDR_LEN_SHIFT;
 		cflags |= tcp->th_off << AGE_TD_TSO_TCPHDR_LEN_SHIFT;
+	} else if ((m->m_pkthdr.csum_flags & AGE_CSUM_FEATURES) != 0) {
+		/* Configure Tx IP/TCP/UDP checksum offload. */
+		cflags |= AGE_TD_CSUM;
+		if ((m->m_pkthdr.csum_flags & CSUM_TCP) != 0)
+			cflags |= AGE_TD_TCPCSUM;
+		if ((m->m_pkthdr.csum_flags & CSUM_UDP) != 0)
+			cflags |= AGE_TD_UDPCSUM;
+		/* Set checksum start offset. */
+		cflags |= (poff << AGE_TD_CSUM_PLOADOFFSET_SHIFT);
+		/* Set checksum insertion position of TCP/UDP. */
+		cflags |= ((poff + m->m_pkthdr.csum_data) <<
+		    AGE_TD_CSUM_XSUMOFFSET_SHIFT);
 	}
 
 	/* Configure VLAN hardware tag insertion. */

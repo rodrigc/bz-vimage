@@ -1,7 +1,7 @@
 #
 # Custom kernel for Marvell DB-88F6xxx boards.
 #
-# $FreeBSD: src/sys/arm/conf/DB-88F6XXX,v 1.8 2010/02/15 23:44:48 attilio Exp $
+# $FreeBSD: src/sys/arm/conf/DB-88F6XXX,v 1.9 2010/04/22 21:31:34 thompsa Exp $
 #
 
 ident		DB-88F6XXX
@@ -67,6 +67,7 @@ device		e1000phy
 device		bpf
 
 # USB
+options 	USB_DEBUG	# enable debug msgs
 device		usb
 device		ehci
 device		umass

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/pc98/cbus/clock.c,v 1.177 2010/04/09 14:22:09 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/pc98/cbus/clock.c,v 1.178 2010/04/21 11:28:13 rpaulo Exp $");
 
 /*
  * Routines to handle clock hardware.
@@ -175,8 +175,8 @@ clkintr(struct trapframe *frame)
 	 * timers.
 	 */
 	int cpu = PCPU_GET(cpuid);
-	if (lapic_cyclic_clock_func[cpu] != NULL)
-		(*lapic_cyclic_clock_func[cpu])(frame);
+	if (cyclic_clock_func[cpu] != NULL)
+		(*cyclic_clock_func[cpu])(frame);
 #endif
 
 #ifdef SMP

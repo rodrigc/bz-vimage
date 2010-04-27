@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.23 2010/03/20 04:40:15 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.24 2010/04/15 11:17:33 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -164,6 +164,7 @@ siis_attach(device_t dev)
 		rman_fini(&ctlr->sc_iomem);
 		return (error);
 	}
+	pci_enable_busmaster(dev);
 	/* Reset controller */
 	siis_resume(dev);
 	/* Number of HW channels */

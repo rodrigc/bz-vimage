@@ -16,7 +16,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.34 2010/04/13 06:27:02 kevlo Exp $
+ * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.35 2010/04/22 21:31:34 thompsa Exp $
  */
 
 /*
@@ -63,7 +63,7 @@
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int u3g_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, u3g, CTLFLAG_RW, 0, "USB 3g");

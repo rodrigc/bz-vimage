@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.359 2009/11/20 22:22:53 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.360 2010/04/23 14:32:58 bz Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -2900,7 +2900,7 @@ sysctl_kern_proc_ofiledesc(SYSCTL_HANDLER_ARGS)
 				free(sa, M_SONAME);
 			}
 			if (so->so_proto->pr_usrreqs->pru_peeraddr(so, &sa)
-			    == 00 && sa->sa_len <= sizeof(kif->kf_sa_peer)) {
+			    == 0 && sa->sa_len <= sizeof(kif->kf_sa_peer)) {
 				bcopy(sa, &kif->kf_sa_peer, sa->sa_len);
 				free(sa, M_SONAME);
 			}
@@ -3153,7 +3153,7 @@ sysctl_kern_proc_filedesc(SYSCTL_HANDLER_ARGS)
 				free(sa, M_SONAME);
 			}
 			if (so->so_proto->pr_usrreqs->pru_peeraddr(so, &sa)
-			    == 00 && sa->sa_len <= sizeof(kif->kf_sa_peer)) {
+			    == 0 && sa->sa_len <= sizeof(kif->kf_sa_peer)) {
 				bcopy(sa, &kif->kf_sa_peer, sa->sa_len);
 				free(sa, M_SONAME);
 			}

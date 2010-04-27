@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnfsiod.c,v 1.2 2010/01/28 16:17:24 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnfsiod.c,v 1.3 2010/04/22 23:51:01 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -278,9 +278,11 @@ nfssvc_iod(void *instance)
 			(void)ncl_doio_directwrite(bp);
 		} else {
 			if (bp->b_iocmd == BIO_READ)
-				(void) ncl_doio(bp->b_vp, bp, bp->b_rcred, NULL);
+				(void) ncl_doio(bp->b_vp, bp, bp->b_rcred,
+				    NULL, 0);
 			else
-				(void) ncl_doio(bp->b_vp, bp, bp->b_wcred, NULL);
+				(void) ncl_doio(bp->b_vp, bp, bp->b_wcred,
+				    NULL, 0);
 		}
 		mtx_lock(&ncl_iod_mutex);
 		/*

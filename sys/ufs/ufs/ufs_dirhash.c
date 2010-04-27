@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_dirhash.c,v 1.34 2010/01/07 06:20:07 mckusick Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_dirhash.c,v 1.35 2010/04/24 07:05:35 jeff Exp $");
 
 #include "opt_ufs.h"
 
@@ -67,8 +67,6 @@ __FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_dirhash.c,v 1.34 2010/01/07 06:20:07 mck
 #define BLKFREE2IDX(n)		((n) > DH_NFSTATS ? DH_NFSTATS : (n))
 
 static MALLOC_DEFINE(M_DIRHASH, "ufs_dirhash", "UFS directory hash tables");
-
-static SYSCTL_NODE(_vfs, OID_AUTO, ufs, CTLFLAG_RD, 0, "UFS filesystem");
 
 static int ufs_mindirhashsize = DIRBLKSIZ * 5;
 SYSCTL_INT(_vfs_ufs, OID_AUTO, dirhash_minsize, CTLFLAG_RW,

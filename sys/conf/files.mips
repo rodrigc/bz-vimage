@@ -14,7 +14,7 @@
 # Copyright (c) 2001, 2004-2005, Juniper Networks, Inc.
 # All rights reserved.
 # JNPR: files.mips,v 1.11 2007/08/09 12:25:35 katta
-# $FreeBSD: src/sys/conf/files.mips,v 1.13 2010/03/03 15:05:58 gnn Exp $
+# $FreeBSD: src/sys/conf/files.mips,v 1.14 2010/04/19 07:51:57 jmallett Exp $
 #
 # ----------------------------------------------------------------------
 # Phase 2
@@ -50,7 +50,6 @@ mips/mips/bus_space_generic.c 	standard
 mips/mips/busdma_machdep.c 	standard
 mips/mips/cache.c		standard
 mips/mips/cache_mipsNN.c	standard
-#mips/mips/copystr.S		standard
 mips/mips/db_disasm.c		optional	ddb
 mips/mips/db_interface.c	optional	ddb
 mips/mips/db_trace.c		optional	ddb

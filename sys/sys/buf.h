@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)buf.h	8.9 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/sys/buf.h,v 1.211 2009/05/31 20:18:02 alc Exp $
+ * $FreeBSD: src/sys/sys/buf.h,v 1.212 2010/04/24 07:05:35 jeff Exp $
  */
 
 #ifndef _SYS_BUF_H_
@@ -215,7 +215,7 @@ struct buf {
 #define	B_DIRTY		0x00200000	/* Needs writing later (in EXT2FS). */
 #define	B_RELBUF	0x00400000	/* Release VMIO buffer. */
 #define	B_00800000	0x00800000	/* Available flag. */
-#define	B_01000000	0x01000000	/* Available flag. */
+#define	B_NOCOPY	0x01000000	/* Don't copy-on-write this buf. */
 #define	B_NEEDSGIANT	0x02000000	/* Buffer's vnode needs giant. */
 #define	B_PAGING	0x04000000	/* volatile paging I/O -- bypass VMIO */
 #define B_MANAGED	0x08000000	/* Managed by FS. */
@@ -493,6 +493,7 @@ int	bufwait(struct buf *);
 int	bufwrite(struct buf *);
 void	bufdone(struct buf *);
 void	bufdone_finish(struct buf *);
+void	bd_speedup(void);
 
 int	cluster_read(struct vnode *, u_quad_t, daddr_t, long,
 	    struct ucred *, long, int, struct buf **);

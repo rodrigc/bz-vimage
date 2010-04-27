@@ -1,7 +1,7 @@
 /*	$OpenBSD: uslcom.c,v 1.17 2007/11/24 10:52:12 jsg Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uslcom.c,v 1.13 2009/12/26 19:03:28 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uslcom.c,v 1.14 2010/04/22 21:31:34 thompsa Exp $");
 
 /*
  * Copyright (c) 2006 Jonathan Gray <jsg@openbsd.org>
@@ -50,7 +50,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/uslcom.c,v 1.13 2009/12/26 19:03:28 t
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uslcom_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uslcom, CTLFLAG_RW, 0, "USB uslcom");

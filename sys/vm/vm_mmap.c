@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.237 2010/03/23 21:08:07 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.238 2010/04/24 17:32:52 alc Exp $");
 
 #include "opt_compat.h"
 #include "opt_hwpmc_hooks.h"
@@ -871,10 +871,8 @@ RestartScan:
 						pmap_is_modified(m))
 						mincoreinfo |= MINCORE_MODIFIED_OTHER;
 					if ((m->flags & PG_REFERENCED) ||
-						pmap_ts_referenced(m)) {
-						vm_page_flag_set(m, PG_REFERENCED);
+					    pmap_is_referenced(m))
 						mincoreinfo |= MINCORE_REFERENCED_OTHER;
-					}
 					vm_page_unlock_queues();
 				}
 				VM_OBJECT_UNLOCK(current->object.vm_object);

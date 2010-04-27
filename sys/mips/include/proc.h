@@ -33,7 +33,7 @@
  *
  *	@(#)proc.h	8.1 (Berkeley) 6/10/93
  *	JNPR: proc.h,v 1.7.2.1 2007/09/10 06:25:24 girish
- * $FreeBSD: src/sys/mips/include/proc.h,v 1.3 2010/02/03 04:09:36 neel Exp $
+ * $FreeBSD: src/sys/mips/include/proc.h,v 1.6 2010/04/27 09:48:43 kib Exp $
  */
 
 #ifndef _MACHINE_PROC_H_
@@ -44,7 +44,7 @@
  */
 struct mdthread {
 	int	md_flags;		/* machine-dependent flags */
-	int	md_upte[KSTACK_PAGES - 1]; /* ptes for mapping u pcb */
+	int	md_upte[KSTACK_PAGES];	/* ptes for mapping u pcb */
 	int	md_ss_addr;		/* single step address for ptrace */
 	int	md_ss_instr;		/* single step instruction for ptrace */
 	register_t	md_saved_intr;
@@ -53,7 +53,6 @@ struct mdthread {
 	int	md_pc_ctrl;		/* performance counter control */
 	int	md_pc_count;		/* performance counter */
 	int	md_pc_spill;		/* performance counter spill */
-	vm_offset_t	md_realstack;
 	void	*md_tls;
 };
 
@@ -68,5 +67,11 @@ struct thread;
 
 void	mips_cpu_switch(struct thread *, struct thread *, struct mtx *);
 void	mips_cpu_throw(struct thread *, struct thread *);
+
+#ifdef __mips_n64
+#define	KINFO_PROC_SIZE 1088
+#else
+#define	KINFO_PROC_SIZE 816
+#endif
 
 #endif	/* !_MACHINE_PROC_H_ */

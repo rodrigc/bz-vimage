@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/sys/mips/conf/SWARM,v 1.7 2010/02/20 06:39:14 neel Exp $
+# $FreeBSD: src/sys/mips/conf/SWARM,v 1.10 2010/04/23 19:20:56 jmallett Exp $
 #
 
 ident		SWARM
@@ -7,12 +7,6 @@ options		CPU_SB1
 
 files		"../sibyte/files.sibyte"
 hints		"SWARM.hints"
-
-#
-# 32-bit kernel cannot deal with physical memory beyond 4GB
-# XXX pmap assumes that all the memory can be mapped using KSEG0
-#
-options		MAXMEM=512*1024
 
 options		CFE
 options		CFE_CONSOLE

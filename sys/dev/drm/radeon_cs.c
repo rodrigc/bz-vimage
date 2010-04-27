@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/radeon_cs.c,v 1.2 2009/09/28 22:41:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/radeon_cs.c,v 1.3 2010/04/22 18:21:25 rnoland Exp $");
 #include "dev/drm/drmP.h"
 #include "dev/drm/radeon_drm.h"
 #include "dev/drm/radeon_drv.h"
@@ -821,7 +821,7 @@ static int r600_ib_get(struct drm_radeon_cs_parser *parser)
 	}
 	buf->file_priv = parser->file_priv;
 	dev_priv->cs_buf = buf;
-	parser->ib = (void *)((vm_offset_t)dev->agp_buffer_map->handle +
+	parser->ib = (void *)((vm_offset_t)dev->agp_buffer_map->virtual +
 	    buf->offset);
 
 	return 0;

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_hub.c,v 1.34 2009/11/26 00:43:17 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_hub.c,v 1.35 2010/04/22 22:15:08 thompsa Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -246,7 +246,7 @@ uhub_explore_sub(struct uhub_softc *sc, struct usb_port *up)
 	/* start control transfer, if device mode */
 
 	if (child->flags.usb_mode == USB_MODE_DEVICE) {
-		usbd_default_transfer_setup(child);
+		usbd_ctrl_transfer_setup(child);
 	}
 	/* if a HUB becomes present, do a recursive HUB explore */
 

@@ -1,5 +1,5 @@
 /*	$NetBSD: uvisor.c,v 1.9 2001/01/23 14:04:14 augustss Exp $	*/
-/*      $FreeBSD: src/sys/dev/usb/serial/uvisor.c,v 1.16 2010/03/11 21:47:25 thompsa Exp $ */
+/*      $FreeBSD: src/sys/dev/usb/serial/uvisor.c,v 1.17 2010/04/22 21:31:34 thompsa Exp $ */
 
 /* Also already merged from NetBSD:
  *	$NetBSD: uvisor.c,v 1.12 2001/11/13 06:24:57 lukem Exp $
@@ -78,7 +78,7 @@
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uvisor_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uvisor, CTLFLAG_RW, 0, "USB uvisor");
@@ -392,7 +392,7 @@ uvisor_init(struct uvisor_softc *sc, struct usb_device *udev, struct usb_config 
 			goto done;
 		}
 	}
-#if USB_DEBUG
+#ifdef USB_DEBUG
 	if (sc->sc_flag & UVISOR_FLAG_VISOR) {
 		uint16_t i, np;
 		const char *desc;

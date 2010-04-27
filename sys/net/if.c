@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.380 2010/04/11 11:51:44 bz Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.381 2010/04/14 22:02:19 delphij Exp $
  */
 
 #include "opt_compat.h"
@@ -2051,14 +2051,13 @@ ifhwioctl(u_long cmd, struct ifnet *ifp, caddr_t data, struct thread *td)
 	case SIOCGIFDESCR:
 		error = 0;
 		sx_slock(&ifdescr_sx);
-		if (ifp->if_description == NULL) {
-			ifr->ifr_buffer.length = 0;
+		if (ifp->if_description == NULL)
 			error = ENOMSG;
-		} else {
+		else {
 			/* space for terminating nul */
 			descrlen = strlen(ifp->if_description) + 1;
 			if (ifr->ifr_buffer.length < descrlen)
-				error = ENAMETOOLONG;
+				ifr->ifr_buffer.buffer = NULL;
 			else
 				error = copyout(ifp->if_description,
 				    ifr->ifr_buffer.buffer, descrlen);

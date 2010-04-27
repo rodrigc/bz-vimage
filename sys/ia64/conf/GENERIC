@@ -18,7 +18,7 @@
 #
 # For hardware specific information check HARDWARE.TXT
 #
-# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.114 2010/03/27 06:53:11 marcel Exp $
+# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.115 2010/04/22 21:31:34 thompsa Exp $
 
 cpu		ITANIUM2
 ident		GENERIC
@@ -116,6 +116,7 @@ device		ida		# Compaq Smart RAID
 device		mlx		# Mylex DAC960 family
 
 # USB host controllers and peripherals
+options 	USB_DEBUG	# enable debug msgs
 device		ehci		# EHCI host controller
 device		ohci		# OHCI PCI->USB interface
 device		uhci		# UHCI PCI->USB interface

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonkrpc.c,v 1.7 2009/07/12 17:07:35 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonkrpc.c,v 1.8 2010/04/24 22:52:14 rmacklem Exp $");
 
 /*
  * Socket operations for use by nfs
@@ -650,7 +650,7 @@ tryagain:
 					trylater_delay = NFS_TRYLATERDEL;
 				waituntil = NFSD_MONOSEC + trylater_delay;
 				while (NFSD_MONOSEC < waituntil)
-					(void) nfs_catnap(PZERO, "nfstry");
+					(void) nfs_catnap(PZERO, 0, "nfstry");
 				trylater_delay *= 2;
 				goto tryagain;
 			}

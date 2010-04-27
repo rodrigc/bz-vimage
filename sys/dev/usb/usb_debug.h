@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_debug.h,v 1.9 2009/11/26 00:43:17 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_debug.h,v 1.10 2010/04/22 21:31:34 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -34,7 +34,7 @@ extern int usb_debug;
 
 /* Check if USB debugging is enabled. */
 #ifdef USB_DEBUG_VAR
-#if (USB_DEBUG != 0)
+#ifdef USB_DEBUG
 #define	DPRINTFN(n,fmt,...) do {		\
   if ((USB_DEBUG_VAR) >= (n)) {			\
     printf("%s: " fmt,				\

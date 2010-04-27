@@ -31,7 +31,7 @@
 /* $KAME: sctp_output.c,v 1.46 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.105 2010/04/03 23:51:41 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.106 2010/04/25 19:00:37 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
@@ -8973,7 +8973,7 @@ sctp_chunk_retransmission(struct sctp_inpcb *inp,
 		/* (void)SCTP_GETTIME_TIMEVAL(&chk->whoTo->last_sent_time); */
 		*cnt_out += 1;
 		chk->sent = SCTP_DATAGRAM_SENT;
-		sctp_ucount_decr(asoc->sent_queue_retran_cnt);
+		/* sctp_ucount_decr(asoc->sent_queue_retran_cnt); */
 		if (fwd_tsn == 0) {
 			return (0);
 		} else {

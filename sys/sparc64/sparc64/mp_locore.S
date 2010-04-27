@@ -26,10 +26,11 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_locore.S,v 1.14 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_locore.S,v 1.15 2010/04/26 20:19:49 marius Exp $");
 
 #include <machine/asi.h>
 #include <machine/asmacros.h>
+#include <machine/intr_machdep.h>
 #include <machine/ktr.h>
 #include <machine/pstate.h>
 #include <machine/smp.h>
@@ -44,14 +45,14 @@ __FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_locore.S,v 1.14 2010/02/20 23:24:
 	_ALIGN_TEXT
 	/*
 	 * Initialize misc. state to known values: interrupts disabled, normal
-	 * globals, windows flushed (cr = 0, cs = nwindows - 1), PIL 0 and
+	 * globals, windows flushed (cr = 0, cs = nwindows - 1), PIL_TICK and
 	 * floating point disabled.
 	 * Note that some firmware versions don't implement a clean window
 	 * trap handler so we unfortunately can't clear the windows by setting
 	 * %cleanwin to zero here.
 	 */
 1:	wrpr	%g0, PSTATE_NORMAL, %pstate
-	wrpr	%g0, 0, %pil
+	wrpr	%g0, PIL_TICK, %pil
 	wr	%g0, 0, %fprs
 
 	rdpr	%ver, %l7
@@ -261,11 +262,6 @@ ENTRY(mp_startup)
 	set	PCPU_PAGES * PAGE_SIZE - PC_SIZEOF, %l2
 	add	%l1, %l2, %l1
 	sub	%l1, SPOFF + CCFSZ, %sp
-
-	/*
-	 * Enable interrupts.
-	 */
-	wrpr	%g0, PSTATE_KERNEL, %pstate
 
 #if KTR_COMPILE & KTR_SMP
 	CATR(KTR_SMP,

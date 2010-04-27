@@ -5,7 +5,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.14 2010/03/03 10:18:03 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.15 2010/04/22 21:31:34 thompsa Exp $");
 
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
@@ -76,7 +76,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.14 2010/03/03 10:18:03 joel
 #include <dev/usb/input/usb_rdesc.h>
 #include <dev/usb/quirk/usb_quirk.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uhid_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uhid, CTLFLAG_RW, 0, "USB uhid");

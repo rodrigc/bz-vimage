@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.22 2010/03/11 21:42:09 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.23 2010/04/22 21:31:34 thompsa Exp $");
 
 /*
  * NOTE: all function names beginning like "uftdi_cfg_" can only
@@ -73,7 +73,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.22 2010/03/11 21:42:09 th
 #include <dev/usb/serial/usb_serial.h>
 #include <dev/usb/serial/uftdi_reg.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uftdi_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uftdi, CTLFLAG_RW, 0, "USB uftdi");

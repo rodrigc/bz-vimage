@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.8 2009/10/20 15:06:18 jh Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.9 2010/04/15 22:57:30 rmacklem Exp $");
 
 /*
  * generally, I don't like #includes inside .h files, but it seems to
@@ -978,6 +978,8 @@ newnfs_copyincred(struct ucred *cr, struct nfscred *nfscr)
 {
 	int i;
 
+	KASSERT(cr->cr_ngroups >= 0,
+	    ("newnfs_copyincred: negative cr_ngroups"));
 	nfscr->nfsc_uid = cr->cr_uid;
 	nfscr->nfsc_ngroups = MIN(cr->cr_ngroups, NFS_MAXGRPS + 1);
 	for (i = 0; i < nfscr->nfsc_ngroups; i++)

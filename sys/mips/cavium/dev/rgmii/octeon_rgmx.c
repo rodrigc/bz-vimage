@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/dev/rgmii/octeon_rgmx.c,v 1.7 2010/03/13 04:55:47 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/dev/rgmii/octeon_rgmx.c,v 1.8 2010/04/17 03:08:13 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1481,7 +1481,7 @@ static void octeon_config_hw_units_post_ports (void)
         oct_write64(OCTEON_POW_WORKQUEUE_INT_THRESHOLD(OCTEON_POW_RX_GROUP_NUM), thr.word64);
 #endif
 
-        ciu_enable_interrupts(OCTEON_CORE_ID, OCTEON_RGMX_CIU_INTX, OCTEON_RGMX_CIU_ENX,
+        ciu_enable_interrupts(PCPU_GET(cpuid), OCTEON_RGMX_CIU_INTX, OCTEON_RGMX_CIU_ENX,
                               (OCTEON_POW_RX_GROUP_MASK |
                                CIU_GENTIMER_BITS_ENABLE(CIU_GENTIMER_NUM_1)), CIU_MIPS_IP2);
 

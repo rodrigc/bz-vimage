@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.20 2010/03/28 20:04:03 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.21 2010/04/22 22:15:08 thompsa Exp $ */
 /*-
  * Copyright (c) 2007 Luigi Rizzo - Universita` di Pisa. All rights reserved.
  * Copyright (c) 2007 Hans Petter Selasky. All rights reserved.
@@ -971,7 +971,7 @@ usb_linux_create_usb_device(struct usb_device *udev, device_t dev)
 			udev->devnum = device_get_unit(dev);
 			bcopy(&udev->ddesc, &udev->descriptor,
 			    sizeof(udev->descriptor));
-			bcopy(udev->default_ep.edesc, &udev->ep0.desc,
+			bcopy(udev->ctrl_ep.edesc, &udev->ep0.desc,
 			    sizeof(udev->ep0.desc));
 		}
 	}

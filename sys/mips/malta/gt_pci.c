@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/malta/gt_pci.c,v 1.7 2010/01/10 20:06:14 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/malta/gt_pci.c,v 1.8 2010/04/19 09:03:34 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -109,8 +109,8 @@ struct gt_pci_softc {
 	struct rman		sc_mem_rman;
 	struct rman		sc_io_rman;
 	struct rman		sc_irq_rman;
-	uint32_t		sc_mem;
-	uint32_t		sc_io;
+	unsigned long		sc_mem;
+	bus_space_handle_t	sc_io;
 
 	struct resource		*sc_irq;
 	struct intr_event	*sc_eventstab[ICU_LEN];

@@ -1,7 +1,7 @@
 /*	$NetBSD: umodem.c,v 1.45 2002/09/23 05:51:23 simonb Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umodem.c,v 1.19 2010/02/14 19:59:19 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umodem.c,v 1.20 2010/04/22 21:31:34 thompsa Exp $");
 
 /*-
  * Copyright (c) 2003, M. Warner Losh <imp@FreeBSD.org>.
@@ -116,7 +116,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/umodem.c,v 1.19 2010/02/14 19:59:19 t
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int umodem_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, umodem, CTLFLAG_RW, 0, "USB umodem");

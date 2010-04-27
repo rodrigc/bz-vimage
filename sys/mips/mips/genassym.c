@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.3 2010/01/30 01:54:29 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.7 2010/04/19 06:01:58 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -54,6 +54,7 @@ __FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.3 2010/01/30 01:54:29 neel 
 #include <vm/pmap.h>
 #include <vm/vm_map.h>
 #include <sys/proc.h>
+#include <machine/cpuregs.h>
 #include <machine/pcb.h>
 #include <machine/sigframe.h>
 #include <machine/proc.h>
@@ -65,7 +66,7 @@ __FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.3 2010/01/30 01:54:29 neel 
 
 ASSYM(TD_PCB, offsetof(struct thread, td_pcb));
 ASSYM(TD_UPTE, offsetof(struct thread, td_md.md_upte));
-ASSYM(TD_REALKSTACK, offsetof(struct thread, td_md.md_realstack));
+ASSYM(TD_KSTACK, offsetof(struct thread, td_kstack));
 ASSYM(TD_FLAGS, offsetof(struct thread, td_flags));
 ASSYM(TD_LOCK, offsetof(struct thread, td_lock));
 ASSYM(TD_FRAME, offsetof(struct thread, td_frame));
@@ -87,15 +88,18 @@ ASSYM(PC_CURPMAP, offsetof(struct pcpu, pc_curpmap));
 
 ASSYM(VM_MAX_KERNEL_ADDRESS, VM_MAX_KERNEL_ADDRESS);
 ASSYM(VM_MAXUSER_ADDRESS, VM_MAXUSER_ADDRESS);
-ASSYM(VM_KERNEL_ALLOC_OFFSET, VM_KERNEL_ALLOC_OFFSET);
 ASSYM(SIGF_UC, offsetof(struct sigframe, sf_uc));
 ASSYM(SIGFPE, SIGFPE);
 ASSYM(PAGE_SHIFT, PAGE_SHIFT);
-ASSYM(PGSHIFT, PGSHIFT);
-ASSYM(NBPG, NBPG);
+ASSYM(PAGE_SIZE, PAGE_SIZE);
+ASSYM(PAGE_MASK, PAGE_MASK);
 ASSYM(SEGSHIFT, SEGSHIFT);
 ASSYM(NPTEPG, NPTEPG);
 ASSYM(TDF_NEEDRESCHED, TDF_NEEDRESCHED);
 ASSYM(TDF_ASTPENDING, TDF_ASTPENDING);
 ASSYM(PCPU_SIZE, sizeof(struct pcpu));
 ASSYM(MAXCOMLEN, MAXCOMLEN);
+
+ASSYM(MIPS_KSEG0_START, MIPS_KSEG0_START);
+ASSYM(MIPS_KSEG1_START, MIPS_KSEG1_START);
+ASSYM(MIPS_KSEG2_START, MIPS_KSEG2_START);

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/pmap_dispatch.c,v 1.20 2009/10/21 18:38:02 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/pmap_dispatch.c,v 1.21 2010/04/24 17:32:52 alc Exp $");
 
 /*
  * Dispatch MI pmap calls to the appropriate MMU implementation
@@ -192,6 +192,14 @@ pmap_is_prefaultable(pmap_t pmap, vm_offset_t va)
 
 	CTR3(KTR_PMAP, "%s(%p, %#x)", __func__, pmap, va);
 	return (MMU_IS_PREFAULTABLE(mmu_obj, pmap, va));
+}
+
+boolean_t
+pmap_is_referenced(vm_page_t m)
+{
+
+	CTR2(KTR_PMAP, "%s(%p)", __func__, m);
+	return (MMU_IS_REFERENCED(mmu_obj, m));
 }
 
 boolean_t

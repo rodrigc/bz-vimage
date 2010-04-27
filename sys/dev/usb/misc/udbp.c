@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.10 2009/06/23 02:19:59 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.11 2010/04/22 21:31:34 thompsa Exp $");
 
 /* Driver for arbitrary double bulk pipe devices.
  * The driver assumes that there will be the same driver on the other side.
@@ -94,7 +94,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.10 2009/06/23 02:19:59 thomp
 
 #include <dev/usb/misc/udbp.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int udbp_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, udbp, CTLFLAG_RW, 0, "USB udbp");

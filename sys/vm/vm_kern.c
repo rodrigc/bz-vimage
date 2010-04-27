@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_kern.c,v 1.141 2009/06/25 20:33:45 svn2cvs Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_kern.c,v 1.142 2010/04/18 22:32:07 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -111,6 +111,35 @@ kmem_alloc_nofault(map, size)
 	size = round_page(size);
 	addr = vm_map_min(map);
 	result = vm_map_find(map, NULL, 0, &addr, size, VMFS_ANY_SPACE,
+	    VM_PROT_ALL, VM_PROT_ALL, MAP_NOFAULT);
+	if (result != KERN_SUCCESS) {
+		return (0);
+	}
+	return (addr);
+}
+
+/*
+ *	kmem_alloc_nofault_space:
+ *
+ *	Allocate a virtual address range with no underlying object and
+ *	no initial mapping to physical memory within the specified
+ *	address space.  Any mapping from this range to physical memory
+ *	must be explicitly created prior to its use, typically with
+ *	pmap_qenter().  Any attempt to create a mapping on demand
+ *	through vm_fault() will result in a panic. 
+ */
+vm_offset_t
+kmem_alloc_nofault_space(map, size, find_space)
+	vm_map_t map;
+	vm_size_t size;
+	int find_space;
+{
+	vm_offset_t addr;
+	int result;
+
+	size = round_page(size);
+	addr = vm_map_min(map);
+	result = vm_map_find(map, NULL, 0, &addr, size, find_space,
 	    VM_PROT_ALL, VM_PROT_ALL, MAP_NOFAULT);
 	if (result != KERN_SUCCESS) {
 		return (0);

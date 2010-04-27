@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_shutdown.c,v 1.202 2010/02/03 08:42:08 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_shutdown.c,v 1.204 2010/04/20 12:22:06 attilio Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kdb.h"
@@ -62,7 +62,7 @@ __FBSDID("$FreeBSD: src/sys/kern/kern_shutdown.c,v 1.202 2010/02/03 08:42:08 mav
 #include <sys/reboot.h>
 #include <sys/resourcevar.h>
 #include <sys/sched.h>
-#include <sys/smp.h>		/* smp_active */
+#include <sys/smp.h>
 #include <sys/sysctl.h>
 #include <sys/sysproto.h>
 
@@ -485,15 +485,26 @@ static void
 shutdown_reset(void *junk, int howto)
 {
 
-	/*
-	 * Disable interrupts on CPU0 in order to avoid fast handlers
-	 * to preempt the stopping process and to deadlock against other
-	 * CPUs.
-	 */
-	spinlock_enter();
-
 	printf("Rebooting...\n");
 	DELAY(1000000);	/* wait 1 sec for printf's to complete and be read */
+
+	/*
+	 * Acquiring smp_ipi_mtx here has a double effect:
+	 * - it disables interrupts avoiding CPU0 preemption
+	 *   by fast handlers (thus deadlocking  against other CPUs)
+	 * - it avoids deadlocks against smp_rendezvous() or, more 
+	 *   generally, threads busy-waiting, with this spinlock held,
+	 *   and waiting for responses by threads on other CPUs
+	 *   (ie. smp_tlb_shootdown()).
+	 *
+	 * For the !SMP case it just needs to handle the former problem.
+	 */
+#ifdef SMP
+	mtx_lock_spin(&smp_ipi_mtx);
+#else
+	spinlock_enter();
+#endif
+
 	/* cpu_boot(howto); */ /* doesn't do anything at the moment */
 	cpu_reset();
 	/* NOTREACHED */ /* assuming reset worked */

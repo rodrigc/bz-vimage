@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/bpf_jit_machdep.h,v 1.14 2009/11/23 22:23:19 jkim Exp $
+ * $FreeBSD: src/sys/amd64/amd64/bpf_jit_machdep.h,v 1.15 2010/04/22 23:47:19 jkim Exp $
  */
 
 #ifndef _BPF_JIT_MACHDEP_H_
@@ -471,6 +471,12 @@ typedef void (*emit_func)(bpf_bin_stream *stream, u_int value, u_int n);
 		emitm(&stream, stream.refs[stream.bpf_pc + ins->jf] -	\
 		    stream.refs[stream.bpf_pc], 4);			\
 	}								\
+} while (0)
+
+#define	JUMP(off) do {							\
+	if ((off) != 0)							\
+		JMP(stream.refs[stream.bpf_pc + (off)] -		\
+		    stream.refs[stream.bpf_pc]);			\
 } while (0)
 
 #endif	/* _BPF_JIT_MACHDEP_H_ */

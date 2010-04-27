@@ -42,7 +42,7 @@
 #include "opt_compat.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.149 2010/04/02 06:50:28 netchild Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.150 2010/04/14 13:44:22 emaste Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -274,7 +274,7 @@ linprocfs_docpuinfo(PFS_FILL_ARGS)
 		    "cpu family\t: %d\n"
 		    "model\t\t: %d\n"
 		    "model name\t: %s\n"
-		    "stepping\t: %d\n",
+		    "stepping\t: %d\n\n",
 		    i, cpu_vendor, class, cpu, model, cpu_id & 0xf);
 		/* XXX per-cpu vendor / class / model / id? */
 	}

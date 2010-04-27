@@ -36,15 +36,11 @@
  *	from: Utah Hdr: reg.h 1.1 90/07/09
  *	@(#)reg.h	8.2 (Berkeley) 1/11/94
  *	JNPR: regnum.h,v 1.6 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/regnum.h,v 1.2 2010/01/10 19:50:24 imp Exp $
+ * $FreeBSD: src/sys/mips/include/regnum.h,v 1.3 2010/04/19 07:34:26 jmallett Exp $
  */
 
 #ifndef _MACHINE_REGNUM_H_
 #define	_MACHINE_REGNUM_H_
-
-#define	STAND_ARG_SIZE		16
-#define	STAND_FRAME_SIZE	24
-#define	STAND_RA_OFFSET		20
 
 /* This must match the numbers
  * in pcb.h and is used by

@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfsclient/nfs.h,v 1.4 2010/01/28 16:17:24 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfsclient/nfs.h,v 1.5 2010/04/22 23:51:01 rmacklem Exp $
  */
 
 #ifndef _NFSCLIENT_NFS_H_
@@ -79,14 +79,16 @@ int ncl_biowrite(struct vnode *, struct uio *, int, struct ucred *);
 int ncl_vinvalbuf(struct vnode *, int, struct thread *, int);
 int ncl_asyncio(struct nfsmount *, struct buf *, struct ucred *,
     struct thread *);
-int ncl_doio(struct vnode *, struct buf *, struct ucred *, struct thread *);
+int ncl_doio(struct vnode *, struct buf *, struct ucred *, struct thread *,
+    int);
 void ncl_nhinit(void);
 void ncl_nhuninit(void);
 void ncl_nodelock(struct nfsnode *);
 void ncl_nodeunlock(struct nfsnode *);
 int ncl_getattrcache(struct vnode *, struct vattr *);
 int ncl_readrpc(struct vnode *, struct uio *, struct ucred *);
-int ncl_writerpc(struct vnode *, struct uio *, struct ucred *, int *, int *);
+int ncl_writerpc(struct vnode *, struct uio *, struct ucred *, int *, int *,
+    int);
 int ncl_readlinkrpc(struct vnode *, struct uio *, struct ucred *);
 int ncl_readdirrpc(struct vnode *, struct uio *, struct ucred *,
     struct thread *);

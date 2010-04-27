@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/powerpc/powerpc/mmu_if.m,v 1.12 2009/10/21 18:38:02 marcel Exp $
+# $FreeBSD: src/sys/powerpc/powerpc/mmu_if.m,v 1.13 2010/04/24 17:32:52 alc Exp $
 #
 
 #include <sys/param.h>
@@ -343,6 +343,20 @@ METHOD boolean_t is_prefaultable {
 	pmap_t		_pmap;
 	vm_offset_t	_va;
 } DEFAULT mmu_null_is_prefaultable;
+
+
+/**
+ * @brief Return whether or not the specified physical page was referenced
+ * in any physical maps.
+ *
+ * @params _pg		physical page
+ *
+ * @retval boolean	TRUE if page has been referenced
+ */
+METHOD boolean_t is_referenced {
+	mmu_t		_mmu;
+	vm_page_t	_pg;
+};
 
 
 /**

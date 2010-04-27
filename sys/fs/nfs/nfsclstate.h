@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsclstate.h,v 1.1 2009/05/04 15:23:58 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsclstate.h,v 1.3 2010/04/18 22:21:23 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSCLSTATE_H_
@@ -74,6 +74,7 @@ struct nfsclclient {
 #define	NFSCLFLAGS_EXPIREIT	0x0040
 #define	NFSCLFLAGS_FIRSTDELEG	0x0080
 #define	NFSCLFLAGS_GOTDELEG	0x0100
+#define	NFSCLFLAGS_RECVRINPROG	0x0200
 
 struct nfsclowner {
 	LIST_ENTRY(nfsclowner)	nfsow_list;
@@ -140,6 +141,7 @@ struct nfsclopen {
 #define	NFSCLOPEN_OK		0
 #define	NFSCLOPEN_DOOPEN	1
 #define	NFSCLOPEN_DOOPENDOWNGRADE 2
+#define	NFSCLOPEN_SETCRED	3
 
 struct nfscllockowner {
 	LIST_ENTRY(nfscllockowner) nfsl_list;

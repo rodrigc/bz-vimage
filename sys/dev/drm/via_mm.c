@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/via_mm.c,v 1.1 2010/01/31 14:30:39 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/via_mm.c,v 1.2 2010/04/22 18:21:25 rnoland Exp $");
 
 #include "dev/drm/drmP.h"
 #include "dev/drm/via_drm.h"
@@ -45,7 +45,6 @@ int via_agp_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 
 	ret = drm_sman_set_range(&dev_priv->sman, VIA_MEM_AGP, 0,
 				 agp->size >> VIA_MM_ALIGN_SHIFT);
-
 	if (ret) {
 		DRM_ERROR("AGP memory manager initialisation error\n");
 		return ret;
@@ -66,7 +65,6 @@ int via_fb_init(struct drm_device *dev, void *data, struct drm_file *file_priv)
 
 	ret = drm_sman_set_range(&dev_priv->sman, VIA_MEM_VIDEO, 0,
 				 fb->size >> VIA_MM_ALIGN_SHIFT);
-
 	if (ret) {
 		DRM_ERROR("VRAM memory manager initialisation error\n");
 		return ret;

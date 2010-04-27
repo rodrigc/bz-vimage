@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.16 2010/03/02 17:40:48 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.17 2010/04/19 16:17:30 luigi Exp $");
 
 #if !defined(KLD_MODULE)
 #include "opt_ipfw.h"
@@ -147,8 +147,8 @@ again:
 	switch (ipfw) {
 	case IP_FW_PASS:
 		/* next_hop may be set by ipfw_chk */
-                if (args.next_hop == NULL)
-                        break; /* pass */
+		if (args.next_hop == NULL)
+			break; /* pass */
 #ifndef IPFIREWALL_FORWARD
 		ret = EACCES;
 #else
@@ -347,14 +347,14 @@ ipfw_attach_hooks(int arg)
 
 	if (arg == 0) /* detach */
 		ipfw_hook(0, AF_INET);
-        else if (V_fw_enable && ipfw_hook(1, AF_INET) != 0) {
+	else if (V_fw_enable && ipfw_hook(1, AF_INET) != 0) {
                 error = ENOENT; /* see ip_fw_pfil.c::ipfw_hook() */
                 printf("ipfw_hook() error\n");
         }
 #ifdef INET6
 	if (arg == 0) /* detach */
 		ipfw_hook(0, AF_INET6);
-        else if (V_fw6_enable && ipfw_hook(1, AF_INET6) != 0) {
+	else if (V_fw6_enable && ipfw_hook(1, AF_INET6) != 0) {
                 error = ENOENT;
                 printf("ipfw6_hook() error\n");
         }

@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vnops.c,v 1.190 2009/07/01 22:30:36 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vnops.c,v 1.191 2010/04/24 07:05:35 jeff Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -225,6 +225,7 @@ ffs_syncvnode(struct vnode *vp, int waitfor)
 	wait = (waitfor == MNT_WAIT);
 	lbn = lblkno(ip->i_fs, (ip->i_size + ip->i_fs->fs_bsize - 1));
 	bo = &vp->v_bufobj;
+	ip->i_flag &= ~IN_NEEDSYNC;
 
 	/*
 	 * Flush all dirty buffers associated with a vnode.

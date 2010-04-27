@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vm_extern.h	8.2 (Berkeley) 1/12/94
- * $FreeBSD: src/sys/vm/vm_extern.h,v 1.93 2010/04/11 16:26:07 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_extern.h,v 1.94 2010/04/18 22:32:07 jmallett Exp $
  */
 
 #ifndef _VM_EXTERN_H_
@@ -47,6 +47,7 @@ vm_offset_t kmem_alloc_contig(vm_map_t map, vm_size_t size, int flags,
     vm_paddr_t low, vm_paddr_t high, unsigned long alignment,
     unsigned long boundary, vm_memattr_t memattr);
 vm_offset_t kmem_alloc_nofault(vm_map_t, vm_size_t);
+vm_offset_t kmem_alloc_nofault_space(vm_map_t, vm_size_t, int);
 vm_offset_t kmem_alloc_wait(vm_map_t, vm_size_t);
 void kmem_free(vm_map_t, vm_offset_t, vm_size_t);
 void kmem_free_wakeup(vm_map_t, vm_offset_t, vm_size_t);

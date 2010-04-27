@@ -140,7 +140,7 @@
 #include "opt_vm.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.119 2010/03/21 21:03:35 cognet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.120 2010/04/24 17:32:52 alc Exp $");
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kernel.h>
@@ -4491,6 +4491,20 @@ pmap_clear_modify(vm_page_t m)
 		pmap_clearbit(m, PVF_MOD);
 }
 
+
+/*
+ *	pmap_is_referenced:
+ *
+ *	Return whether or not the specified physical page was referenced
+ *	in any physical maps.
+ */
+boolean_t
+pmap_is_referenced(vm_page_t m)
+{
+
+	return ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0 &&
+	    (m->md.pvh_attrs & PVF_REF) != 0);
+}
 
 /*
  *	pmap_clear_reference:

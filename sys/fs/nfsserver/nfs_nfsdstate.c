@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdstate.c,v 1.13 2010/03/30 23:11:50 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdstate.c,v 1.14 2010/04/24 22:52:14 rmacklem Exp $");
 
 #ifndef APPLEKEXT
 #include <fs/nfs/nfsport.h>
@@ -4578,7 +4578,7 @@ nfsd_recalldelegation(vnode_t vp, NFSPROC_T *p)
 			    100000)
 				return;
 			/* Sleep for a short period of time */
-			(void) nfs_catnap(PZERO, "nfsremove");
+			(void) nfs_catnap(PZERO, 0, "nfsremove");
 		}
 	} while (error == NFSERR_DELAY);
 }

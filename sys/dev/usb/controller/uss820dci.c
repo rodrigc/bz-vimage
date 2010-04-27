@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/uss820dci.c,v 1.27 2010/03/11 21:49:00 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/uss820dci.c,v 1.28 2010/04/22 21:31:34 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky <hselasky@FreeBSD.org>
  * All rights reserved.
@@ -77,7 +77,7 @@
 #define	USS820_DCI_PC2SC(pc) \
    USS820_DCI_BUS2SC(USB_DMATAG_TO_XROOT((pc)->tag_parent)->bus)
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uss820dcidebug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uss820dci, CTLFLAG_RW, 0, "USB uss820dci");

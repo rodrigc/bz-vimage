@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.17 2010/03/30 23:11:50 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.18 2010/04/24 22:52:14 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSPORT_H_
@@ -143,21 +143,21 @@
 #define	NFSMGET(m)	do { 					\
 		MGET((m), M_TRYWAIT, MT_DATA); 			\
 		while ((m) == NULL ) { 				\
-			(void) nfs_catnap(PZERO, "nfsmget");	\
+			(void) nfs_catnap(PZERO, 0, "nfsmget");	\
 			MGET((m), M_TRYWAIT, MT_DATA); 		\
 		} 						\
 	} while (0)
 #define	NFSMGETHDR(m)	do { 					\
 		MGETHDR((m), M_TRYWAIT, MT_DATA);		\
 		while ((m) == NULL ) { 				\
-			(void) nfs_catnap(PZERO, "nfsmget");	\
+			(void) nfs_catnap(PZERO, 0, "nfsmget");	\
 			MGETHDR((m), M_TRYWAIT, MT_DATA); 	\
 		} 						\
 	} while (0)
 #define	NFSMCLGET(m, w)	do { 					\
 		MGET((m), M_TRYWAIT, MT_DATA); 			\
 		while ((m) == NULL ) { 				\
-			(void) nfs_catnap(PZERO, "nfsmget");	\
+			(void) nfs_catnap(PZERO, 0, "nfsmget");	\
 			MGET((m), M_TRYWAIT, MT_DATA); 		\
 		} 						\
 		MCLGET((m), (w));				\
@@ -165,7 +165,7 @@
 #define	NFSMCLGETHDR(m, w) do { 				\
 		MGETHDR((m), M_TRYWAIT, MT_DATA);		\
 		while ((m) == NULL ) { 				\
-			(void) nfs_catnap(PZERO, "nfsmget");	\
+			(void) nfs_catnap(PZERO, 0, "nfsmget");	\
 			MGETHDR((m), M_TRYWAIT, MT_DATA); 	\
 		} 						\
 	} while (0)

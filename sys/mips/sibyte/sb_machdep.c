@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.8 2010/03/20 05:49:06 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.9 2010/04/23 19:20:56 jmallett Exp $");
 
 #include <sys/param.h>
 #include <machine/cpuregs.h>
@@ -157,6 +157,17 @@ mips_init(void)
 #endif
 	TUNABLE_INT_FETCH("hw.physmem", &tmp);
 	maxmem = (uint64_t)tmp * 1024;
+
+	/*
+	 * XXX
+	 * If we used vm_paddr_t consistently in pmap, etc., we could
+	 * use 64-bit page numbers on !n64 systems, too, like i386
+	 * does with PAE.
+	 */
+#if !defined(__mips_n64)
+	if (maxmem == 0 || maxmem > 0xffffffff)
+		maxmem = 0xffffffff;
+#endif
 
 #ifdef CFE
 	/*

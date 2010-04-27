@@ -23,7 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/geom/part/g_part_if.m,v 1.9 2009/07/08 05:56:14 marcel Exp $
+# $FreeBSD: src/sys/geom/part/g_part_if.m,v 1.10 2010/04/23 03:11:39 marcel Exp $
 
 #include <sys/param.h>
 #include <sys/lock.h>
@@ -57,6 +57,13 @@ CODE {
 	    enum g_part_ctl r __unused, struct g_part_parms *p __unused)
 	{
 		return (0);
+	}
+
+	static int
+	default_resize(struct g_part_table *t __unused,
+	    struct g_part_entry *e __unused, struct g_part_parms *p __unused)
+	{
+		return (ENOSYS);
 	}
 };
 
@@ -113,6 +120,13 @@ METHOD int modify {
 	struct g_part_entry *entry;
 	struct g_part_parms *gpp;
 };
+
+# resize() - scheme specific processing for the resize verb.
+METHOD int resize {
+	struct g_part_table *table;
+	struct g_part_entry *entry;
+	struct g_part_parms *gpp;
+} DEFAULT default_resize;
 
 # name() - return the name of the given partition entry.
 # Typical names are "p1", "s0" or "c".

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.1 2009/06/23 02:19:59 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.2 2010/04/22 21:31:34 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -56,10 +56,6 @@
 
 #define	USB_HUB_MAX_DEPTH	5
 #define	USB_EP0_BUFSIZE		1024	/* bytes */
-
-#ifndef USB_DEBUG
-#define USB_DEBUG 1
-#endif
 
 typedef uint32_t usb_timeout_t;		/* milliseconds */
 typedef uint32_t usb_frlength_t;	/* bytes */

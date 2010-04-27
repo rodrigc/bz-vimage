@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/local_apic.c,v 1.68 2010/03/29 19:13:34 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/local_apic.c,v 1.69 2010/04/20 17:03:30 rpaulo Exp $");
 
 #include "opt_atpic.h"
 #include "opt_hwpmc_hooks.h"
@@ -71,7 +71,7 @@ __FBSDID("$FreeBSD: src/sys/i386/i386/local_apic.c,v 1.68 2010/03/29 19:13:34 jh
 
 #ifdef KDTRACE_HOOKS
 #include <sys/dtrace_bsd.h>
-cyclic_clock_func_t	lapic_cyclic_clock_func[MAXCPU];
+cyclic_clock_func_t	cyclic_clock_func[MAXCPU];
 #endif
 
 /* Sanity checks on IDT vectors. */
@@ -779,8 +779,8 @@ lapic_handle_timer(struct trapframe *frame)
 	 * timers.
 	 */
 	int cpu = PCPU_GET(cpuid);
-	if (lapic_cyclic_clock_func[cpu] != NULL)
-		(*lapic_cyclic_clock_func[cpu])(frame);
+	if (cyclic_clock_func[cpu] != NULL)
+		(*cyclic_clock_func[cpu])(frame);
 #endif
 
 	/* Fire hardclock at hz. */

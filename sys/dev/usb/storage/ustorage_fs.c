@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/storage/ustorage_fs.c,v 1.19 2009/06/27 21:23:30 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/storage/ustorage_fs.c,v 1.20 2010/04/22 21:31:34 thompsa Exp $ */
 /*-
  * Copyright (C) 2003-2005 Alan Stern
  * Copyright (C) 2008 Hans Petter Selasky
@@ -64,7 +64,7 @@
 #define	USB_DEBUG_VAR ustorage_fs_debug
 #include <dev/usb/usb_debug.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int ustorage_fs_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, ustorage_fs, CTLFLAG_RW, 0, "USB ustorage_fs");

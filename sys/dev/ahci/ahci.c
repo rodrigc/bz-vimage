@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ahci/ahci.c,v 1.30 2010/03/21 18:18:58 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ahci/ahci.c,v 1.32 2010/04/19 14:07:33 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>

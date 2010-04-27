@@ -1,4 +1,4 @@
-$FreeBSD: src/sys/dev/usb/usbdevs,v 1.456 2010/04/13 06:27:02 kevlo Exp $
+$FreeBSD: src/sys/dev/usb/usbdevs,v 1.457 2010/04/14 07:07:43 kevlo Exp $
 /* $NetBSD: usbdevs,v 1.392 2004/12/29 08:38:44 imp Exp $ */
 
 /*-
@@ -2515,7 +2515,6 @@ product QUALCOMMINC E0086	0x0086	3G modem
 product QUALCOMMINC E2002	0x2002	3G modem
 product QUALCOMMINC E2003	0x2003	3G modem
 
-/* Quanta products */
 /* Quanta products */
 product QUANTA RW6815_1		0x00ce	HP iPAQ rw6815
 product QUANTA RT3070		0x0304	RT3070

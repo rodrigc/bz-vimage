@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/pseudofs/pseudofs_vnops.c,v 1.81 2010/01/22 08:45:12 jh Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/pseudofs/pseudofs_vnops.c,v 1.82 2010/04/20 10:19:27 kib Exp $");
 
 #include "opt_pseudofs.h"
 
@@ -542,7 +542,7 @@ pfs_lookup(struct vop_cachedlookup_args *va)
 
 	if (cnp->cn_flags & ISDOTDOT)
 		vn_lock(vn, LK_EXCLUSIVE|LK_RETRY);
-	if (cnp->cn_flags & MAKEENTRY)
+	if (cnp->cn_flags & MAKEENTRY && !(vn->v_iflag & VI_DOOMED))
 		cache_enter(vn, *vpp, cnp);
 	PFS_RETURN (0);
  failed:

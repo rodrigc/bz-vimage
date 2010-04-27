@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.14 2010/03/19 19:51:03 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kdb.h"
@@ -152,15 +152,6 @@ struct vnet *vnet0;
  * existing virtual network stack instances so that the soon-to-be executing
  * module will find every network stack instance with proper default values.
  */
-
-/*
- * Location of the kernel's 'set_vnet' linker set.
- */
-extern uintptr_t	*__start_set_vnet;
-extern uintptr_t	*__stop_set_vnet;
-
-#define	VNET_START	(uintptr_t)&__start_set_vnet
-#define	VNET_STOP	(uintptr_t)&__stop_set_vnet
 
 /*
  * Number of bytes of data in the 'set_vnet' linker set, and hence the total

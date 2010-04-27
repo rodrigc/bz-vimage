@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_machdep.c,v 1.54 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_machdep.c,v 1.55 2010/04/26 20:19:49 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -409,16 +409,32 @@ cpu_mp_bootstrap(struct pcpu *pc)
 	volatile struct cpu_start_args *csa;
 
 	csa = &cpu_start_args;
+
+	/* Do CPU-specific initialization. */
 	if (pc->pc_impl >= CPU_IMPL_ULTRASPARCIII)
 		cheetah_init(pc->pc_impl);
+	/*
+	 * Enable the caches.  Note that his may include applying workarounds.
+	 */
 	cache_enable(pc->pc_impl);
+
+	/* Lock the kernel TSB in the TLB. */
 	pmap_map_tsb();
+
 	/*
 	 * Flush all non-locked TLB entries possibly left over by the
 	 * firmware.
 	 */
 	tlb_flush_nonlocked();
+
+	/* Initialize global registers. */
 	cpu_setregs(pc);
+
+	/* Enable interrupts. */
+	wrpr(pil, 0, PIL_TICK);
+	wrpr(pstate, 0, PSTATE_KERNEL);
+
+	/* Start the (S)TICK interrupts. */
 	tick_start();
 
 	smp_cpus++;

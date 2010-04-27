@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_int.h,v 1.6 2008/06/16 17:34:59 kib Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_int.h,v 1.8 2010/04/16 07:02:28 jh Exp $
  */
 
 /*

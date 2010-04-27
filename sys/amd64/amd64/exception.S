@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/exception.S,v 1.143 2010/04/10 18:38:11 kib Exp $
+ * $FreeBSD: src/sys/amd64/amd64/exception.S,v 1.144 2010/04/14 20:04:55 kib Exp $
  */
 
 #include "opt_atpic.h"
@@ -815,7 +815,6 @@ fsbase_load_fault:
 	ALIGN_TEXT
 	.globl	gsbase_load_fault
 gsbase_load_fault:
-	popfq
 	movl	$T_PROTFLT,TF_TRAPNO(%rsp)
 	movq	%rsp, %rdi
 	call	trap

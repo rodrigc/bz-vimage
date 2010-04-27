@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.14 2010/03/03 10:18:03 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.15 2010/04/22 21:31:34 thompsa Exp $");
 
 /*	$NetBSD: ulpt.c,v 1.60 2003/10/04 21:19:50 augustss Exp $	*/
 
@@ -72,7 +72,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.14 2010/03/03 10:18:03 joe
 #include <dev/usb/usb_debug.h>
 #include <dev/usb/usb_process.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int ulpt_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, ulpt, CTLFLAG_RW, 0, "USB ulpt");

@@ -27,7 +27,7 @@
 /*
  * The API to write a packet scheduling algorithm for dummynet.
  *
- * $FreeBSD: src/sys/netinet/ipfw/dn_sched.h,v 1.2 2010/03/21 15:52:55 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ipfw/dn_sched.h,v 1.3 2010/04/19 16:17:30 luigi Exp $
  */
 
 #ifndef _DN_SCHED_H
@@ -140,9 +140,9 @@ struct dn_alg {
 
 /* MSVC does not support initializers so we need this ugly macro */
 #ifdef _WIN32
-#define _SI(fld)        
+#define _SI(fld)
 #else
-#define _SI(fld)        fld
+#define _SI(fld)	fld
 #endif
 
 /*

@@ -27,7 +27,7 @@
  **************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_hashtab.c,v 1.1 2010/01/31 14:25:29 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_hashtab.c,v 1.2 2010/04/23 14:48:30 rnoland Exp $");
 
 /*
  * Simple open hash tab implementation.
@@ -46,7 +46,8 @@ int drm_ht_create(struct drm_open_hash *ht, unsigned int order)
 	ht->size = 1 << order;
 	ht->order = order;
 	ht->table = NULL;
-	ht->table = hashinit(ht->size, DRM_MEM_HASHTAB, &ht->mask);
+	ht->table = hashinit_flags(ht->size, DRM_MEM_HASHTAB, &ht->mask,
+	    HASH_NOWAIT);
 	if (!ht->table) {
 		DRM_ERROR("Out of memory for hash table\n");
 		return -ENOMEM;

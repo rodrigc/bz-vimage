@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/radeon_state.c,v 1.27 2009/09/28 22:37:07 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/radeon_state.c,v 1.28 2010/04/22 18:21:25 rnoland Exp $");
 
 #include "dev/drm/drmP.h"
 #include "dev/drm/drm.h"
@@ -1420,7 +1420,7 @@ static void radeon_cp_dispatch_swap(struct drm_device *dev)
 static void radeon_cp_dispatch_flip(struct drm_device *dev)
 {
 	drm_radeon_private_t *dev_priv = dev->dev_private;
-	struct drm_sarea *sarea = (struct drm_sarea *)dev_priv->sarea->handle;
+	struct drm_sarea *sarea = (struct drm_sarea *)dev_priv->sarea->virtual;
 	int offset = (dev_priv->sarea_priv->pfCurrentPage == 1)
 	    ? dev_priv->front_offset : dev_priv->back_offset;
 	RING_LOCALS;
@@ -1582,7 +1582,7 @@ static void radeon_cp_dispatch_indirect(struct drm_device * dev,
 		 */
 		if (dwords & 1) {
 			u32 *data = (u32 *)
-			    ((char *)dev->agp_buffer_map->handle
+			    ((char *)dev->agp_buffer_map->virtual
 			     + buf->offset + start);
 			data[dwords++] = RADEON_CP_PACKET2;
 		}
@@ -1629,7 +1629,7 @@ static void radeon_cp_dispatch_indices(struct drm_device *dev,
 
 	dwords = (prim->finish - prim->start + 3) / sizeof(u32);
 
-	data = (u32 *) ((char *)dev->agp_buffer_map->handle +
+	data = (u32 *) ((char *)dev->agp_buffer_map->virtual +
 			elt_buf->offset + prim->start);
 
 	data[0] = CP_PACKET3(RADEON_3D_RNDR_GEN_INDX_PRIM, dwords - 2);
@@ -1781,7 +1781,7 @@ static int radeon_cp_dispatch_texture(struct drm_device * dev,
 		/* Dispatch the indirect buffer.
 		 */
 		buffer =
-		    (u32 *) ((char *)dev->agp_buffer_map->handle + buf->offset);
+		    (u32 *) ((char *)dev->agp_buffer_map->virtual + buf->offset);
 		dwords = size / 4;
 
 #define RADEON_COPY_MT(_buf, _data, _width) \

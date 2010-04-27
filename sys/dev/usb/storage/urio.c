@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/storage/urio.c,v 1.12 2009/08/24 04:59:09 alfred Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/storage/urio.c,v 1.13 2010/04/22 21:31:34 thompsa Exp $");
 
 
 /*
@@ -78,7 +78,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/storage/urio.c,v 1.12 2009/08/24 04:59:09 al
 
 #include <dev/usb/storage/rio500_usb.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int urio_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, urio, CTLFLAG_RW, 0, "USB urio");

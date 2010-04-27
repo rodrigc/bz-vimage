@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnode.c,v 1.5 2009/09/09 20:37:49 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnode.c,v 1.6 2010/04/22 23:51:01 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -199,7 +199,7 @@ ncl_inactive(struct vop_inactive_args *ap)
 		 * available for the writes.
 		 */
 		if (nfscl_mustflush(vp))
-			(void) ncl_flush(vp, MNT_WAIT, NULL, ap->a_td, 1);
+			(void) ncl_flush(vp, MNT_WAIT, NULL, ap->a_td, 1, 0);
 		(void) nfsrpc_close(vp, 1, ap->a_td);
 	}
 

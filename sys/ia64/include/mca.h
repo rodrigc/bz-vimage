@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2002 Marcel Moolenaar
+ * Copyright (c) 2002-2010 Marcel Moolenaar
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/mca.h,v 1.8 2009/12/23 04:39:05 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/mca.h,v 1.9 2010/04/13 22:20:12 marcel Exp $
  */
 
 #ifndef _MACHINE_MCA_H_
@@ -240,7 +240,6 @@ struct mca_pcidev_reg {
 #ifdef _KERNEL
 
 void ia64_mca_init(void);
-void ia64_mca_populate(void);
 void ia64_mca_save_state(int);
 
 #endif /* _KERNEL */

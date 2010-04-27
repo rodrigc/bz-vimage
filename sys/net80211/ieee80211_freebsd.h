@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net80211/ieee80211_freebsd.h,v 1.35 2010/04/07 15:29:13 rpaulo Exp $
+ * $FreeBSD: src/sys/net80211/ieee80211_freebsd.h,v 1.36 2010/04/14 18:29:40 rpaulo Exp $
  */
 #ifndef _NET80211_IEEE80211_FREEBSD_H_
 #define _NET80211_IEEE80211_FREEBSD_H_
@@ -146,6 +146,16 @@ typedef struct mtx acl_lock_t;
 #define	ACL_UNLOCK(_as)			mtx_unlock(&(_as)->as_lock)
 #define	ACL_LOCK_ASSERT(_as) \
 	mtx_assert((&(_as)->as_lock), MA_OWNED)
+
+/*
+ * Scan table definitions.
+ */
+typedef struct mtx ieee80211_scan_table_lock_t;
+#define	IEEE80211_SCAN_TABLE_LOCK_INIT(_st, _name) \
+	mtx_init(&(_st)->st_lock, _name, "802.11 scan table", MTX_DEF)
+#define	IEEE80211_SCAN_TABLE_LOCK_DESTROY(_st)	mtx_destroy(&(_st)->st_lock)
+#define	IEEE80211_SCAN_TABLE_LOCK(_st)		mtx_lock(&(_st)->st_lock)
+#define	IEEE80211_SCAN_TABLE_UNLOCK(_st)	mtx_unlock(&(_st)->st_lock)
 
 /*
  * Node reference counting definitions.

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/dtrace_bsd.h,v 1.3 2009/03/24 17:14:34 rwatson Exp $
+ * $FreeBSD: src/sys/sys/dtrace_bsd.h,v 1.4 2010/04/20 17:03:30 rpaulo Exp $
  *
  * This file contains BSD shims for Sun's DTrace code.
  */
@@ -50,7 +50,7 @@ typedef	void (*cyclic_clock_func_t)(struct trapframe *);
  *
  * Defining them here avoids a proliferation of header files.
  */
-extern cyclic_clock_func_t     lapic_cyclic_clock_func[];
+extern cyclic_clock_func_t     cyclic_clock_func[];
 
 /*
  * The dtrace module handles traps that occur during a DTrace probe.

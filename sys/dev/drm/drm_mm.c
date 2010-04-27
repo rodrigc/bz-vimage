@@ -27,7 +27,7 @@
  **************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_mm.c,v 1.1 2010/01/31 14:25:29 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_mm.c,v 1.2 2010/04/23 14:48:30 rnoland Exp $");
 
 /*
  * Generic simple memory manager implementation. Intended to be used as a base
@@ -333,7 +333,8 @@ int drm_mm_init(struct drm_mm * mm, unsigned long start, unsigned long size)
 	mm->num_unused = 0;
 	mtx_init(&mm->unused_lock, "drm_unused", NULL, MTX_DEF);
 
-	return drm_mm_create_tail_node(mm, start, size, 0);
+	/* XXX This could be non-atomic but gets called from a locked path */
+	return drm_mm_create_tail_node(mm, start, size, 1);
 }
 
 void drm_mm_takedown(struct drm_mm * mm)

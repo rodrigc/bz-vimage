@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_output.c,v 1.165 2009/11/06 16:55:05 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_output.c,v 1.166 2010/04/19 15:15:36 ken Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1051,7 +1051,7 @@ send:
 	 * XXX: Fixme: This is currently not the case for IPv6.
 	 */
 	if (tso) {
-		m->m_pkthdr.csum_flags = CSUM_TSO;
+		m->m_pkthdr.csum_flags |= CSUM_TSO;
 		m->m_pkthdr.tso_segsz = tp->t_maxopd - optlen;
 	}
 

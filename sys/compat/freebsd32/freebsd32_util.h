@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/freebsd32/freebsd32_util.h,v 1.16 2010/03/19 10:56:30 kib Exp $
+ * $FreeBSD: src/sys/compat/freebsd32/freebsd32_util.h,v 1.17 2010/04/21 19:28:01 kib Exp $
  */
 
 #ifndef _COMPAT_FREEBSD32_FREEBSD32_UTIL_H_
@@ -94,9 +94,12 @@ int    syscall32_module_handler(struct module *mod, int what, void *arg);
 int    syscall32_helper_register(struct syscall_helper_data *sd);
 int    syscall32_helper_unregister(struct syscall_helper_data *sd);
 
-register_t *freebsd32_copyout_strings(struct image_params *imgp);
 struct iovec32;
+struct rusage32;
+register_t *freebsd32_copyout_strings(struct image_params *imgp);
 int	freebsd32_copyiniov(struct iovec32 *iovp, u_int iovcnt,
 	    struct iovec **iov, int error);
+void	freebsd32_rusage_out(const struct rusage *s, struct rusage32 *s32);
+
 
 #endif /* !_COMPAT_FREEBSD32_FREEBSD32_UTIL_H_ */

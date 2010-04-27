@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_input.c,v 1.382 2010/03/22 23:04:12 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_input.c,v 1.383 2010/04/21 10:21:34 bz Exp $");
 
 #include "opt_bootp.h"
 #include "opt_ipfw.h"
@@ -1579,7 +1579,7 @@ ip_forward(struct mbuf *m, int srcrt)
 		 * If IPsec is configured for this path,
 		 * override any possibly mtu value set by ip_output.
 		 */ 
-		mtu = ip_ipsec_mtu(m, mtu);
+		mtu = ip_ipsec_mtu(mcopy, mtu);
 #endif /* IPSEC */
 		/*
 		 * If the MTU was set before make sure we are below the

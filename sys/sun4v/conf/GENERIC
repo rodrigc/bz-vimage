@@ -18,7 +18,7 @@
 #
 # For hardware specific information check HARDWARE.TXT
 #
-# $FreeBSD: src/sys/sun4v/conf/GENERIC,v 1.36 2010/03/13 09:21:00 ed Exp $
+# $FreeBSD: src/sys/sun4v/conf/GENERIC,v 1.37 2010/04/22 21:31:34 thompsa Exp $
 
 cpu		SUN4V
 ident		GENERIC
@@ -183,6 +183,7 @@ device		faith		# IPv6-to-IPv4 relaying (translation)
 device		bpf		# Berkeley packet filter
 
 # USB support
+options 	USB_DEBUG	# enable debug msgs
 #device		uhci		# UHCI PCI->USB interface
 #device		ohci		# OHCI PCI->USB interface
 device		usb		# USB Bus (required)

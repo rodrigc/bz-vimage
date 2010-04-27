@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli.c,v 1.44 2009/03/16 19:31:08 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli.c,v 1.45 2010/04/15 16:34:06 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -340,7 +340,7 @@ g_eli_worker(void *arg)
 	}
 #endif
 	thread_lock(curthread);
-	sched_prio(curthread, PRIBIO);
+	sched_prio(curthread, PUSER);
 	if (sc->sc_crypto == G_ELI_CRYPTO_SW && g_eli_threads == 0)
 		sched_bind(curthread, wr->w_number);
 	thread_unlock(curthread);
@@ -361,8 +361,7 @@ g_eli_worker(void *arg)
 				mtx_unlock(&sc->sc_queue_mtx);
 				kproc_exit(0);
 			}
-			msleep(sc, &sc->sc_queue_mtx, PRIBIO | PDROP,
-			    "geli:w", 0);
+			msleep(sc, &sc->sc_queue_mtx, PDROP, "geli:w", 0);
 			continue;
 		}
 		mtx_unlock(&sc->sc_queue_mtx);

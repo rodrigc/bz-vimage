@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uchcom.c,v 1.13 2009/10/19 21:52:02 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uchcom.c,v 1.14 2010/04/22 21:31:34 thompsa Exp $");
 
 /*
  * Driver for WinChipHead CH341/340, the worst USB-serial chip in the
@@ -101,7 +101,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/uchcom.c,v 1.13 2009/10/19 21:52:02 t
 
 #include <dev/usb/serial/usb_serial.h>
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int uchcom_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, uchcom, CTLFLAG_RW, 0, "USB uchcom");

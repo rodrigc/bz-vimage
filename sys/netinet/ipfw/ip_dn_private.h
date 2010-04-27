@@ -27,7 +27,7 @@
 /*
  * internal dummynet APIs.
  *
- * $FreeBSD: src/sys/netinet/ipfw/ip_dn_private.h,v 1.5 2010/04/09 18:02:19 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ipfw/ip_dn_private.h,v 1.6 2010/04/19 16:17:30 luigi Exp $
  */
 
 #ifndef _IP_DN_PRIVATE_H
@@ -149,7 +149,7 @@ struct dn_parms {
 	int drain_sch;
 	uint32_t expire;
 	uint32_t expire_cycle;	/* tick count */
-	
+
 	int init_done;
 
 	/* if the upper half is busy doing something long,

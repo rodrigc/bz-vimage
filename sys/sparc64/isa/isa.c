@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/isa/isa.c,v 1.22 2009/03/19 20:57:59 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/isa/isa.c,v 1.23 2010/04/26 18:49:06 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -116,7 +116,7 @@ isa_init(device_t dev)
 }
 
 static const struct {
-	const char	*name;
+	const char	*const name;
 	uint32_t	id;
 } const ofw_isa_pnp_map[] = {
 	{ "SUNW,lomh",	0x0000ae4e }, /* SUN0000 */
@@ -126,6 +126,7 @@ static const struct {
 	{ "flashprom",	0x0100ae4e }, /* SUN0001 */
 	{ "parallel",	0x0104d041 }, /* PNP0401 */
 	{ "serial",	0x0105d041 }, /* PNP0501 */
+	{ "su",		0x0105d041 }, /* PNP0501 */
 	{ "i2c",	0x0200ae4e }, /* SUN0002 */
 	{ "rmc-comm",	0x0300ae4e }, /* SUN0003 */
 	{ "kb_ps2",	0x0303d041 }, /* PNP0303 */

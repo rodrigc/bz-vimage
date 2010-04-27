@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/arm/conf/KB920X,v 1.29 2010/03/29 22:29:41 imp Exp $
+# $FreeBSD: src/sys/arm/conf/KB920X,v 1.30 2010/04/22 21:31:34 thompsa Exp $
 
 ident		KB920X
 
@@ -96,6 +96,7 @@ device		icee
 
 device		bpf
 # USB support
+options 	USB_DEBUG	# enable debug msgs
 device		ohci		# OHCI localbus->USB interface
 device		usb		# USB Bus (required)
 #device		udbp		# USB Double Bulk Pipe devices

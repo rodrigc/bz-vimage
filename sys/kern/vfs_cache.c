@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_cache.c,v 1.159 2009/08/14 10:57:28 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_cache.c,v 1.161 2010/04/20 10:19:27 kib Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_ktrace.h"
@@ -610,7 +610,9 @@ cache_enter(dvp, vp, cnp)
 
 	CTR3(KTR_VFS, "cache_enter(%p, %p, %s)", dvp, vp, cnp->cn_nameptr);
 	VNASSERT(vp == NULL || (vp->v_iflag & VI_DOOMED) == 0, vp,
-	    ("cahe_enter: Adding a doomed vnode"));
+	    ("cache_enter: Adding a doomed vnode"));
+	VNASSERT(dvp == NULL || (dvp->v_iflag & VI_DOOMED) == 0, dvp,
+	    ("cache_enter: Doomed vnode used as src"));
 
 	if (!doingcache)
 		return;

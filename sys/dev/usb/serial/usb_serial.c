@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.13 2009/11/01 21:41:44 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.14 2010/04/22 21:31:34 thompsa Exp $");
 
 /*-
  * Copyright (c) 1998, 2000 The NetBSD Foundation, Inc.
@@ -104,7 +104,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.13 2009/11/01 21:41:
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, ucom, CTLFLAG_RW, 0, "USB ucom");
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int ucom_debug = 0;
 
 SYSCTL_INT(_hw_usb_ucom, OID_AUTO, debug, CTLFLAG_RW,

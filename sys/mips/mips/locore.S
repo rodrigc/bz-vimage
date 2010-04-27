@@ -47,7 +47,7 @@
  *
  *	from: @(#)locore.s	8.5 (Berkeley) 1/4/94
  *	JNPR: locore.S,v 1.6.2.1 2007/08/29 12:24:49 girish
- * $FreeBSD: src/sys/mips/mips/locore.S,v 1.6 2010/03/03 02:46:36 imp Exp $
+ * $FreeBSD: src/sys/mips/mips/locore.S,v 1.8 2010/04/17 07:20:01 jmallett Exp $
  */
 
 /*
@@ -162,11 +162,23 @@ VECTOR(_locore, unknown)
 	sw	a2, _C_LABEL(fenvp)
 #endif
 
+#if defined(TARGET_OCTEON) && defined(SMP)
+	.set push
+	.set mips32r2
+	rdhwr	t2, $0
+	beqz	t2, 1f
+	nop
+	j	octeon_ap_wait
+	nop
+	.set pop
+1:
+#endif
+
 	/*
 	 * Initialize stack and call machine startup.
 	 */
 	PTR_LA	sp, _C_LABEL(pcpu_space)
-	addiu	sp, (NBPG * 2) - CALLFRAME_SIZ
+	addiu	sp, (PAGE_SIZE * 2) - CALLFRAME_SIZ
 
 	sw	zero, CALLFRAME_SIZ - 4(sp)	# Zero out old ra for debugger
 	sw	zero, CALLFRAME_SIZ - 8(sp)	# Zero out old fp for debugger
@@ -178,10 +190,10 @@ VECTOR(_locore, unknown)
 	nop
 
 	PTR_LA	sp, _C_LABEL(thread0)
-	lw      a0, TD_PCB(sp)
-	li	t0, ~7
+	PTR_L	a0, TD_PCB(sp)
+	REG_LI	t0, ~7
 	and	a0, a0, t0
-	subu    sp, a0, CALLFRAME_SIZ
+	PTR_SUBU	sp, a0, CALLFRAME_SIZ
 
 	jal	_C_LABEL(mi_startup)		# mi_startup(frame)
 	sw	zero, CALLFRAME_SIZ - 8(sp)	# Zero out old fp for debugger

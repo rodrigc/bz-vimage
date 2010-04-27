@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_cd.c,v 1.118 2010/02/15 18:14:51 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_cd.c,v 1.120 2010/04/15 09:22:14 avg Exp $");
 
 #include "opt_cd.h"
 
@@ -2773,8 +2773,12 @@ cdcheckmedia(struct cam_periph *periph)
 		softc->flags &= ~(CD_FLAG_VALID_MEDIA|CD_FLAG_VALID_TOC);
 		cdprevent(periph, PR_ALLOW);
 		return (error);
-	} else
+	} else {
 		softc->flags |= CD_FLAG_VALID_MEDIA;
+		softc->disk->d_sectorsize = softc->params.blksize;
+		softc->disk->d_mediasize =
+		    (off_t)softc->params.blksize * softc->params.disksize;
+	}
 
 	/*
 	 * Now we check the table of contents.  This (currently) is only
@@ -2863,9 +2867,6 @@ cdcheckmedia(struct cam_periph *periph)
 	}
 
 	softc->flags |= CD_FLAG_VALID_TOC;
-	softc->disk->d_sectorsize = softc->params.blksize;
-	softc->disk->d_mediasize =
-	    (off_t)softc->params.blksize * softc->params.disksize;
 
 bailout:
 

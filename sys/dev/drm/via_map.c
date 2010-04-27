@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/via_map.c,v 1.1 2010/01/31 14:30:39 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/via_map.c,v 1.2 2010/04/22 18:21:25 rnoland Exp $");
 
 #include "dev/drm/drmP.h"
 #include "dev/drm/via_drm.h"
@@ -59,7 +59,7 @@ static int via_do_init_map(struct drm_device * dev, drm_via_init_t * init)
 	}
 
 	dev_priv->sarea_priv =
-	    (drm_via_sarea_t *) ((u8 *) dev_priv->sarea->handle +
+	    (drm_via_sarea_t *) ((u8 *) dev_priv->sarea->virtual +
 				 init->sarea_priv_offset);
 
 	dev_priv->agpAddr = init->agpAddr;

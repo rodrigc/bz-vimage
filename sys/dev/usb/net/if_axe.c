@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_axe.c,v 1.17 2009/12/26 19:03:28 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_axe.c,v 1.18 2010/04/22 21:31:34 thompsa Exp $");
 
 /*
  * ASIX Electronics AX88172/AX88178/AX88778 USB 2.0 ethernet driver.
@@ -123,7 +123,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/net/if_axe.c,v 1.17 2009/12/26 19:03:28 thom
  */
 #define AXE_178_MAX_FRAME_BURST	1
 
-#if USB_DEBUG
+#ifdef USB_DEBUG
 static int axe_debug = 0;
 
 SYSCTL_NODE(_hw_usb, OID_AUTO, axe, CTLFLAG_RW, 0, "USB axe");

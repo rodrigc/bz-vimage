@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/nexus.c,v 1.28 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/nexus.c,v 1.29 2010/04/26 18:44:30 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -153,6 +153,7 @@ EARLY_DRIVER_MODULE(nexus, root, nexus_driver, nexus_devclass, 0, 0,
 MODULE_VERSION(nexus, 1);
 
 static const char *const nexus_excl_name[] = {
+	"FJSV,system",
 	"aliases",
 	"associations",
 	"chosen",
@@ -163,6 +164,7 @@ static const char *const nexus_excl_name[] = {
 	"openprom",
 	"options",
 	"packages",
+	"physical-memory",
 	"rsc",
 	"sgcn",
 	"todsg",

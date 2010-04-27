@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.15 2010/04/07 15:29:13 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.16 2010/04/24 23:32:24 weongyo Exp $");
 
 /*
  * The Broadcom Wireless LAN controller driver.
@@ -9367,6 +9367,8 @@ bwn_rxeof(struct bwn_mac *mac, struct mbuf *m, const void *_rxhdr)
 
 	rssi = rxhdr->phy.abg.rssi;	/* XXX incorrect RSSI calculation? */
 	noise = mac->mac_stats.link_noise;
+
+	ifp->if_ipackets++;
 
 	BWN_UNLOCK(sc);
 

@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.6 2010/04/09 11:56:38 rpaulo Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.7 2010/04/22 21:31:34 thompsa Exp $	*/
 
 /*-
  * Copyright (c) 2008,2010 Damien Bergamini <damien.bergamini@free.fr>
@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.6 2010/04/09 11:56:38 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.7 2010/04/22 21:31:34 thompsa Exp $");
 
 /*-
  * Ralink Technology RT2700U/RT2800U/RT3000U chipset driver.
@@ -79,7 +79,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.6 2010/04/09 11:56:38 rpau
 
 #define nitems(_a)      (sizeof((_a)) / sizeof((_a)[0]))
 
-#if	USB_DEBUG
+#ifdef	USB_DEBUG
 #define RUN_DEBUG
 #endif
 

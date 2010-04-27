@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bge/if_bge.c,v 1.284 2010/03/25 17:17:35 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bge/if_bge.c,v 1.285 2010/04/26 18:56:06 marius Exp $");
 
 /*
  * Broadcom BCM570x family gigabit ethernet driver for FreeBSD.
@@ -519,7 +519,7 @@ bge_has_eaddr(struct bge_softc *sc)
 	 */
 	if (OF_getprop(ofw_bus_get_node(dev), SPARC64_OFW_SUBVENDOR,
 	    &subvendor, sizeof(subvendor)) == sizeof(subvendor) &&
-	    subvendor == SUN_VENDORID)
+	    (subvendor == FJTSU_VENDORID || subvendor == SUN_VENDORID))
 		return (0);
 	memset(buf, 0, sizeof(buf));
 	if (OF_package_to_path(ofw_bus_get_node(dev), buf, sizeof(buf)) > 0) {

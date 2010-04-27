@@ -36,7 +36,7 @@
  *	from: Utah Hdr: pcb.h 1.13 89/04/23
  *	from: @(#)pcb.h 8.1 (Berkeley) 6/10/93
  *	JNPR: pcb.h,v 1.2 2006/08/07 11:51:17 katta
- * $FreeBSD: src/sys/mips/include/pcb.h,v 1.3 2010/01/10 19:50:24 imp Exp $
+ * $FreeBSD: src/sys/mips/include/pcb.h,v 1.4 2010/04/17 09:42:07 jmallett Exp $
  */
 
 #ifndef _MACHINE_PCB_H_
@@ -51,7 +51,7 @@ struct pcb
 {
 	struct trapframe pcb_regs;	/* saved CPU and registers */
 	__register_t pcb_context[14];	/* kernel context for resume */
-	int	pcb_onfault;		/* for copyin/copyout faults */
+	void *pcb_onfault;		/* for copyin/copyout faults */
 	register_t pcb_tpc;
 };
 

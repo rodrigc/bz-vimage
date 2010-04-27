@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.8 2010/03/12 03:49:17 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.10 2010/04/17 03:08:13 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -157,6 +157,8 @@ start_ap(int cpuid)
 	cpus = mp_naps;
 	dpcpu = (void *)kmem_alloc(kernel_map, DPCPU_SIZE);
 
+	mips_sync();
+
 	if (platform_start_ap(cpuid) != 0)
 		return (-1);			/* could not start AP */
 
@@ -246,6 +248,8 @@ smp_init_secondary(u_int32_t cpuid)
 	mips_dcache_wbinv_all();
 	mips_icache_sync_all();
 
+	mips_sync();
+
 	MachSetPID(0);
 
 	pcpu_init(PCPU_ADDR(cpuid), cpuid, sizeof(struct pcpu));
@@ -296,7 +300,7 @@ smp_init_secondary(u_int32_t cpuid)
 	 */
 	mips_wr_compare(mips_rd_count() + counter_freq / hz);
 
-	enableintr();
+	intr_enable();
 
 	/* enter the scheduler */
 	sched_throw(NULL);

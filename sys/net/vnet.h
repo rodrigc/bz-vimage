@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net/vnet.h,v 1.30 2010/03/19 19:51:03 bz Exp $
+ * $FreeBSD: src/sys/net/vnet.h,v 1.31 2010/04/14 23:06:07 julian Exp $
  */
 
 /*-
@@ -90,6 +90,15 @@ struct vnet {
 #include <sys/proc.h>			/* for struct thread */
 #include <sys/rwlock.h>
 #include <sys/sx.h>
+
+/*
+ * Location of the kernel's 'set_vnet' linker set.
+ */
+extern uintptr_t	*__start_set_vnet;
+extern uintptr_t	*__stop_set_vnet;
+
+#define	VNET_START	(uintptr_t)&__start_set_vnet
+#define	VNET_STOP	(uintptr_t)&__stop_set_vnet
 
 /*
  * Functions to allocate and destroy virtual network stacks.

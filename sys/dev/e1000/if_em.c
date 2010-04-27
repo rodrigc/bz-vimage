@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_em.c,v 1.42 2010/04/10 19:25:55 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_em.c,v 1.43 2010/04/14 20:55:33 jfv Exp $*/
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -93,7 +93,7 @@ int	em_display_debug_stats = 0;
 /*********************************************************************
  *  Driver version:
  *********************************************************************/
-char em_driver_version[] = "7.0.4";
+char em_driver_version[] = "7.0.5";
 
 
 /*********************************************************************
@@ -1484,12 +1484,17 @@ em_msix_tx(void *arg)
 {
 	struct tx_ring *txr = arg;
 	struct adapter *adapter = txr->adapter;
+	bool		more;
 
 	++txr->tx_irq;
 	EM_TX_LOCK(txr);
-	em_txeof(txr);
+	more = em_txeof(txr);
 	EM_TX_UNLOCK(txr);
-	E1000_WRITE_REG(&adapter->hw, E1000_IMS, txr->ims);
+	if (more)
+		taskqueue_enqueue(txr->tq, &txr->tx_task);
+	else
+		/* Reenable this interrupt */
+		E1000_WRITE_REG(&adapter->hw, E1000_IMS, txr->ims);
 	return;
 }
 

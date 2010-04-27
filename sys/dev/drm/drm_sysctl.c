@@ -22,7 +22,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_sysctl.c,v 1.8 2009/08/23 14:31:20 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_sysctl.c,v 1.9 2010/04/22 18:21:25 rnoland Exp $");
 
 /** @file drm_sysctl.c
  * Implementation of various sysctls for controlling DRM behavior and reporting
@@ -188,7 +188,7 @@ static int drm_vm_info DRM_SYSCTL_HANDLER_ARGS
 	DRM_UNLOCK();
 
 	DRM_SYSCTL_PRINT("\nslot offset	        size       "
-	    "type flags address            mtrr\n");
+	    "type flags address            handle mtrr\n");
 
 	for (i = 0; i < mapcount; i++) {
 		map = &tempmaps[i];
@@ -204,9 +204,11 @@ static int drm_vm_info DRM_SYSCTL_HANDLER_ARGS
 			yesno = "yes";
 
 		DRM_SYSCTL_PRINT(
-		    "%4d 0x%016lx 0x%08lx %4.4s  0x%02x 0x%016lx %s\n", i,
-		    map->offset, map->size, type, map->flags,
-		    (unsigned long)map->handle, yesno);
+		    "%4d 0x%016lx 0x%08lx %4.4s  0x%02x 0x%016lx %6d %s\n",
+		    i, map->offset, map->size, type, map->flags,
+		    (unsigned long)map->virtual,
+		    (unsigned int)((unsigned long)map->handle >>
+		    DRM_MAP_HANDLE_SHIFT), yesno);
 	}
 	SYSCTL_OUT(req, "", 1);
 

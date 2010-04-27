@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)mount.h	8.21 (Berkeley) 5/20/95
- * $FreeBSD: src/sys/sys/mount.h,v 1.250 2009/12/21 19:39:10 trasz Exp $
+ * $FreeBSD: src/sys/sys/mount.h,v 1.251 2010/04/24 07:05:35 jeff Exp $
  */
 
 #ifndef _SYS_MOUNT_H_
@@ -275,7 +275,8 @@ void          __mnt_vnode_markerfree(struct vnode **mvp, struct mount *mp);
 			MNT_ROOTFS	| MNT_NOATIME	| MNT_NOCLUSTERR| \
 			MNT_NOCLUSTERW	| MNT_SUIDDIR	| MNT_SOFTDEP	| \
 			MNT_IGNORE	| MNT_EXPUBLIC	| MNT_NOSYMFOLLOW | \
-			MNT_GJOURNAL	| MNT_MULTILABEL | MNT_ACLS | MNT_NFS4ACLS)
+			MNT_GJOURNAL	| MNT_MULTILABEL | MNT_ACLS	| \
+			MNT_NFS4ACLS)
 
 /* Mask of flags that can be updated. */
 #define	MNT_UPDATEMASK (MNT_NOSUID	| MNT_NOEXEC	| \
@@ -324,6 +325,7 @@ void          __mnt_vnode_markerfree(struct vnode **mvp, struct mount *mp);
 #define	MNTK_REFEXPIRE	0x00000020	/* refcount expiring is happening */
 #define MNTK_EXTENDED_SHARED	0x00000040 /* Allow shared locking for more ops */
 #define	MNTK_SHARED_WRITES	0x00000080 /* Allow shared locking for writes */
+#define	MNTK_SUJ	0x00000100	/* Softdep journaling enabled */
 #define MNTK_UNMOUNT	0x01000000	/* unmount in progress */
 #define	MNTK_MWAIT	0x02000000	/* waiting for unmount to finish */
 #define	MNTK_SUSPEND	0x08000000	/* request write suspension */

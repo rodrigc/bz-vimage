@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netinet/ipfw/ip_fw_private.h,v 1.13 2010/03/21 15:54:07 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ipfw/ip_fw_private.h,v 1.14 2010/04/19 16:17:30 luigi Exp $
  */
 
 #ifndef _IPFW2_PRIVATE_H
@@ -214,7 +214,7 @@ struct ip_fw_chain {
 	struct ip_fw	*default_rule;
 	int		n_rules;	/* number of static rules */
 	int		static_len;	/* total len of static rules */
-	struct ip_fw    **map;	/* array of rule ptrs to ease lookup */
+	struct ip_fw	**map;		/* array of rule ptrs to ease lookup */
 	LIST_HEAD(nat_list, cfg_nat) nat;       /* list of nat entries */
 	struct radix_node_head *tables[IPFW_TABLES_MAX];
 #if defined( __linux__ ) || defined( _WIN32 )

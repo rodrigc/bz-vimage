@@ -29,7 +29,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)user.h	8.2 (Berkeley) 9/23/93
- * $FreeBSD: src/sys/sys/user.h,v 1.85 2010/02/18 18:57:15 imp Exp $
+ * $FreeBSD: src/sys/sys/user.h,v 1.86 2010/04/24 12:49:52 kib Exp $
  */
 
 #ifndef _SYS_USER_H_
@@ -87,34 +87,11 @@
 #define	KI_NSPARE_LONG	12
 #define	KI_NSPARE_PTR	7
 
-#ifdef __amd64__
-#define	KINFO_PROC_SIZE	1088
-#endif
-#ifdef __arm__
-#define	KINFO_PROC_SIZE	792
-#endif
-#ifdef __ia64__
-#define	KINFO_PROC_SIZE 1088
-#endif
-#ifdef __i386__
-#define	KINFO_PROC_SIZE	768
-#endif
-#ifdef __mips__
-#ifdef __mips_n64
-#define	KINFO_PROC_SIZE	1088
-#else
-#define	KINFO_PROC_SIZE	816
-#endif
-#endif
-#ifdef __powerpc__
-#define	KINFO_PROC_SIZE	768
-#endif
-#ifdef __sparc64__
-#define	KINFO_PROC_SIZE 1088
-#endif
+#ifndef _KERNEL
 #ifndef KINFO_PROC_SIZE
 #error "Unknown architecture"
 #endif
+#endif /* !_KERNEL */
 
 #define	WMESGLEN	8		/* size of returned wchan message */
 #define	LOCKNAMELEN	8		/* size of returned lock name */

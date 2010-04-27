@@ -1,7 +1,7 @@
 #
 # Custom kernel for Marvell SheevaPlug devices.
 #
-# $FreeBSD: src/sys/arm/conf/SHEEVAPLUG,v 1.1 2009/08/25 10:09:25 raj Exp $
+# $FreeBSD: src/sys/arm/conf/SHEEVAPLUG,v 1.2 2010/04/22 21:31:34 thompsa Exp $
 #
 
 ident		SHEEVAPLUG
@@ -61,6 +61,7 @@ options		DEVICE_POLLING
 device		vlan
 
 # USB
+options 	USB_DEBUG	# enable debug msgs
 device		usb
 device		ehci
 device		umass

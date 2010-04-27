@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.12 2010/03/01 07:32:49 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.13 2010/04/14 15:29:32 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -184,8 +184,11 @@ ata_ali_ch_attach(device_t dev)
     if (ctlr->chip->cfg2 & ALI_NEW && ctlr->chip->chiprev < 0xc7)
 	ch->flags |= ATA_CHECKS_CABLE;
     /* older chips can't do 48bit DMA transfers */
-    if (ctlr->chip->chiprev <= 0xc4)
+    if (ctlr->chip->chiprev <= 0xc4) {
 	ch->flags |= ATA_NO_48BIT_DMA;
+	if (ch->dma.max_iosize > 256 * 512)
+		ch->dma.max_iosize = 256 * 512;
+    }
 
     return 0;
 }

@@ -31,14 +31,13 @@
  * SUCH DAMAGE.
  *
  *	JNPR: db_machdep.h,v 1.7 2006/10/16 12:30:34 katta
- * $FreeBSD: src/sys/mips/include/db_machdep.h,v 1.3 2010/03/20 05:07:15 neel Exp $
+ * $FreeBSD: src/sys/mips/include/db_machdep.h,v 1.4 2010/04/17 01:17:31 jmallett Exp $
  */
 
 #ifndef	_MIPS_DB_MACHDEP_H_
 #define	_MIPS_DB_MACHDEP_H_
 
 #include <machine/frame.h>
-#include <machine/psl.h>
 #include <machine/trap.h>
 #include <machine/endian.h>
 

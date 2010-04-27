@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.779 2010/04/04 14:48:43 jh Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.780 2010/04/24 07:05:35 jeff Exp $");
 
 #include "opt_ddb.h"
 
@@ -2815,6 +2815,7 @@ DB_SHOW_COMMAND(mount, db_show_mount)
 	MNT_FLAG(MNT_FORCE);
 	MNT_FLAG(MNT_SNAPSHOT);
 	MNT_FLAG(MNT_BYFSID);
+	MNT_FLAG(MNT_SOFTDEP);
 #undef MNT_FLAG
 	if (flags != 0) {
 		if (buf[0] != '\0')
