@@ -1,0 +1,567 @@
+.\"-
+.\" Copyright (c) 2010 The FreeBSD Foundation
+.\" All rights reserved.
+.\" 
+.\" This documentation was written by CK Software GmbH under sponsorship from
+.\" the FreeBSD Foundation.
+.\" 
+.\" Redistribution and use in source and binary forms, with or without
+.\" modification, are permitted provided that the following conditions
+.\" are met:
+.\" 1. Redistributions of source code must retain the above copyright
+.\"    notice, this list of conditions and the following disclaimer.
+.\" 2. Redistributions in binary form must reproduce the above copyright
+.\"    notice, this list of conditions and the following disclaimer in the
+.\"    documentation and/or other materials provided with the distribution.
+.\" 
+.\" THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+.\" SUCH DAMAGE.
+.\"
+.\" $FreeBSD$
+.\"
+.Dd April 21, 2010
+.Dt VNET 9
+.Os
+.Sh NAME
+.Nm VNET
+.Nd "network subsystem virtualization infrastructure"
+.Sh SYNOPSIS
+.Cd "options VIMAGE"
+.Cd "options VNET_DEBUG"
+.Pp
+.In sys/vnet.h
+.Pp
+.\"------------------------------------------------------------
+.Ss "Constants and global variables"
+.\"
+.Dv VNET_SETNAME
+.\"	"set_vnet"
+.Dv VNET_SYMPREFIX
+.\"	"vnet_entry_"
+.Vt extern struct vnet *vnet0;
+.\"------------------------------------------------------------
+.Ss "Variable declaration"
+.Fo VNET
+.Fa "name"
+.Fc
+.\"
+.Fo VNET_NAME
+.Fa "name"
+.Fc
+.\"
+.Fo VNET_DECLARE
+.Fa "type" "name"
+.Fc
+.\"
+.Fo VNET_DEFINE
+.Fa "type" "name"
+.Fc
+.\"
+.Bd -literal
+#define	V_name	VNET(name)
+.Ed
+.\" ------------------------------------------------------------
+.Ss "Virtual instance selection"
+.\"
+.Fo CRED_TO_VNET
+.Fa "struct ucred *"
+.Fc
+.\"
+.Fo TD_TO_VNET
+.Fa "struct thread *"
+.Fc
+.\"
+.Fo P_TO_VNET
+.Fa "struct proc *"
+.Fc
+.\"
+.Fo IS_DEFAULT_VNET
+.Fa "struct vnet *"
+.Fc
+.\"
+.Fo VNET_ASSERT
+.Fa exp msg
+.Fc
+.\"
+.Fo CURVNET_SET
+.Fa "struct vnet *"
+.Fc
+.\"
+.Fo CURVNET_SET_QUIET
+.Fa "struct vnet *"
+.Fc
+.\"
+.Fo CURVNET_RESTORE
+.Fc
+.\"
+.Fo VNET_ITERATOR_DECL
+.Fa "struct vnet *"
+.Fc
+.\"
+.Fo VNET_FOREACH
+.Fa "struct vnet *"
+.Fc
+.\" ------------------------------------------------------------
+.Ss "Locking"
+.\"
+.Fo VNET_LIST_RLOCK
+.Fc
+.Fo VNET_LIST_RUNLOCK
+.Fc
+.Fo VNET_LIST_RLOCK_NOSLEEP
+.Fc
+.Fo VNET_LIST_RUNLOCK_NOSLEEP
+.Fc
+.\" ------------------------------------------------------------
+.Ss "Startup and teardown functions"
+.\"
+.Ft "struct vnet *"
+.Fo vnet_alloc
+.Fa void
+.Fc
+.\"
+.Ft void
+.Fo vnet_destroy
+.Fa "struct vnet *"
+.Fc
+.\"
+.Fo VNET_SYSINIT
+.Fa ident
+.Fa "enum sysinit_sub_id subsystem"
+.Fa "enum sysinit_elem_order order"
+.Fa "sysinit_cfunc_t func"
+.Fa "const void *arg"
+.Fc
+.\"
+.Fo VNET_SYSUNINIT
+.Fa ident
+.Fa "enum sysinit_sub_id subsystem"
+.Fa "enum sysinit_elem_order order"
+.Fa "sysinit_cfunc_t func"
+.Fa "const void *arg"
+.Fc
+.\" ------------------------------------------------------------
+.Ss "Eventhandlers"
+.\"
+.Fo VNET_GLOBAL_EVENTHANDLER_REGISTER
+.Fa "const char *name"
+.Fa "void *func"
+.Fa "void *arg"
+.Fa "int priority"
+.Fc
+.\"
+.Fo VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG
+.Fa "eventhandler_tag tag"
+.Fa "const char *name"
+.Fa "void *func"
+.Fa "void *arg"
+.Fa "int priority"
+.Fc
+.\" ------------------------------------------------------------
+.Ss "Sysctl handling"
+.Fo SYSCTL_VNET_INT
+.Fa parent nbr name access ptr val descr
+.Fc
+.Fo SYSCTL_VNET_PROC
+.Fa parent nbr name access ptr arg handler fmt descr
+.Fc
+.Fo SYSCTL_VNET_STRING
+.Fa parent nbr name access arg len descr
+.Fc
+.Fo SYSCTL_VNET_STRUCT
+.Fa parent nbr name access ptr type descr
+.Fc
+.Fo SYSCTL_VNET_UINT
+.Fa parent nbr name access ptr val descr
+.Fc
+.Fo VNET_SYSCTL_ARG
+.Fa req arg1
+.Fc
+.\" ------------------------------------------------------------
+.Sh DESCRIPTION
+.Nm
+is the name of a technique to virtualize the network stack.
+The basic idea is to change global resources most notably variables into
+per network stack resources and have functions, sysctls, eventhandlers,
+etc. access and handle them in the context of the correct instance.
+Each (virtual) network stack is attached to a
+.Em prison ,
+with
+.Vt vnet0
+being the unrestricted default network stack of the base system.
+.Pp
+The global defines for
+.Dv VNET_SETNAME
+and
+.Dv VNET_SYMPREFIX
+are shared with
+.Xr kvm 3
+to access internals for debugging reasons.
+.\" ------------------------------------------------------------
+.Ss "Variable declaration"
+.\"
+Variables are virtualized by using the
+.Fo VNET_DEFINE
+.Fa "type" "name"
+.Fc
+macro rather than writing them out as
+.Em type name .
+One can still use static initialization or storage class specifiers, e.g.
+.Dl static VNET_DEFINE(int, foo) = 1;
+or
+.Dl static VNET_DEFINE(SLIST_HEAD(, bar), bars);
+.Pp
+External variables have to be declared using the
+.Fo VNET_DECLARE
+.Fa "type" "name"
+.Fc
+macro.
+In either case the convention is to define another macro,
+that is then used throughout the implementation to access that variable.
+The variable name is usually prefixed by
+.Em V_
+to express that it is virtualized.
+The
+.Fo VNET
+.Fa "name"
+.Fc
+macro will then translate accesses to that variable to the copy of the
+currently selected instance (see the
+.Sx "Virtual instance selection"
+section):
+.Bd -literal -offset indent 
+#define	V_name	VNET(name)
+.Ed
+.Pp
+.Em NOTE:
+Do not confuse this with the convention used by
+.Xr VFS 9 .
+.Pp
+The
+.Fo VNET_NAME
+.Fa "name"
+.Fc
+macro is usally only used in
+.Xr sysctl 9
+definitions to pass the address, that is the offset within the memory
+region of the virtual instance.
+.\" ------------------------------------------------------------
+.Ss "Virtual instance selection"
+.\"
+There are three different places where the current virtual
+network stack pointer is stored and can be taken from:
+.Bl -enum -offset indent
+.It
+a
+.Em prison :
+.Dl "(struct prison *)->pr_vnet"
+For convenience the following macros are provided:
+.Bd -literal -compact -offset indent
+.Fo CRED_TO_VNET
+.Fa "struct ucred *"
+.Fc
+.Fo TD_TO_VNET
+.Fa "struct thread *"
+.Fc
+.Fo P_TO_VNET
+.Fa "struct proc *"
+.Fc
+.Ed
+.It
+a
+.Em socket :
+.Dl "(struct socket *)->so_vnet"
+.It
+an
+.Em interface :
+.Dl "(struct ifnet *)->if_vnet"
+.El
+.Pp
+.\"
+In addition the currently active instance is cached in
+.Dl "curthread->td_vnet"
+which is usually only accessed through the
+.Dv curvnet
+macro.
+.Pp
+.\"
+To set the correct context of the current virtual network instance, use the
+.Fo CURVNET_SET
+.Fa "struct vnet *"
+.Fc
+or
+.Fo CURVNET_SET_QUIET
+.Fa "struct vnet *"
+.Fc
+macros.
+The
+.Fo CURVNET_SET_QUIET
+.Fc
+version will not record vnet recursions in case the kernel was compile
+with
+.Cd "options VNET_DEBUG"
+and should thus only be used in well known cases, where recursion is
+unavoidable.
+Both macros will save the previous state on the stack and it can be restored
+with the
+.Fo CURVNET_RESTORE
+.Fc
+macro.
+.Pp
+.Em NOTE:
+As the previous state is saved on the stack, you cannot have multiple
+.Fo CURVNET_SET
+.Fc
+calls in the same block.
+.Pp
+.Em NOTE:
+As the previous state is saved on the stack, a
+.Fo CURVNET_RESTORE
+.Fc
+call has to be in the same block as the
+.Fo CURVNET_SET
+.Fc
+call or in a subblock with the same idea of the saved instances as the
+outer block.
+.Pp
+.Em NOTE:
+As each macro is a set of operations and, as previsouly explained, cannot
+be put into its own block when defined, one cannot conditionally set
+the current vnet context.
+The following will
+.Em not
+work:
+.Bd -literal -offset indent
+if (condition)
+	CURVNET_SET(vnet);
+.Ed
+.Pp
+nor would this work:
+.Bd -literal -offset indent
+if (condition) {
+	CURVNET_SET(vnet);
+}
+CURVNET_RESTORE();
+.Ed
+.Pp
+.\"
+Sometimes one needs to loop over all virtual instances, for example to update
+virtual from global state, to run a function from a
+.Xr callout 9
+for each instance, etc.
+For those cases the
+.Fo VNET_ITERATOR_DECL
+.Fc
+and
+.Fo VNET_FOREACH
+.Fc
+macros provided, which define the variable for the loop to traverse the
+internal lists of all virtual network stack instances.
+See
+.Sx "Locking"
+for how to savely traverse the list of all virtual instances.
+.Pp
+.\"
+The
+.Fo IS_DEFAULT_VNET
+.Fa "struct vnet *"
+.Fc
+provides a safe way to check whether the currently active instance is the
+unrestricted default network stack of the base system (
+.Vt vnet0
+).
+.Pp
+.\"
+.Fo VNET_ASSERT
+.Fa exp msg
+.Fc
+provides a way to conditionally add assertions that are only active with
+.Cd "options VIMAGE"
+compiled in and either
+.Cd "options VNET_DEBUG"
+or
+.Cd "options INVARIANTS"
+enabled as well.
+It uses the same semantics as
+.Xr KASSERT 9 .
+.\" ------------------------------------------------------------
+.Ss "Locking"
+.\"
+For public access of the list of virtual network stack instances
+e.g. by the
+.Fo VNET_FOREACH
+.Fc
+macro, read locks are provided.
+Macros are used to abstract from the actual type of the locks.
+If a caller may sleep, while traversing the list, it must use the
+sleepable lock macros.
+.Bd -literal -compact -offset indent
+.Fo VNET_LIST_RLOCK
+.Fc
+.Fo VNET_LIST_RUNLOCK
+.Fc
+.Fo VNET_LIST_RLOCK_NOSLEEP
+.Fc
+.Fo VNET_LIST_RUNLOCK_NOSLEEP
+.Fc
+.Ed
+.\" ------------------------------------------------------------
+.Ss "Startup and teardown functions"
+.\"
+To start or teardown a virtual network stack instance the internal
+functions
+.Bd -literal -compact -offset indent
+.Ft "struct vnet *"
+.Fo vnet_alloc
+.Fa void
+.Fc
+.Ed
+and
+.Bd -literal -compact -offset indent
+.Ft void
+.Fo vnet_destroy
+.Fa "struct vnet *"
+.Fc
+.Ed
+are provided and called from the jail framework.
+They will then run the publicly provided methods to handle network
+stack startup and teardown.
+.Pp
+For public control, the system startup interface has been enhanced
+to not only handle a system boot but to also handle a virtual
+network stack startup and teardown.
+To the base system the
+.Bd -literal -compact -offset indent
+.Fo VNET_SYSINIT
+.Fc
+.Ed
+and
+.Bd -literal -compact -offset indent
+.Fo VNET_SYSUNINIT
+.Fc
+.Ed
+macros look exactly as if there was no virtual network stack.
+In fact, if
+.Cd "options VIMAGE"
+is not compiled in they are compiled to the standard
+.Fo SYSINIT
+.Fc
+macros.
+In addition to that they are run for each virtual network stack
+starting or, in reverse order, when shutting down.
+.\" ------------------------------------------------------------
+.Ss "Eventhandlers"
+.\"
+Eventhandlers can be handled in two ways:
+.Bl -enum -offset indent -compact
+.It
+save the
+.Em tags
+returned in each virtual instance and properly free the eventhandlers
+on teardown using those, or
+.It
+use one eventhandler that will iterate over all virtual network
+stack instances.
+.El
+For the former case one can just use the normal
+.Xr EVENTHANDLER 9
+functions, while for the latter two macros are provided.
+.Bd -literal -compact -offset indent
+.Fo VNET_GLOBAL_EVENTHANDLER_REGISTER
+.Fa "name" "func" "arg" "priority"
+.Fc
+.Ed
+and
+.Bd -literal -compact -offset indent
+.Fo VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG
+.Fa "tag" "name" "func" "arg" "priority"
+.Fc
+.Ed
+differ in that
+.Fo VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG
+.Fc
+takes an extra first argument that will be carry the
+.Fa "tag"
+upon return.
+Eventhandlers registered with either of those will not run
+.Fa func
+directly but
+.Fa func
+will be called from an internal iterator function for each vnet.
+Both macros can only be used for eventhandlers that do not take
+additional arguments, as the variadic arguments from an
+.Xr EVENTHANDLER_INVOKE 9
+call will be ignored.
+.\" ------------------------------------------------------------
+.Ss "Sysctl handling"
+.\"
+A
+.Xr sysctl 9
+can be virtualized by using one of the
+.Fo SSYCTL_VNET_*
+.Fc
+macros:
+.Bd -literal -compact -offset indent
+.Fo SYSCTL_VNET_INT
+.Fa parent nbr name access ptr val descr
+.Fc
+.Fo SYSCTL_VNET_PROC
+.Fa parent nbr name access ptr arg handler fmt descr
+.Fc
+.Fo SYSCTL_VNET_STRING
+.Fa parent nbr name access arg len descr
+.Fc
+.Fo SYSCTL_VNET_STRUCT
+.Fa parent nbr name access ptr type descr
+.Fc
+.Fo SYSCTL_VNET_UINT
+.Fa parent nbr name access ptr val descr
+.Fc
+.Ed
+They take the same arguments as the standard
+.Xr sysctl 9
+functions, with the only difference, that the
+.Fa ptr
+argument has to be passed as
+.Dl &VNET_NAME(foo)
+instead of
+.Dl &foo
+so that the variable can be selected from the correct memory
+region of the virtual network stack instance of the caller.
+.Pp
+For the very rare case a sysctl handler function would want to
+handle
+.Fa arg1
+itself the
+.Fo VNET_SYSCTL_ARG
+.Fa req arg1
+.Fc
+is provided that will translate the
+.Fa arg1
+argument to the correct memory address in the virtual network stack
+context of the caller.
+.\" ------------------------------------------------------------
+.Sh SEE ALSO
+.Xr jail 2 ,
+.Xr kvm 3 ,
+.Xr EVENTHANDLER 9 ,
+.\" .Xr pcpu 9 ,
+.Xr KASSERT 9 ,
+.Xr sysctl 9 .
+.\" .Xr SYSINIT 9
+.Sh HISTORY
+The virtual network stack implementation first appeared in
+.Fx 8.0 .
+.Sh AUTHORS
+This manual page was written by
+.An Bjoern A. Zeeb, CK Software GmbH,
+under sponsorship from the FreeBSD Foundation.

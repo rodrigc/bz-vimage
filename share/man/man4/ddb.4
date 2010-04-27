@@ -60,7 +60,7 @@
 .\"
 .\" $FreeBSD: src/share/man/man4/ddb.4,v 1.64 2010/03/12 10:01:06 uqs Exp $
 .\"
-.Dd November 29, 2008
+.Dd April 20, 2010
 .Dt DDB 4
 .Os
 .Sh NAME
@@ -523,6 +523,27 @@ The optional
 argument limits the search.
 .\"
 .Pp
+.It Ic show Cm all ifnets
+Show all interfaces of the system.
+In case the kernel is
+.Tn VIMAGE
+enabled, the output is grouped by
+.Xr vnet 9 .
+Information on an individual ifnet can be gathered using the
+.Ic show Cm ifnet Ar addr
+command.
+.Pp
+.It Ic show Cm all lltables
+Show all link-layer tables of the system.
+In case the kernel is
+.Tn VIMAGE
+enabled, the output is grouped by
+.Xr vnet 9 .
+Information on all entries of a table can be shown using the
+.Ic show Cm lltable Ar addr
+command.
+.\"
+.Pp
 .It Ic show Cm all procs Ns Op Li / Ns Cm m
 .It Ic ps Ns Op Li / Ns Cm m
 Display all process information.
@@ -654,6 +675,15 @@ The second one is the name of the interrupt/trap handler.
 Those functions are machine dependent.
 .\"
 .Pp
+.It Ic show Cm ifnet Ar addr
+Show partial information on the
+.Xr 9 ifnet
+interface
+.Vt struct ifnet
+present at
+.Ar addr .
+.\"
+.Pp
 .It Ic show Cm inodedeps Op Ar addr
 Show brief information about each inodedep structure.
 If
@@ -679,6 +709,13 @@ Dump the interrupt statistics.
 .Pp
 .It Ic show Cm irqs
 Show interrupt lines and their respective kernel threads.
+.\"
+.Pp
+.It Ic show Cm llentry Ar addr
+Show information on the IP link-layer
+.Vt struct llentry
+present at
+.Ar addr .
 .\"
 .Pp
 .It Ic show Cm jails
@@ -1037,6 +1074,31 @@ VM object.
 Currently, it is not possible to use this command when
 .Xr witness 4
 is compiled in the kernel.
+.\"
+.Pp
+.It Ic show Cm vnet_sysinit
+Show
+.Xr vnet 9
+system startup interface order information.
+.\"
+.Pp
+.It Ic show Cm vnet_sysuninit
+Show
+.Xr vnet 9
+system startup interface teardown order information.
+.\"
+.Pp
+.It Ic show Cm vnetrcrs
+Show information about
+.Xr vnet 9
+recursions.
+.\"
+.Pp
+.It Ic show Cm vnets
+List
+.Xr vnet 9
+.Vt struct vnet
+information.
 .\"
 .Pp
 .It Ic show Cm vnode Op Ar addr
@@ -1417,6 +1479,12 @@ directory.
 .It
 .Pa sys/domain.h
 .It
+.Pa net/if.h
+.It
+.Pa net/if_llatbl.h
+.It
+.Pa net/vnet.h
+.It
 .Pa netinet/in_pcb.h
 .It
 .Pa sys/socket.h
@@ -1435,7 +1503,9 @@ directory.
 .Xr witness 4 ,
 .Xr ddb 8 ,
 .Xr sysctl 8 ,
-.Xr panic 9
+.Xr ifnet 9 ,
+.Xr panic 9 ,
+.Xr vnet 9
 .Sh HISTORY
 The
 .Nm
