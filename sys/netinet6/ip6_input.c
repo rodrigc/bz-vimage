@@ -128,7 +128,7 @@ static struct netisr_handler ip6_nh = {
 VNET_DECLARE(struct callout, in6_tmpaddrtimer_ch);
 #define	V_in6_tmpaddrtimer_ch		VNET(in6_tmpaddrtimer_ch)
 
-VNET_DEFINE (struct pfil_head, inet6_pfil_hook);
+VNET_DEFINE(struct pfil_head, inet6_pfil_hook);
 
 VNET_DEFINE(struct ip6stat, ip6stat);
 

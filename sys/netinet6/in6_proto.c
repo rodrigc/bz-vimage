@@ -416,7 +416,6 @@ VNET_DEFINE(int, ip6stealth) = 0;
 VNET_DEFINE(int, nd6_onlink_ns_rfc4861) = 0;/* allow 'on-link' nd6 NS
 					     * (RFC 4861) */
 
-
 /* icmp6 */
 /*
  * BSDI4 defines these variables in in_proto.c...

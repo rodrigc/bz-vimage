@@ -100,8 +100,11 @@ extern	u_char	inetctlerrmap[];
 /*
  * Hash table for IP addresses.
  */
-VNET_DECLARE(LIST_HEAD(in_ifaddrhashhead, in_ifaddr) *, in_ifaddrhashtbl);
-VNET_DECLARE(TAILQ_HEAD(in_ifaddrhead, in_ifaddr), in_ifaddrhead);
+TAILQ_HEAD(in_ifaddrhead, in_ifaddr);
+LIST_HEAD(in_ifaddrhashhead, in_ifaddr);
+
+VNET_DECLARE(struct in_ifaddrhashhead *, in_ifaddrhashtbl);
+VNET_DECLARE(struct in_ifaddrhead, in_ifaddrhead);
 VNET_DECLARE(u_long, in_ifaddrhmask);		/* mask for hash table */
 
 #define	V_in_ifaddrhashtbl	VNET(in_ifaddrhashtbl)

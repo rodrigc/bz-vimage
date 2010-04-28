@@ -58,7 +58,8 @@ static int pfil_list_remove(pfil_list_t *,
     int (*)(void *, struct mbuf **, struct ifnet *, int, struct inpcb *),
     void *);
 
-VNET_DEFINE(LIST_HEAD(pfilheadhead, pfil_head), pfil_head_list);
+LIST_HEAD(pfilheadhead, pfil_head);
+VNET_DEFINE(struct pfilheadhead, pfil_head_list);
 #define	V_pfil_head_list	VNET(pfil_head_list)
 
 /*

@@ -85,12 +85,6 @@ SYSCTL_NODE(_net_link_ether, PF_ARP, arp, CTLFLAG_RW, 0, "");
 /* timer values */
 static VNET_DEFINE(int, arpt_keep) = (20*60);	/* once resolved, good for 20
 						 * minutes */
-#define	V_arpt_keep		VNET(arpt_keep)
-
-SYSCTL_VNET_INT(_net_link_ether_inet, OID_AUTO, max_age, CTLFLAG_RW,
-	&VNET_NAME(arpt_keep), 0,
-	"ARP entry lifetime in seconds");
-
 static VNET_DEFINE(int, arp_maxtries) = 5;
 VNET_DEFINE(int, useloopback) = 1;	/* use loopback interface for
 					 * local traffic */
@@ -99,11 +93,15 @@ static VNET_DEFINE(int, arpt_down) = 20;      /* keep incomplete entries for
 					       * 20 seconds */
 static VNET_DEFINE(struct arpstat, arpstat);  /* ARP statistics, see if_arp.h */
 
+#define	V_arpt_keep		VNET(arpt_keep)
 #define	V_arpt_down		VNET(arpt_down)
 #define	V_arp_maxtries		VNET(arp_maxtries)
 #define	V_arp_proxyall		VNET(arp_proxyall)
 #define	V_arpstat		VNET(arpstat)
 
+SYSCTL_VNET_INT(_net_link_ether_inet, OID_AUTO, max_age, CTLFLAG_RW,
+	&VNET_NAME(arpt_keep), 0,
+	"ARP entry lifetime in seconds");
 SYSCTL_VNET_INT(_net_link_ether_inet, OID_AUTO, maxtries, CTLFLAG_RW,
 	&VNET_NAME(arp_maxtries), 0,
 	"ARP resolution attempts before returning error");
