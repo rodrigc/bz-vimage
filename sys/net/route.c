@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)route.c	8.3.1.1 (Berkeley) 2/23/95
- * $FreeBSD: src/sys/net/route.c,v 1.173 2010/03/09 01:11:45 qingli Exp $
+ * $FreeBSD: src/sys/net/route.c,v 1.174 2010/04/29 11:52:42 bz Exp $
  */
 /************************************************************************
  * Note: In this file a 'fib' is a "forwarding information base"	*

@@ -99,7 +99,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_pci.c,v 1.55 2009/12/30 19:42:27 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_pci.c,v 1.56 2010/04/27 18:41:16 marius Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_cam.h>
@@ -460,6 +460,11 @@ mpt_pci_attach(device_t dev)
 	mpt->raid_queue_depth = MPT_RAID_QUEUE_DEPTH_DEFAULT;
 	mpt->verbose = MPT_PRT_NONE;
 	mpt->role = MPT_ROLE_NONE;
+	mpt->mpt_ini_id = MPT_INI_ID_NONE;
+#ifdef __sparc64__
+	if (mpt->is_spi)
+		mpt->mpt_ini_id = OF_getscsinitid(dev);
+#endif
 	mpt_set_options(mpt);
 	if (mpt->verbose == MPT_PRT_NONE) {
 		mpt->verbose = MPT_PRT_WARN;

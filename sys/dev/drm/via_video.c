@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/via_video.c,v 1.1 2010/01/31 14:30:39 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/via_video.c,v 1.2 2010/04/28 10:33:41 rnoland Exp $");
 
 #include "dev/drm/drmP.h"
 #include "dev/drm/via_drm.h"
@@ -78,7 +78,7 @@ int via_decoder_futex(struct drm_device *dev, void *data, struct drm_file *file_
 
 	DRM_DEBUG("\n");
 
-	if (fx->lock > VIA_NR_XVMC_LOCKS)
+	if (fx->lock >= VIA_NR_XVMC_LOCKS)
 		return -EFAULT;
 
 	lock = (volatile int *)XVMCLOCKPTR(sAPriv, fx->lock);

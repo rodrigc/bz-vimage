@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.9 2010/04/24 22:52:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.10 2010/04/28 23:05:42 rmacklem Exp $");
 
 /*
  * Rpc op calls, generally called from the vnode op calls or through the
@@ -1399,10 +1399,6 @@ nfsrpc_write(vnode_t vp, struct uio *uiop, int *iomode, u_char *verfp,
 		else
 			error = nfsrpc_writerpc(vp, uiop, iomode, verfp,
 			    newcred, &stateid, p, nap, attrflagp, stuff);
-if (error == NFSERR_BADSTATEID) {
-printf("st=0x%x 0x%x 0x%x\n",stateid.other[0],stateid.other[1],stateid.other[2]);
-nfscl_dumpstate(nmp, 1, 1, 0, 0);
-}
 		if (error == NFSERR_STALESTATEID)
 			nfscl_initiate_recovery(nmp->nm_clp);
 		if (lckp != NULL)

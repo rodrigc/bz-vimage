@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_amrr.c,v 1.6 2010/04/09 12:06:19 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_amrr.c,v 1.7 2010/04/28 13:25:53 rpaulo Exp $");
 
 /*-
  * Naive implementation of the Adaptive Multi Rate Retry algorithm:
@@ -136,16 +136,16 @@ amrr_node_init(struct ieee80211_node *ni)
 	struct ieee80211_amrr *amrr = vap->iv_rs;
 	struct ieee80211_amrr_node *amn;
 
-	KASSERT(ni->ni_rctls == NULL, ("%s: ni_rctls already initialized",
-	    __func__));
-
-	ni->ni_rctls = amn = malloc(sizeof(struct ieee80211_amrr_node),
-	    M_80211_RATECTL, M_NOWAIT|M_ZERO);
-	if (amn == NULL) {
-		if_printf(vap->iv_ifp, "couldn't alloc per-node ratectl "
-		    "structure\n");
-		return;
-	}
+	if (ni->ni_rctls == NULL) {
+		ni->ni_rctls = amn = malloc(sizeof(struct ieee80211_amrr_node),
+		    M_80211_RATECTL, M_NOWAIT|M_ZERO);
+		if (amn == NULL) {
+			if_printf(vap->iv_ifp, "couldn't alloc per-node ratectl "
+			    "structure\n");
+			return;
+		}
+	} else
+		amn = ni->ni_rctls;
 	amn->amn_amrr = amrr;
 	amn->amn_success = 0;
 	amn->amn_recovery = 0;

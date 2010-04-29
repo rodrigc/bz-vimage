@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/net80211/ieee80211_rssadapt.c,v 1.3 2010/04/09 12:06:19 rpaulo Exp $	*/
+/*	$FreeBSD: src/sys/net80211/ieee80211_rssadapt.c,v 1.4 2010/04/28 13:25:53 rpaulo Exp $	*/
 /* $NetBSD: ieee80211_rssadapt.c,v 1.9 2005/02/26 22:45:09 perry Exp $ */
 /*-
  * Copyright (c) 2010 Rui Paulo <rpaulo@FreeBSD.org>
@@ -169,13 +169,17 @@ rssadapt_node_init(struct ieee80211_node *ni)
 	struct ieee80211_rssadapt *rsa = vap->iv_rs;
 	const struct ieee80211_rateset *rs = &ni->ni_rates;
 
-	ni->ni_rctls = ra = malloc(sizeof(struct ieee80211_rssadapt_node),
-	    M_80211_RATECTL, M_NOWAIT|M_ZERO);
-	if (ra == NULL) {
-		if_printf(vap->iv_ifp, "couldn't alloc per-node ratectl "
-		    "structure\n");
-		return;
-	}
+	if (ni->ni_rctls == NULL) {
+		ni->ni_rctls = ra = 
+		    malloc(sizeof(struct ieee80211_rssadapt_node),
+		        M_80211_RATECTL, M_NOWAIT|M_ZERO);
+		if (ra == NULL) {
+			if_printf(vap->iv_ifp, "couldn't alloc per-node ratectl "
+			    "structure\n");
+			return;
+		}
+	} else
+		ra = ni->ni_rctls;
 	ra->ra_rs = rsa;
 	ra->ra_rates = *rs;
 	rssadapt_updatestats(ra);

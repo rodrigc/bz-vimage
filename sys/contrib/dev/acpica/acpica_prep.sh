@@ -1,5 +1,5 @@
 #!/bin/sh
-# $FreeBSD: src/sys/contrib/dev/acpica/acpica_prep.sh,v 1.12 2009/09/11 22:48:53 jkim Exp $
+# $FreeBSD: src/sys/contrib/dev/acpica/acpica_prep.sh,v 1.13 2010/04/28 22:25:27 jkim Exp $
 #
 # Unpack an ACPI CA drop and restructure it to fit the FreeBSD layout
 #
@@ -19,7 +19,7 @@ fulldirs="common compiler debugger disassembler dispatcher events	\
 	tools utilities"
 
 # files to remove
-stripdirs="acpisrc acpixtract examples generate os_specific"
+stripdirs="acpisrc acpixtract examples generate os_specific tests"
 stripfiles="Makefile README acintel.h aclinux.h acmsvc.h acnetbsd.h	\
 	acos2.h accygwin.h acefi.h acwin.h acwin64.h aeexec.c		\
 	aehandlers.c aemain.c aetables.c osunixdir.c readme.txt		\

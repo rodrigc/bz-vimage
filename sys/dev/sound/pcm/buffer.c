@@ -37,7 +37,7 @@
 #define SND_USE_FXDIV
 #include "snd_fxdiv_gen.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/buffer.c,v 1.38 2009/06/07 19:12:08 ariff Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/buffer.c,v 1.39 2010/04/28 17:26:05 jkim Exp $");
 
 struct snd_dbuf *
 sndbuf_create(device_t dev, char *drv, char *desc, struct pcm_channel *channel)
@@ -568,23 +568,12 @@ sndbuf_updateprevtotal(struct snd_dbuf *b)
 unsigned int
 snd_xbytes(unsigned int v, unsigned int from, unsigned int to)
 {
-	unsigned int w, x, y;
 
 	if (from == to)
 		return v;
 
 	if (from == 0 || to == 0 || v == 0)
 		return 0;
-
-	x = from;
-	y = to;
-	while (y != 0) {
-		w = x % y;
-		x = y;
-		y = w;
-	}
-	from /= x;
-	to /= x;
 
 	return (unsigned int)(((u_int64_t)v * to) / from);
 }

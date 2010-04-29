@@ -96,7 +96,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt.c,v 1.50 2009/10/20 02:35:12 kan Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt.c,v 1.51 2010/04/27 18:41:16 marius Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_cam.h> /* XXX For static handler registration */
@@ -2667,6 +2667,8 @@ mpt_configure_ioc(struct mpt_softc *mpt, int tn, int needreset)
 		mpt->is_fc = 0;
 		mpt->is_sas = 0;
 		mpt->is_spi = 1;
+		if (mpt->mpt_ini_id == MPT_INI_ID_NONE)
+			mpt->mpt_ini_id = pfp->PortSCSIID;
 	} else if (pfp->PortType == MPI_PORTFACTS_PORTTYPE_ISCSI) {
 		mpt_prt(mpt, "iSCSI not supported yet\n");
 		return (ENXIO);

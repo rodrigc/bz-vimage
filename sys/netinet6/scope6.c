@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/scope6.c,v 1.29 2009/08/01 19:26:27 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/scope6.c,v 1.30 2010/04/29 11:52:42 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/malloc.h>

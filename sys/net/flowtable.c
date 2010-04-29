@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "opt_inet6.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/flowtable.c,v 1.31 2010/03/22 23:04:12 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/net/flowtable.c,v 1.32 2010/04/27 23:48:50 kmacy Exp $");
 
 #include <sys/param.h>  
 #include <sys/types.h>
@@ -1626,7 +1626,7 @@ flowtable_init(const void *unused __unused)
 	    EVENTHANDLER_PRI_ANY);
 	flowclean_freq = 20*hz;
 }
-SYSINIT(flowtable_init, SI_SUB_SMP, SI_ORDER_MIDDLE,
+SYSINIT(flowtable_init, SI_SUB_KTHREAD_INIT, SI_ORDER_FIRST,
     flowtable_init, NULL);
 
 

@@ -66,7 +66,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/pmap.c,v 1.41 2010/04/24 17:32:52 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/pmap.c,v 1.42 2010/04/28 04:25:36 alc Exp $");
 
 #include "opt_ddb.h"
 #include "opt_msgbuf.h"
@@ -1690,16 +1690,10 @@ retry:
 		obits = pbits = *pte;
 		pa = mips_tlbpfn_to_paddr(pbits);
 
-		if (page_is_managed(pa)) {
+		if (page_is_managed(pa) && (pbits & PTE_M) != 0) {
 			m = PHYS_TO_VM_PAGE(pa);
-			if (m->md.pv_flags & PV_TABLE_REF) {
-				vm_page_flag_set(m, PG_REFERENCED);
-				m->md.pv_flags &= ~PV_TABLE_REF;
-			}
-			if (pbits & PTE_M) {
-				vm_page_dirty(m);
-				m->md.pv_flags &= ~PV_TABLE_MOD;
-			}
+			vm_page_dirty(m);
+			m->md.pv_flags &= ~PV_TABLE_MOD;
 		}
 		pbits = (pbits & ~PTE_M) | PTE_RO;
 

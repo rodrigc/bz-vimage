@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/net/if_gif.h,v 1.29 2009/07/16 21:13:04 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/net/if_gif.h,v 1.30 2010/04/29 11:52:42 bz Exp $	*/
 /*	$KAME: if_gif.h,v 1.17 2000/09/11 11:36:41 sumikawa Exp $	*/
 
 /*-

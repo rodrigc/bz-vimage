@@ -72,7 +72,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_fault.c,v 1.266 2010/04/06 10:43:01 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_fault.c,v 1.267 2010/04/28 06:34:47 alc Exp $");
 
 #include "opt_vm.h"
 
@@ -924,7 +924,6 @@ vnode_locked:
 		vm_fault_prefault(fs.map->pmap, vaddr, fs.entry);
 	VM_OBJECT_LOCK(fs.object);
 	vm_page_lock_queues();
-	vm_page_flag_set(fs.m, PG_REFERENCED);
 
 	/*
 	 * If the page is not wired down, then put it where the pageout daemon

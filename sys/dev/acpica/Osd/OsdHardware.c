@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdHardware.c,v 1.24 2010/01/21 21:14:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdHardware.c,v 1.25 2010/04/28 22:25:27 jkim Exp $");
 
 #include <contrib/dev/acpica/include/acpi.h>
 
@@ -216,12 +216,12 @@ acpi_bus_number(ACPI_HANDLE root, ACPI_HANDLE curr, ACPI_PCI_ID *PciId)
 /*
  * Find the bus number for a device
  *
- * rhandle: handle for the root bus
- * chandle: handle for the device
+ * Device: handle for the PCI root bridge device
+ * Region: handle for the PCI configuration space operation region
  * PciId: pointer to device slot and function, we fill out bus
  */
 void
-AcpiOsDerivePciId(ACPI_HANDLE rhandle, ACPI_HANDLE chandle, ACPI_PCI_ID **PciId)
+AcpiOsDerivePciId(ACPI_HANDLE Device, ACPI_HANDLE Region, ACPI_PCI_ID **PciId)
 {
     ACPI_HANDLE parent;
     ACPI_STATUS status;
@@ -230,26 +230,21 @@ AcpiOsDerivePciId(ACPI_HANDLE rhandle, ACPI_HANDLE chandle, ACPI_PCI_ID **PciId)
     if (pci_cfgregopen() == 0)
 	panic("AcpiOsDerivePciId unable to initialize pci bus");
 
-    /* Try to read _BBN for bus number if we're at the root */
+    /* Try to read _BBN for bus number if we're at the root. */
     bus = 0;
-    if (rhandle == chandle) {
-	status = acpi_GetInteger(rhandle, "_BBN", &bus);
+    if (Device == Region) {
+	status = acpi_GetInteger(Device, "_BBN", &bus);
 	if (ACPI_FAILURE(status) && bootverbose)
 	    printf("AcpiOsDerivePciId: root bus has no _BBN, assuming 0\n");
     }
 
-    /*
-     * Get the parent handle and call the recursive case.  It is not
-     * clear why we seem to be getting a chandle that points to a child
-     * of the desired slot/function but passing in the parent handle
-     * here works.
-     */
-    if (ACPI_SUCCESS(AcpiGetParent(chandle, &parent)))
-	bus = acpi_bus_number(rhandle, parent, *PciId);
+    /* Get the parent handle and call the recursive case. */
+    if (ACPI_SUCCESS(AcpiGetParent(Region, &parent)))
+	bus = acpi_bus_number(Device, parent, *PciId);
     (*PciId)->Bus = bus;
     if (bootverbose) {
 	printf("AcpiOsDerivePciId: %s -> bus %d dev %d func %d\n",
-	    acpi_name(chandle), (*PciId)->Bus, (*PciId)->Device,
+	    acpi_name(Region), (*PciId)->Bus, (*PciId)->Device,
 	    (*PciId)->Function);
     }
 }

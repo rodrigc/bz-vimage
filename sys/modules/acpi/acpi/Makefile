@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/acpi/acpi/Makefile,v 1.28 2010/03/08 19:40:31 jkim Exp $
+# $FreeBSD: src/sys/modules/acpi/acpi/Makefile,v 1.29 2010/04/28 22:25:27 jkim Exp $
 
 .if ${MACHINE_ARCH} == "ia64"
 .error "ACPI can only be compiled into the kernel on the ia64 platform"
@@ -33,8 +33,8 @@ SRCS+=	dmbuffer.c dmnames.c dmopcode.c dmobject.c dmresrc.c dmresrcl.c
 SRCS+=	dmresrcs.c dmutils.c dmwalk.c
 SRCS+=	dsfield.c dsinit.c dsmethod.c dsmthdat.c dsobject.c dsopcode.c
 SRCS+=	dsutils.c dswexec.c dswload.c dswscope.c dswstate.c
-SRCS+=	evevent.c evgpe.c evgpeblk.c evmisc.c evregion.c evrgnini.c evsci.c
-SRCS+=	evxface.c evxfevnt.c evxfregn.c
+SRCS+=	evevent.c evgpe.c evgpeblk.c evgpeinit.c evgpeutil.c evmisc.c
+SRCS+=	evregion.c evrgnini.c evsci.c evxface.c evxfevnt.c evxfregn.c
 SRCS+=	exconfig.c exconvrt.c excreate.c exdebug.c exdump.c exfield.c
 SRCS+=	exfldio.c exmisc.c exmutex.c exnames.c exoparg1.c exoparg2.c
 SRCS+=	exoparg3.c exoparg6.c exprep.c exregion.c exresnte.c exresolv.c

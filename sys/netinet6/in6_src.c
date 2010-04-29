@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_src.c,v 1.76 2010/01/17 12:57:11 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_src.c,v 1.78 2010/04/29 11:52:42 bz Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -181,7 +181,7 @@ in6_selectsrc(struct sockaddr_in6 *dstsock, struct ip6_pktopts *opts,
     struct inpcb *inp, struct route_in6 *ro, struct ucred *cred,
     struct ifnet **ifpp, struct in6_addr *srcp)
 {
-	struct in6_addr dst;
+	struct in6_addr dst, tmp;
 	struct ifnet *ifp = NULL;
 	struct in6_ifaddr *ia = NULL, *ia_best = NULL;
 	struct in6_pktinfo *pi = NULL;
@@ -325,10 +325,9 @@ in6_selectsrc(struct sockaddr_in6 *dstsock, struct ip6_pktopts *opts,
 		if (!V_ip6_use_deprecated && IFA6_IS_DEPRECATED(ia))
 			continue;
 
+		/* If jailed only take addresses of the jail into account. */
 		if (cred != NULL &&
-		    prison_local_ip6(cred, &ia->ia_addr.sin6_addr,
-			(inp != NULL &&
-			(inp->inp_flags & IN6P_IPV6_V6ONLY) != 0)) != 0)
+		    prison_check_ip6(cred, &ia->ia_addr.sin6_addr) != 0)
 			continue;
 
 		/* Rule 1: Prefer same address */
@@ -475,10 +474,26 @@ in6_selectsrc(struct sockaddr_in6 *dstsock, struct ip6_pktopts *opts,
 		return (EADDRNOTAVAIL);
 	}
 
+	/*
+	 * At this point at least one of the addresses belonged to the jail
+	 * but it could still be, that we want to further restrict it, e.g.
+	 * theoratically IN6_IS_ADDR_LOOPBACK.
+	 * It must not be IN6_IS_ADDR_UNSPECIFIED anymore.
+	 * prison_local_ip6() will fix an IN6_IS_ADDR_LOOPBACK but should
+	 * let all others previously selected pass.
+	 * Use tmp to not change ::1 on lo0 to the primary jail address.
+	 */
+	tmp = ia->ia_addr.sin6_addr;
+	if (cred != NULL && prison_local_ip6(cred, &tmp, (inp != NULL &&
+	    (inp->inp_flags & IN6P_IPV6_V6ONLY) != 0)) != 0) {
+		IN6_IFADDR_RUNLOCK();
+		return (EADDRNOTAVAIL);
+	}
+
 	if (ifpp)
 		*ifpp = ifp;
 
-	bcopy(&ia->ia_addr.sin6_addr, srcp, sizeof(*srcp));
+	bcopy(&tmp, srcp, sizeof(*srcp));
 	IN6_IFADDR_RUNLOCK();
 	return (0);
 }

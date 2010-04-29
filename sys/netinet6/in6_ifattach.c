@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_ifattach.c,v 1.78 2009/10/12 18:54:02 hrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_ifattach.c,v 1.79 2010/04/29 11:52:42 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>

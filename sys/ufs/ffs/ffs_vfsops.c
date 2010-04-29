@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.371 2010/04/24 07:05:35 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.372 2010/04/29 10:04:00 avg Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -126,8 +126,8 @@ static struct buf_ops ffs_ops = {
 
 static const char *ffs_opts[] = { "acls", "async", "noatime", "noclusterr",
     "noclusterw", "noexec", "export", "force", "from", "multilabel", 
-    "snapshot", "nosuid", "suiddir", "nosymfollow", "sync",
-    "union", "nfsv4acls", NULL };
+    "nfsv4acls", "snapshot", "nosuid", "suiddir", "nosymfollow", "sync",
+    "union", NULL };
 
 static int
 ffs_mount(struct mount *mp)

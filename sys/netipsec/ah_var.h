@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/ah_var.h,v 1.4 2009/07/16 21:13:04 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/netipsec/ah_var.h,v 1.5 2010/04/29 11:52:42 bz Exp $	*/
 /*	$OpenBSD: ip_ah.h,v 1.29 2002/06/09 16:26:10 itojun Exp $	*/
 /*-
  * The authors of this code are John Ioannidis (ji@tla.org),

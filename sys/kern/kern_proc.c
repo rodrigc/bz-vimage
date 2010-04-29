@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.296 2010/04/24 12:49:52 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.297 2010/04/29 09:55:51 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -1084,11 +1084,9 @@ sysctl_out_proc_copyout(struct kinfo_proc *ki, struct sysctl_req *req)
 
 	if (req->flags & SCTL_MASK32) {
 		freebsd32_kinfo_proc_out(ki, &ki32);
-		error = SYSCTL_OUT(req, (caddr_t)&ki32,
-		    sizeof(struct kinfo_proc32));
+		error = SYSCTL_OUT(req, &ki32, sizeof(struct kinfo_proc32));
 	} else
-		error = SYSCTL_OUT(req, (caddr_t)ki,
-		    sizeof(struct kinfo_proc));
+		error = SYSCTL_OUT(req, ki, sizeof(struct kinfo_proc));
 	return (error);
 }
 #else
@@ -1096,7 +1094,7 @@ static int
 sysctl_out_proc_copyout(struct kinfo_proc *ki, struct sysctl_req *req)
 {
 
-	return (SYSCTL_OUT(req, (caddr_t)ki, sizeof(struct kinfo_proc)));
+	return (SYSCTL_OUT(req, ki, sizeof(struct kinfo_proc)));
 }
 #endif
 
