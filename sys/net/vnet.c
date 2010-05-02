@@ -55,6 +55,7 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $")
 #include <sys/socket.h>
 #include <sys/sx.h>
 #include <sys/sysctl.h>
+#include <sys/vimage.h>
 
 #include <machine/stdarg.h>
 
@@ -171,7 +172,7 @@ MALLOC_DEFINE(M_VNET_DATA, "vnet_data", "VNET data");
  */
 #define	VNET_MODMIN	8192
 #define	VNET_SIZE	roundup2(VNET_BYTES, PAGE_SIZE)
-#define	VNET_MODSIZE	(VNET_SIZE - (VNET_BYTES - VNET_MODMIN))
+#define	VNET_MODEXTRA	(VNET_SIZE - VNET_BYTES)
 
 /*
  * Space to store virtualized global variables from loadable kernel modules,
@@ -195,17 +196,6 @@ struct sx		vnet_sysinit_sxlock;
 #define	VNET_SYSINIT_WUNLOCK()	sx_xunlock(&vnet_sysinit_sxlock);
 #define	VNET_SYSINIT_RLOCK()	sx_slock(&vnet_sysinit_sxlock);
 #define	VNET_SYSINIT_RUNLOCK()	sx_sunlock(&vnet_sysinit_sxlock);
-
-struct vnet_data_free {
-	uintptr_t	vnd_start;
-	int		vnd_len;
-	TAILQ_ENTRY(vnet_data_free) vnd_link;
-};
-
-MALLOC_DEFINE(M_VNET_DATA_FREE, "vnet_data_free", "VNET resource accounting");
-static TAILQ_HEAD(, vnet_data_free) vnet_data_free_head =
-	    TAILQ_HEAD_INITIALIZER(vnet_data_free_head);
-static struct sx vnet_data_free_lock;
 
 SDT_PROVIDER_DEFINE(vnet);
 SDT_PROBE_DEFINE1(vnet, functions, vnet_alloc, entry, "int");
@@ -297,8 +287,62 @@ vnet_destroy(struct vnet *vnet)
 }
 
 /*
+ * Once on boot, initialize the modspace freelist to entirely cover modspace.
+ */
+static int
+vnet_data_init(struct vimage_subsys *vs)
+{
+	struct vimage_data_free *df;
+
+	/* Already initialized? */
+	if (!TAILQ_EMPTY(&vs->v_data_free_list))
+		return (0);
+
+	df = malloc(sizeof(*df), M_VIMAGE_DATA_FREE, M_WAITOK | M_ZERO);
+	df->vnd_start = (uintptr_t)&VNET_NAME(modspace);
+	df->vnd_len = VNET_MODMIN;
+	TAILQ_INSERT_HEAD(&vs->v_data_free_list, df, vnd_link);
+
+	if (VNET_MODEXTRA < sizeof(*df))
+		return (0);
+	
+	df = malloc(sizeof(*df), M_VIMAGE_DATA_FREE, M_WAITOK | M_ZERO);
+	df->vnd_start = VNET_STOP;
+	df->vnd_len = VNET_MODEXTRA;
+	TAILQ_INSERT_HEAD(&vs->v_data_free_list, df, vnd_link);
+
+	return (0);
+}
+
+/*
+ * When a new virtualized global variable has been allocated, propagate its
+ * initial value to each already-allocated virtual network stack instance.
+ */
+static void
+vnet_data_copy(void *start, size_t size)
+{
+	struct vnet *vnet;
+
+	VNET_LIST_RLOCK();
+	LIST_FOREACH(vnet, &vnet_head, vnet_le)
+		memcpy((void *)((uintptr_t)vnet->vnet_data_base +
+		    (uintptr_t)start), start, size);
+	VNET_LIST_RUNLOCK();
+}
+
+/*
  * Boot time initialization and allocation of virtual network stacks.
  */
+static struct vimage_subsys vnet_data =
+{
+	.setname		= VNET_SETNAME,
+
+	.v_data_free_list	=
+	    TAILQ_HEAD_INITIALIZER(vnet_data.v_data_free_list),
+	.v_data_init		= vnet_data_init,
+	.v_data_copy		= vnet_data_copy,
+};
+
 static void
 vnet_init_prelink(void *arg)
 {
@@ -307,8 +351,10 @@ vnet_init_prelink(void *arg)
 	sx_init(&vnet_sxlock, "vnet_sxlock");
 	sx_init(&vnet_sysinit_sxlock, "vnet_sysinit_sxlock");
 	LIST_INIT(&vnet_head);
+
+	vimage_subsys_register(&vnet_data);
 }
-SYSINIT(vnet_init_prelink, SI_SUB_VNET_PRELINK, SI_ORDER_FIRST,
+SYSINIT(vnet_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_SECOND,
     vnet_init_prelink, NULL);
 
 static void
@@ -338,125 +384,6 @@ vnet_init_done(void *unused)
 SYSINIT(vnet_init_done, SI_SUB_VNET_DONE, SI_ORDER_FIRST, vnet_init_done,
     NULL);
 
-/*
- * Once on boot, initialize the modspace freelist to entirely cover modspace.
- */
-static void
-vnet_data_startup(void *dummy __unused)
-{
-	struct vnet_data_free *df;
-
-	df = malloc(sizeof(*df), M_VNET_DATA_FREE, M_WAITOK | M_ZERO);
-	df->vnd_start = (uintptr_t)&VNET_NAME(modspace);
-	df->vnd_len = VNET_MODSIZE;
-	TAILQ_INSERT_HEAD(&vnet_data_free_head, df, vnd_link);
-	sx_init(&vnet_data_free_lock, "vnet_data alloc lock");
-}
-SYSINIT(vnet_data, SI_SUB_KLD, SI_ORDER_FIRST, vnet_data_startup, 0);
-
-/*
- * When a module is loaded and requires storage for a virtualized global
- * variable, allocate space from the modspace free list.  This interface
- * should be used only by the kernel linker.
- */
-void *
-vnet_data_alloc(int size)
-{
-	struct vnet_data_free *df;
-	void *s;
-
-	s = NULL;
-	size = roundup2(size, sizeof(void *));
-	sx_xlock(&vnet_data_free_lock);
-	TAILQ_FOREACH(df, &vnet_data_free_head, vnd_link) {
-		if (df->vnd_len < size)
-			continue;
-		if (df->vnd_len == size) {
-			s = (void *)df->vnd_start;
-			TAILQ_REMOVE(&vnet_data_free_head, df, vnd_link);
-			free(df, M_VNET_DATA_FREE);
-			break;
-		}
-		s = (void *)df->vnd_start;
-		df->vnd_len -= size;
-		df->vnd_start = df->vnd_start + size;
-		break;
-	}
-	sx_xunlock(&vnet_data_free_lock);
-
-	return (s);
-}
-
-/*
- * Free space for a virtualized global variable on module unload.
- */
-void
-vnet_data_free(void *start_arg, int size)
-{
-	struct vnet_data_free *df;
-	struct vnet_data_free *dn;
-	uintptr_t start;
-	uintptr_t end;
-
-	size = roundup2(size, sizeof(void *));
-	start = (uintptr_t)start_arg;
-	end = start + size;
-	/*
-	 * Free a region of space and merge it with as many neighbors as
-	 * possible.  Keeping the list sorted simplifies this operation.
-	 */
-	sx_xlock(&vnet_data_free_lock);
-	TAILQ_FOREACH(df, &vnet_data_free_head, vnd_link) {
-		if (df->vnd_start > end)
-			break;
-		/*
-		 * If we expand at the end of an entry we may have to merge
-		 * it with the one following it as well.
-		 */
-		if (df->vnd_start + df->vnd_len == start) {
-			df->vnd_len += size;
-			dn = TAILQ_NEXT(df, vnd_link);
-			if (df->vnd_start + df->vnd_len == dn->vnd_start) {
-				df->vnd_len += dn->vnd_len;
-				TAILQ_REMOVE(&vnet_data_free_head, dn,
-				    vnd_link);
-				free(dn, M_VNET_DATA_FREE);
-			}
-			sx_xunlock(&vnet_data_free_lock);
-			return;
-		}
-		if (df->vnd_start == end) {
-			df->vnd_start = start;
-			df->vnd_len += size;
-			sx_xunlock(&vnet_data_free_lock);
-			return;
-		}
-	}
-	dn = malloc(sizeof(*df), M_VNET_DATA_FREE, M_WAITOK | M_ZERO);
-	dn->vnd_start = start;
-	dn->vnd_len = size;
-	if (df)
-		TAILQ_INSERT_BEFORE(df, dn, vnd_link);
-	else
-		TAILQ_INSERT_TAIL(&vnet_data_free_head, dn, vnd_link);
-	sx_xunlock(&vnet_data_free_lock);
-}
-
-/*
- * When a new virtualized global variable has been allocated, propagate its
- * initial value to each already-allocated virtual network stack instance.
- */
-void
-vnet_data_copy(void *start, int size)
-{
-	struct vnet *vnet;
-
-	VNET_LIST_RLOCK();
-	LIST_FOREACH(vnet, &vnet_head, vnet_le)
-		memcpy((void *)((uintptr_t)vnet->vnet_data_base +
-		    (uintptr_t)start), start, size);
-	VNET_LIST_RUNLOCK();
-}
 
 /*
  * Variants on sysctl_handle_foo that know how to handle virtualized global

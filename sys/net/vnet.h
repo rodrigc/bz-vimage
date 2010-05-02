@@ -233,13 +233,6 @@ __asm__(
 #define	VNET(n)			VNET_VNET(curvnet, n)
 
 /*
- * Virtual network stack allocator interfaces from the kernel linker.
- */
-void	*vnet_data_alloc(int size);
-void	 vnet_data_copy(void *start, int size);
-void	 vnet_data_free(void *start_arg, int size);
-
-/*
  * Sysctl variants for vnet-virtualized global variables.  Include
  * <sys/sysctl.h> to expose these definitions.
  *

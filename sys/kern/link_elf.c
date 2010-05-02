@@ -46,10 +46,13 @@ __FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.106 2009/07/14 22:48:30 rwatson 
 #include <sys/fcntl.h>
 #include <sys/vnode.h>
 #include <sys/linker.h>
+#ifdef VIMAGE
+#include <sys/refcount.h>
+#include <sys/queue.h>
+#include <sys/vimage.h>
+#endif
 
 #include <machine/elf.h>
-
-#include <net/vnet.h>
 
 #include <security/mac/mac_framework.h>
 
@@ -72,6 +75,22 @@ __FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.106 2009/07/14 22:48:30 rwatson 
 #include "linker_if.h"
 
 #define MAXSEGS 4
+
+#ifdef VIMAGE
+/*
+ * Rather than adding more and more fields to struct elf_file for
+ * unnamed and possibly 3rd party virtualized subsystems, we allocate
+ * an entry when needed. add it to the list and use the back pointer
+ * to the set name and handler functions to address the right subsystem.
+ */
+struct elf_file_ventry {
+    LIST_ENTRY(elf_file_ventry)	efe_le;	/* all virt subsys reloc entries */
+    struct vimage_subsys	*vs;	/* ref cnt.ed, for alloc/free/copy */
+    Elf_Addr			start;	/* Pre-reloc. virt subsys set start. */
+    Elf_Addr			stop;	/* Pre-reloc. virt subsys set stop. */
+    Elf_Addr			base;	/* Relocated virt subsys set address. */
+};
+#endif
 
 typedef struct elf_file {
     struct linker_file	lf;		/* Common fields */
@@ -114,9 +133,7 @@ typedef struct elf_file {
     Elf_Addr		pcpu_stop;	/* Pre-relocation pcpu set stop. */
     Elf_Addr		pcpu_base;	/* Relocated pcpu set address. */
 #ifdef VIMAGE
-    Elf_Addr		vnet_start;	/* Pre-relocation vnet set start. */
-    Elf_Addr		vnet_stop;	/* Pre-relocation vnet set stop. */
-    Elf_Addr		vnet_base;	/* Relocated vnet set address. */
+    LIST_HEAD(, elf_file_ventry) ventry_head;
 #endif
 #ifdef GDB
     struct link_map	gdb;		/* hooks for gdb */
@@ -314,6 +331,9 @@ link_elf_init(void* arg)
     ef->address = 0;
 #ifdef SPARSE_MAPPING
     ef->object = 0;
+#endif
+#ifdef VIMAGE
+    LIST_INIT(&ef->ventry_head);
 #endif
     ef->dynamic = dp;
 
@@ -514,32 +534,60 @@ parse_dpcpu(elf_file_t ef)
 }
 
 #ifdef VIMAGE
+extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
+
 static int
-parse_vnet(elf_file_t ef)
+parse_vimage(elf_file_t ef)
 { 
-    int count;
-    int error;
+    struct vimage_subsys *vse;
+    struct elf_file_ventry *efe;
+    Elf_Addr start, stop;
+    int count, error;
 
-    ef->vnet_start = 0;
-    ef->vnet_stop = 0;
-    error = link_elf_lookup_set(&ef->lf, "vnet", (void ***)&ef->vnet_start,
-                               (void ***)&ef->vnet_stop, &count);
-    /* Error just means there is no vnet data set to relocate. */
-    if (error)
-        return (0);
-    count *= sizeof(void *);
-    /*
-     * Allocate space in the primary vnet area.  Copy in our initialization
-     * from the data section and then initialize all per-vnet storage from
-     * that.
-     */
-    ef->vnet_base = (Elf_Addr)(uintptr_t)vnet_data_alloc(count);
-    if (ef->vnet_base == (Elf_Addr)NULL)
-        return (ENOSPC);
-    memcpy((void *)ef->vnet_base, (void *)ef->vnet_start, count);
-    vnet_data_copy((void *)ef->vnet_base, count);
+    error = 0;
+    start = stop = 0;
+    VIMAGE_SUBSYS_LIST_RLOCK();
+    LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
+	error = link_elf_lookup_set(&ef->lf, vse->name, (void ***)&start,
+	    (void ***)&stop, &count);
+	/*
+	 * Error just means there is no data set to relocate for this
+	 * virtualized subsystem.
+	 */
+	if (error)
+	    continue;
+	count *= sizeof(void *);
+	/*
+	 * Allocate space for the elf_file_t list entry.
+	 */
+	efe = malloc(sizeof(efe), M_LINKER, M_WAITOK);
+	if (efe == NULL) {
+	    error = ENOSPC;
+	    break;
+	}
+	efe->start = start;
+	efe->stop = stop;
+	/*
+	 * Allocate space in the virtualized subsystem area.  Copy in our
+	 * initialization from the data section and then initialize all
+	 * per-subsystem storage from that.
+	 */
+	efe->base = (Elf_Addr)(uintptr_t)(*vse->v_data_alloc)(vse, count);
+	if (efe->base == (Elf_Addr)NULL) {
+	    free(efe, M_LINKER);
+	    error = ENOSPC;
+	    break;
+	}
+	memcpy((void *)efe->base, (void *)efe->start, count);
+	(*vse->v_data_copy)((void *)efe->base, count);
+	/* Save vs so we can call free on the right subsystem. */
+	refcount_acquire(&vse->refcnt);
+	efe->vs = vse;
+	LIST_INSERT_HEAD(&ef->ventry_head, efe, efe_le);
+    }
+    VIMAGE_SUBSYS_LIST_RUNLOCK();
 
-    return (0);
+    return (error);
 }
 #endif
 
@@ -582,6 +630,9 @@ link_elf_link_preload(linker_class_t cls,
 #ifdef SPARSE_MAPPING
     ef->object = 0;
 #endif
+#ifdef VIMAGE
+    LIST_INIT(&ef->ventry_head);
+#endif
     dp = (vm_offset_t)ef->address + *(vm_offset_t *)dynptr;
     ef->dynamic = (Elf_Dyn *)dp;
     lf->address = ef->address;
@@ -592,7 +643,7 @@ link_elf_link_preload(linker_class_t cls,
         error = parse_dpcpu(ef);
 #ifdef VIMAGE
     if (error == 0)
-	error = parse_vnet(ef);
+	error = parse_vimage(ef);
 #endif
     if (error) {
 	linker_file_unload(lf, LINKER_UNLOAD_FORCE);
@@ -828,6 +879,9 @@ link_elf_load_file(linker_class_t cls, const char* filename,
 	goto out;
     }
 #endif
+#ifdef VIMAGE
+    LIST_INIT(&ef->ventry_head);
+#endif
     mapbase = ef->address;
 
     /*
@@ -880,7 +934,7 @@ link_elf_load_file(linker_class_t cls, const char* filename,
     if (error)
         goto out;
 #ifdef VIMAGE
-    error = parse_vnet(ef);
+    error = parse_vimage(ef);
     if (error)
         goto out;
 #endif
@@ -984,13 +1038,18 @@ Elf_Addr
 elf_relocaddr(linker_file_t lf, Elf_Addr x)
 {
     elf_file_t ef;
+#ifdef VIMAGE
+    struct elf_file_ventry *efe;
+#endif
 
     ef = (elf_file_t)lf;
     if (x >= ef->pcpu_start && x < ef->pcpu_stop)
 	return ((x - ef->pcpu_start) + ef->pcpu_base);
 #ifdef VIMAGE
-    if (x >= ef->vnet_start && x < ef->vnet_stop)
-	return ((x - ef->vnet_start) + ef->vnet_base);
+    LIST_FOREACH(efe, &ef->ventry_head, efe_le) {
+	if (x >= efe->start && x < efe->stop)
+	    return ((x - efe->start) + efe->base);
+    }
 #endif
     return (x);
 }
@@ -1000,14 +1059,25 @@ static void
 link_elf_unload_file(linker_file_t file)
 {
     elf_file_t ef = (elf_file_t) file;
+#ifdef VIMAGE
+    struct elf_file_ventry *efe, *nefe;
+    int refcnt;
+#endif
 
     if (ef->pcpu_base) {
         dpcpu_free((void *)ef->pcpu_base, ef->pcpu_stop - ef->pcpu_start);
     }
 #ifdef VIMAGE
-    if (ef->vnet_base) {
-        vnet_data_free((void *)ef->vnet_base, ef->vnet_stop - ef->vnet_start);
+    VIMAGE_SUBSYS_LIST_RLOCK();
+    LIST_FOREACH_SAFE(efe, &ef->ventry_head, efe_le, nefe) {
+	LIST_REMOVE(efe, efe_le);
+	(*efe->vs->v_data_free)(efe->vs, (void *)efe->base,
+	    efe->stop - efe->start);
+	refcnt = refcount_release(&efe->vs->refcnt);
+	KASSERT(refcnt > 1, ("%s: refcnt on vs <= 1: %p", __func__, efe->vs));
+	free(efe, M_LINKER);
     }
+    VIMAGE_SUBSYS_LIST_RUNLOCK();
 #endif
 #ifdef GDB
     if (ef->gdb.l_ld) {

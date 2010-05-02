@@ -42,10 +42,9 @@ __FBSDID("$FreeBSD: src/sys/kern/link_elf_obj.c,v 1.112 2010/02/18 05:49:52 neel
 #include <sys/fcntl.h>
 #include <sys/vnode.h>
 #include <sys/linker.h>
+#include <sys/vimage.h>
 
 #include <machine/elf.h>
-
-#include <net/vnet.h>
 
 #include <security/mac/mac_framework.h>
 
@@ -349,19 +348,28 @@ link_elf_link_preload(linker_class_t cls, const char *filename,
 				dpcpu_copy(dpcpu, shdr[i].sh_size);
 				ef->progtab[pb].addr = dpcpu;
 #ifdef VIMAGE
-			} else if (ef->progtab[pb].name != NULL &&
-			    !strcmp(ef->progtab[pb].name, VNET_SETNAME)) {
-				void *vnet_data;
+			} else if (ef->progtab[pb].name != NULL) {
+				struct vimage_subsys *vs;
+				void *v_data;
 
-				vnet_data = vnet_data_alloc(shdr[i].sh_size);
-				if (vnet_data == NULL) {
+				VIMAGE_SUBSYS_LIST_RLOCK();
+				vs = vimage_subsys_get(ef->progtab[pb].name);
+				if (vs == NULL)
+					goto no_v_subsys;
+
+				v_data = (*vs->v_data_alloc)(vs,
+				    shdr[i].sh_size);
+				if (v_data == NULL) {
+					VIMAGE_SUBSYS_LIST_RUNLOCK();
 					error = ENOSPC;
 					goto out;
 				}
-				memcpy(vnet_data, ef->progtab[pb].addr,
+				memcpy(v_data, ef->progtab[pb].addr,
 				    ef->progtab[pb].size);
-				vnet_data_copy(vnet_data, shdr[i].sh_size);
-				ef->progtab[pb].addr = vnet_data;
+				(*vs->v_data_copy)(v_data, shdr[i].sh_size);
+				ef->progtab[pb].addr = v_data;
+no_v_subsys:
+				VIMAGE_SUBSYS_LIST_RUNLOCK();
 #endif
 			}
 
@@ -751,18 +759,30 @@ link_elf_load_file(linker_class_t cls, const char *filename,
 			else
 				ef->progtab[pb].name = "<<NOBITS>>";
 			if (ef->progtab[pb].name != NULL && 
-			    !strcmp(ef->progtab[pb].name, "set_pcpu"))
+			    !strcmp(ef->progtab[pb].name, "set_pcpu")) {
 				ef->progtab[pb].addr =
 				    dpcpu_alloc(shdr[i].sh_size);
 #ifdef VIMAGE
-			else if (ef->progtab[pb].name != NULL &&
-			    !strcmp(ef->progtab[pb].name, VNET_SETNAME))
+			} else if (ef->progtab[pb].name != NULL) {
+				struct vimage_subsys *vs;
+
+				VIMAGE_SUBSYS_LIST_RLOCK();
+				vs = vimage_subsys_get(ef->progtab[pb].name);
+				if (vs == NULL) {
+					VIMAGE_SUBSYS_LIST_RUNLOCK();
+					goto no_v_subsys;
+				}
 				ef->progtab[pb].addr =
-				    vnet_data_alloc(shdr[i].sh_size);
+				    (*vs->v_data_alloc)(vs, shdr[i].sh_size);
+				VIMAGE_SUBSYS_LIST_RUNLOCK();
 #endif
-			else
+			} else {
+#ifdef VIMAGE
+no_v_subsys:
+#endif
 				ef->progtab[pb].addr =
 				    (void *)(uintptr_t)mapbase;
+			}
 			if (ef->progtab[pb].addr == NULL) {
 				error = ENOSPC;
 				goto out;
@@ -788,10 +808,18 @@ link_elf_load_file(linker_class_t cls, const char *filename,
 					    shdr[i].sh_size);
 #ifdef VIMAGE
 				else if (ef->progtab[pb].addr !=
-				    (void *)mapbase &&
-				    !strcmp(ef->progtab[pb].name, VNET_SETNAME))
-					vnet_data_copy(ef->progtab[pb].addr,
-					    shdr[i].sh_size);
+				    (void *)mapbase) {
+					struct vimage_subsys *vs;
+
+					VIMAGE_SUBSYS_LIST_RLOCK();
+					vs = vimage_subsys_get(
+					    ef->progtab[pb].name);
+					if (vs != NULL)
+						(*vs->v_data_copy)(
+						    ef->progtab[pb].addr,
+						    shdr[i].sh_size);
+					VIMAGE_SUBSYS_LIST_RUNLOCK();
+				}
 #endif
 			} else
 				bzero(ef->progtab[pb].addr, shdr[i].sh_size);
@@ -909,9 +937,17 @@ link_elf_unload_file(linker_file_t file)
 				dpcpu_free(ef->progtab[i].addr,
 				    ef->progtab[i].size);
 #ifdef VIMAGE
-			else if (!strcmp(ef->progtab[i].name, VNET_SETNAME))
-				vnet_data_free(ef->progtab[i].addr,
-				    ef->progtab[i].size);
+			else {
+				struct vimage_subsys *vs;
+
+				VIMAGE_SUBSYS_LIST_RLOCK();
+				vs = vimage_subsys_get(ef->progtab[i].name);
+				if (vs != NULL)
+					(*vs->v_data_free)(vs,
+					    ef->progtab[i].addr,
+					    ef->progtab[i].size);
+				VIMAGE_SUBSYS_LIST_RUNLOCK();
+			}
 #endif
 		}
 	}
