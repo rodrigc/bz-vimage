@@ -82,9 +82,18 @@ static struct command db_show_all_cmds[] = {
 };
 struct command_table db_show_all_table =
     LIST_HEAD_INITIALIZER(db_show_all_table);
+#ifdef VIMAGE
+static struct command db_show_vimage_cmds[] = {
+};
+struct command_table db_show_vimage_table =
+    LIST_HEAD_INITIALIZER(db_show_vimage_table);
+#endif
 
 static struct command db_show_cmds[] = {
 	{ "all",	0,			0,	&db_show_all_table },
+#ifdef VIMAGE
+	{ "vimage",	0,			0,	&db_show_vimage_table },
+#endif
 	{ "registers",	db_show_regs,		0,	0 },
 	{ "breaks",	db_listbreak_cmd, 	0,	0 },
 	{ "threads",	db_show_threads,	0,	0 },
@@ -193,6 +202,11 @@ db_command_init(void)
 		db_command_register(&db_show_table, &db_show_cmds[i]);
 	for (i = 0; i < N(db_show_all_cmds); i++)
 		db_command_register(&db_show_all_table, &db_show_all_cmds[i]);
+#ifdef VIMAGE
+	for (i = 0; i < N(db_show_vimage_cmds); i++)
+		db_command_register(&db_show_vimage_table,
+		    &db_show_vimage_cmds[i]);
+#endif
 #undef N
 }
 

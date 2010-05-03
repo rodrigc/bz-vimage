@@ -90,6 +90,9 @@ LIST_HEAD(command_table, command);
 extern struct command_table db_cmd_table;
 extern struct command_table db_show_table;
 extern struct command_table db_show_all_table;
+#ifdef VIMAGE
+extern struct command_table db_show_vimage_table;
+#endif
 
 /*
  * Type signature for a function implementing a ddb command.
@@ -167,6 +170,14 @@ _func(db_expr_t addr, boolean_t have_addr, db_expr_t count, char *modif)
 	_DB_FUNC(_show_all, cmd_name, func_name, db_show_all_table, 0, NULL)
 #define DB_SHOW_ALL_ALIAS(alias_name, func_name) \
 	_DB_SET(_show_all, alias_name, func_name, db_show_all_table, 0, NULL)
+#ifdef VIMAGE
+#define DB_SHOW_VIMAGE_COMMAND(cmd_name, func_name) \
+	_DB_FUNC(_show_vimage, cmd_name, func_name, \
+	    db_show_vimage_table, 0, NULL)
+#define DB_SHOW_VIMAGE_ALIAS(alias_name, func_name) \
+	_DB_SET(_show_vimage, alias_name, func_name, \
+	    db_show_vimage_table, 0, NULL)
+#endif
 
 extern db_expr_t db_maxoff;
 extern int db_indent;
