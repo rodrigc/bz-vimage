@@ -105,16 +105,16 @@ SYSINIT(vimage_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_FIRST,
  * Boot or load time registration of virtualized subsystems.
  */
 int
-vimage_subsys_register(struct vimage_subsys *vs)
+vimage_subsys_register(struct vimage_subsys *vse)
 {
 	int error;
 
-	KASSERT(vs != NULL, ("%s: vs is NULL", __func__));
+	KASSERT(vse != NULL, ("%s: vse is NULL", __func__));
 #if 0
 	/* We cannot do this as we are running too early during boot. */
 	KASSERT(curthread->td_ucred->cr_prison == &prison0,
-	    ("%s: not called from prison0 td=%p prison=%p, vs=%p", __func__,
-	    curthread, curthread->td_ucred->cr_prison, vs));
+	    ("%s: not called from prison0 td=%p prison=%p, vse=%p", __func__,
+	    curthread, curthread->td_ucred->cr_prison, vse));
 #endif
 
 	/*
@@ -122,81 +122,81 @@ vimage_subsys_register(struct vimage_subsys *vs)
 	 * loaded, do not panic but just log and return an error.
 	 * Where possible, initialize to defaults.
 	 */
-	if (vs->setname == NULL) {
-		printf("%s: setname of vs=%p is NULL\n", __func__, vs);
+	if (vse->setname == NULL) {
+		printf("%s: setname of vse=%p is NULL\n", __func__, vse);
 		return (EINVAL);
 	}
-	if (strncmp(vs->setname, "set_", 4)) {
-		printf("%s: setname of vs=%p not starting with "
-		    "\"set_\": %s\n", __func__, vs, vs->setname);
+	if (strncmp(vse->setname, "set_", 4)) {
+		printf("%s: setname of vse=%p not starting with "
+		    "\"set_\": %s\n", __func__, vse, vse->setname);
 		return (EINVAL);
 	}
 	/* The short name is needed for link_elf.c. */
-	if (vs->name == NULL)
-		vs->name = vs->setname + 4;	/* Skip "set_". */
-	if (vs->v_data_init == NULL) {
+	if (vse->name == NULL)
+		vse->name = vse->setname + 4;	/* Skip "set_". */
+	if (vse->v_data_init == NULL) {
 		/* Disabling dynamic data region/module support. */
-		vs->v_data_init = vimage_data_init_notsupp;
-		vs->v_data_alloc = vimage_data_alloc_notsupp;
-		vs->v_data_free = vimage_data_free_notsupp;
-		vs->v_data_copy = vimage_data_copy_notsupp;
+		vse->v_data_init = vimage_data_init_notsupp;
+		vse->v_data_alloc = vimage_data_alloc_notsupp;
+		vse->v_data_free = vimage_data_free_notsupp;
+		vse->v_data_copy = vimage_data_copy_notsupp;
 		printf("%s: dynamic data region/module support disabled "
-		    "for vs=%p %s\n", __func__, vs, vs->setname);
+		    "for vse=%p %s\n", __func__, vse, vse->setname);
 	}
-	if (vs->v_data_copy == NULL) {
-		printf("%s: mandatory v_data_copy of vs=%p %s uninitialized\n",
-		    __func__, vs, vs->setname);
+	if (vse->v_data_copy == NULL) {
+		printf("%s: mandatory v_data_copy of vse=%p %s uninitialized\n",
+		    __func__, vse, vse->setname);
 		return (EINVAL);
 	}
-	if (vs->v_data_alloc == NULL)
-		vs->v_data_alloc = vimage_data_alloc;
-	if (vs->v_data_free == NULL)
-		vs->v_data_free = vimage_data_free;
+	if (vse->v_data_alloc == NULL)
+		vse->v_data_alloc = vimage_data_alloc;
+	if (vse->v_data_free == NULL)
+		vse->v_data_free = vimage_data_free;
 
 	/*
 	 * Initalize dynamic data region for module support. Callee has to
 	 * handle list initialization itself as we do not know varaible names
 	 * of the region or extra space that might be available.
 	 */
-	error = (*vs->v_data_init)(vs);
+	error = (*vse->v_data_init)(vse);
 	if (error)
 		return (error);
 	
 	VIMAGE_SUBSYS_LIST_WLOCK();
 	/*
 	 * Ensure a subsytem with the setname has not yet been registered.
-	 * We do not check for the vs pointer as that would still allow
+	 * We do not check for the vse pointer as that would still allow
 	 * duplicate subsystem registration.
 	 */
-	if (vimage_subsys_get(vs->setname) != NULL) {
+	if (vimage_subsys_get(vse->setname) != NULL) {
 		VIMAGE_SUBSYS_LIST_WUNLOCK();
-		printf("%s: vs=%p duplicate registration for %s\n",
-		    __func__, vs, vs->setname);
+		printf("%s: vse=%p duplicate registration for %s\n",
+		    __func__, vse, vse->setname);
 		return (EEXIST);
 	}
-	refcount_init(&vs->refcnt, 1);
-	LIST_INSERT_HEAD(&vimage_subsys_head, vs, vimage_subsys_le);
+	refcount_init(&vse->refcnt, 1);
+	LIST_INSERT_HEAD(&vimage_subsys_head, vse, vimage_subsys_le);
 	VIMAGE_SUBSYS_LIST_WUNLOCK();
 
 	return (0);
 }
 
 int
-vimage_subsys_deregister(struct vimage_subsys *vs)
+vimage_subsys_deregister(struct vimage_subsys *vse)
 {
-	struct vimage_subsys *vse;
+	struct vimage_subsys *vse2;
 	int error;
 
 	error = ENOENT;
 	VIMAGE_SUBSYS_LIST_WLOCK();
-	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
-		if (vs == vse) {
-			if (refcount_release(&vs->refcnt) == 1) {
-				LIST_REMOVE(vs, vimage_subsys_le);
+	LIST_FOREACH(vse2, &vimage_subsys_head, vimage_subsys_le) {
+		if (vse == vse2) {
+			if (refcount_release(&vse->refcnt) == 1) {
+				LIST_REMOVE(vse, vimage_subsys_le);
 				error = 0;
 			} else {
 				/*
-				 * We cannot allow vs to possibly go away
+				 * We cannot allow vse to possibly go away
 				 * if it is coming from a module.
 				 * XXX-BZ catch22?
 				 */
@@ -237,7 +237,7 @@ vimage_subsys_get(const char *setname)
  * link_elf.c::parse_vimage().
  */
 static void *
-vimage_data_alloc(struct vimage_subsys *vs, size_t size)
+vimage_data_alloc(struct vimage_subsys *vse, size_t size)
 {
 	struct vimage_data_free *df;
 	void *s;
@@ -245,12 +245,12 @@ vimage_data_alloc(struct vimage_subsys *vs, size_t size)
 	s = NULL;
 	size = roundup2(size, sizeof(void *));
 	sx_xlock(&vimage_subsys_data_sxlock);
-	TAILQ_FOREACH(df, &vs->v_data_free_list, vnd_link) {
+	TAILQ_FOREACH(df, &vse->v_data_free_list, vnd_link) {
 		if (df->vnd_len < size)
 			continue;
 		if (df->vnd_len == size) {
 			s = (void *)df->vnd_start;
-			TAILQ_REMOVE(&vs->v_data_free_list, df, vnd_link);
+			TAILQ_REMOVE(&vse->v_data_free_list, df, vnd_link);
 			free(df, M_VIMAGE_DATA_FREE);
 			break;
 		}
@@ -268,7 +268,7 @@ vimage_data_alloc(struct vimage_subsys *vs, size_t size)
  * Free space for a virtualized global variable on module unload.
  */
 static void
-vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
+vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 {
 	struct vimage_data_free *df;
 	struct vimage_data_free *dn;
@@ -283,7 +283,7 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 	 * possible.  Keeping the list sorted simplifies this operation.
 	 */
 	sx_xlock(&vimage_subsys_data_sxlock);
-	TAILQ_FOREACH(df, &vs->v_data_free_list, vnd_link) {
+	TAILQ_FOREACH(df, &vse->v_data_free_list, vnd_link) {
 		if (df->vnd_start > end)
 			break;
 		/*
@@ -295,7 +295,7 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 			dn = TAILQ_NEXT(df, vnd_link);
 			if (df->vnd_start + df->vnd_len == dn->vnd_start) {
 				df->vnd_len += dn->vnd_len;
-				TAILQ_REMOVE(&vs->v_data_free_list, dn,
+				TAILQ_REMOVE(&vse->v_data_free_list, dn,
 				    vnd_link);
 				free(dn, M_VIMAGE_DATA_FREE);
 			}
@@ -315,19 +315,19 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 	if (df)
 		TAILQ_INSERT_BEFORE(df, dn, vnd_link);
 	else
-		TAILQ_INSERT_TAIL(&vs->v_data_free_list, dn, vnd_link);
+		TAILQ_INSERT_TAIL(&vse->v_data_free_list, dn, vnd_link);
 	sx_xunlock(&vimage_subsys_data_sxlock);
 }
 
 static int
-vimage_data_init_notsupp(struct vimage_subsys *vs __unused)
+vimage_data_init_notsupp(struct vimage_subsys *vse __unused)
 {
 
 	return (0);
 }
 
 static void *
-vimage_data_alloc_notsupp(struct vimage_subsys *vs __unused,
+vimage_data_alloc_notsupp(struct vimage_subsys *vse __unused,
     size_t size __unused)
 {
 
@@ -335,7 +335,7 @@ vimage_data_alloc_notsupp(struct vimage_subsys *vs __unused,
 }
 
 static void
-vimage_data_free_notsupp(struct vimage_subsys *vs __unused,
+vimage_data_free_notsupp(struct vimage_subsys *vse __unused,
     void *start_arg __unused, size_t size __unused)
 {
 

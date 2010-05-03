@@ -85,7 +85,7 @@ __FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.106 2009/07/14 22:48:30 rwatson 
  */
 struct elf_file_ventry {
     LIST_ENTRY(elf_file_ventry)	efe_le;	/* all virt subsys reloc entries */
-    struct vimage_subsys	*vs;	/* ref cnt.ed, for alloc/free/copy */
+    struct vimage_subsys	*vse;	/* ref cnt.ed, for alloc/free/copy */
     Elf_Addr			start;	/* Pre-reloc. virt subsys set start. */
     Elf_Addr			stop;	/* Pre-reloc. virt subsys set stop. */
     Elf_Addr			base;	/* Relocated virt subsys set address. */
@@ -580,9 +580,9 @@ parse_vimage(elf_file_t ef)
 	}
 	memcpy((void *)efe->base, (void *)efe->start, count);
 	(*vse->v_data_copy)((void *)efe->base, count);
-	/* Save vs so we can call free on the right subsystem. */
+	/* Save vse so we can call free on the right subsystem. */
 	refcount_acquire(&vse->refcnt);
-	efe->vs = vse;
+	efe->vse = vse;
 	LIST_INSERT_HEAD(&ef->ventry_head, efe, efe_le);
     }
     VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -1071,10 +1071,10 @@ link_elf_unload_file(linker_file_t file)
     VIMAGE_SUBSYS_LIST_RLOCK();
     LIST_FOREACH_SAFE(efe, &ef->ventry_head, efe_le, nefe) {
 	LIST_REMOVE(efe, efe_le);
-	(*efe->vs->v_data_free)(efe->vs, (void *)efe->base,
+	(*efe->vse->v_data_free)(efe->vse, (void *)efe->base,
 	    efe->stop - efe->start);
-	refcnt = refcount_release(&efe->vs->refcnt);
-	KASSERT(refcnt > 1, ("%s: refcnt on vs <= 1: %p", __func__, efe->vs));
+	refcnt = refcount_release(&efe->vse->refcnt);
+	KASSERT(refcnt > 1, ("%s: refcnt on vse <= 1: %p", __func__, efe->vse));
 	free(efe, M_LINKER);
     }
     VIMAGE_SUBSYS_LIST_RUNLOCK();

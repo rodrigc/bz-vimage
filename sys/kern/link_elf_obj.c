@@ -349,15 +349,15 @@ link_elf_link_preload(linker_class_t cls, const char *filename,
 				ef->progtab[pb].addr = dpcpu;
 #ifdef VIMAGE
 			} else if (ef->progtab[pb].name != NULL) {
-				struct vimage_subsys *vs;
+				struct vimage_subsys *vse;
 				void *v_data;
 
 				VIMAGE_SUBSYS_LIST_RLOCK();
-				vs = vimage_subsys_get(ef->progtab[pb].name);
-				if (vs == NULL)
+				vse = vimage_subsys_get(ef->progtab[pb].name);
+				if (vse == NULL)
 					goto no_v_subsys;
 
-				v_data = (*vs->v_data_alloc)(vs,
+				v_data = (*vse->v_data_alloc)(vse,
 				    shdr[i].sh_size);
 				if (v_data == NULL) {
 					VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -366,7 +366,7 @@ link_elf_link_preload(linker_class_t cls, const char *filename,
 				}
 				memcpy(v_data, ef->progtab[pb].addr,
 				    ef->progtab[pb].size);
-				(*vs->v_data_copy)(v_data, shdr[i].sh_size);
+				(*vse->v_data_copy)(v_data, shdr[i].sh_size);
 				ef->progtab[pb].addr = v_data;
 no_v_subsys:
 				VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -764,16 +764,16 @@ link_elf_load_file(linker_class_t cls, const char *filename,
 				    dpcpu_alloc(shdr[i].sh_size);
 #ifdef VIMAGE
 			} else if (ef->progtab[pb].name != NULL) {
-				struct vimage_subsys *vs;
+				struct vimage_subsys *vse;
 
 				VIMAGE_SUBSYS_LIST_RLOCK();
-				vs = vimage_subsys_get(ef->progtab[pb].name);
-				if (vs == NULL) {
+				vse = vimage_subsys_get(ef->progtab[pb].name);
+				if (vse == NULL) {
 					VIMAGE_SUBSYS_LIST_RUNLOCK();
 					goto no_v_subsys;
 				}
 				ef->progtab[pb].addr =
-				    (*vs->v_data_alloc)(vs, shdr[i].sh_size);
+				    (*vse->v_data_alloc)(vse, shdr[i].sh_size);
 				VIMAGE_SUBSYS_LIST_RUNLOCK();
 #endif
 			} else {
@@ -809,13 +809,13 @@ no_v_subsys:
 #ifdef VIMAGE
 				else if (ef->progtab[pb].addr !=
 				    (void *)mapbase) {
-					struct vimage_subsys *vs;
+					struct vimage_subsys *vse;
 
 					VIMAGE_SUBSYS_LIST_RLOCK();
-					vs = vimage_subsys_get(
+					vse = vimage_subsys_get(
 					    ef->progtab[pb].name);
-					if (vs != NULL)
-						(*vs->v_data_copy)(
+					if (vse != NULL)
+						(*vse->v_data_copy)(
 						    ef->progtab[pb].addr,
 						    shdr[i].sh_size);
 					VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -938,12 +938,12 @@ link_elf_unload_file(linker_file_t file)
 				    ef->progtab[i].size);
 #ifdef VIMAGE
 			else {
-				struct vimage_subsys *vs;
+				struct vimage_subsys *vse;
 
 				VIMAGE_SUBSYS_LIST_RLOCK();
-				vs = vimage_subsys_get(ef->progtab[i].name);
-				if (vs != NULL)
-					(*vs->v_data_free)(vs,
+				vse = vimage_subsys_get(ef->progtab[i].name);
+				if (vse != NULL)
+					(*vse->v_data_free)(vse,
 					    ef->progtab[i].addr,
 					    ef->progtab[i].size);
 				VIMAGE_SUBSYS_LIST_RUNLOCK();
