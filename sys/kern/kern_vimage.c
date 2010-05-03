@@ -49,7 +49,7 @@ __FBSDID("$FreeBSD$");
 MALLOC_DEFINE(M_VIMAGE_DATA_FREE, "vimage_data_free",
     "VIMAGE resource accounting");
 
-static struct sx vimage_subsys_data_lock;
+static struct sx vimage_subsys_data_sxlock;
 
 /* We do not really export it but link_elf.c knows about our guts. */
 LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
@@ -96,7 +96,7 @@ vimage_init_prelink(void *arg)
 	sx_init(&vimage_subsys_sxlock, "vimage_subsys_sxlock");
 	LIST_INIT(&vimage_subsys_head);
 
-	sx_init(&vimage_subsys_data_lock, "vimage subsys data alloc lock");
+	sx_init(&vimage_subsys_data_sxlock, "vimage subsys data alloc lock");
 }
 SYSINIT(vimage_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_FIRST,
     vimage_init_prelink, NULL);
@@ -244,7 +244,7 @@ vimage_data_alloc(struct vimage_subsys *vs, size_t size)
 
 	s = NULL;
 	size = roundup2(size, sizeof(void *));
-	sx_xlock(&vimage_subsys_data_lock);
+	sx_xlock(&vimage_subsys_data_sxlock);
 	TAILQ_FOREACH(df, &vs->v_data_free_list, vnd_link) {
 		if (df->vnd_len < size)
 			continue;
@@ -259,7 +259,7 @@ vimage_data_alloc(struct vimage_subsys *vs, size_t size)
 		df->vnd_start = df->vnd_start + size;
 		break;
 	}
-	sx_xunlock(&vimage_subsys_data_lock);
+	sx_xunlock(&vimage_subsys_data_sxlock);
 
 	return (s);
 }
@@ -282,7 +282,7 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 	 * Free a region of space and merge it with as many neighbors as
 	 * possible.  Keeping the list sorted simplifies this operation.
 	 */
-	sx_xlock(&vimage_subsys_data_lock);
+	sx_xlock(&vimage_subsys_data_sxlock);
 	TAILQ_FOREACH(df, &vs->v_data_free_list, vnd_link) {
 		if (df->vnd_start > end)
 			break;
@@ -299,13 +299,13 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 				    vnd_link);
 				free(dn, M_VIMAGE_DATA_FREE);
 			}
-			sx_xunlock(&vimage_subsys_data_lock);
+			sx_xunlock(&vimage_subsys_data_sxlock);
 			return;
 		}
 		if (df->vnd_start == end) {
 			df->vnd_start = start;
 			df->vnd_len += size;
-			sx_xunlock(&vimage_subsys_data_lock);
+			sx_xunlock(&vimage_subsys_data_sxlock);
 			return;
 		}
 	}
@@ -316,7 +316,7 @@ vimage_data_free(struct vimage_subsys *vs, void *start_arg, size_t size)
 		TAILQ_INSERT_BEFORE(df, dn, vnd_link);
 	else
 		TAILQ_INSERT_TAIL(&vs->v_data_free_list, dn, vnd_link);
-	sx_xunlock(&vimage_subsys_data_lock);
+	sx_xunlock(&vimage_subsys_data_sxlock);
 }
 
 static int
