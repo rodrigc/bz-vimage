@@ -180,22 +180,7 @@ MALLOC_DEFINE(M_VNET_DATA, "vnet_data", "VNET data");
  */
 static VNET_DEFINE(char, modspace[VNET_MODMIN]);
 
-/*
- * Global lists of subsystem constructor and destructors for vnets.  They are
- * registered via VNET_SYSINIT() and VNET_SYSUNINIT().  Both lists are
- * protected by the vnet_sysinit_sxlock global lock.
- */
-static TAILQ_HEAD(vnet_sysinit_head, vnet_sysinit) vnet_constructors =
-	TAILQ_HEAD_INITIALIZER(vnet_constructors);
-static TAILQ_HEAD(vnet_sysuninit_head, vnet_sysinit) vnet_destructors =
-	TAILQ_HEAD_INITIALIZER(vnet_destructors);
-
-struct sx		vnet_sysinit_sxlock;
-
-#define	VNET_SYSINIT_WLOCK()	sx_xlock(&vnet_sysinit_sxlock);
-#define	VNET_SYSINIT_WUNLOCK()	sx_xunlock(&vnet_sysinit_sxlock);
-#define	VNET_SYSINIT_RLOCK()	sx_slock(&vnet_sysinit_sxlock);
-#define	VNET_SYSINIT_RUNLOCK()	sx_sunlock(&vnet_sysinit_sxlock);
+struct vimage_subsys vnet_data;
 
 SDT_PROVIDER_DEFINE(vnet);
 SDT_PROBE_DEFINE1(vnet, functions, vnet_alloc, entry, "int");
@@ -204,9 +189,7 @@ SDT_PROBE_DEFINE2(vnet, functions, vnet_alloc, return, "int", "struct vnet *");
 SDT_PROBE_DEFINE2(vnet, functions, vnet_destroy, entry, "int", "struct vnet *");
 SDT_PROBE_DEFINE1(vnet, functions, vnet_destroy, return, "int");
 
-#ifdef DDB
-static void db_show_vnet_print_vs(struct vnet_sysinit *, int);
-#endif
+void vnet_sysinit_iterator(struct vimage_sysinit *);
 
 /*
  * Allocate a virtual network stack.
@@ -237,7 +220,7 @@ vnet_alloc(void)
 
 	/* Initialize / attach vnet module instances. */
 	CURVNET_SET_QUIET(vnet);
-	vnet_sysinit();
+	vimage_sysinit(&vnet_data);
 	CURVNET_RESTORE();
 
 	VNET_LIST_WLOCK();
@@ -272,7 +255,7 @@ vnet_destroy(struct vnet *vnet)
 			if_vmove(ifp, ifp->if_home_vnet);
 	}
 
-	vnet_sysuninit();
+	vimage_sysuninit(&vnet_data);
 	CURVNET_RESTORE();
 
 	/*
@@ -333,14 +316,23 @@ vnet_data_copy(void *start, size_t size)
 /*
  * Boot time initialization and allocation of virtual network stacks.
  */
-static struct vimage_subsys vnet_data =
+struct vimage_subsys vnet_data =
 {
 	.setname		= VNET_SETNAME,
 
+	/* Dynamic/module data allocator. */
 	.v_data_free_list	=
 	    TAILQ_HEAD_INITIALIZER(vnet_data.v_data_free_list),
 	.v_data_init		= vnet_data_init,
 	.v_data_copy		= vnet_data_copy,
+
+	/* System initialization framework. */
+	.v_sysint_constructors	=
+	    TAILQ_HEAD_INITIALIZER(vnet_data.v_sysint_constructors),
+	.v_sysint_destructors	=
+	    TAILQ_HEAD_INITIALIZER(vnet_data.v_sysint_destructors),
+	.v_sysinit_earliest	= SI_SUB_VNET,
+	.v_sysinit_iter		= vnet_sysinit_iterator,
 };
 
 static void
@@ -349,7 +341,6 @@ vnet_init_prelink(void *arg)
 
 	rw_init(&vnet_rwlock, "vnet_rwlock");
 	sx_init(&vnet_sxlock, "vnet_sxlock");
-	sx_init(&vnet_sysinit_sxlock, "vnet_sysinit_sxlock");
 	LIST_INIT(&vnet_head);
 
 	vimage_subsys_register(&vnet_data);
@@ -431,131 +422,21 @@ vnet_sysctl_handle_uint(SYSCTL_HANDLER_ARGS)
  * and VNET_SYSUNINIT().
  */
 void
-vnet_register_sysinit(void *arg)
+vnet_sysinit_iterator(struct vimage_sysinit *vs)
 {
-	struct vnet_sysinit *vs, *vs2;	
 	struct vnet *vnet;
 
-	vs = arg;
-	KASSERT(vs->subsystem > SI_SUB_VNET, ("vnet sysinit too early"));
-
-	/* Add the constructor to the global list of vnet constructors. */
-	VNET_SYSINIT_WLOCK();
-	TAILQ_FOREACH(vs2, &vnet_constructors, link) {
-		if (vs2->subsystem > vs->subsystem)
-			break;
-		if (vs2->subsystem == vs->subsystem && vs2->order > vs->order)
-			break;
-	}
-	if (vs2 != NULL)
-		TAILQ_INSERT_BEFORE(vs2, vs, link);
-	else
-		TAILQ_INSERT_TAIL(&vnet_constructors, vs, link);
-
 	/*
-	 * Invoke the constructor on all the existing vnets when it is
-	 * registered.
+	 * Invoke the sysinit function on all the existing vnets. This
+	 * happens upon (de)registereation of the sysinit handler.
 	 */
+	VNET_LIST_RLOCK();
 	VNET_FOREACH(vnet) {
 		CURVNET_SET_QUIET(vnet);
 		vs->func(vs->arg);
 		CURVNET_RESTORE();
 	}
-	VNET_SYSINIT_WUNLOCK();
-}
-
-void
-vnet_deregister_sysinit(void *arg)
-{
-	struct vnet_sysinit *vs;
-
-	vs = arg;
-
-	/* Remove the constructor from the global list of vnet constructors. */
-	VNET_SYSINIT_WLOCK();
-	TAILQ_REMOVE(&vnet_constructors, vs, link);
-	VNET_SYSINIT_WUNLOCK();
-}
-
-void
-vnet_register_sysuninit(void *arg)
-{
-	struct vnet_sysinit *vs, *vs2;
-
-	vs = arg;
-
-	/* Add the destructor to the global list of vnet destructors. */
-	VNET_SYSINIT_WLOCK();
-	TAILQ_FOREACH(vs2, &vnet_destructors, link) {
-		if (vs2->subsystem > vs->subsystem)
-			break;
-		if (vs2->subsystem == vs->subsystem && vs2->order > vs->order)
-			break;
-	}
-	if (vs2 != NULL)
-		TAILQ_INSERT_BEFORE(vs2, vs, link);
-	else
-		TAILQ_INSERT_TAIL(&vnet_destructors, vs, link);
-	VNET_SYSINIT_WUNLOCK();
-}
-
-void
-vnet_deregister_sysuninit(void *arg)
-{
-	struct vnet_sysinit *vs;
-	struct vnet *vnet;
-
-	vs = arg;
-
-	/*
-	 * Invoke the destructor on all the existing vnets when it is
-	 * deregistered.
-	 */
-	VNET_SYSINIT_WLOCK();
-	VNET_FOREACH(vnet) {
-		CURVNET_SET_QUIET(vnet);
-		vs->func(vs->arg);
-		CURVNET_RESTORE();
-	}
-
-	/* Remove the destructor from the global list of vnet destructors. */
-	TAILQ_REMOVE(&vnet_destructors, vs, link);
-	VNET_SYSINIT_WUNLOCK();
-}
-
-/*
- * Invoke all registered vnet constructors on the current vnet.  Used during
- * vnet construction.  The caller is responsible for ensuring the new vnet is
- * the current vnet and that the vnet_sysinit_sxlock lock is locked.
- */
-void
-vnet_sysinit(void)
-{
-	struct vnet_sysinit *vs;
-
-	VNET_SYSINIT_RLOCK();
-	TAILQ_FOREACH(vs, &vnet_constructors, link) {
-		vs->func(vs->arg);
-	}
-	VNET_SYSINIT_RUNLOCK();
-}
-
-/*
- * Invoke all registered vnet destructors on the current vnet.  Used during
- * vnet destruction.  The caller is responsible for ensuring the dying vnet
- * the current vnet and that the vnet_sysinit_sxlock lock is locked.
- */
-void
-vnet_sysuninit(void)
-{
-	struct vnet_sysinit *vs;
-
-	VNET_SYSINIT_RLOCK();
-	TAILQ_FOREACH_REVERSE(vs, &vnet_destructors, vnet_sysuninit_head,
-	    link) {
-		vs->func(vs->arg);
-	}
-	VNET_SYSINIT_RUNLOCK();
+	VNET_LIST_RUNLOCK();
 }
 
 /*
@@ -572,7 +453,7 @@ vnet_sysuninit(void)
 void
 vnet_global_eventhandler_iterator_func(void *arg, ...)
 {
-	VNET_ITERATOR_DECL(vnet_iter);
+	struct vnet *vnet;
 	struct eventhandler_entry_vimage *v_ee;
 
 	/*
@@ -583,8 +464,8 @@ vnet_global_eventhandler_iterator_func(void *arg, ...)
 	 */
 	v_ee = arg;
 	VNET_LIST_RLOCK();
-	VNET_FOREACH(vnet_iter) {
-		CURVNET_SET(vnet_iter);
+	VNET_FOREACH(vnet) {
+		CURVNET_SET(vnet);
 		((vimage_iterator_func_t)v_ee->func)(v_ee->ee_arg);
 		CURVNET_RESTORE();
 	}
@@ -675,63 +556,6 @@ DB_SHOW_COMMAND(vnets, db_show_vnets)
 	}
 }
 
-static void
-db_show_vnet_print_vs(struct vnet_sysinit *vs, int ddb)
-{
-	const char *vsname, *funcname;
-	c_db_sym_t sym;
-	db_expr_t  offset;
-
-#define xprint(...)							\
-	if (ddb)							\
-		db_printf(__VA_ARGS__);					\
-	else								\
-		printf(__VA_ARGS__)
-
-	if (vs == NULL) {
-		xprint("%s: no vnet_sysinit * given\n", __func__);
-		return;
-	}
-
-	sym = db_search_symbol((vm_offset_t)vs, DB_STGY_ANY, &offset);
-	db_symbol_values(sym, &vsname, NULL);
-	sym = db_search_symbol((vm_offset_t)vs->func, DB_STGY_PROC, &offset);
-	db_symbol_values(sym, &funcname, NULL);
-	xprint("%s(%p)\n", (vsname != NULL) ? vsname : "", vs);
-	xprint("  0x%08x 0x%08x\n", vs->subsystem, vs->order);
-	xprint("  %p(%s)(%p)\n",
-	    vs->func, (funcname != NULL) ? funcname : "", vs->arg);
-#undef xprint
-}
-
-DB_SHOW_COMMAND(vnet_sysinit, db_show_vnet_sysinit)
-{
-	struct vnet_sysinit *vs;
-
-	db_printf("VNET_SYSINIT vs Name(Ptr)\n");
-	db_printf("  Subsystem  Order\n");
-	db_printf("  Function(Name)(Arg)\n");
-	TAILQ_FOREACH(vs, &vnet_constructors, link) {
-		db_show_vnet_print_vs(vs, 1);
-		if (db_pager_quit)
-			break;
-	}
-}
-
-DB_SHOW_COMMAND(vnet_sysuninit, db_show_vnet_sysuninit)
-{
-	struct vnet_sysinit *vs;
-
-	db_printf("VNET_SYSUNINIT vs Name(Ptr)\n");
-	db_printf("  Subsystem  Order\n");
-	db_printf("  Function(Name)(Arg)\n");
-	TAILQ_FOREACH_REVERSE(vs, &vnet_destructors, vnet_sysuninit_head,
-	    link) {
-		db_show_vnet_print_vs(vs, 1);
-		if (db_pager_quit)
-			break;
-	}
-}
 
 #ifdef VNET_DEBUG
 DB_SHOW_COMMAND(vnetrcrs, db_show_vnetrcrs)

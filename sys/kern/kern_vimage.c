@@ -32,6 +32,8 @@
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
+#include "opt_ddb.h"
+
 #include <sys/param.h>
 #include <sys/jail.h>
 #include <sys/kernel.h>
@@ -45,6 +47,11 @@ __FBSDID("$FreeBSD$");
 #include <sys/systm.h>
 #include <sys/queue.h>
 #include <sys/vimage.h>
+
+#ifdef DDB
+#include <ddb/ddb.h>
+#include <ddb/db_sym.h>
+#endif
 
 MALLOC_DEFINE(M_VIMAGE_DATA_FREE, "vimage_data_free",
     "VIMAGE resource accounting");
@@ -73,6 +80,17 @@ struct rwlock		vimage_subsys_rwlock;
 	sx_xunlock(&vimage_subsys_sxlock);				\
 } while (0)
 
+/*
+ * Global lists of subsystem constructor and destructors for subsystems.
+ * They are registered via SUBSYS_SYSINIT() and SUBSYS_SYSUNINIT().  Both
+ * lists are protected by the vimage_sysinit_sxlock global lock.
+ */
+static struct sx	vimage_sysinit_sxlock;
+
+#define	VIMAGE_SYSINIT_WLOCK()		sx_xlock(&vimage_sysinit_sxlock);
+#define	VIMAGE_SYSINIT_WUNLOCK()	sx_xunlock(&vimage_sysinit_sxlock);
+#define	VIMAGE_SYSINIT_RLOCK()		sx_slock(&vimage_sysinit_sxlock);
+#define	VIMAGE_SYSINIT_RUNLOCK()	sx_sunlock(&vimage_sysinit_sxlock);
 
 static void *vimage_data_alloc(struct vimage_subsys *, size_t);
 static void vimage_data_free(struct vimage_subsys *, void *, size_t);
@@ -97,6 +115,8 @@ vimage_init_prelink(void *arg)
 	LIST_INIT(&vimage_subsys_head);
 
 	sx_init(&vimage_subsys_data_sxlock, "vimage subsys data alloc lock");
+
+	sx_init(&vimage_sysinit_sxlock, "vimage_sysinit_sxlock");
 }
 SYSINIT(vimage_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_FIRST,
     vimage_init_prelink, NULL);
@@ -131,7 +151,7 @@ vimage_subsys_register(struct vimage_subsys *vse)
 		    "\"set_\": %s\n", __func__, vse, vse->setname);
 		return (EINVAL);
 	}
-	/* The short name is needed for link_elf.c. */
+	/* The short name is needed for link_elf.c as well as printfs. */
 	if (vse->name == NULL)
 		vse->name = vse->setname + 4;	/* Skip "set_". */
 	if (vse->v_data_init == NULL) {
@@ -346,5 +366,269 @@ vimage_data_copy_notsupp(void *start __unused, size_t size __unused)
 {
 
 }
+
+
+/*
+ * Invoke all registered subsystem constructors on the current subsystem.  Used
+ * during subsystem construction.  The caller is responsible for ensuring the
+ * new subsystem is the current subsystem.
+ */
+void
+vimage_sysinit(struct vimage_subsys *vse)
+{
+	struct vimage_sysinit *vs;
+
+	VIMAGE_SYSINIT_RLOCK();
+	TAILQ_FOREACH(vs, &vse->v_sysint_constructors, link) {
+		vs->func(vs->arg);
+	}
+	VIMAGE_SYSINIT_RUNLOCK();
+}
+
+/*
+ * Invoke all registered subsystem destructors on the current subsystem.  Used
+ * during subsystem destruction.  The caller is responsible for ensuring the
+ * dying subsystem the current subsystem.
+ */
+void
+vimage_sysuninit(struct vimage_subsys *vse)
+{
+	struct vimage_sysinit *vs;
+
+	VIMAGE_SYSINIT_RLOCK();
+	TAILQ_FOREACH_REVERSE(vs, &vse->v_sysint_destructors,
+	    vimage_sysuninit_head, link) {
+		vs->func(vs->arg);
+	}
+	VIMAGE_SYSINIT_RUNLOCK();
+}
+
+void
+vimage_register_sysinit(void *arg)
+{
+	struct vimage_sysinit *vs, *vs2;	
+	struct vimage_subsys *vse;
+
+	vs = arg;
+	vse = vs->v_subsys;
+	KASSERT(vs->subsystem > vse->v_sysinit_earliest, ("%s: %s sysinit too "
+	    "early: struct vimage_sysinit *=%p 0x%08x <= 0x%08x",
+	    __func__, vse->name, vs, vs->subsystem, vse->v_sysinit_earliest));
+
+	/* Add the constructor to the global list of subsystem constructors. */
+	VIMAGE_SYSINIT_WLOCK();
+	TAILQ_FOREACH(vs2, &vse->v_sysint_constructors, link) {
+		if (vs2->subsystem > vs->subsystem)
+			break;
+		if (vs2->subsystem == vs->subsystem && vs2->order > vs->order)
+			break;
+	}
+	if (vs2 != NULL)
+		TAILQ_INSERT_BEFORE(vs2, vs, link);
+	else
+		TAILQ_INSERT_TAIL(&vse->v_sysint_constructors, vs, link);
+
+	/*
+	 * Invoke the constructor on all the existing subsystem instances when
+	 * it is registered.
+	 */
+	(*vse->v_sysinit_iter)(vs);
+	VIMAGE_SYSINIT_WUNLOCK();
+}
+
+void
+vimage_deregister_sysinit(void *arg)
+{
+	struct vimage_sysinit *vs;
+	struct vimage_subsys *vse;
+
+	vs = arg;
+	vse = vs->v_subsys;
+	/*
+	 * Remove the constructor from the global list of subsystem
+	 * constructors.
+	 */
+	VIMAGE_SYSINIT_WLOCK();
+	TAILQ_REMOVE(&vse->v_sysint_constructors, vs, link);
+	VIMAGE_SYSINIT_WUNLOCK();
+}
+
+void
+vimage_register_sysuninit(void *arg)
+{
+	struct vimage_sysinit *vs, *vs2;
+	struct vimage_subsys *vse;
+
+	vs = arg;
+	vse = vs->v_subsys;
+
+	/* Add the destructor to the global list of subsystem destructors. */
+	VIMAGE_SYSINIT_WLOCK();
+	TAILQ_FOREACH(vs2, &vse->v_sysint_destructors, link) {
+		if (vs2->subsystem > vs->subsystem)
+			break;
+		if (vs2->subsystem == vs->subsystem && vs2->order > vs->order)
+			break;
+	}
+	if (vs2 != NULL)
+		TAILQ_INSERT_BEFORE(vs2, vs, link);
+	else
+		TAILQ_INSERT_TAIL(&vse->v_sysint_destructors, vs, link);
+	VIMAGE_SYSINIT_WUNLOCK();
+}
+
+void
+vimage_deregister_sysuninit(void *arg)
+{
+	struct vimage_sysinit *vs;
+	struct vimage_subsys *vse;
+
+	vs = arg;
+	vse = vs->v_subsys;
+
+	/*
+	 * Invoke the destructor on all the existing subsystem instance when
+	 * it is deregistered.
+	 */
+	VIMAGE_SYSINIT_WLOCK();
+	(*vse->v_sysinit_iter)(vs);
+	/*
+	 * Remove the destructor from the global list of subsystem destructors.
+	 */
+	TAILQ_REMOVE(&vse->v_sysint_destructors, vs, link);
+	VIMAGE_SYSINIT_WUNLOCK();
+}
+
+#ifdef DDB
+static void
+db_show_vimage_print_vs(struct vimage_sysinit *vs)
+{
+	const char *vsname, *funcname;
+	c_db_sym_t sym;
+	db_expr_t  offset;
+
+	if (vs == NULL) {
+		db_printf("%s: no vimage_sysinit * given\n", __func__);
+		return;
+	}
+
+	sym = db_search_symbol((vm_offset_t)vs, DB_STGY_ANY, &offset);
+	db_symbol_values(sym, &vsname, NULL);
+	sym = db_search_symbol((vm_offset_t)vs->func, DB_STGY_PROC, &offset);
+	db_symbol_values(sym, &funcname, NULL);
+	db_printf("%s(%p)\n", (vsname != NULL) ? vsname : "", vs);
+	db_printf("  0x%08x 0x%08x\n", vs->subsystem, vs->order);
+	db_printf("  %p(%s)(%p)\n",
+	    vs->func, (funcname != NULL) ? funcname : "", vs->arg);
+}
+
+DB_SHOW_VIMAGE_COMMAND(sysinit, db_show_vimage_sysinit)
+{
+	struct vimage_subsys *vse;
+	struct vimage_sysinit *vs;
+
+	if (!have_addr) {
+		db_printf("usage: show vimage sysinit "
+		    "<struct vimage_subsys *>\n");
+		return;
+	}
+	vse = (struct vimage_subsys *)addr;
+
+	db_printf("%s_SYSINIT vs Name(Ptr)\n", vse->name);
+	db_printf("  Subsystem  Order\n");
+	db_printf("  Function(Name)(Arg)\n");
+	TAILQ_FOREACH(vs, &vse->v_sysint_constructors, link) {
+		db_show_vimage_print_vs(vs);
+		if (db_pager_quit)
+			break;
+	}
+}
+
+DB_SHOW_VIMAGE_COMMAND(sysuninit, db_show_vimage_sysuninit)
+{
+	struct vimage_subsys *vse;
+	struct vimage_sysinit *vs;
+
+	if (!have_addr) {
+		db_printf("usage: show vimage sysuninit "
+		    "<struct vimage_subsys *>\n");
+		return;
+	}
+	vse = (struct vimage_subsys *)addr;
+
+	db_printf("%s_SYSUNINIT vs Name(Ptr)\n", vse->name);
+	db_printf("  Subsystem  Order\n");
+	db_printf("  Function(Name)(Arg)\n");
+	TAILQ_FOREACH_REVERSE(vs, &vse->v_sysint_destructors,
+	    vimage_sysuninit_head, link) {
+		db_show_vimage_print_vs(vs);
+		if (db_pager_quit)
+			break;
+	}
+}
+
+static void
+db_show_vimage_print_subsys(struct vimage_subsys *vse)
+{
+	const char *funcname;
+	c_db_sym_t sym;
+	db_expr_t  offset;
+
+	if (vse == NULL) {
+		db_printf("%s: no vimage_subsys * given\n", __func__);
+		return;
+	}
+
+#define	V_FPTR(fptr)								\
+	sym = db_search_symbol((vm_offset_t)vse->fptr, DB_STGY_PROC, &offset);	\
+	db_symbol_values(sym, &funcname, NULL);					\
+	db_printf("  %-30s = %s(%p)\n", # fptr ,				\
+	    (funcname != NULL) ? funcname : "", vse->fptr);
+#define	V_PRINT(name, format)							\
+	db_printf("  %-30s = " format "\n", # name, vse->name);
+#define	V_PRINT_PTR(name, format)						\
+	db_printf("  %-30s = " format "\n", # name, &vse->name);
+
+	db_printf("VIMAGE subsystem %s (%p)\n", vse->name, vse);
+	V_PRINT(setname, "%s");
+	V_PRINT(refcnt, "%d");
+	V_PRINT_PTR(v_data_free_list, "%p");
+	V_FPTR(v_data_init);
+	V_FPTR(v_data_alloc);
+	V_FPTR(v_data_free);
+	V_FPTR(v_data_copy);
+	V_PRINT_PTR(v_sysint_constructors, "%p");
+	V_PRINT_PTR(v_sysint_destructors, "%p");
+	V_PRINT(v_sysinit_earliest, "0x%07X");
+	V_FPTR(v_sysinit_iter);
+#undef	V_PRINT_PTR
+#undef	V_PRINT
+#undef	V_FPTR
+}
+
+DB_SHOW_VIMAGE_COMMAND(subsys, db_show_vimage_subsys)
+{
+
+	if (!have_addr) {
+		db_printf("usage: show vimage sysinit "
+		    "<struct vimage_subsys *>\n");
+		return;
+	}
+	db_show_vimage_print_subsys((struct vimage_subsys *)addr);
+}
+
+
+DB_SHOW_ALL_COMMAND(vimage_subsys, db_show_all_vimage_subsys)
+{
+	struct vimage_subsys *vse;
+
+	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
+		db_show_vimage_print_subsys(vse);
+		if (db_pager_quit)
+			break;
+	}
+}
+
+#endif
 
 /* end */
