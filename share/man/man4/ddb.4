@@ -60,7 +60,7 @@
 .\"
 .\" $FreeBSD: src/share/man/man4/ddb.4,v 1.64 2010/03/12 10:01:06 uqs Exp $
 .\"
-.Dd April 20, 2010
+.Dd May 3, 2010
 .Dt DDB 4
 .Os
 .Sh NAME
@@ -563,6 +563,11 @@ Output is similar to
 but also includes the address of the TTY structure.
 .\"
 .Pp
+.It Ic show Cm all vimage_subsys
+Show a list of all virtualized subsystems known to the
+virtualization framework.
+.\"
+.Pp
 .It Ic show Cm allchains
 Show the same information like "show lockchain" does, but
 for every thread in the system.
@@ -1060,7 +1065,25 @@ with the help of
 Shows UNIX domain socket private control block
 .Vt struct unpcb
 present at the address
-.Ar addr
+.Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage sysinit Ar addr
+Show system startup interface order information for a virtualized
+subsystem identified by
+.Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage sysinit Ar addr
+Show system startup interface order information for a virtualized
+subsystem identified by
+.Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage subsys Ar addr
+Show information of the virtualization framework for a virtualized
+subsystem indentified by
+.Ar addr .
 .\"
 .Pp
 .It Ic show Cm vmochk
@@ -1074,18 +1097,6 @@ VM object.
 Currently, it is not possible to use this command when
 .Xr witness 4
 is compiled in the kernel.
-.\"
-.Pp
-.It Ic show Cm vnet_sysinit
-Show
-.Xr vnet 9
-system startup interface order information.
-.\"
-.Pp
-.It Ic show Cm vnet_sysuninit
-Show
-.Xr vnet 9
-system startup interface teardown order information.
 .\"
 .Pp
 .It Ic show Cm vnetrcrs
