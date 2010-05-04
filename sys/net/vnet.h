@@ -227,8 +227,8 @@ __asm__(
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)		_VNET_PTR((vnet)->vnet_data_base, n)
-#define	VNET_VNET(vnet, n)		(*VNET_VNET_PTR((vnet), n))
+#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR((vnet)->vnet_data_base, n)
+#define	VNET_VNET(vnet, n)	(*VNET_VNET_PTR((vnet), n))
 
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)
 #define	VNET(n)			VNET_VNET(curvnet, n)
@@ -334,8 +334,8 @@ do {									\
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)		(&(n))
-#define	VNET_VNET(vnet, n)		(n)
+#define	VNET_VNET_PTR(vnet, n)	(&(n))
+#define	VNET_VNET(vnet, n)	(n)
 
 #define	VNET_PTR(n)		(&(n))
 #define	VNET(n)			(n)
