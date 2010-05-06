@@ -37,14 +37,10 @@
 __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $");
 
 #include "opt_ddb.h"
-#include "opt_kdb.h"
-#include "opt_kdtrace.h"
 
 #include <sys/param.h>
-#include <sys/kdb.h>
 #include <sys/kernel.h>
 #include <sys/jail.h>
-#include <sys/sdt.h>
 #include <sys/systm.h>
 #include <sys/linker_set.h>
 #include <sys/lock.h>
@@ -61,8 +57,6 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $")
 #include <ddb/db_sym.h>
 #endif
 
-#include <net/if.h>
-#include <net/if_var.h>
 #include <net/vnet.h>
 
 /*-
@@ -78,28 +72,6 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $")
  *   stack instance.
  */
 
-MALLOC_DEFINE(M_VNET, "vnet", "network stack control block");
-
-/*
- * The virtual network stack list has two read-write locks, one sleepable and
- * the other not, so that the list can be stablized and walked in a variety
- * of network stack contexts.  Both must be acquired exclusively to modify
- * the list, but a read lock of either lock is sufficient to walk the list.
- */
-struct rwlock		vnet_rwlock;
-struct sx		vnet_sxlock;
-
-#define	VNET_LIST_WLOCK() do {						\
-	sx_xlock(&vnet_sxlock);						\
-	rw_wlock(&vnet_rwlock);						\
-} while (0)
-
-#define	VNET_LIST_WUNLOCK() do {					\
-	rw_wunlock(&vnet_rwlock);					\
-	sx_xunlock(&vnet_sxlock);					\
-} while (0)
-
-struct vnet_list_head vnet_head;
 struct vnet *vnet0;
 
 /*
@@ -158,8 +130,6 @@ struct vnet *vnet0;
  */
 #define	VNET_BYTES	(VNET_STOP - VNET_START)
 
-MALLOC_DEFINE(M_VNET_DATA, "vnet_data", "VNET data");
-
 /*
  * VNET_MODMIN is the minimum number of bytes we will reserve for the sum of
  * global variables across all loaded modules.  As this actually sizes an
@@ -179,13 +149,6 @@ static VNET_DEFINE(char, modspace[VNET_MODMIN]);
 
 struct vimage_subsys vnet_data;
 
-SDT_PROVIDER_DEFINE(vnet);
-SDT_PROBE_DEFINE1(vnet, functions, vnet_alloc, entry, "int");
-SDT_PROBE_DEFINE2(vnet, functions, vnet_alloc, alloc, "int", "struct vnet *");
-SDT_PROBE_DEFINE2(vnet, functions, vnet_alloc, return, "int", "struct vnet *");
-SDT_PROBE_DEFINE2(vnet, functions, vnet_destroy, entry, "int", "struct vnet *");
-SDT_PROBE_DEFINE1(vnet, functions, vnet_destroy, return, "int");
-
 void vnet_sysinit_iterator(struct vimage_sysinit *);
 
 /*
@@ -194,38 +157,9 @@ void vnet_sysinit_iterator(struct vimage_sysinit *);
 struct vnet *
 vnet_alloc(void)
 {
-	struct vnet *vnet;
 
-	SDT_PROBE1(vnet, functions, vnet_alloc, entry, __LINE__);
-	vnet = malloc(sizeof(struct vnet), M_VNET, M_WAITOK | M_ZERO);
-	vnet->vnet_magic_n = VNET_MAGIC_N;
-	SDT_PROBE2(vnet, functions, vnet_alloc, alloc, __LINE__, vnet);
-
-	/*
-	 * Allocate storage for virtualized global variables and copy in
-	 * initial values form our 'master' copy.
-	 */
-	vnet->vnet_data_mem = malloc(VNET_SIZE, M_VNET_DATA, M_WAITOK);
-	memcpy(vnet->vnet_data_mem, (void *)VNET_START, VNET_BYTES);
-
-	/*
-	 * All use of vnet-specific data will immediately subtract VNET_START
-	 * from the base memory pointer, so pre-calculate that now to avoid
-	 * it on each use.
-	 */
-	vnet->vnet_data_base = (uintptr_t)vnet->vnet_data_mem - VNET_START;
-
-	/* Initialize / attach vnet module instances. */
-	CURVNET_SET_QUIET(vnet);
-	vimage_sysinit(&vnet_data);
-	CURVNET_RESTORE();
-
-	VNET_LIST_WLOCK();
-	LIST_INSERT_HEAD(&vnet_head, vnet, vnet_le);
-	VNET_LIST_WUNLOCK();
-
-	SDT_PROBE2(vnet, functions, vnet_alloc, return, __LINE__, vnet);
-	return (vnet);
+	return ((struct vnet *)vimage_alloc(&vnet_data,
+	    VNET_START, VNET_SIZE, VNET_BYTES));
 }
 
 /*
@@ -234,28 +168,13 @@ vnet_alloc(void)
 void
 vnet_destroy(struct vnet *vnet)
 {
+	struct vimage *v;
 
-	SDT_PROBE2(vnet, functions, vnet_destroy, entry, __LINE__, vnet);
 	KASSERT(vnet->vnet_sockcnt == 0,
 	    ("%s: vnet still has sockets", __func__));
+	v = (struct vimage *)vnet;
 
-	VNET_LIST_WLOCK();
-	LIST_REMOVE(vnet, vnet_le);
-	VNET_LIST_WUNLOCK();
-
-	CURVNET_SET_QUIET(vnet);
-	vimage_sysuninit(&vnet_data);
-	CURVNET_RESTORE();
-
-	/*
-	 * Release storage for the virtual network stack instance.
-	 */
-	free(vnet->vnet_data_mem, M_VNET_DATA);
-	vnet->vnet_data_mem = NULL;
-	vnet->vnet_data_base = 0;
-	vnet->vnet_magic_n = 0xdeadbeef;
-	free(vnet, M_VNET);
-	SDT_PROBE1(vnet, functions, vnet_destroy, return, __LINE__);
+	vimage_destroy(&vnet_data, v);
 }
 
 /*
@@ -319,10 +238,6 @@ static void
 vnet_init_prelink(void *arg)
 {
 
-	rw_init(&vnet_rwlock, "vnet_rwlock");
-	sx_init(&vnet_sxlock, "vnet_sxlock");
-	LIST_INIT(&vnet_head);
-
 	vimage_subsys_register(&vnet_data);
 }
 SYSINIT(vnet_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_SECOND,
@@ -377,25 +292,23 @@ vnet_sysinit_iterator(struct vimage_sysinit *vs)
 	VNET_LIST_RUNLOCK();
 }
 
+#ifdef DDB
 /*
  * DDB(4).
  */
-#ifdef DDB
 DB_SHOW_COMMAND(vnets, db_show_vnets)
 {
-	VNET_ITERATOR_DECL(vnet_iter);
+	VNET_ITERATOR_DECL(v);
 
-	VNET_FOREACH(vnet_iter) {
-		db_printf("vnet            = %p\n", vnet_iter);
-		db_printf(" vnet_magic_n   = 0x%x (%s, orig 0x%x)\n",
-		    vnet_iter->vnet_magic_n,
-		    (vnet_iter->vnet_magic_n == VNET_MAGIC_N) ?
-			"ok" : "mismatch", VNET_MAGIC_N);
-		db_printf(" vnet_ifcnt     = %u\n", vnet_iter->vnet_ifcnt);
-		db_printf(" vnet_sockcnt   = %u\n", vnet_iter->vnet_sockcnt);
-		db_printf(" vnet_data_mem  = %p\n", vnet_iter->vnet_data_mem);
+	VNET_FOREACH(v) {
+		struct vnet *vnet = (struct vnet *)v;
+
+		db_printf("vnet            = %p\n", v);
+		db_printf(" vnet_data_mem  = %p\n", v->v_data_mem);
 		db_printf(" vnet_data_base = 0x%jx\n",
-		    (uintmax_t)vnet_iter->vnet_data_base);
+		    (uintmax_t)v->v_data_base);
+		db_printf(" vnet_ifcnt     = %u\n", vnet->vnet_ifcnt);
+		db_printf(" vnet_sockcnt   = %u\n", vnet->vnet_sockcnt);
 		db_printf("\n");
 		if (db_pager_quit)
 			break;

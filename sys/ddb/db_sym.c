@@ -269,12 +269,12 @@ db_value_of_name_vnet(name, valuep)
 	static char     tmp[256];
 	db_expr_t	value;
 	c_db_sym_t	sym;
-	struct vnet	*vnet;
+	struct vimage	*v;
 
 	if (db_vnet != NULL)
-		vnet = db_vnet;
+		v = db_vnet;
 	else
-		vnet = curvnet;
+		v = (struct vimage *)curvnet;
 	snprintf(tmp, sizeof(tmp), "vnet_entry_%s", name);
 	sym = db_lookup(tmp);
 	if (sym == C_DB_SYM_NULL)
@@ -282,7 +282,7 @@ db_value_of_name_vnet(name, valuep)
 	db_symbol_values(sym, &name, &value);
 	if (value < VNET_START || value >= VNET_STOP)
 		return (FALSE);
-	*valuep = (db_expr_t)((uintptr_t)value + vnet->vnet_data_base);
+	*valuep = (db_expr_t)((uintptr_t)value + v->v_data_base);
 	return (TRUE);
 #else
 	return (FALSE);

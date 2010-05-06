@@ -33,10 +33,13 @@
 __FBSDID("$FreeBSD$");
 
 #include "opt_ddb.h"
+#include "opt_kdb.h"
+#include "opt_kdtrace.h"
 
 #include <sys/param.h>
 #include <sys/eventhandler.h>
 #include <sys/jail.h>
+#include <sys/kdb.h>
 #include <sys/kernel.h>
 #include <sys/libkern.h>
 #include <sys/lock.h>
@@ -44,6 +47,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/proc.h>
 #include <sys/refcount.h>
 #include <sys/rwlock.h>
+#include <sys/sdt.h>
 #include <sys/sx.h>
 #include <sys/systm.h>
 #include <sys/queue.h>
@@ -111,6 +115,13 @@ static struct sx	vimage_sysinit_sxlock;
 #define	VIMAGE_SYSINIT_WUNLOCK()	sx_xunlock(&vimage_sysinit_sxlock);
 #define	VIMAGE_SYSINIT_RLOCK()		sx_slock(&vimage_sysinit_sxlock);
 #define	VIMAGE_SYSINIT_RUNLOCK()	sx_sunlock(&vimage_sysinit_sxlock);
+
+SDT_PROVIDER_DEFINE(vimage);
+SDT_PROBE_DEFINE1(vimage, functions, vimage_alloc, entry, "int");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int", "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int", "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "int", "struct vimage *");
+SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy, return, "int");
 
 static void *vimage_data_alloc(struct vimage_subsys *, size_t);
 static void vimage_data_free(struct vimage_subsys *, void *, size_t);
@@ -277,6 +288,72 @@ vimage_subsys_get(const char *setname)
 
 	return (NULL);
 }
+
+/*
+ * Allocate a virtual instance.
+ */
+struct vimage *
+vimage_alloc(struct vimage_subsys *vse, uintptr_t start, size_t size,
+    size_t bytes)
+{
+	struct vimage *v;
+
+	SDT_PROBE1(vimage, functions, vimage_alloc, entry, __LINE__);
+	v = malloc(vse->v_instance_size, M_VIMAGE, M_WAITOK | M_ZERO);
+	SDT_PROBE2(vimage, functions, vimage_alloc, alloc, __LINE__, v);
+
+	/*
+	 * Allocate storage for virtualized global variables and copy in
+	 * initial values from our 'master' copy.
+	 */
+	v->v_data_mem = malloc(size, M_VIMAGE_DATA, M_WAITOK);
+	memcpy(v->v_data_mem, (void *)start, size);
+
+	/*
+	 * All use of subsystem-specific data will immediately subtract start
+	 * from the base memory pointer, so pre-calculate that now to avoid
+	 * it on each use.
+	 */
+	v->v_data_base = (uintptr_t)v->v_data_mem - start;
+
+	/* Initialize / attach subsystm module instances. */
+	CURVIMAGE_SET_QUIET(vse, __func__, v);
+	vimage_sysinit(vse);
+	CURVIMAGE_RESTORE(vse, __func__);
+
+	VIMAGE_LIST_WLOCK();
+	LIST_INSERT_HEAD(&vse->v_instance_head, v, v_le);
+	VIMAGE_LIST_WUNLOCK();
+
+	SDT_PROBE2(vimage, functions, vimage_alloc, return, __LINE__, v);
+	return (v);
+}
+
+/*
+ * Destroy a virtual instance.
+ */
+void
+vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
+{
+
+	SDT_PROBE2(vimage, functions, vimage_destroy, entry, __LINE__, v);
+
+	VIMAGE_LIST_WLOCK();
+	LIST_REMOVE(v, v_le);
+	VIMAGE_LIST_WUNLOCK();
+
+	CURVIMAGE_SET_QUIET(vse, __func__, v);
+	vimage_sysuninit(vse);
+	CURVIMAGE_RESTORE(vse, __func__);
+
+	/*
+	 * Release storage for the virtual network stack instance.
+	 */
+	free(v->v_data_mem, M_VIMAGE_DATA);
+	free(v, M_VIMAGE);
+	SDT_PROBE1(vimage, functions, vimage_destroy, return, __LINE__);
+}
+
 
 /*
  * When a module is loaded and requires storage for a virtualized global
@@ -734,11 +811,13 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	db_printf("  %-30s = " format "\n", # name, &vse->name);
 
 	db_printf("VIMAGE subsystem %s (%p)\n", vse->name, vse);
+	V_PRINT(refcnt, "%d");
 	V_PRINT(name, "%s");
 	V_PRINT(NAME, "%s");
 	V_PRINT(setname, "%s");
 	V_PRINT(setname_s, "%s");
-	V_PRINT(refcnt, "%d");
+	V_PRINT(v_instance_size, "%zu");
+	V_PRINT_PTR(v_instance_head, "%p");
 	V_PRINT_PTR(v_data_free_list, "%p");
 	V_FPTR(v_data_init);
 	V_FPTR(v_data_alloc);

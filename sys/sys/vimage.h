@@ -209,6 +209,9 @@ void vimage_deregister_sysinit(void *);
 void vimage_register_sysuninit(void *);
 void vimage_deregister_sysuninit(void *);
 
+struct vimage *vimage_alloc(struct vimage_subsys *, uintptr_t, size_t, size_t);
+void vimage_destroy(struct vimage_subsys *, struct vimage *);
+
 int vimage_subsys_register(struct vimage_subsys *);
 int vimage_subsys_deregister(struct vimage_subsys *);
 

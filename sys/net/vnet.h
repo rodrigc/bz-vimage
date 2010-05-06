@@ -63,17 +63,13 @@
  * as required for libkvm.
  */
 #if defined(_KERNEL) || defined(_WANT_VNET)
-#include <sys/queue.h>
+#include <sys/vimage.h>
 
 struct vnet {
-	LIST_ENTRY(vnet)	 vnet_le;	/* all vnets list */
-	u_int			 vnet_magic_n;
-	u_int			 vnet_ifcnt;
-	u_int			 vnet_sockcnt;
-	void			*vnet_data_mem;
-	uintptr_t		 vnet_data_base;
+	struct vimage		v;
+	u_int			vnet_ifcnt;
+	u_int			vnet_sockcnt;
 };
-#define	VNET_MAGIC_N	0x3e0d8f29
 
 /*
  * These two virtual network stack allocator definitions are also required
