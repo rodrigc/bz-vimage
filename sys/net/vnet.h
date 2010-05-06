@@ -77,11 +77,9 @@ struct vnet {
  */
 #define	VNET_SETNAME		"set_vnet"
 #define	VNET_SYMPREFIX		"vnet_entry_"
-#endif
+#endif /* _KERNEL || _WANT_VNET */
 
 #ifdef _KERNEL
-#include <sys/vimage.h>
-
 #ifdef VIMAGE
 #include <sys/lock.h>
 #include <sys/proc.h>			/* for struct thread */
@@ -89,16 +87,10 @@ struct vnet {
 #include <sys/sx.h>
 
 /*
- * Location of the kernel's 'set_vnet' linker set.
- */
-#define	VNET_START	(uintptr_t)&__start_set_vnet
-#define	VNET_STOP	(uintptr_t)&__stop_set_vnet
-
-/*
  * Functions to allocate and destroy virtual network stacks.
  */
 struct vnet *vnet_alloc(void);
-void	vnet_destroy(struct vnet *vnet);
+void vnet_destroy(struct vnet *vnet);
 
 /*
  * The current virtual network stack -- we may wish to move this to struct
@@ -120,6 +112,13 @@ extern struct vnet *vnet0;
  */
 DECLARE_LINKER_SET(set_vnet);
 
+/*
+ * Location of the kernel's 'set_vnet' linker set, used by the vnet(9)
+ * and ddb(4).
+ */
+#define	VNET_START		(uintptr_t)&__start_set_vnet
+#define	VNET_STOP		(uintptr_t)&__stop_set_vnet
+
 #define	VNET_NAME(n)		vnet_entry_##n
 #define	VNET_DECLARE(t, n)	extern t VNET_NAME(n)
 #define	VNET_DEFINE(t, n)	t VNET_NAME(n) __section(VNET_SETNAME) __used
@@ -131,7 +130,7 @@ DECLARE_LINKER_SET(set_vnet);
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR((struct vimage *)(vnet)->v_data_base, n)
+#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR(((struct vimage *)(vnet))->v_data_base, n)
 #define	VNET_VNET(vnet, n)	(*VNET_VNET_PTR((vnet), n))
 
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)

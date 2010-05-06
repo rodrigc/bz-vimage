@@ -132,7 +132,8 @@ static void *vimage_data_alloc_notsupp(struct vimage_subsys * __unused,
     size_t __unused);
 static void vimage_data_free_notsupp(struct vimage_subsys * __unused,
     void * __unused, size_t __unused);
-static void vimage_data_copy_notsupp(void * __unused, size_t __unused);
+static void vimage_data_copy_notsupp(struct vimage_subsys * __unused,
+    void * __unused, size_t __unused);
 
 
 /*
@@ -214,7 +215,7 @@ vimage_subsys_register(struct vimage_subsys *vse)
 
 	/*
 	 * Initalize dynamic data region for module support. Callee has to
-	 * handle list initialization itself as we do not know varaible names
+	 * handle list initialization itself as we do not know variable names
 	 * of the region or extra space that might be available.
 	 */
 	error = (*vse->v_data_init)(vse);
@@ -483,7 +484,8 @@ vimage_data_free_notsupp(struct vimage_subsys *vse __unused,
 }
 
 static void
-vimage_data_copy_notsupp(void *start __unused, size_t size __unused)
+vimage_data_copy_notsupp(struct vimage_subsys *vse __unused,
+    void *start __unused, size_t size __unused)
 {
 
 }
@@ -777,7 +779,7 @@ DB_SHOW_VIMAGE_COMMAND(sysinit, db_show_vimage_sysinit)
 	}
 	vse = (struct vimage_subsys *)addr;
 
-	db_printf("%s_SYSINIT vs Name(Ptr)\n", vse->name);
+	db_printf("%s_SYSINIT vs Name(Ptr)\n", vse->NAME);
 	db_printf("  Subsystem  Order\n");
 	db_printf("  Function(Name)(Arg)\n");
 	TAILQ_FOREACH(vs, &vse->v_sysint_constructors, link) {
@@ -799,7 +801,7 @@ DB_SHOW_VIMAGE_COMMAND(sysuninit, db_show_vimage_sysuninit)
 	}
 	vse = (struct vimage_subsys *)addr;
 
-	db_printf("%s_SYSUNINIT vs Name(Ptr)\n", vse->name);
+	db_printf("%s_SYSUNINIT vs Name(Ptr)\n", vse->NAME);
 	db_printf("  Subsystem  Order\n");
 	db_printf("  Function(Name)(Arg)\n");
 	TAILQ_FOREACH_REVERSE(vs, &vse->v_sysint_destructors,
@@ -832,12 +834,14 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 #define	V_PRINT_PTR(name, format)						\
 	db_printf("  %-30s = " format "\n", # name, &vse->name);
 
-	db_printf("VIMAGE subsystem %s (%p)\n", vse->name, vse);
+	db_printf("VIMAGE subsystem '%s' (%p)\n", vse->name, vse);
 	V_PRINT(refcnt, "%d");
 	V_PRINT(name, "%s");
 	V_PRINT(NAME, "%s");
 	V_PRINT(setname, "%s");
 	V_PRINT(setname_s, "%s");
+	V_PRINT(v_curvar, "%zu");
+	V_PRINT(v_curvar_lpush, "%zu");
 	V_PRINT(v_instance_size, "%zu");
 	V_PRINT_PTR(v_instance_head, "%p");
 	V_PRINT_PTR(v_data_free_list, "%p");
