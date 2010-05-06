@@ -106,93 +106,12 @@ void	vnet_destroy(struct vnet *vnet);
  */
 #define	curvnet	curthread->td_vnet
 
-/*
- * Various macros -- get and set the current network stack, but also
- * assertions.
- */
-#if defined(INVARIANTS) || defined(VNET_DEBUG)
-#define	VNET_ASSERT(exp, msg)	do {					\
-	if (!(exp))							\
-		panic msg;						\
-} while (0)
-#else
-#define	VNET_ASSERT(exp, msg)	do {					\
-} while (0)
-#endif
-
-#ifdef VNET_DEBUG
-#define	CURVNET_SET_QUIET(arg)						\
-	VNET_ASSERT((arg) != NULL && (arg)->vnet_magic_n == VNET_MAGIC_N, \
-	    ("CURVNET_SET at %s:%d %s() curvnet=%p vnet=%p",		\
-	    __FILE__, __LINE__, __func__, curvnet, (arg)));		\
-	struct vnet *saved_vnet = curvnet;				\
-	const char *saved_vnet_lpush = curthread->td_vnet_lpush;	\
-	curvnet = arg;							\
-	curthread->td_vnet_lpush = __func__;
- 
-#define	CURVNET_SET_VERBOSE(arg)					\
-	CURVNET_SET_QUIET(arg)						\
-	if (saved_vnet)							\
-		vnet_log_recursion(saved_vnet, saved_vnet_lpush, __LINE__);
-
-#define	CURVNET_SET(arg)	CURVNET_SET_VERBOSE(arg)
- 
-#define	CURVNET_RESTORE()						\
-	VNET_ASSERT(curvnet != NULL && (saved_vnet == NULL ||		\
-	    saved_vnet->vnet_magic_n == VNET_MAGIC_N),			\
-	    ("CURVNET_RESTORE at %s:%d %s() curvnet=%p saved_vnet=%p",	\
-	    __FILE__, __LINE__, __func__, curvnet, saved_vnet));	\
-	curvnet = saved_vnet;						\
-	curthread->td_vnet_lpush = saved_vnet_lpush;
-#else /* !VNET_DEBUG */
-
-#define	CURVNET_SET_QUIET(arg)						\
-	VNET_ASSERT((arg) != NULL && (arg)->vnet_magic_n == VNET_MAGIC_N, \
-	    ("CURVNET_SET at %s:%d %s() curvnet=%p vnet=%p",		\
-	    __FILE__, __LINE__, __func__, curvnet, (arg)));		\
-	struct vnet *saved_vnet = curvnet;				\
-	curvnet = arg;	
- 
-#define	CURVNET_SET_VERBOSE(arg)					\
-	CURVNET_SET_QUIET(arg)
-
-#define	CURVNET_SET(arg)	CURVNET_SET_VERBOSE(arg)
- 
-#define	CURVNET_RESTORE()						\
-	VNET_ASSERT(curvnet != NULL && (saved_vnet == NULL ||		\
-	    saved_vnet->vnet_magic_n == VNET_MAGIC_N),			\
-	    ("CURVNET_RESTORE at %s:%d %s() curvnet=%p saved_vnet=%p",	\
-	    __FILE__, __LINE__, __func__, curvnet, saved_vnet));	\
-	curvnet = saved_vnet;
-#endif /* VNET_DEBUG */
-
 extern struct vnet *vnet0;
 #define	IS_DEFAULT_VNET(arg)	((arg) == vnet0)
 
 #define	CRED_TO_VNET(cr)	(cr)->cr_prison->pr_vnet
 #define	TD_TO_VNET(td)		CRED_TO_VNET((td)->td_ucred)
 #define	P_TO_VNET(p)		CRED_TO_VNET((p)->p_ucred)
-
-/*
- * Global linked list of all virtual network stacks, along with read locks to
- * access it.  If a caller may sleep while accessing the list, it must use
- * the sleepable lock macros.
- */
-LIST_HEAD(vnet_list_head, vnet);
-extern struct vnet_list_head vnet_head;
-extern struct rwlock vnet_rwlock;
-extern struct sx vnet_sxlock;
-
-#define	VNET_LIST_RLOCK()		sx_slock(&vnet_sxlock)
-#define	VNET_LIST_RLOCK_NOSLEEP()	rw_rlock(&vnet_rwlock)
-#define	VNET_LIST_RUNLOCK()		sx_sunlock(&vnet_sxlock)
-#define	VNET_LIST_RUNLOCK_NOSLEEP()	rw_runlock(&vnet_rwlock)
-
-/*
- * Iteration macros to walk the global list of virtual network stacks.
- */
-#define	VNET_ITERATOR_DECL(arg)	struct vnet *arg
-#define	VNET_FOREACH(arg)	LIST_FOREACH((arg), &vnet_head, vnet_le)
 
 /*
  * VIMAGE subsystem allocator, using a link_set for each subsystem, with will
@@ -212,7 +131,7 @@ DECLARE_LINKER_SET(set_vnet);
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR((vnet)->vnet_data_base, n)
+#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR((struct vimage *)(vnet)->v_data_base, n)
 #define	VNET_VNET(vnet, n)	(*VNET_VNET_PTR((vnet), n))
 
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)
@@ -224,18 +143,6 @@ DECLARE_LINKER_SET(set_vnet);
  * Various virtual network stack macros compile to no-ops without VIMAGE.
  */
 #define	curvnet			NULL
-
-#define	VNET_ASSERT(exp, msg)
-#define	CURVNET_SET(arg)
-#define	CURVNET_SET_QUIET(arg)
-#define	CURVNET_RESTORE()
-
-#define	VNET_LIST_RLOCK()
-#define	VNET_LIST_RLOCK_NOSLEEP()
-#define	VNET_LIST_RUNLOCK()
-#define	VNET_LIST_RUNLOCK_NOSLEEP()
-#define	VNET_ITERATOR_DECL(arg)
-#define	VNET_FOREACH(arg)
 
 #define	IS_DEFAULT_VNET(arg)	1
 #define	CRED_TO_VNET(cr)	NULL
@@ -290,6 +197,31 @@ do {									\
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER(name, func, arg, priority)	\
 	eventhandler_register(NULL, #name, func, arg, priority)
 #endif /* VIMAGE */
+
+/*
+ * Various macros -- get and set the current network stack, but also
+ * assertions.
+ */
+#define	CURVNET_SET_QUIET(arg)	CURVIMAGE_SET_QUIET(&vnet_data, vnet, arg)
+#define	CURVNET_SET(arg)	CURVIMAGE_SET(&vnet_data, vnet, arg)
+#define	CURVNET_RESTORE()	CURVIMAGE_RESTORE(&vnet_data, vnet)
+
+#define	VNET_ASSERT(exp, msg)		VIMAGE_ASSERT(exp, msg)
+
+/*
+ * Iteration macros to walk the global list of virtual network stacks.
+ */
+#ifdef VIMAGE
+#define	VNET_ITERATOR_DECL(arg)		struct vimage *arg
+#else /* !VIMAGE */
+#define	VNET_ITERATOR_DECL(arg)
+#endif /* VIMAGE */
+#define	VNET_FOREACH(arg)		VIMAGE_FOREACH(&vnet_data, arg)
+
+#define	VNET_LIST_RLOCK()		VIMAGE_LIST_RLOCK()
+#define	VNET_LIST_RLOCK_NOSLEEP()	VIMAGE_LIST_RLOCK_NOSLEEP()
+#define	VNET_LIST_RUNLOCK()		VIMAGE_LIST_RUNLOCK()
+#define	VNET_LIST_RUNLOCK_NOSLEEP()	VIMAGE_LIST_RUNLOCK_NOSLEEP()
 
 
 /*

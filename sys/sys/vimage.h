@@ -218,6 +218,58 @@ struct vimage_subsys *vimage_subsys_get(const char *);
 void vimage_log_recursion(struct vimage_subsys *,
     void *, const char *, int, void *, const char *);
 
+#if defined(INVARIANTS) || defined(VIMAGE_DEBUG)
+#define	VIMAGE_ASSERT(exp, msg)	KASSERT(exp, msg)
+#else
+#define	VIMAGE_ASSERT(exp, msg)	do { } while (0)
+#endif
+
+#ifdef VIMAGE
+#define	curinstance(vse)						\
+	*((void **)((uintptr_t)curthread + (vse)->v_curvar))
+#define	_CURVIMAGE_SET_QUIET(vse, ident, arg)				\
+	VIMAGE_ASSERT((arg) != NULL, ("CUR%s_SET at %s:%d %s() "	\
+	    "cur%s=%p %s=%p", (vse)->NAME, __FILE__, __LINE__, __func__,\
+	    (vse)->name, curinstance(vse), (vse)->name, (arg)));	\
+	struct vimage *saved_ ## ident = curinstance(vse);		\
+	curinstance(vse) = (void *)arg
+#define	_CURVIMAGE_RESTORE(vse, ident)					\
+	VIMAGE_ASSERT(curinstance(vse) != NULL,				\
+	    ("CUR%s_RESTORE at %s:%d %s() cur%s=%p saved_%s=%p",	\
+	    (vse)->NAME, __FILE__, __LINE__, __func__, (vse)->name,	\
+	    curinstance(vse), (vse)->name, saved_ ## ident));		\
+	curinstance(vse) = (void *)saved_ ## ident
+#ifdef VIMAGE_DEBUG
+#define	curinstance_lpush(vse)						\
+	*((const char **)((uintptr_t)curthread + (vse)->v_curvar_lpush))
+#define	CURVIMAGE_SET_QUIET(vse, ident, arg)				\
+	_CURVIMAGE_SET_QUIET(vse, ident, arg);				\
+	const char *saved_ ## ident ##_lpush = curinstance_lpush(vse);	\
+	curinstance_lpush(vse) = __func__
+#define	CURVIMAGE_SET(vse, ident, arg)					\
+	CURVIMAGE_SET_QUIET(vse, ident, arg);				\
+	if (saved_ ## ident != NULL)					\
+		vimage_log_recursion(vse,				\
+		    curinstance(vse), __func__, __LINE__,		\
+		    saved_ ## ident, saved_ ## ident ## _lpush)
+#define	CURVIMAGE_RESTORE(vse, ident)					\
+	_CURVIMAGE_RESTORE(vse, ident);					\
+	curinstance_lpush(vse) = saved_ ## ident ## _lpush
+#else /* !VIMAGE_DEBUG */
+#define	CURVIMAGE_SET_QUIET(vse, ident, arg)				\
+	_CURVIMAGE_SET_QUIET(vse, ident, arg)
+#define	CURVIMAGE_SET(vse, ident, arg)					\
+	CURVIMAGE_SET_QUIET(vse, ident, arg)
+#define	CURVIMAGE_RESTORE(vse, ident)					\
+	_CURVIMAGE_RESTORE(vse, ident)
+#endif /* VIMAGE_DEBUG */
+#else /*!VIMAGE */
+#define	CURVIMAGE_SET_QUIET(vse, ident, arg)	do { } while(0)
+#define	CURVIMAGE_SET(vse, ident, arg)		do { } while(0)
+#define	CURVIMAGE_RESTORE(vse, ident)		do { } while(0)
+#endif /* VIMAGE */
+
+
 #ifdef VIMAGE
 #define	VIMAGE_FOREACH(vse, arg)					\
 	LIST_FOREACH((arg), &(vse)->v_instance_head, v_le)
