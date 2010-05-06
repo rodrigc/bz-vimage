@@ -490,6 +490,28 @@ vimage_data_copy_notsupp(void *start __unused, size_t size __unused)
 
 
 /*
+ * Support for special SYSINIT handlers registered via VIMAGE_SYSINIT()
+ * and VIMAGE_SYSUNINIT().
+ */
+static void
+vimage_sysinit_iterator(struct vimage_subsys *vse, struct vimage_sysinit *vs)
+{
+	struct vimage *v;
+
+	/*
+	 * Invoke the sysinit function on all the existing instances. This
+	 * happens upon (de)registereation of the sysinit handler.
+	 */
+	VIMAGE_LIST_RLOCK();
+	VIMAGE_FOREACH(vse, v) {
+		CURVIMAGE_SET_QUIET(vse, __func__, v);
+		vs->func(vs->arg);
+		CURVIMAGE_RESTORE(vse, __func__);
+	}
+	VIMAGE_LIST_RUNLOCK();
+}
+
+/*
  * Invoke all registered subsystem constructors on the current subsystem.  Used
  * during subsystem construction.  The caller is responsible for ensuring the
  * new subsystem is the current subsystem.
@@ -553,7 +575,7 @@ vimage_register_sysinit(void *arg)
 	 * Invoke the constructor on all the existing subsystem instances when
 	 * it is registered.
 	 */
-	(*vse->v_sysinit_iter)(vs);
+	vimage_sysinit_iterator(vse, vs);
 	VIMAGE_SYSINIT_WUNLOCK();
 }
 
@@ -612,7 +634,7 @@ vimage_deregister_sysuninit(void *arg)
 	 * it is deregistered.
 	 */
 	VIMAGE_SYSINIT_WLOCK();
-	(*vse->v_sysinit_iter)(vs);
+	vimage_sysinit_iterator(vse, vs);
 	/*
 	 * Remove the destructor from the global list of subsystem destructors.
 	 */
@@ -826,7 +848,6 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	V_PRINT_PTR(v_sysint_constructors, "%p");
 	V_PRINT_PTR(v_sysint_destructors, "%p");
 	V_PRINT(v_sysinit_earliest, "0x%07X");
-	V_FPTR(v_sysinit_iter);
 	V_PRINT_PTR(v_recursions, "%p");
 #undef	V_PRINT_PTR
 #undef	V_PRINT

@@ -149,8 +149,6 @@ static VNET_DEFINE(char, modspace[VNET_MODMIN]);
 
 struct vimage_subsys vnet_data;
 
-void vnet_sysinit_iterator(struct vimage_sysinit *);
-
 /*
  * Allocate a virtual network stack.
  */
@@ -231,7 +229,6 @@ struct vimage_subsys vnet_data =
 	.v_sysint_destructors	=
 	    TAILQ_HEAD_INITIALIZER(vnet_data.v_sysint_destructors),
 	.v_sysinit_earliest	= SI_SUB_VNET,
-	.v_sysinit_iter		= vnet_sysinit_iterator,
 };
 
 static void
@@ -269,28 +266,6 @@ vnet_init_done(void *unused)
 
 SYSINIT(vnet_init_done, SI_SUB_VNET_DONE, SI_ORDER_FIRST, vnet_init_done,
     NULL);
-
-/*
- * Support for special SYSINIT handlers registered via VNET_SYSINIT()
- * and VNET_SYSUNINIT().
- */
-void
-vnet_sysinit_iterator(struct vimage_sysinit *vs)
-{
-	struct vnet *vnet;
-
-	/*
-	 * Invoke the sysinit function on all the existing vnets. This
-	 * happens upon (de)registereation of the sysinit handler.
-	 */
-	VNET_LIST_RLOCK();
-	VNET_FOREACH(vnet) {
-		CURVNET_SET_QUIET(vnet);
-		vs->func(vs->arg);
-		CURVNET_RESTORE();
-	}
-	VNET_LIST_RUNLOCK();
-}
 
 #ifdef DDB
 /*

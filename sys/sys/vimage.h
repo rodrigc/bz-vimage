@@ -150,8 +150,6 @@ struct vimage_subsys {
 	struct vimage_sysuninit_head	v_sysint_destructors;
 
 	int				v_sysinit_earliest;
-	void				(*v_sysinit_iter)(
-					    struct vimage_sysinit *);
 
 	/* Debugging. */
 	struct vimage_recursion_head	v_recursions;
