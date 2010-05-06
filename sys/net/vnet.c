@@ -291,6 +291,9 @@ vnet_data_init(struct vimage_subsys *vse)
  */
 struct vimage_subsys vnet_data =
 {
+	.name			= "vnet",
+	.NAME			= "VNET",
+
 	.setname		= VNET_SETNAME,
 
 	.v_curvar		= offsetof(struct thread, td_vnet),

@@ -122,8 +122,11 @@ struct vimage_subsys {
 
 	int				refcnt;
 
+	const char			*name;		/* printfs */
+	const char			*NAME;		/* printfs */
+
 	const char			*setname;	/* set_subsys */
-	const char			*name;		/* subsys */
+	const char			*setname_s;	/* subsys */
 
 	size_t				v_curvar;
 	size_t				v_curvar_lpush;

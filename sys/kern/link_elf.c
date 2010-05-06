@@ -548,8 +548,8 @@ parse_vimage(elf_file_t ef)
     start = stop = 0;
     VIMAGE_SUBSYS_LIST_RLOCK();
     LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
-	error = link_elf_lookup_set(&ef->lf, vse->name, (void ***)&start,
-	    (void ***)&stop, &count);
+	error = link_elf_lookup_set(&ef->lf, vse->setname_s,
+	    (void ***)&start, (void ***)&stop, &count);
 	/*
 	 * Error just means there is no data set to relocate for this
 	 * virtualized subsystem.

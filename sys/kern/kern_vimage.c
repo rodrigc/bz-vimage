@@ -166,6 +166,10 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	 * loaded, do not panic but just log and return an error.
 	 * Where possible, initialize to defaults.
 	 */
+	if (vse->name == NULL || vse->NAME == NULL) {
+		printf("%s: name or NAME of vse=%p is NULL\n", __func__, vse);
+		return (EINVAL);
+	}
 	if (vse->setname == NULL) {
 		printf("%s: setname of vse=%p is NULL\n", __func__, vse);
 		return (EINVAL);
@@ -175,9 +179,9 @@ vimage_subsys_register(struct vimage_subsys *vse)
 		    "\"set_\": %s\n", __func__, vse, vse->setname);
 		return (EINVAL);
 	}
-	/* The short name is needed for link_elf.c as well as printfs. */
-	if (vse->name == NULL)
-		vse->name = vse->setname + 4;	/* Skip "set_". */
+	/* The short name is needed for link_elf.c. */
+	if (vse->setname_s == NULL)
+		vse->setname_s = vse->setname + 4;	/* Skip "set_". */
 	if (vse->v_data_init == NULL) {
 		/* Disabling dynamic data region/module support. */
 		vse->v_data_init = vimage_data_init_notsupp;
@@ -730,7 +734,10 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	db_printf("  %-30s = " format "\n", # name, &vse->name);
 
 	db_printf("VIMAGE subsystem %s (%p)\n", vse->name, vse);
+	V_PRINT(name, "%s");
+	V_PRINT(NAME, "%s");
 	V_PRINT(setname, "%s");
+	V_PRINT(setname_s, "%s");
 	V_PRINT(refcnt, "%d");
 	V_PRINT_PTR(v_data_free_list, "%p");
 	V_FPTR(v_data_init);
