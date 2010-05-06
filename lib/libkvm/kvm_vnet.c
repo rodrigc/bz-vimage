@@ -72,8 +72,8 @@ _kvm_vnet_selectpid(kvm_t *kd, pid_t pid)
 		{ .n_name = "___start_" VNET_SETNAME },
 #define	NLIST_STOP_VNET		1
 		{ .n_name = "___stop_" VNET_SETNAME },
-#define	NLIST_VNET_HEAD		2
-		{ .n_name = "vnet_head" },
+#define	NLIST_VNET_DATA		3
+		{ .n_name = "vnet_data" },
 #define	NLIST_ALLPROC		3
 		{ .n_name = "allproc" },
 #define	NLIST_DUMPTID		4
@@ -187,15 +187,11 @@ _kvm_vnet_selectpid(kvm_t *kd, pid_t pid)
 		_kvm_err(kd, kd->program, "%s: vnet", __func__);
 		return (-1);
 	}
-	if (vnet.vnet_magic_n != VNET_MAGIC_N) {
-		_kvm_err(kd, kd->program, "%s: invalid vnet magic#", __func__);
-		return (-1);
-	}
 	kd->vnet_initialized = 1;
 	kd->vnet_start = nl[NLIST_START_VNET].n_value;
 	kd->vnet_stop = nl[NLIST_STOP_VNET].n_value;
 	kd->vnet_current = (uintptr_t)prison.pr_vnet;
-	kd->vnet_base = vnet.vnet_data_base;
+	kd->vnet_base = vnet.v.v_data_base;
 	return (0);
 }
 
