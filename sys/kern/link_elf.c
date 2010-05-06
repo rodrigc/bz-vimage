@@ -579,7 +579,7 @@ parse_vimage(elf_file_t ef)
 	    break;
 	}
 	memcpy((void *)efe->base, (void *)efe->start, count);
-	(*vse->v_data_copy)((void *)efe->base, count);
+	(*vse->v_data_copy)(vse, (void *)efe->base, count);
 	/* Save vse so we can call free on the right subsystem. */
 	refcount_acquire(&vse->refcnt);
 	efe->vse = vse;

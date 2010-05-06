@@ -287,22 +287,6 @@ vnet_data_init(struct vimage_subsys *vse)
 }
 
 /*
- * When a new virtualized global variable has been allocated, propagate its
- * initial value to each already-allocated virtual network stack instance.
- */
-static void
-vnet_data_copy(void *start, size_t size)
-{
-	struct vnet *vnet;
-
-	VNET_LIST_RLOCK();
-	LIST_FOREACH(vnet, &vnet_head, vnet_le)
-		memcpy((void *)((uintptr_t)vnet->vnet_data_base +
-		    (uintptr_t)start), start, size);
-	VNET_LIST_RUNLOCK();
-}
-
-/*
  * Boot time initialization and allocation of virtual network stacks.
  */
 struct vimage_subsys vnet_data =
@@ -316,7 +300,6 @@ struct vimage_subsys vnet_data =
 	.v_data_free_list	=
 	    TAILQ_HEAD_INITIALIZER(vnet_data.v_data_free_list),
 	.v_data_init		= vnet_data_init,
-	.v_data_copy		= vnet_data_copy,
 
 	/* System initialization framework. */
 	.v_sysint_constructors	=

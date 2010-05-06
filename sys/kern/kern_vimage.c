@@ -95,6 +95,7 @@ static struct sx	vimage_sysinit_sxlock;
 
 static void *vimage_data_alloc(struct vimage_subsys *, size_t);
 static void vimage_data_free(struct vimage_subsys *, void *, size_t);
+static void vimage_data_copy(struct vimage_subsys *, void *, size_t);
 
 static int vimage_data_init_notsupp(struct vimage_subsys * __unused);
 static void *vimage_data_alloc_notsupp(struct vimage_subsys * __unused,
@@ -164,15 +165,12 @@ vimage_subsys_register(struct vimage_subsys *vse)
 		printf("%s: dynamic data region/module support disabled "
 		    "for vse=%p %s\n", __func__, vse, vse->setname);
 	}
-	if (vse->v_data_copy == NULL) {
-		printf("%s: mandatory v_data_copy of vse=%p %s uninitialized\n",
-		    __func__, vse, vse->setname);
-		return (EINVAL);
-	}
 	if (vse->v_data_alloc == NULL)
 		vse->v_data_alloc = vimage_data_alloc;
 	if (vse->v_data_free == NULL)
 		vse->v_data_free = vimage_data_free;
+	if (vse->v_data_copy == NULL)
+		vse->v_data_copy = vimage_data_copy;
 
 	/*
 	 * Initalize dynamic data region for module support. Callee has to
@@ -338,6 +336,22 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 	else
 		TAILQ_INSERT_TAIL(&vse->v_data_free_list, dn, vnd_link);
 	sx_xunlock(&vimage_subsys_data_sxlock);
+}
+
+/*
+ * When a new virtualized global variable has been allocated, propagate its
+ * initial value to each already-allocated virtual network stack instance.
+ */
+static void
+vimage_data_copy(struct vimage_subsys *vse, void *start, size_t size)
+{
+	struct vimage *v;
+
+	VIMAGE_LIST_RLOCK();
+	LIST_FOREACH(v, &vse->v_instance_head, v_le)
+		memcpy((void *)((uintptr_t)v->v_data_base +
+		    (uintptr_t)start), start, size);
+	VIMAGE_LIST_RUNLOCK();
 }
 
 static int

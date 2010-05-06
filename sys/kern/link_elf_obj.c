@@ -366,7 +366,8 @@ link_elf_link_preload(linker_class_t cls, const char *filename,
 				}
 				memcpy(v_data, ef->progtab[pb].addr,
 				    ef->progtab[pb].size);
-				(*vse->v_data_copy)(v_data, shdr[i].sh_size);
+				(*vse->v_data_copy)(vse, v_data,
+				    shdr[i].sh_size);
 				ef->progtab[pb].addr = v_data;
 no_v_subsys:
 				VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -815,7 +816,7 @@ no_v_subsys:
 					vse = vimage_subsys_get(
 					    ef->progtab[pb].name);
 					if (vse != NULL)
-						(*vse->v_data_copy)(
+						(*vse->v_data_copy)(vse,
 						    ef->progtab[pb].addr,
 						    shdr[i].sh_size);
 					VIMAGE_SUBSYS_LIST_RUNLOCK();

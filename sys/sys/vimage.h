@@ -67,10 +67,10 @@ TAILQ_HEAD(vimage_sysuninit_head, vimage_sysinit);
 /*
  * Caller of vimage_subsys_register() has to intialize setname and,
  * if dynamic data region support for modules is provided,
- * v_data_init() and v_data_copy(). v_data_free_list should be statically
- * initialized in this case.
- * v_data_alloc() and v_data_free() may be overloaded, or the default
- * implementation will be used.
+ * v_data_init(). v_data_free_list should be statically initialized in
+ * this case.
+ * v_data_alloc(), v_data_free() and v_data_copy() may be overloaded,
+ * or the default implementation will be used.
  * Other fields are "private" to the implementation.
  */
 struct vimage_subsys {
@@ -92,7 +92,8 @@ struct vimage_subsys {
 					    size_t);
 	void				(*v_data_free )(struct vimage_subsys *,
 					    void *, size_t);
-	void				(*v_data_copy )(void *, size_t size);
+	void				(*v_data_copy )(struct vimage_subsys *,
+					    void *, size_t);
 
 	/* System initialization framework. */
 	struct vimage_sysinit_head	v_sysint_constructors;
