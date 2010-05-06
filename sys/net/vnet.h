@@ -233,47 +233,6 @@ __asm__(
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)
 #define	VNET(n)			VNET_VNET(curvnet, n)
 
-/*
- * Sysctl variants for vnet-virtualized global variables.  Include
- * <sys/sysctl.h> to expose these definitions.
- *
- * Note: SYSCTL_PROC() handler functions will need to resolve pointer
- * arguments themselves, if required.
- */
-#ifdef SYSCTL_OID
-int	vnet_sysctl_handle_int(SYSCTL_HANDLER_ARGS);
-int	vnet_sysctl_handle_opaque(SYSCTL_HANDLER_ARGS);
-int	vnet_sysctl_handle_string(SYSCTL_HANDLER_ARGS);
-int	vnet_sysctl_handle_uint(SYSCTL_HANDLER_ARGS);
-
-#define	SYSCTL_VNET_INT(parent, nbr, name, access, ptr, val, descr)	\
-	SYSCTL_OID(parent, nbr, name,					\
-	    CTLTYPE_INT|CTLFLAG_MPSAFE|CTLFLAG_VNET|(access),		\
-	    ptr, val, vnet_sysctl_handle_int, "I", descr)
-#define	SYSCTL_VNET_PROC(parent, nbr, name, access, ptr, arg, handler,	\
-	    fmt, descr)							\
-	SYSCTL_OID(parent, nbr, name, CTLFLAG_VNET|(access), ptr, arg, 	\
-	    handler, fmt, descr)
-#define	SYSCTL_VNET_STRING(parent, nbr, name, access, arg, len, descr)	\
-	SYSCTL_OID(parent, nbr, name,					\
-	    CTLTYPE_STRING|CTLFLAG_VNET|(access),			\
-	    arg, len, vnet_sysctl_handle_string, "A", descr)
-#define	SYSCTL_VNET_STRUCT(parent, nbr, name, access, ptr, type, descr)	\
-	SYSCTL_OID(parent, nbr, name,					\
-	    CTLTYPE_OPAQUE|CTLFLAG_VNET|(access), ptr,			\
-	    sizeof(struct type), vnet_sysctl_handle_opaque, "S," #type,	\
-	    descr)
-#define	SYSCTL_VNET_UINT(parent, nbr, name, access, ptr, val, descr)	\
-	SYSCTL_OID(parent, nbr, name,					\
-	    CTLTYPE_UINT|CTLFLAG_MPSAFE|CTLFLAG_VNET|(access),		\
-	    ptr, val, vnet_sysctl_handle_uint, "IU", descr)
-#define	VNET_SYSCTL_ARG(req, arg1) do {					\
-	if (arg1 != NULL)						\
-		arg1 = (void *)(TD_TO_VNET((req)->td)->vnet_data_base +	\
-		    (uintptr_t)(arg1));					\
-} while (0)
-#endif /* SYSCTL_OID */
-
 
 /*
  * EVENTHANDLER(9) extensions.
@@ -341,27 +300,6 @@ do {									\
 #define	VNET(n)			(n)
 
 /*
- * When VIMAGE isn't compiled into the kernel, virtaulized SYSCTLs simply
- * become normal SYSCTLs.
- */
-#ifdef SYSCTL_OID
-#define	SYSCTL_VNET_INT(parent, nbr, name, access, ptr, val, descr)	\
-	SYSCTL_INT(parent, nbr, name, access, ptr, val, descr)
-#define	SYSCTL_VNET_PROC(parent, nbr, name, access, ptr, arg, handler,	\
-	    fmt, descr)							\
-	SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler, fmt,	\
-	    descr)
-#define	SYSCTL_VNET_STRING(parent, nbr, name, access, arg, len, descr)	\
-	SYSCTL_STRING(parent, nbr, name, access, arg, len, descr)
-#define	SYSCTL_VNET_STRUCT(parent, nbr, name, access, ptr, type, descr)	\
-	SYSCTL_STRUCT(parent, nbr, name, access, ptr, type, descr)
-#define	SYSCTL_VNET_UINT(parent, nbr, name, access, ptr, val, descr)	\
-	SYSCTL_UINT(parent, nbr, name, access, ptr, val, descr)
-#define	VNET_SYSCTL_ARG(req, arg1)
-#endif /* SYSCTL_OID */
-
-
-/*
  * Without VIMAGE revert to the default implementation.
  */
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(tag, name, func, arg, priority) \
@@ -370,6 +308,31 @@ do {									\
 	eventhandler_register(NULL, #name, func, arg, priority)
 #endif /* VIMAGE */
 
+
+/*
+ * Sysctl variants for subsystem-virtualized global variables.  Include
+ * <sys/sysctl.h> to expose these definitions.
+ */
+#ifdef SYSCTL_OID
+#define	SYSCTL_VNET_INT(parent, nbr, name, access, ptr, val, descr)	\
+	VIMAGE_SYSCTL_INT(parent, nbr, name, access, ptr, val, descr,	\
+	    CTLFLAG_VNET)
+#define	SYSCTL_VNET_PROC(parent, nbr, name, access, ptr, arg, handler,	\
+	    fmt, descr)							\
+	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg,	handler,\
+	    fmt, descr, CTLFLAG_VNET)
+#define	SYSCTL_VNET_STRING(parent, nbr, name, access, arg, len, descr)	\
+	VIMAGE_SYSCTL_STRING(parent, nbr, name, access, arg, len, descr,\
+	    CTLFLAG_VNET)
+#define	SYSCTL_VNET_STRUCT(parent, nbr, name, access, ptr, type, descr)	\
+	VIMAGE_SYSCTL_STRUCT(parent, nbr, name, access, ptr, type, descr,\
+	    CTLFLAG_VNET)
+#define	SYSCTL_VNET_UINT(parent, nbr, name, access, ptr, val, descr)	\
+	VIMAGE_SYSCTL_UINT(parent, nbr, name, access, ptr, val, descr,	\
+	    CTLFLAG_VNET)
+#define	VNET_SYSCTL_ARG(req, arg1)					\
+	VIMAGE_SYSCTL_ARG(req, arg1, &vnet_data)
+#endif /* SYSCTL_OID */
 
 /*
  * Virtual sysinit mechanism, allowing network stack components to declare

@@ -46,7 +46,6 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $")
 #include <sys/jail.h>
 #include <sys/sdt.h>
 #include <sys/systm.h>
-#include <sys/sysctl.h>
 #include <sys/eventhandler.h>
 #include <sys/linker_set.h>
 #include <sys/lock.h>
@@ -54,7 +53,6 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.15 2010/04/14 23:06:07 julian Exp $")
 #include <sys/proc.h>
 #include <sys/socket.h>
 #include <sys/sx.h>
-#include <sys/sysctl.h>
 #include <sys/vimage.h>
 
 #include <machine/stdarg.h>
@@ -312,6 +310,9 @@ struct vimage_subsys vnet_data =
 {
 	.setname		= VNET_SETNAME,
 
+	.v_curvar		= offsetof(struct thread, td_vnet),
+	.v_curvar_lpush		= offsetof(struct thread, td_vnet_lpush),
+
 	/* Dynamic/module data allocator. */
 	.v_data_free_list	=
 	    TAILQ_HEAD_INITIALIZER(vnet_data.v_data_free_list),
@@ -366,48 +367,6 @@ vnet_init_done(void *unused)
 
 SYSINIT(vnet_init_done, SI_SUB_VNET_DONE, SI_ORDER_FIRST, vnet_init_done,
     NULL);
-
-
-/*
- * Variants on sysctl_handle_foo that know how to handle virtualized global
- * variables: if 'arg1' is a pointer, then we transform it to the local vnet
- * offset.
- */
-int
-vnet_sysctl_handle_int(SYSCTL_HANDLER_ARGS)
-{
-
-	if (arg1 != NULL)
-		arg1 = (void *)(curvnet->vnet_data_base + (uintptr_t)arg1);
-	return (sysctl_handle_int(oidp, arg1, arg2, req));
-}
-
-int
-vnet_sysctl_handle_opaque(SYSCTL_HANDLER_ARGS)
-{
-
-	if (arg1 != NULL)
-		arg1 = (void *)(curvnet->vnet_data_base + (uintptr_t)arg1);
-	return (sysctl_handle_opaque(oidp, arg1, arg2, req));
-}
-
-int
-vnet_sysctl_handle_string(SYSCTL_HANDLER_ARGS)
-{
-
-	if (arg1 != NULL)
-		arg1 = (void *)(curvnet->vnet_data_base + (uintptr_t)arg1);
-	return (sysctl_handle_string(oidp, arg1, arg2, req));
-}
-
-int
-vnet_sysctl_handle_uint(SYSCTL_HANDLER_ARGS)
-{
-
-	if (arg1 != NULL)
-		arg1 = (void *)(curvnet->vnet_data_base + (uintptr_t)arg1);
-	return (sysctl_handle_int(oidp, arg1, arg2, req));
-}
 
 /*
  * Support for special SYSINIT handlers registered via VNET_SYSINIT()

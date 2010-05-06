@@ -81,6 +81,9 @@ struct vimage_subsys {
 	const char			*setname;	/* set_subsys */
 	const char			*name;		/* subsys */
 
+	size_t				v_curvar;
+	size_t				v_curvar_lpush;
+
 	/* Dynamic/module data allocator. */
 	TAILQ_HEAD(, vimage_data_free)	v_data_free_list;
 
@@ -156,6 +159,68 @@ int vimage_subsys_register(struct vimage_subsys *);
 int vimage_subsys_deregister(struct vimage_subsys *);
 
 struct vimage_subsys *vimage_subsys_get(const char *);
+
+#ifdef SYSCTL_OID
+#ifdef VIMAGE
+/*
+ * Sysctl variants for subsystem-virtualized global variables.  Include
+ * <sys/sysctl.h> to expose these definitions.
+ */
+#define	req_to_curinstance(req, vse)					\
+	*((void **)((uintptr_t)(req)->td + (vse)->v_curvar))
+#define	VIMAGE_SYSCTL_INT(parent, nbr, name, access, ptr, val, descr,	\
+	    v_access)							\
+	SYSCTL_INT(parent, nbr, name, (v_access)|(access), ptr, val,	\
+	    descr)
+#define	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler,\
+	    fmt, descr, v_access)					\
+	SYSCTL_PROC(parent, nbr, name, (v_access)|(access), ptr, arg,	\
+	    handler, fmt, descr)
+#define	VIMAGE_SYSCTL_STRING(parent, nbr, name, access, arg, len, descr,\
+	    v_access)							\
+	SYSCTL_STRING(parent, nbr, name, (v_access)|(access), arg, len,	\
+	    descr)
+#define	VIMAGE_SYSCTL_STRUCT(parent, nbr, name, access, ptr, type,	\
+	    descr, v_access)						\
+	SYSCTL_STRUCT(parent, nbr, name, (v_access)|(access), ptr, type,\
+	    descr)
+#define	VIMAGE_SYSCTL_UINT(parent, nbr, name, access, ptr, val, descr,	\
+	    v_access)							\
+	SYSCTL_UINT(parent, nbr, name, (v_access)|(access), ptr, val,	\
+	    descr)
+#define	VIMAGE_SYSCTL_ARG(req, arg1, vse) do {				\
+	if (arg1 != NULL) {						\
+		struct vimage *v;					\
+									\
+		v = (struct vimage *)req_to_curinstance(req, vse);	\
+		arg1 = (void *)(v->v_data_base + (uintptr_t)(arg1));	\
+	}								\
+} while (0)
+#else /* !VIMAGE */
+/*
+ * When VIMAGE isn't compiled into the kernel, virtaulized SYSCTLs simply
+ * become normal SYSCTLs.
+ */
+#define	VIMAGE_SYSCTL_INT(parent, nbr, name, access, ptr, val, descr,	\
+	    v_access)							\
+	SYSCTL_INT(parent, nbr, name, access, ptr, val, descr)
+#define	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler,\
+	    fmt, descr, v_access)					\
+	SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler, fmt,	\
+	    descr)
+#define	VIMAGE_SYSCTL_STRING(parent, nbr, name, access, arg, len, descr,\
+	    v_access)							\
+	SYSCTL_STRING(parent, nbr, name, access, arg, len, descr)
+#define	VIMAGE_SYSCTL_STRUCT(parent, nbr, name, access, ptr, type,	\
+	    descr, v_access)						\
+	SYSCTL_STRUCT(parent, nbr, name, access, ptr, type, descr)
+#define	VIMAGE_SYSCTL_UINT(parent, nbr, name, access, ptr, val, descr,	\
+	    v_access)							\
+	SYSCTL_UINT(parent, nbr, name, access, ptr, val, descr)
+#define	VIMAGE_SYSCTL_ARG(req, arg1, vse)
+#endif /* VIMAGE */
+#endif /* SYSCTL_OID */
+
 
 #endif /* _SYS_VIMAGE_H_ */
 
