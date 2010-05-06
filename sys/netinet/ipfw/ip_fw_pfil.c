@@ -370,12 +370,12 @@ ipfw_chg_hook(SYSCTL_HANDLER_ARGS)
 	int error;
 	int af;
 
-	if (arg1 == &VNET_NAME(fw_enable)) {
+	if (arg1 == &V_fw_enable) {
 		enable = V_fw_enable;
 		af = AF_INET;
 	}
 #ifdef INET6
-	else if (arg1 == &VNET_NAME(fw6_enable)) {
+	else if (arg1 == &V_fw6_enable) {
 		enable = V_fw6_enable;
 		af = AF_INET6;
 	}

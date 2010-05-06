@@ -1407,6 +1407,10 @@ sysctl_root(SYSCTL_HANDLER_ARGS)
 		arg1 = oid->oid_arg1;
 		arg2 = oid->oid_arg2;
 	}
+#ifdef VIMAGE
+	if (oid->oid_kind & CTLFLAG_VNET)
+		VNET_SYSCTL_ARG(req, arg1);
+#endif
 #ifdef MAC
 	error = mac_system_check_sysctl(req->td->td_ucred, oid, arg1, arg2,
 	    req);
