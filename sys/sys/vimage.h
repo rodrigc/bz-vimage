@@ -221,6 +221,13 @@ struct vimage_subsys *vimage_subsys_get(const char *);
 #endif /* VIMAGE */
 #endif /* SYSCTL_OID */
 
+/*
+ * EVENTHANDLER(9) extensions.
+ */
+#include <sys/eventhandler.h>
+
+void	vimage_global_eventhandler_iterator_func(void *, ...);
+
 
 #endif /* _SYS_VIMAGE_H_ */
 

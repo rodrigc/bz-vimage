@@ -233,30 +233,6 @@ __asm__(
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)
 #define	VNET(n)			VNET_VNET(curvnet, n)
 
-
-/*
- * EVENTHANDLER(9) extensions.
- */
-#include <sys/eventhandler.h>
-
-void	vnet_global_eventhandler_iterator_func(void *, ...);
-#define VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(tag, name, func, arg, priority) \
-do {									\
-	if (IS_DEFAULT_VNET(curvnet)) {					\
-		(tag) = vimage_eventhandler_register(NULL, #name, func,	\
-		    arg, priority,					\
-		    vnet_global_eventhandler_iterator_func);		\
-	}								\
-} while(0)
-#define VNET_GLOBAL_EVENTHANDLER_REGISTER(name, func, arg, priority)	\
-do {									\
-	if (IS_DEFAULT_VNET(curvnet)) {					\
-		vimage_eventhandler_register(NULL, #name, func,		\
-		    arg, priority,					\
-		    vnet_global_eventhandler_iterator_func);		\
-	}								\
-} while(0)
-
 #else /* !VIMAGE */
 
 /*
@@ -298,10 +274,32 @@ do {									\
 
 #define	VNET_PTR(n)		(&(n))
 #define	VNET(n)			(n)
+#endif /* VIMAGE */
 
 /*
- * Without VIMAGE revert to the default implementation.
+ * EVENTHANDLER(9) extensions.
  */
+#include <sys/eventhandler.h>
+#ifdef VIMAGE
+#define VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(tag, name, func, arg, priority) \
+do {									\
+	if (IS_DEFAULT_VNET(curvnet)) {					\
+		(tag) = vimage_eventhandler_register(NULL, #name, func,	\
+		    arg, priority,					\
+		    vimage_global_eventhandler_iterator_func,		\
+		    &vnet_data);					\
+	}								\
+} while(0)
+#define VNET_GLOBAL_EVENTHANDLER_REGISTER(name, func, arg, priority)	\
+do {									\
+	if (IS_DEFAULT_VNET(curvnet)) {					\
+		vimage_eventhandler_register(NULL, #name, func,		\
+		    arg, priority,					\
+		    vimage_global_eventhandler_iterator_func,		\
+		    &vnet_data);					\
+	}								\
+} while(0)
+#else /* !VIMAGE */
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(tag, name, func, arg, priority) \
 	(tag) = eventhandler_register(NULL, #name, func, arg, priority)
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER(name, func, arg, priority)	\

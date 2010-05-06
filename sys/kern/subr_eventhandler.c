@@ -163,7 +163,8 @@ struct eventhandler_entry_generic_vimage
 
 eventhandler_tag
 vimage_eventhandler_register(struct eventhandler_list *list, const char *name, 
-    void *func, void *arg, int priority, vimage_iterator_func_t iterfunc)
+    void *func, void *arg, int priority, vimage_iterator_func_t iterfunc,
+    struct vimage_subsys *vse)
 {
     struct eventhandler_entry_generic_vimage	*eg;
     
@@ -173,6 +174,7 @@ vimage_eventhandler_register(struct eventhandler_list *list, const char *name,
     eg->func = iterfunc;
     eg->v_ee.func = func;
     eg->v_ee.ee_arg = arg;
+    eg->v_ee.vse = vse;
     eg->ee.ee_arg = &eg->v_ee;
     eg->ee.ee_priority = priority;
 

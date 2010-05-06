@@ -35,6 +35,7 @@ __FBSDID("$FreeBSD$");
 #include "opt_ddb.h"
 
 #include <sys/param.h>
+#include <sys/eventhandler.h>
 #include <sys/jail.h>
 #include <sys/kernel.h>
 #include <sys/libkern.h>
@@ -497,6 +498,39 @@ vimage_deregister_sysuninit(void *arg)
 	 */
 	TAILQ_REMOVE(&vse->v_sysint_destructors, vs, link);
 	VIMAGE_SYSINIT_WUNLOCK();
+}
+
+/*
+ * EVENTHANDLER(9) extensions.
+ */
+/*
+ * Invoke the eventhandler function originally registered with the possibly
+ * registered argument for all virtual network stack instances.
+ *
+ * This iterator can only be used for eventhandlers that do not take any
+ * additional arguments, as we do ignore the variadic arguments from the
+ * EVENTHANDLER_INVOKE() call.
+ */
+void
+vimage_global_eventhandler_iterator_func(void *arg, ...)
+{
+	struct vimage *v;
+	struct eventhandler_entry_vimage *v_ee;
+
+	/*
+	 * There is a bug here in that we should actually cast things to
+	 * (struct eventhandler_entry_ ## name *)  but that's not easily
+	 * possible in here so just re-using the variadic version we
+	 * defined for the generic vimage case.
+	 */
+	v_ee = arg;
+	VIMAGE_LIST_RLOCK();
+	VIMAGE_FOREACH(v_ee->vse, v) {
+		CURVIMAGE_SET_QUIET(v_ee->vse, __func__, v);
+		((vimage_iterator_func_t)v_ee->func)(v_ee->ee_arg);
+		CURVIMAGE_RESTORE(v_ee->vse, __func__);
+	}
+	VIMAGE_LIST_RUNLOCK();
 }
 
 #ifdef DDB

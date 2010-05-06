@@ -43,9 +43,10 @@ struct eventhandler_entry {
 
 #ifdef VIMAGE
 struct eventhandler_entry_vimage {
-	void	(* func)(void);		/* Original function registered. */
-	void	*ee_arg;		/* Original argument registered. */
-	void	*sparep[2];
+	void		(* func)(void);	/* Original function registered. */
+	void		*ee_arg;	/* Original argument registered. */
+	struct vimage_subsys *vse;
+	void		*sparep;
 };
 #endif
 
@@ -155,7 +156,7 @@ typedef	void (*vimage_iterator_func_t)(void *, ...);
 
 eventhandler_tag vimage_eventhandler_register(struct eventhandler_list *list,
 	    const char *name, void *func, void *arg, int priority,
-	    vimage_iterator_func_t);
+	    vimage_iterator_func_t, struct vimage_subsys *);
 #endif
 
 /*
