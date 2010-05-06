@@ -58,8 +58,8 @@ __FBSDID("$FreeBSD$");
 #include <ddb/db_sym.h>
 #endif
 
-MALLOC_DEFINE(M_VIMAGE_DATA_FREE, "vimage_data_free",
-    "VIMAGE resource accounting");
+MALLOC_DEFINE(M_VIMAGE, "vimage", "VIMAGE resource accounting");
+MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
 
 static struct sx vimage_subsys_data_sxlock;
 
@@ -376,7 +376,7 @@ vimage_data_alloc(struct vimage_subsys *vse, size_t size)
 		if (df->vnd_len == size) {
 			s = (void *)df->vnd_start;
 			TAILQ_REMOVE(&vse->v_data_free_list, df, vnd_link);
-			free(df, M_VIMAGE_DATA_FREE);
+			free(df, M_VIMAGE_DATA);
 			break;
 		}
 		s = (void *)df->vnd_start;
@@ -422,7 +422,7 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 				df->vnd_len += dn->vnd_len;
 				TAILQ_REMOVE(&vse->v_data_free_list, dn,
 				    vnd_link);
-				free(dn, M_VIMAGE_DATA_FREE);
+				free(dn, M_VIMAGE_DATA);
 			}
 			sx_xunlock(&vimage_subsys_data_sxlock);
 			return;
@@ -434,7 +434,7 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 			return;
 		}
 	}
-	dn = malloc(sizeof(*df), M_VIMAGE_DATA_FREE, M_WAITOK | M_ZERO);
+	dn = malloc(sizeof(*df), M_VIMAGE_DATA, M_WAITOK | M_ZERO);
 	dn->vnd_start = start;
 	dn->vnd_len = size;
 	if (df)

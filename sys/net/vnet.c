@@ -187,7 +187,7 @@ vnet_data_init(struct vimage_subsys *vse)
 	if (!TAILQ_EMPTY(&vse->v_data_free_list))
 		return (0);
 
-	df = malloc(sizeof(*df), M_VIMAGE_DATA_FREE, M_WAITOK | M_ZERO);
+	df = malloc(sizeof(*df), M_VIMAGE_DATA, M_WAITOK | M_ZERO);
 	df->vnd_start = (uintptr_t)&VNET_NAME(modspace);
 	df->vnd_len = VNET_MODMIN;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);
@@ -195,7 +195,7 @@ vnet_data_init(struct vimage_subsys *vse)
 	if (VNET_MODEXTRA < sizeof(*df))
 		return (0);
 	
-	df = malloc(sizeof(*df), M_VIMAGE_DATA_FREE, M_WAITOK | M_ZERO);
+	df = malloc(sizeof(*df), M_VIMAGE_DATA, M_WAITOK | M_ZERO);
 	df->vnd_start = VNET_STOP;
 	df->vnd_len = VNET_MODEXTRA;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);

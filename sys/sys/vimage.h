@@ -35,9 +35,12 @@
 #define	_SYS_VIMAGE_H_
 
 #include <sys/queue.h>
+#ifdef _KERNEL
 #include <sys/malloc.h>
 
-MALLOC_DECLARE(M_VIMAGE_DATA_FREE);
+MALLOC_DECLARE(M_VIMAGE);
+MALLOC_DECLARE(M_VIMAGE_DATA);
+#endif
 
 struct vimage_data_free {
 	TAILQ_ENTRY(vimage_data_free) vnd_link;
