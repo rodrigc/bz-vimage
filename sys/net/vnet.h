@@ -91,9 +91,6 @@ struct vnet {
 /*
  * Location of the kernel's 'set_vnet' linker set.
  */
-extern uintptr_t	*__start_set_vnet;
-extern uintptr_t	*__stop_set_vnet;
-
 #define	VNET_START	(uintptr_t)&__start_set_vnet
 #define	VNET_STOP	(uintptr_t)&__stop_set_vnet
 
@@ -198,17 +195,11 @@ extern struct sx vnet_sxlock;
 #define	VNET_FOREACH(arg)	LIST_FOREACH((arg), &vnet_head, vnet_le)
 
 /*
- * Virtual network stack memory allocator, which allows global variables to
- * be automatically instantiated for each network stack instance.
+ * VIMAGE subsystem allocator, using a link_set for each subsystem, with will
+ * put into a dedicated elf section, and allows global variables to be
+ * automatically instantiated for each network stack instance.
  */
-__asm__(
-#if defined(__arm__)
-	".section " VNET_SETNAME ", \"aw\", %progbits\n"
-#else
-	".section " VNET_SETNAME ", \"aw\", @progbits\n"
-#endif
-	"\t.p2align " __XSTRING(CACHE_LINE_SHIFT) "\n"
-	"\t.previous");
+DECLARE_LINKER_SET(set_vnet);
 
 #define	VNET_NAME(n)		vnet_entry_##n
 #define	VNET_DECLARE(t, n)	extern t VNET_NAME(n)

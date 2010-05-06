@@ -296,6 +296,20 @@ void vimage_log_recursion(struct vimage_subsys *,
 
 void	vimage_global_eventhandler_iterator_func(void *, ...);
 
+#ifdef VIMAGE
+#if defined(__arm__)
+#define	_PROGBITS	"%progbits"
+#else
+#define	_PROGBITS	"@progbits"
+#endif
+#define	DECLARE_LINKER_SET(SETNAME)					\
+__asm__(								\
+	".section " #SETNAME ", \"aw\", " _PROGBITS "\n"		\
+	"\t.p2align " __XSTRING(CACHE_LINE_SHIFT) "\n"			\
+	"\t.previous");							\
+extern uintptr_t	*__start_ ## SETNAME;				\
+extern uintptr_t	*__stop_ ## SETNAME
+#endif
 
 #endif /* _SYS_VIMAGE_H_ */
 
