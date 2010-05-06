@@ -296,6 +296,8 @@ struct vimage_subsys vnet_data =
 	.v_curvar		= offsetof(struct thread, td_vnet),
 	.v_curvar_lpush		= offsetof(struct thread, td_vnet_lpush),
 
+	.v_instance_size	= sizeof(struct vnet),
+
 	/* Dynamic/module data allocator. */
 	.v_data_free_list	=
 	    TAILQ_HEAD_INITIALIZER(vnet_data.v_data_free_list),

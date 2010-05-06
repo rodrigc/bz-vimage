@@ -77,6 +77,36 @@ struct vimage_recursion {
 };
 SLIST_HEAD(vimage_recursion_head, vimage_recursion);
 
+struct vimage {
+	uintptr_t		 v_data_base;
+	void			*v_data_mem;
+	LIST_ENTRY(vimage)	 v_le;		/* all instance list */
+	/*
+	 * A subsystem might want to allocate more memory to
+	 * hold other per subsystem per instance private data.
+	 */
+	uintptr_t		v_data[];
+};
+LIST_HEAD(vimage_instance_head, vimage);
+
+/*
+ * Read locks to access the list of all per-subsystem instance.  If a caller
+ * may sleep while accessing the list, it must use the sleepable lock macros.
+ */
+#ifdef VIMAGE
+extern struct rwlock vimage_list_rwlock;
+extern struct sx vimage_list_sxlock;
+
+#define	VIMAGE_LIST_RLOCK()		sx_slock(&vimage_list_sxlock)
+#define	VIMAGE_LIST_RUNLOCK()		sx_sunlock(&vimage_list_sxlock)
+#define	VIMAGE_LIST_RLOCK_NOSLEEP()	rw_rlock(&vimage_list_rwlock)
+#define	VIMAGE_LIST_RUNLOCK_NOSLEEP()	rw_runlock(&vimage_list_rwlock)
+#else /* !VIMAGE */
+#define	VIMAGE_LIST_RLOCK()
+#define	VIMAGE_LIST_RUNLOCK()
+#define	VIMAGE_LIST_RLOCK_NOSLEEP()
+#define	VIMAGE_LIST_RUNLOCK_NOSLEEP()
+#endif /* VIMAGE */
 
 /*
  * Caller of vimage_subsys_register() has to intialize setname and,
@@ -97,6 +127,9 @@ struct vimage_subsys {
 
 	size_t				v_curvar;
 	size_t				v_curvar_lpush;
+
+	size_t				v_instance_size;/* instance struct */
+	struct vimage_instance_head	v_instance_head;/* instance list */
 
 	/* Dynamic/module data allocator. */
 	TAILQ_HEAD(, vimage_data_free)	v_data_free_list;
@@ -180,6 +213,14 @@ struct vimage_subsys *vimage_subsys_get(const char *);
 
 void vimage_log_recursion(struct vimage_subsys *,
     void *, const char *, int, void *, const char *);
+
+#ifdef VIMAGE
+#define	VIMAGE_FOREACH(vse, arg)					\
+	LIST_FOREACH((arg), &(vse)->v_instance_head, v_le)
+#else /*!VIMAGE */
+#define	VIMAGE_FOREACH(vse, arg)		do { } while(0)
+#endif /* VIMAGE */
+
 
 #ifdef SYSCTL_OID
 #ifdef VIMAGE

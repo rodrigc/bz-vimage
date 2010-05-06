@@ -82,6 +82,25 @@ struct rwlock		vimage_subsys_rwlock;
 } while (0)
 
 /*
+ * The virtual subsystem instance list has two read-write locks, one sleepable
+ * and the other not, so that the list can be stablized and walked in a variety
+ * of contexts.  Both must be acquired exclusively to modify the list, but a
+ * read lock of either lock is sufficient to walk the list.
+ */
+struct rwlock		vimage_list_rwlock;
+struct sx		vimage_list_sxlock;
+
+#define	VIMAGE_LIST_WLOCK() do {						\
+	sx_xlock(&vimage_list_sxlock);						\
+	rw_wlock(&vimage_list_rwlock);						\
+} while (0)
+
+#define	VIMAGE_LIST_WUNLOCK() do {					\
+	rw_wunlock(&vimage_list_rwlock);					\
+	sx_xunlock(&vimage_list_sxlock);					\
+} while (0)
+
+/*
  * Global lists of subsystem constructor and destructors for subsystems.
  * They are registered via SUBSYS_SYSINIT() and SUBSYS_SYSUNINIT().  Both
  * lists are protected by the vimage_sysinit_sxlock global lock.
@@ -115,6 +134,9 @@ vimage_init_prelink(void *arg)
 	rw_init(&vimage_subsys_rwlock, "vimage_subsys_rwlock");
 	sx_init(&vimage_subsys_sxlock, "vimage_subsys_sxlock");
 	LIST_INIT(&vimage_subsys_head);
+
+	rw_init(&vimage_list_rwlock, "vimage_list_rwlock");
+	sx_init(&vimage_list_sxlock, "vimage_list_sxlock");
 
 	sx_init(&vimage_subsys_data_sxlock, "vimage subsys data alloc lock");
 
