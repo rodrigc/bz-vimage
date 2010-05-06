@@ -65,6 +65,20 @@ TAILQ_HEAD(vimage_sysinit_head, vimage_sysinit);
 TAILQ_HEAD(vimage_sysuninit_head, vimage_sysinit);
 
 /*
+ * For debugging purposes.
+ */
+struct vimage_recursion {
+	SLIST_ENTRY(vimage_recursion)	vr_le;
+	const char			*prev_fn;
+	const char			*where_fn;
+	int				where_line;
+	void				*old_instance;
+	void				*new_instance;
+};
+SLIST_HEAD(vimage_recursion_head, vimage_recursion);
+
+
+/*
  * Caller of vimage_subsys_register() has to intialize setname and,
  * if dynamic data region support for modules is provided,
  * v_data_init(). v_data_free_list should be statically initialized in
@@ -102,6 +116,9 @@ struct vimage_subsys {
 	int				v_sysinit_earliest;
 	void				(*v_sysinit_iter)(
 					    struct vimage_sysinit *);
+
+	/* Debugging. */
+	struct vimage_recursion_head	v_recursions;
 };
 
 extern struct sx		vimage_subsys_sxlock;
@@ -160,6 +177,9 @@ int vimage_subsys_register(struct vimage_subsys *);
 int vimage_subsys_deregister(struct vimage_subsys *);
 
 struct vimage_subsys *vimage_subsys_get(const char *);
+
+void vimage_log_recursion(struct vimage_subsys *,
+    void *, const char *, int, void *, const char *);
 
 #ifdef SYSCTL_OID
 #ifdef VIMAGE

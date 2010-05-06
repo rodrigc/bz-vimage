@@ -372,65 +372,6 @@ vnet_sysinit_iterator(struct vimage_sysinit *vs)
 	VNET_LIST_RUNLOCK();
 }
 
-#ifdef VNET_DEBUG
-struct vnet_recursion {
-	SLIST_ENTRY(vnet_recursion)	 vnr_le;
-	const char			*prev_fn;
-	const char			*where_fn;
-	int				 where_line;
-	struct vnet			*old_vnet;
-	struct vnet			*new_vnet;
-};
-
-static SLIST_HEAD(, vnet_recursion) vnet_recursions =
-    SLIST_HEAD_INITIALIZER(vnet_recursions);
-
-static void
-vnet_print_recursion(struct vnet_recursion *vnr, int brief)
-{
-
-	if (!brief)
-		printf("CURVNET_SET() recursion in ");
-	printf("%s() line %d, prev in %s()", vnr->where_fn, vnr->where_line,
-	    vnr->prev_fn);
-	if (brief)
-		printf(", ");
-	else
-		printf("\n    ");
-	printf("%p -> %p\n", vnr->old_vnet, vnr->new_vnet);
-}
-
-void
-vnet_log_recursion(struct vnet *old_vnet, const char *old_fn, int line)
-{
-	struct vnet_recursion *vnr;
-
-	/* Skip already logged recursion events. */
-	SLIST_FOREACH(vnr, &vnet_recursions, vnr_le)
-		if (vnr->prev_fn == old_fn &&
-		    vnr->where_fn == curthread->td_vnet_lpush &&
-		    vnr->where_line == line &&
-		    (vnr->old_vnet == vnr->new_vnet) == (curvnet == old_vnet))
-			return;
-
-	vnr = malloc(sizeof(*vnr), M_VNET, M_NOWAIT | M_ZERO);
-	if (vnr == NULL)
-		panic("%s: malloc failed", __func__);
-	vnr->prev_fn = old_fn;
-	vnr->where_fn = curthread->td_vnet_lpush;
-	vnr->where_line = line;
-	vnr->old_vnet = old_vnet;
-	vnr->new_vnet = curvnet;
-
-	SLIST_INSERT_HEAD(&vnet_recursions, vnr, vnr_le);
-
-	vnet_print_recursion(vnr, 0);
-#ifdef KDB
-	kdb_backtrace();
-#endif
-}
-#endif /* VNET_DEBUG */
-
 /*
  * DDB(4).
  */
@@ -455,15 +396,4 @@ DB_SHOW_COMMAND(vnets, db_show_vnets)
 			break;
 	}
 }
-
-
-#ifdef VNET_DEBUG
-DB_SHOW_COMMAND(vnetrcrs, db_show_vnetrcrs)
-{
-	struct vnet_recursion *vnr;
-
-	SLIST_FOREACH(vnr, &vnet_recursions, vnr_le)
-		vnet_print_recursion(vnr, 1);
-}
-#endif
 #endif /* DDB */

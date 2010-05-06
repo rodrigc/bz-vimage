@@ -128,8 +128,6 @@ void	vnet_destroy(struct vnet *vnet);
 #endif
 
 #ifdef VNET_DEBUG
-void vnet_log_recursion(struct vnet *, const char *, int);
-
 #define	CURVNET_SET_QUIET(arg)						\
 	VNET_ASSERT((arg) != NULL && (arg)->vnet_magic_n == VNET_MAGIC_N, \
 	    ("CURVNET_SET at %s:%d %s() curvnet=%p vnet=%p",		\

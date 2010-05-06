@@ -172,6 +172,9 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	if (vse->v_data_copy == NULL)
 		vse->v_data_copy = vimage_data_copy;
 
+	/* Initialize debugging. */
+	SLIST_INIT(&vse->v_recursions);
+
 	/*
 	 * Initalize dynamic data region for module support. Callee has to
 	 * handle list initialization itself as we do not know varaible names
@@ -547,7 +550,74 @@ vimage_global_eventhandler_iterator_func(void *arg, ...)
 	VIMAGE_LIST_RUNLOCK();
 }
 
+static void
+vimage_print_recursion(struct vimage_subsys *vse,
+    struct vimage_recursion *vr, int brief)
+{
+
+	if (!brief)
+		printf("CUR%s_SET() recursion in ", vse->NAME);
+	printf("%s() line %d, prev in %s()",
+	    vr->where_fn, vr->where_line, vr->prev_fn);
+	if (brief)
+		printf(", ");
+	else
+		printf("\n    ");
+	printf("%p -> %p\n", vr->old_instance, vr->new_instance);
+}
+
+void
+vimage_log_recursion(struct vimage_subsys *vse,
+    void *where_instance, const char *where_fn, int where_line,
+    void *old_instance, const char *old_fn)
+{
+	struct vimage_recursion *vr;
+
+	/* Skip already logged recursion events. */
+	SLIST_FOREACH(vr, &vse->v_recursions, vr_le)
+		if (vr->prev_fn == old_fn &&
+		    vr->where_fn == where_fn &&
+		    vr->where_line == where_line &&
+		    (vr->old_instance == vr->new_instance) ==
+			(where_instance == old_instance))
+			    return;
+
+	vr = malloc(sizeof(*vr), M_VIMAGE, M_NOWAIT | M_ZERO);
+	if (vr == NULL) {
+		printf("%s: malloc failed, not tracking recursion", __func__);
+		return;
+	}
+	vr->prev_fn = old_fn;
+	vr->where_fn = where_fn;
+	vr->where_line = where_line;
+	vr->old_instance = old_instance;
+	vr->new_instance = where_instance;
+
+	SLIST_INSERT_HEAD(&vse->v_recursions, vr, vr_le);
+
+	vimage_print_recursion(vse, vr, 0);
+#ifdef KDB
+	kdb_backtrace();
+#endif
+}
+
 #ifdef DDB
+DB_SHOW_VIMAGE_COMMAND(recursions, db_show_vimage_recursions)
+{
+	struct vimage_subsys *vse;
+	struct vimage_recursion *vr;
+
+	if (!have_addr) {
+		db_printf("usage: show vimage recursions "
+		    "<struct vimage_subsys *>\n");
+		return;
+	}
+	vse = (struct vimage_subsys *)addr;
+
+	SLIST_FOREACH(vr, &vse->v_recursions, vr_le)
+		vimage_print_recursion(vse, vr, 1);
+}
+
 static void
 db_show_vimage_print_vs(struct vimage_sysinit *vs)
 {
@@ -649,6 +719,7 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	V_PRINT_PTR(v_sysint_destructors, "%p");
 	V_PRINT(v_sysinit_earliest, "0x%07X");
 	V_FPTR(v_sysinit_iter);
+	V_PRINT_PTR(v_recursions, "%p");
 #undef	V_PRINT_PTR
 #undef	V_PRINT
 #undef	V_FPTR
