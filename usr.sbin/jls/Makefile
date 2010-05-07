@@ -2,7 +2,7 @@
 
 PROG=	jls
 MAN=	jls.8
-DPADD=	${LIBJAIL}
-LDADD=	-ljail
+DPADD=	${LIBJAIL} ${LIBKVM}
+LDADD=	-ljail -lkvm
 
 .include <bsd.prog.mk>

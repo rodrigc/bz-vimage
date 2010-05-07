@@ -31,6 +31,7 @@ __FBSDID("$FreeBSD: src/usr.sbin/jls/jls.c,v 1.16 2010/03/18 20:13:04 ed Exp $")
 
 #include <sys/param.h>
 #include <sys/jail.h>
+#include <sys/queue.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
 
@@ -60,6 +61,8 @@ static struct jailparam *params;
 static int *param_parent;
 static int nparams;
 
+static char *nlistf = NULL, *memf = NULL;
+
 static int add_param(const char *name, void *value, size_t valuelen,
 		struct jailparam *source, unsigned flags);
 static int sort_param(const void *a, const void *b);
@@ -76,7 +79,7 @@ main(int argc, char **argv)
 
 	jname = NULL;
 	pflags = jflags = jid = 0;
-	while ((c = getopt(argc, argv, "adj:hnqsv")) >= 0)
+	while ((c = getopt(argc, argv, "adj:hM:N:nqsv")) >= 0)
 		switch (c) {
 		case 'a':
 		case 'd':
@@ -90,6 +93,12 @@ main(int argc, char **argv)
 		case 'h':
 			pflags = (pflags & ~(PRINT_SKIP | PRINT_VERBOSE)) |
 			    PRINT_HEADER;
+			break;
+		case 'M':
+			memf = optarg;
+			break;
+		case 'N':
+			nlistf = optarg;
 			break;
 		case 'n':
 			pflags = (pflags & ~PRINT_VERBOSE) | PRINT_NAMEVAL;
@@ -328,7 +337,10 @@ print_jail(int pflags, int jflags)
 	int i, ai, jid, count, spc;
 	char ipbuf[INET6_ADDRSTRLEN];
 
-	jid = jailparam_get(params, nparams, jflags);
+	if (nlistf != NULL || memf != NULL)
+		jid = jailparam_get_kvm(params, nparams, jflags, nlistf, memf);
+	else	
+		jid = jailparam_get(params, nparams, jflags);
 	if (jid < 0)
 		return jid;
 	if (pflags & PRINT_VERBOSE) {
