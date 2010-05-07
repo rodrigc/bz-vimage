@@ -27,21 +27,35 @@
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD: src/lib/libjail/jail.c,v 1.5 2010/02/17 16:45:03 ru Exp $");
 
+#define _WANT_CPUSET
+#define _WANT_PRISON
+#define _WANT_UCRED
 #include <sys/param.h>
 #include <sys/types.h>
+#include <sys/lock.h>
+#include <sys/mutex.h>
+#include <sys/_task.h>
 #include <sys/jail.h>
+#include <sys/proc.h>
 #include <sys/socket.h>
 #include <sys/sysctl.h>
+#include <sys/queue.h>
+#include <sys/cpuset.h>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <inttypes.h>
+#include <kvm.h>
+#include <limits.h>
+#include <nlist.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "jail.h"
 
@@ -495,14 +509,947 @@ jailparam_set(struct jailparam *jp, unsigned njp, int flags)
 				free(jiov[j * 2].iov_base);
 	return (jid);
 }
+TAILQ_HEAD(prisonlist, prison);
 
-int
-jailparam_get(struct jailparam *jp, unsigned njp, int flags)
+static int
+_jail_get_copyopt(struct iovec *iovp, unsigned int iovcnt,
+    const char *name, void *dest, int len)
+{
+	struct iovec *p;
+	unsigned int i;
+
+	for (i = 0; i < (iovcnt - 1); i++) {
+
+		/* No name. Just return an error. */
+		if (iovp[i].iov_base == NULL)
+			break;
+		if (iovp[i+1].iov_len != len ||
+		    iovp[i+1].iov_base == NULL) {
+			/* Value not matching or error, skip pair. */
+			i++;
+			continue;
+		}
+		/* This is the pair we are looking for. */
+		if (!strcmp(name, iovp[i].iov_base)) {
+			bcopy(iovp[i+1].iov_base, dest, iovp[i+1].iov_len);
+			return (0);
+		}
+	}
+	return (ENOENT);
+}
+
+static int
+_jail_get_getopt(struct iovec *iovp, unsigned int iovcnt,
+    const char *name, void **buf, int *len)
+{
+	unsigned int i;
+
+	for (i = 0; i < (iovcnt - 1); i++) {
+		/* No name. Just return an error. */
+		if (iovp[i].iov_base == NULL)
+			break;
+		/* This is the pair we are looking for. */
+		if (!strcmp(name, iovp[i].iov_base)) {
+			if (len != NULL)
+				*len = iovp[i+1].iov_len;
+			if (buf != NULL)
+				*buf = iovp[i+1].iov_base;
+			return (0);
+		}
+		/* Skip pair. */
+		i++;
+	}
+	return (ENOENT);
+}
+
+static int
+_jail_get_setopt(struct iovec *iovp, unsigned int iovcnt,
+    const char *name, void *value, int len)
+{
+	unsigned int i;
+
+	for (i = 0; i < (iovcnt - 1); i++) {
+		/* No name. Just return an error. */
+		if (iovp[i].iov_base == NULL)
+			break;
+		/* Is this the pair we are looking for? */
+		if (strcmp(name, iovp[i].iov_base)) {
+			i++;
+			continue;
+		}
+		/* Skip name and work on value iovec. */
+		i++;
+		if (iovp[i].iov_base == NULL) {
+			iovp[i].iov_len = len;
+		} else {
+			if (iovp[i].iov_len != len)
+				return (EINVAL);
+			bcopy(value, iovp[i].iov_base, len);
+		}
+		return (0);
+	}
+	return (ENOENT);
+}
+
+static int
+_jail_get_setopt_part(struct iovec *iovp, unsigned int iovcnt,
+    const char *name, void *value, int len)
+{
+	unsigned int i;
+
+	for (i = 0; i < (iovcnt - 1); i++) {
+		/* No name. Just return an error. */
+		if (iovp[i].iov_base == NULL)
+			break;
+		/* Is this the pair we are looking for? */
+                if (strcmp(name, iovp[i].iov_base)) {
+			i++;
+                        continue;
+		}
+		/* Skip name and work on value iovec. */
+                i++;
+		if (iovp[i].iov_base == NULL)
+			iovp[i].iov_len = len;
+                else {
+			if (iovp[i].iov_len < len)
+				return (EINVAL);
+			iovp[i].iov_len = len;
+			bcopy(value, iovp[i].iov_base, len);
+                }
+                return (0);
+        }
+        return (ENOENT);
+}
+
+static int
+_jail_get_setopts(struct iovec *iovp, unsigned int iovcnt,
+    const char *name, const char *value)
+{
+	unsigned int i;
+
+	for (i = 0; i < (iovcnt - 1); i++) {
+		/* No name. Just return an error. */
+		if (iovp[i].iov_base == NULL)
+			break;
+		/* Is this the pair we are looking for? */
+                if (strcmp(name, iovp[i].iov_base)) {
+			i++;
+                        continue;
+		}
+		/* Skip name and work on value iovec. */
+                i++;
+		if (iovp[i].iov_base == NULL)
+                        iovp[i].iov_len = strlen(value) + 1;
+                else if (strlcpy(iovp[i].iov_base, value, iovp[i].iov_len) >=
+		    iovp[i].iov_len)
+                        return (EINVAL);
+                return (0);
+        }
+        return (ENOENT);
+}
+
+static void
+_jail_get_kvm_opterror(struct iovec *iovp, unsigned int iovcnt,
+    const char *fmt, ...)
+{
+	va_list ap;
+	int error, len;
+	char *errmsg;
+
+	error = _jail_get_getopt(iovp, iovcnt, "errmsg",
+	    (void **)&errmsg, &len);
+	if (error || errmsg == NULL || len <= 0)
+		return;
+
+	va_start(ap, fmt);
+	vsnprintf(errmsg, (size_t)len, fmt, ap);
+	va_end(ap);
+}
+
+static int
+_jail_get_kvm_prison_read(kvm_t *kd, uintptr_t addr, void *buf, size_t size)
+{
+	ssize_t l;
+
+	l = kvm_read(kd, addr, buf, size);
+	if (l != (ssize_t)size) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s: %p", kvm_geterr(kd), (void *)addr);
+		return (EINVAL);
+	}
+	return (0);
+}
+
+/* This is inefficient but correct. */
+static char *
+_jail_get_kvm_prison_read_string(kvm_t *kd, uintptr_t addr, char *buf, size_t size)
+{
+	size_t s;
+	ssize_t l;
+
+	for (s = 0; s < size; s++) {
+		l = kvm_read(kd, addr, buf, s+1);
+		if (l != (ssize_t)s+1)
+			return (NULL);
+		if (buf[s] == '\0')
+			return buf;
+	}
+
+	return (NULL);
+}
+
+static int
+_jail_get_kvm_prison_ischild(kvm_t *kd, struct prison *pr1,
+    struct prison *pr2)
+{
+	uintptr_t praddr;
+	struct prison pr;
+	size_t size;
+
+	size = sizeof(pr);
+	praddr = (uintptr_t)pr2->pr_parent;
+	while (praddr != 0) {
+		if (_jail_get_kvm_prison_read(kd, (uintptr_t)praddr, &pr, size))
+			return (0);
+		if (pr1->pr_id == pr.pr_id)
+			return (1);
+		praddr = (uintptr_t)pr.pr_parent;
+	}
+	return (0);
+}
+
+static uintptr_t
+_jail_get_kvm_prison_find_child(kvm_t *kd, uintptr_t mypraddr,
+    struct prison *mypr, int prid)
+{
+	struct prison *cpr, pr, *rpr;
+	int descend;
+	size_t size;
+
+	size = sizeof(pr);
+	descend = 1;
+	cpr = mypr;
+	rpr = (struct prison *)mypraddr;
+	while (cpr != NULL) {
+		if (descend && cpr->pr_id == prid && cpr->pr_ref > 0)
+			return ((uintptr_t)rpr);
+		if (descend && !LIST_EMPTY(&cpr->pr_children)) {
+			cpr = LIST_FIRST(&cpr->pr_children);
+			if (_jail_get_kvm_prison_read(kd,
+			    (uintptr_t)cpr, &pr, size))
+				return (0);
+			rpr = cpr;
+			cpr = &pr;
+		} else {
+			if (cpr->pr_id == mypr->pr_id) {
+				cpr = NULL;
+				rpr = cpr;
+			} else {
+				if (descend = LIST_NEXT(cpr, pr_sibling) != NULL) {
+					cpr = LIST_NEXT(cpr, pr_sibling);
+					if (_jail_get_kvm_prison_read(kd,
+					    (uintptr_t)cpr, &pr, size))
+						return (0);
+					rpr = cpr;
+					cpr = &pr;
+				} else {
+					cpr = cpr->pr_parent;
+					if (_jail_get_kvm_prison_read(kd,
+					    (uintptr_t)cpr, &pr, size))
+						return (0);
+					rpr = cpr;
+					cpr = &pr;
+				}
+				
+			}
+		}
+         }
+         return (0);
+}
+
+static char *
+_jail_get_kvm_prison_name(kvm_t *kd, struct prison *pr1, struct prison *pr2)
+{
+	char *name;
+	struct prison pr;
+
+	/* Jails see themselves as "0" (if they see themselves at all). */
+	if (pr1->pr_id == pr2->pr_id)
+		return ("0");
+
+	name = pr2->pr_name;
+	if (_jail_get_kvm_prison_ischild(kd, pr1, pr2)) {
+		/*
+		 * In kernel we do not neccessarily hold a lock,
+		 * but the number of dots can be counted on - and counted.
+		 */
+		pr = *pr1;
+		while (pr.pr_id != /* prison0 */ 0) {
+			name = strchr(name, '.') + 1;
+			if (pr.pr_parent == NULL)
+				break;
+			if (_jail_get_kvm_prison_read(kd,
+			    (uintptr_t)pr.pr_parent, &pr, sizeof(pr)))
+				return (NULL);
+		}
+	}
+	return (name);
+}
+
+static char *
+_jail_get_kvm_prison_path(kvm_t *kd, struct prison *pr1, struct prison *pr2)
+{
+	char *path1, *path2;
+	int len1;
+
+	path1 = pr1->pr_path;
+	path2 = pr2->pr_path;
+	if (!strcmp(path1, "/"))
+		return (path2);
+	len1 = strlen(path1);
+	if (strncmp(path1, path2, len1))
+		return (path2);
+	if (path2[len1] == '\0')
+		return "/";
+	if (path2[len1] == '/')
+		return (path2 + len1);
+	return (path2);
+}
+
+static uintptr_t
+_jail_get_kvm_prison_find_name(kvm_t *kd, uintptr_t mypraddr,
+    struct prison *mypr, const char *name)
+{
+	struct prison *cpr, pr, *deadpr, *rpr, *deadrpr;
+	size_t mylen, size;
+	int descend;
+
+	mylen = (mypr->pr_id == /*prison0*/0) ? 0 : strlen(mypr->pr_name) + 1;
+	size = sizeof(pr);
+again:
+	deadpr = NULL;
+	deadrpr = NULL;
+	descend = 1;
+	rpr = (struct prison *)mypraddr;
+	cpr = mypr;
+	while (cpr != NULL) {
+		if (descend && !strcmp(cpr->pr_name + mylen, name)) {
+			if (cpr->pr_ref > 0) {
+				if (cpr->pr_uref > 0)
+					return ((uintptr_t)rpr);
+				deadrpr = rpr;
+				deadpr = cpr;
+			}
+		}
+		if (descend && !LIST_EMPTY(&cpr->pr_children)) {
+			cpr = LIST_FIRST(&cpr->pr_children);
+			if (_jail_get_kvm_prison_read(kd,
+			    (uintptr_t)cpr, &pr, size))
+				return (0);
+			rpr = cpr;
+			cpr = &pr;
+		} else {
+			if (cpr->pr_id == mypr->pr_id) {
+				cpr = NULL;
+				rpr = cpr;
+			} else {
+				if (descend = LIST_NEXT(cpr, pr_sibling) != NULL) {
+					cpr = LIST_NEXT(cpr, pr_sibling);
+					if (_jail_get_kvm_prison_read(kd,
+					    (uintptr_t)cpr, &pr, size))
+						return (0);
+					rpr = cpr;
+					cpr = &pr;
+				} else {
+					cpr = cpr->pr_parent;
+					if (_jail_get_kvm_prison_read(kd,
+					    (uintptr_t)cpr, &pr, size))
+						return (0);
+					rpr = cpr;
+					cpr = &pr;
+				}
+				
+			}
+		}
+	}
+	/* There was no valid prison - perhaps there was a dying one. */
+	if (deadpr != NULL && deadpr->pr_ref == 0)
+		goto again;
+	return ((uintptr_t)deadrpr);
+}
+
+static int
+_jail_get_kvm(struct iovec *iovp, unsigned int iovcnt, int flags,
+    char *nlistf, char *memf)
+{
+	kvm_t *kd;
+	char errbuf[_POSIX2_LINE_MAX];
+	size_t size;
+	struct prisonlist allprison;
+	struct prison pr, mypr, pr2, *prp;
+	uintptr_t praddr;
+	char *name, *p;
+	int error, jid, len, i;
+	uintptr_t procp, tdp, credp;
+	lwpid_t dumptid;
+	pid_t pid;
+	struct proc proc;
+	struct ucred cred;
+	struct cpuset cpuset;
+	size_t pr_flag_names_size;
+	size_t pr_flag_nonames_size;
+	size_t pr_flag_jailsys_size;
+	size_t pr_allow_names_size;
+	size_t pr_allow_nonames_size;
+	char **pr_allow_names;
+	char **pr_allow_nonames;
+	struct jailsys_flags {
+		 const char	*name;
+		 unsigned	 disable;
+		 unsigned	 new;
+	} *pr_flag_jailsys;
+	char **pr_flag_names;
+	char **pr_flag_nonames;
+	char buf[256];
+	int fi;
+
+
+	static struct nlist nl[] = {
+#define	NLIST_ALLPRISON			0
+		{ .n_name = "_allprison" },
+#define NLIST_ALLPROC			1
+		{ .n_name = "allproc" },
+#define NLIST_DUMPTID			2
+		{ .n_name = "dumptid" },
+#define NLIST_PROC0			3
+		{ .n_name = "proc0" },
+#define NLIST_PR_FLAG_NAMES		4
+		{ .n_name = "pr_flag_names" },
+#define NLIST_PR_FLAG_NAMES_SIZE	5
+		{ .n_name = "pr_flag_names_size" },
+#define NLIST_PR_FLAG_NONAMES		6
+		{ .n_name = "pr_flag_nonames" },
+#define NLIST_PR_FLAG_NONAMES_SIZE	7
+		{ .n_name = "pr_flag_nonames_size" },
+#define NLIST_PR_FLAG_JAILSYS		8
+		{ .n_name = "pr_flag_jailsys" },
+#define NLIST_PR_FLAG_JAILSYS_SIZE	9
+		{ .n_name = "pr_flag_jailsys_size" },
+#define NLIST_PR_ALLOW_NAMES		10
+		{ .n_name = "pr_allow_names" },
+#define NLIST_PR_ALLOW_NAMES_SIZE	11
+		{ .n_name = "pr_allow_names_size" },
+#define NLIST_PR_ALLOW_NONAMES		12
+		{ .n_name = "pr_allow_nonames" },
+#define NLIST_PR_ALLOW_NONAMES_SIZE	13
+		{ .n_name = "pr_allow_nonames_size" },
+		{ .n_name = NULL },
+	};
+
+	error = EINVAL;
+	if (flags & ~JAIL_GET_MASK)
+		goto err;
+
+	kd = kvm_openfiles(nlistf, memf, NULL, O_RDONLY, errbuf);
+	if (kd != NULL) {
+		if (kvm_nlist(kd, nl) < 0) {
+			if (nlistf) {
+				if (!jail_errmsg[0])
+					snprintf(jail_errmsg, sizeof(jail_errmsg),
+					    "%s: kvm_nlist: %s", nlistf,
+					    kvm_geterr(kd));
+			} else {
+				if (!jail_errmsg[0])
+					snprintf(jail_errmsg, sizeof(jail_errmsg),
+					    "kvm_nlist: %s", kvm_geterr(kd));
+			}
+			goto err;
+		}
+
+		if (nl[0].n_type == 0) {
+			if (nlistf) {
+				if (!jail_errmsg[0])
+					snprintf(jail_errmsg, sizeof(jail_errmsg),
+					    "%s: no namelist", nlistf);
+			} else {
+				if (!jail_errmsg[0])
+					snprintf(jail_errmsg, sizeof(jail_errmsg),
+					    "no namelist");
+			}
+			goto err;
+		}
+	} else {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "available: %s", errbuf);
+		goto err;
+	}
+
+	/* Get allprison list head. */
+	size = sizeof(allprison);
+	if (kvm_read(kd, nl[NLIST_ALLPRISON].n_value, &allprison, size) !=
+	    (ssize_t)size) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s", kvm_geterr(kd));
+		goto err;
+	}
+
+	/*
+	 * Identify the process of this prison or auto-detect if this is
+	 * a crashdump by reading dumptid.
+	 */
+	pid = getpid();
+	dumptid = 0;
+	if (nl[NLIST_DUMPTID].n_value) {
+		if (kvm_read(kd, nl[NLIST_DUMPTID].n_value, &dumptid,
+		    sizeof(dumptid)) != sizeof(dumptid)) {
+			if (!jail_errmsg[0])
+				snprintf(jail_errmsg, sizeof(jail_errmsg),
+				    "%s: cannot read dumptid", __func__);
+			error = EINVAL;
+			goto err;
+		}
+	}
+
+	/*
+	 * First, find the process for this pid.  If we are working on a
+	 * dump, either locate the thread dumptid is refering to or proc0.
+	 * Based on either, take the address of the ucred.
+	 */
+	credp = 0;
+	procp = nl[NLIST_ALLPROC].n_value;
+	if (dumptid > 0) {
+		procp = nl[NLIST_PROC0].n_value;
+		pid = 0;
+	}
+
+	while (procp != 0) {
+		/* For a a live system this is best effort. */
+		if (kvm_read(kd, procp, &proc, sizeof(proc)) != sizeof(proc)) {
+			if (!jail_errmsg[0])
+				snprintf(jail_errmsg, sizeof(jail_errmsg),
+				    "%s: cannot read proc", __func__);
+			error = EINVAL;
+			goto err;
+		}
+		if (proc.p_pid == pid)
+			credp = (uintptr_t)proc.p_ucred;
+		if (credp != 0)
+			break;
+		procp = (uintptr_t)LIST_NEXT(&proc, p_list);
+	}
+	if (credp == 0) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s: cannot identify cred", __func__);
+		error = EINVAL;
+		goto err;
+	}
+	if (kvm_read(kd, (uintptr_t)credp, &cred, sizeof(cred)) !=
+	    sizeof(cred)) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s: cannot read cred", __func__);
+		error = EINVAL;
+		goto err;
+	}
+	if (cred.cr_prison == NULL) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s: cannot indentify prison", __func__);
+		error = EINVAL;
+		goto err;
+	}
+	if (kvm_read(kd, (uintptr_t)cred.cr_prison, &mypr, sizeof(mypr)) !=
+	    sizeof(mypr)) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, sizeof(jail_errmsg),
+			    "%s: cannot read prison", __func__);
+		error = EINVAL;
+		goto err;
+	}
+
+	/*
+	 * Find the prison specified by one of: lastjid, jid, name.
+	 */
+	error = _jail_get_copyopt(iovp, iovcnt, "lastjid", &jid, sizeof(jid));
+	if (error == 0) {
+		size = sizeof(pr);
+		praddr = (uintptr_t)TAILQ_FIRST(&allprison);
+		while (praddr != 0) {
+			if (_jail_get_kvm_prison_read(kd, praddr, &pr, size))
+				goto err;
+			if (pr.pr_id > jid &&
+			    _jail_get_kvm_prison_ischild(kd, &mypr, &pr)) {
+				if (pr.pr_ref > 0 &&
+				    (pr.pr_uref > 0 || (flags & JAIL_DYING)))
+					praddr = (uintptr_t)&pr;
+					break;
+			}
+			praddr = (uintptr_t)TAILQ_NEXT(&pr, pr_list);
+		}
+		if (praddr != 0)
+			goto found_prison;
+		error = ENOENT;
+		_jail_get_kvm_opterror(iovp, iovcnt, "no jail after %d", jid);
+		goto err;
+	} else if (error != ENOENT)
+		goto err;
+
+	error = _jail_get_copyopt(iovp, iovcnt, "jid", &jid, sizeof(jid));
+	if (error == 0) {
+		if (jid != 0) {
+			praddr = _jail_get_kvm_prison_find_child(kd,
+			    (uintptr_t)cred.cr_prison, &mypr, jid);
+			if (praddr != 0) {
+				if (_jail_get_kvm_prison_read(kd, praddr, &pr,
+				    sizeof(pr)))
+					goto err;
+				if (pr.pr_uref == 0 && !(flags & JAIL_DYING)) {
+					error = ENOENT;
+					_jail_get_kvm_opterror(iovp, iovcnt,
+					    "jail %d is dying", jid);
+					goto err;
+				}
+				goto found_prison;
+			}
+			error = ENOENT;
+			_jail_get_kvm_opterror(iovp, iovcnt,
+			    "jail %d not found", jid);
+			goto err;
+		}
+	} else if (error != ENOENT)
+		goto err;
+
+	error = _jail_get_getopt(iovp, iovcnt, "name", (void **)&name, &len);
+	if (error == 0) {
+		if (len == 0 || name[len - 1] != '\0') {
+			error = EINVAL;
+			goto err;
+		}
+		praddr = _jail_get_kvm_prison_find_name(kd,
+		    (uintptr_t)cred.cr_prison, &mypr, name);
+		if (praddr != 0) {
+			if (_jail_get_kvm_prison_read(kd, praddr, &pr,
+			    sizeof(pr)))
+				goto err;
+			if (pr.pr_uref == 0 && !(flags & JAIL_DYING)) {
+				error = ENOENT;
+				_jail_get_kvm_opterror(iovp, iovcnt,
+				    "jail \"%s\" is dying", name);
+				goto err;
+			}
+			goto found_prison;
+		}
+		error = ENOENT;
+		_jail_get_kvm_opterror(iovp, iovcnt, "jail \"%s\" not found",
+		    name);
+		goto err;
+	} else if (error != ENOENT)
+		goto err;
+
+	_jail_get_kvm_opterror(iovp, iovcnt, "no jail specified");
+	error = ENOENT;
+	goto err;
+
+found_prison:
+	prp = &pr;
+	error = _jail_get_setopt(iovp, iovcnt, "jid", &prp->pr_id,
+	    sizeof(prp->pr_id));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	if (!prp->pr_parent ||
+	    _jail_get_kvm_prison_read(kd, (uintptr_t)prp->pr_parent,
+	    &pr2, sizeof(pr2)))
+		goto err;
+	i = (pr2.pr_id == mypr.pr_id) ? 0 : pr2.pr_id;
+	error = _jail_get_setopt(iovp, iovcnt, "parent", &i, sizeof(i));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopts(iovp, iovcnt, "name",
+	    _jail_get_kvm_prison_name(kd, &mypr, prp));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	if (_jail_get_kvm_prison_read(kd, (uintptr_t)prp->pr_cpuset,
+	    &cpuset, sizeof(cpuset)))
+		goto err;
+	error = _jail_get_setopt(iovp, iovcnt, "cpuset.id", &cpuset.cs_id,
+	    sizeof(cpuset.cs_id));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopts(iovp, iovcnt, "path",
+	    _jail_get_kvm_prison_path(kd, &mypr, prp));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+#ifdef INET
+	size = prp->pr_ip4s * sizeof(*prp->pr_ip4);
+	p = malloc(size);
+	if (p == NULL) {
+		error = EINVAL;
+		goto err;
+	}
+	if (_jail_get_kvm_prison_read(kd, (uintptr_t)prp->pr_ip4, p, size)) {
+		free(p);
+		goto err;
+	}
+	error = _jail_get_setopt_part(iovp, iovcnt, "ip4.addr", p, size);
+	if (error != 0 && error != ENOENT) {
+		free(p);
+		goto err_opts;
+	}
+	free(p);
+#endif
+#ifdef INET6
+	size = prp->pr_ip6s * sizeof(*prp->pr_ip6);
+	p = malloc(size);
+	if (p == NULL) {
+		error = EINVAL;
+		goto err;
+	}
+	if (_jail_get_kvm_prison_read(kd, (uintptr_t)prp->pr_ip6, p, size)) {
+		free(p);
+		goto err;
+	}
+	error = _jail_get_setopt_part(iovp, iovcnt, "ip6.addr", p, size);
+	if (error != 0 && error != ENOENT) {
+		free(p);
+		goto err_opts;
+	}
+	free(p);
+#endif
+	error = _jail_get_setopt(iovp, iovcnt, "securelevel",
+	    &prp->pr_securelevel, sizeof(prp->pr_securelevel));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopt(iovp, iovcnt, "children.cur",
+	    &prp->pr_childcount, sizeof(prp->pr_childcount));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopt(iovp, iovcnt, "children.max",
+	    &prp->pr_childmax, sizeof(prp->pr_childmax));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopts(iovp, iovcnt, "host.hostname",
+	    prp->pr_hostname);
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopts(iovp, iovcnt, "host.domainname",
+	    prp->pr_domainname);
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopts(iovp, iovcnt, "host.hostuuid",
+	    prp->pr_hostuuid);
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopt(iovp, iovcnt, "host.hostid",
+	    &prp->pr_hostid, sizeof(prp->pr_hostid));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	error = _jail_get_setopt(iovp, iovcnt, "enforce_statfs",
+	    &prp->pr_enforce_statfs, sizeof(prp->pr_enforce_statfs));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+
+	size = sizeof(pr_flag_names_size);
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NAMES_SIZE].n_value,
+	    &pr_flag_names_size, size) != (ssize_t)size)
+		goto err;
+	size = sizeof(pr_flag_nonames_size);
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NONAMES_SIZE].n_value,
+	    &pr_flag_nonames_size, size) != (ssize_t)size)
+		goto err;
+
+	size = sizeof(char *) * pr_flag_names_size;
+	pr_flag_names = malloc(size);
+	if (pr_flag_names == NULL)
+		goto err;
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NAMES].n_value,
+	    pr_flag_names, size) != (ssize_t)size) {
+		free(pr_flag_names);
+		goto err;
+	}
+	size = sizeof(char *) * pr_flag_nonames_size;
+	pr_flag_nonames = malloc(size);
+	if (pr_flag_names == NULL) {
+		free(pr_flag_names);
+		goto err;
+	}
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NONAMES].n_value,
+	    pr_flag_nonames, size) != (ssize_t)size) {
+		free(pr_flag_names);
+		free(pr_flag_nonames);
+		goto err;
+	}
+
+	for (fi = 0; fi < pr_flag_names_size / sizeof(char *); fi++) {
+		if (pr_flag_names[fi] == NULL || pr_flag_nonames[fi] == NULL)
+			continue;
+		i = (prp->pr_flags & (1 << fi)) ? 1 : 0;
+		name = _jail_get_kvm_prison_read_string(kd,
+		    (uintptr_t)pr_flag_names[fi], buf, sizeof(buf));
+		if (name == NULL) {
+			free(pr_flag_names);
+			free(pr_flag_nonames);
+			goto err;
+		}
+		error = _jail_get_setopt(iovp, iovcnt, name, &i, sizeof(i));
+		if (error != 0 && error != ENOENT) {
+			free(pr_flag_names);
+			free(pr_flag_nonames);
+			goto err_opts;
+		}
+		i = !i;
+		name = _jail_get_kvm_prison_read_string(kd,
+		    (uintptr_t)pr_flag_nonames[fi], buf, sizeof(buf));
+		if (name == NULL) {
+			free(pr_flag_names);
+			free(pr_flag_nonames);
+			goto err;
+		}
+		error = _jail_get_setopt(iovp, iovcnt, name, &i, sizeof(i));
+		if (error != 0 && error != ENOENT) {
+			free(pr_flag_names);
+			free(pr_flag_nonames);
+			goto err_opts;
+		}
+	}
+
+	free(pr_flag_names);
+	free(pr_flag_nonames);
+
+	size = sizeof(pr_flag_jailsys_size);
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_JAILSYS_SIZE].n_value,
+	    &pr_flag_jailsys_size, size) != (ssize_t)size)
+		goto err;
+
+	size = sizeof(*pr_flag_jailsys) * pr_flag_jailsys_size;
+	pr_flag_jailsys = malloc(size);
+	if (pr_flag_jailsys == NULL)
+		goto err;
+
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_JAILSYS].n_value,
+	    pr_flag_jailsys, size) != (ssize_t)size) {
+		free(pr_flag_jailsys);
+		goto err;
+	}
+
+	for (fi = 0; fi < pr_flag_jailsys_size / sizeof(*pr_flag_jailsys); fi++) {
+		i = prp->pr_flags &
+		    (pr_flag_jailsys[fi].disable | pr_flag_jailsys[fi].new);
+		i = pr_flag_jailsys[fi].disable &&
+		    (i == pr_flag_jailsys[fi].disable) ? JAIL_SYS_DISABLE
+		    : (i == pr_flag_jailsys[fi].new) ? JAIL_SYS_NEW
+		    : JAIL_SYS_INHERIT;
+		name = _jail_get_kvm_prison_read_string(kd,
+		    (uintptr_t)pr_flag_jailsys[fi].name, buf, sizeof(buf));
+		if (name == NULL) {
+			free(pr_flag_jailsys);
+			goto err;
+		}
+		error = _jail_get_setopt(iovp, iovcnt, name, &i, sizeof(i));
+		if (error != 0 && error != ENOENT) {
+			free(pr_flag_jailsys);
+			goto err_opts;
+		}
+	}
+	free(pr_flag_jailsys);
+
+	size = sizeof(pr_allow_names_size);
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NAMES_SIZE].n_value,
+	    &pr_allow_names_size, size) != (ssize_t)size)
+		goto err;
+	size = sizeof(pr_allow_nonames_size);
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NONAMES_SIZE].n_value,
+	    &pr_allow_nonames_size, size) != (ssize_t)size)
+		goto err;
+
+	size = sizeof(char *) * pr_allow_names_size;
+	pr_allow_names = malloc(size);
+	if (pr_allow_names == NULL)
+		goto err;
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NAMES].n_value,
+	    pr_allow_names, size) != (ssize_t)size) {
+		free(pr_allow_names);
+		goto err;
+	}
+	size = sizeof(char *) * pr_allow_nonames_size;
+	pr_allow_nonames = malloc(size);
+	if (pr_allow_nonames == NULL) {
+		free(pr_allow_names);
+		goto err;
+	}
+	if (kvm_read(kd, nl[NLIST_PR_FLAG_NONAMES].n_value,
+	    pr_allow_nonames, size) != (ssize_t)size) {
+		free(pr_allow_names);
+		free(pr_allow_nonames);
+		goto err;
+	}
+
+	for (fi = 0; fi < pr_allow_names_size / sizeof(char *); fi++) {
+		if (pr_allow_names[fi] == NULL || pr_allow_nonames[fi] == NULL)
+			continue;
+		i = (prp->pr_allow & (1 << fi)) ? 1 : 0;
+		name = _jail_get_kvm_prison_read_string(kd,
+		    (uintptr_t)pr_allow_names[fi], buf, sizeof(buf));
+		if (name == NULL) {
+			free(pr_allow_names);
+			free(pr_allow_nonames);
+			goto err;
+		}
+		error = _jail_get_setopt(iovp, iovcnt, name, &i, sizeof(i));
+		if (error != 0 && error != ENOENT) {
+			free(pr_allow_names);
+			free(pr_allow_nonames);
+			goto err_opts;
+		}
+		i = !i;
+		name = _jail_get_kvm_prison_read_string(kd,
+		    (uintptr_t)pr_allow_nonames[fi], buf, sizeof(buf));
+		if (name == NULL) {
+			free(pr_allow_names);
+			free(pr_allow_nonames);
+			goto err;
+		}
+		error = _jail_get_setopt(iovp, iovcnt, name, &i, sizeof(i));
+		if (error != 0 && error != ENOENT) {
+			free(pr_allow_names);
+			free(pr_allow_nonames);
+			goto err_opts;
+		}
+	}
+	free(pr_allow_names);
+	free(pr_allow_nonames);
+
+	i = (prp->pr_uref == 0);
+	error = _jail_get_setopt(iovp, iovcnt, "dying", &i, sizeof(i));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+	i = !i;
+	error = _jail_get_setopt(iovp, iovcnt, "nodying", &i, sizeof(i));
+	if (error != 0 && error != ENOENT)
+		goto err_opts;
+
+	errno = 0;
+	return (prp->pr_id);
+
+err_opts:
+	_jail_get_kvm_opterror(iovp, iovcnt, "error processing options");
+err:
+	return (-1);
+}
+
+static int
+_jailparam_get(struct jailparam *jp, unsigned njp, int flags,
+    char *nlistf, char *memf)
 {
 	struct iovec *jiov;
 	struct jailparam *jp_lastjid, *jp_jid, *jp_name, *jp_key;
-	int i, ai, ki, jid, arrays, sanity;
+	int i, ai, ki, jid, arrays, sanity, usesyscall;
 	unsigned j;
+
+	usesyscall = (nlistf == NULL && memf == NULL);
 
 	/*
 	 * Get the types for all parameters.
@@ -553,11 +1500,21 @@ jailparam_get(struct jailparam *jp, unsigned njp, int flags)
 	jiov[ki].iov_len = JAIL_ERRMSGLEN;
 	ki++;
 	jail_errmsg[0] = 0;
-	if (arrays && jail_get(jiov, ki, flags) < 0) {
-		if (!jail_errmsg[0])
-			snprintf(jail_errmsg, sizeof(jail_errmsg),
-			    "jail_get: %s", strerror(errno));
-		return (-1);
+	if (usesyscall) {
+		if (arrays && jail_get(jiov, ki, flags) < 0) {
+			if (!jail_errmsg[0])
+				snprintf(jail_errmsg, sizeof(jail_errmsg),
+				    "jail_get: %s", strerror(errno));
+			return (-1);
+		}
+	} else {
+		if (arrays && _jail_get_kvm(jiov, ki, flags,
+		    nlistf, memf) < 0) {
+			if (!jail_errmsg[0])
+				snprintf(jail_errmsg, sizeof(jail_errmsg),
+				    "jail_get_kvm: %s", strerror(errno));
+			return (-1);
+		}
 	}
 	/* Allocate storage for all parameters. */
 	for (ai = j = 0, i = ki; j < njp; j++) {
@@ -604,9 +1561,13 @@ jailparam_get(struct jailparam *jp, unsigned njp, int flags)
 	 * in case their sizes changed from under us.
 	 */
 	for (sanity = 0;; sanity++) {
-		jid = jail_get(jiov, i, flags);
+		if (usesyscall)
+			jid = jail_get(jiov, i, flags);
+		else
+			jid = _jail_get_kvm(jiov, i, flags, nlistf, memf);
 		if (jid >= 0 || !arrays || sanity == ARRAY_SANITY ||
-		    errno != EINVAL || jail_errmsg[0])
+		    errno != EINVAL || jail_errmsg[0] ||
+		    (sanity && !usesyscall))
 			break;
 		for (ai = j = 0; j < njp; j++) {
 			if (jp[j].jp_elemlen &&
@@ -617,8 +1578,12 @@ jailparam_get(struct jailparam *jp, unsigned njp, int flags)
 				ai++;
 			}
 		}
-		if (jail_get(jiov, ki, flags) < 0)
-			break;
+		if (usesyscall)
+			if (jail_get(jiov, ki, flags) < 0)
+				break;
+		else
+			if (_jail_get_kvm(jiov, ki, flags, nlistf, memf) < 0)
+				break;
 		for (ai = j = 0; j < njp; j++) {
 			if (jp[j].jp_elemlen &&
 			    !(jp[j].jp_flags & JP_RAWVALUE)) {
@@ -647,7 +1612,8 @@ jailparam_get(struct jailparam *jp, unsigned njp, int flags)
 	}
 	if (jid < 0 && !jail_errmsg[0])
 		snprintf(jail_errmsg, sizeof(jail_errmsg),
-		    "jail_get: %s", strerror(errno));
+		    "%s: %s", (usesyscall) ? "jail_get" : "jail_get_kvm",
+		    strerror(errno));
 	for (ai = j = 0, i = ki; j < njp; j++) {
 		if (jp[j].jp_elemlen && !(jp[j].jp_flags & JP_RAWVALUE)) {
 			ai++;
@@ -660,6 +1626,21 @@ jailparam_get(struct jailparam *jp, unsigned njp, int flags)
 		}
 	}
 	return (jid);
+}
+
+int
+jailparam_get(struct jailparam *jp, unsigned njp, int flags)
+{
+
+	return (_jailparam_get(jp, njp, flags, NULL, NULL));
+}
+
+int
+jailparam_get_kvm(struct jailparam *jp, unsigned njp, int flags,
+    char *nlistf, char *memf)
+{
+
+	return (_jailparam_get(jp, njp, flags, nlistf, memf));
 }
 
 /*

@@ -1,5 +1,7 @@
 # $FreeBSD: src/lib/libjail/Makefile,v 1.2 2010/01/02 09:58:07 ed Exp $
 
+.include <bsd.own.mk>
+
 LIB=	jail
 SHLIBDIR?= /lib
 SHLIB_MAJOR= 1
@@ -22,6 +24,9 @@ MLINKS+=jail.3 jailparam_set.3
 MLINKS+=jail.3 jailparam_export.3
 MLINKS+=jail.3 jailparam_free.3
 
-CFLAGS+=-I${.CURDIR}
+CFLAGS+=-I${.CURDIR} -DINET
+.if ${MK_INET6} != "no"
+CFLAGS+= -DINET6
+.endif
 
 .include <bsd.lib.mk>

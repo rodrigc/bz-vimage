@@ -60,6 +60,8 @@ extern int jailparam_import_raw(struct jailparam *jp, void *value,
 	       size_t valuelen);
 extern int jailparam_set(struct jailparam *jp, unsigned njp, int flags);
 extern int jailparam_get(struct jailparam *jp, unsigned njp, int flags);
+extern int jailparam_get_kvm(struct jailparam *jp, unsigned njp, int flags,
+    char *nlistf, char *memf);
 extern char *jailparam_export(struct jailparam *jp);
 extern void jailparam_free(struct jailparam *jp, unsigned njp);
 __END_DECLS
