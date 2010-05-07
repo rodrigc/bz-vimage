@@ -146,7 +146,7 @@ typedef	struct _cpuset {
 #define	CPUSET_INVALID	-1
 #define	CPUSET_DEFAULT	0
 
-#ifdef _KERNEL
+#if defined(_KERNEL) || defined(_WANT_CPUSET)
 LIST_HEAD(setlist, cpuset);
 
 /*
