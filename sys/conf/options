@@ -830,7 +830,7 @@ TDMA_TXRATE_11NG_DEFAULT	opt_tdma.h
 
 # Network stack virtualization options
 VIMAGE			opt_global.h
-VNET_DEBUG		opt_global.h
+VIMAGE_DEBUG		opt_global.h
 
 # Common Flash Interface (CFI) options
 CFI_SUPPORT_STRATAFLASH	opt_cfi.h

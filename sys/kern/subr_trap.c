@@ -129,7 +129,7 @@ userret(struct thread *td, struct trapframe *frame)
 	KASSERT(td->td_locks == 0,
 	    ("userret: Returning with %d locks held.", td->td_locks));
 #ifdef VIMAGE
-	/* Unfortunately td_vnet_lpush needs VNET_DEBUG. */
+	/* Unfortunately td_vnet_lpush needs VIMAGE_DEBUG. */
 	VNET_ASSERT(curvnet == NULL,
 	    ("%s: Returning on td %p (pid %d, %s) with vnet %p set in %s",
 	    __func__, td, p->p_pid, td->td_name, curvnet,
