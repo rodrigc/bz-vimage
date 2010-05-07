@@ -261,7 +261,7 @@ db_value_of_name_pcpu(name, valuep)
 }
 
 boolean_t
-db_value_of_name_vnet(name, valuep)
+db_value_of_name_vimage(name, valuep)
 	const char	*name;
 	db_expr_t	*valuep;
 {
