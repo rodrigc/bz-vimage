@@ -215,7 +215,7 @@ struct vimage_subsys vnet_data =
 	.v_symprefix		= VNET_SYMPREFIX,
 
 	.v_start		= (uintptr_t)&__start_set_vnet,
-	.v_start		= (uintptr_t)&__stop_set_vnet,
+	.v_stop			= (uintptr_t)&__stop_set_vnet,
 
 	.v_curvar		= offsetof(struct thread, td_vnet),
 	.v_curvar_lpush		= offsetof(struct thread, td_vnet_lpush),
