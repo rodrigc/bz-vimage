@@ -332,6 +332,7 @@ int	dflag;		/* show i/f dropped packets */
 int	gflag;		/* show group (multicast) routing or stats */
 int	hflag;		/* show counters in human readable format */
 int	iflag;		/* show interfaces */
+int	jid;		/* sleect virtual network stack by jail ID */
 int	Lflag;		/* show size of listen queues */
 int	mflag;		/* show memory stats */
 int	noutputs = 0;	/* how much outputs before we exit */
@@ -361,7 +362,7 @@ main(int argc, char *argv[])
 
 	af = AF_UNSPEC;
 
-	while ((ch = getopt(argc, argv, "AaBbdf:ghI:iLlM:mN:np:Qq:rSsuWw:xz"))
+	while ((ch = getopt(argc, argv, "AaBbdf:ghI:ij:LlM:mN:np:Qq:rSsuWw:xz"))
 	    != -1)
 		switch(ch) {
 		case 'A':
@@ -424,6 +425,13 @@ main(int argc, char *argv[])
 		}
 		case 'i':
 			iflag = 1;
+			break;
+		case 'j':
+			errno = 0;
+			jid = (int)strtol(optarg, (char **)NULL, 10);
+			if (jid == 0 && errno != 0)
+				errx(1, "%s: not a numeric jail identifier",
+				    optarg);
 			break;
 		case 'L':
 			Lflag = 1;
@@ -511,7 +519,7 @@ main(int argc, char *argv[])
 	 * Discard setgid privileges if not the running kernel so that bad
 	 * guys can't print interesting stuff from kernel memory.
 	 */
-	live = (nlistf == NULL && memf == NULL);
+	live = (nlistf == NULL && memf == NULL && jid <= 0);
 	if (!live)
 		setgid(getgid());
 
@@ -699,6 +707,11 @@ kread(u_long addr, void *buf, size_t size)
 		kvmd = kvm_openfiles(nlistf, memf, NULL, O_RDONLY, errbuf);
 		setgid(getgid());
 		if (kvmd != NULL) {
+			if (jid > 0) {
+				if (kvm_select_vnet_by_jid(kvmd, jid) < 0)
+					errx(1, "kvm_select_vnet_by_jid(%d): "
+					    "%s", jid, kvm_geterr(kvmd));
+			}
 			if (kvm_nlist(kvmd, nl) < 0) {
 				if (nlistf)
 					errx(1, "%s: kvm_nlist: %s", nlistf,
@@ -795,20 +808,21 @@ usage(void)
 {
 	(void)fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
 "usage: netstat [-AaLnSWx] [-f protocol_family | -p protocol]\n"
-"               [-M core] [-N system]",
+"               [-j jid] [-M core] [-N system]",
 "       netstat -i | -I interface [-abdhnW] [-f address_family]\n"
-"               [-M core] [-N system]",
-"       netstat -w wait [-I interface] [-d] [-M core] [-N system] [-q howmany]",
+"               [-j jid] [-M core] [-N system]",
+"       netstat -w wait [-I interface] [-d] [-j jid] [-M core] [-N system]\n"
+"               [-q howmany]",
 "       netstat -s [-s] [-z] [-f protocol_family | -p protocol]\n"
-"               [-M core] [-N system]",
+"               [-j jid] [-M core] [-N system]",
 "       netstat -i | -I interface -s [-f protocol_family | -p protocol]\n"
-"               [-M core] [-N system]",
-"       netstat -m [-M core] [-N system]",
+"               [-j jid] [-M core] [-N system]",
+"       netstat -m [-j jid] [-M core] [-N system]",
 "       netstat -B [-I interface]",
-"       netstat -r [-AanW] [-f address_family] [-M core] [-N system]",
-"       netstat -rs [-s] [-M core] [-N system]",
-"       netstat -g [-W] [-f address_family] [-M core] [-N system]",
-"       netstat -gs [-s] [-f address_family] [-M core] [-N system]",
+"       netstat -r [-AanW] [-f address_family] [-j jid] [-M core] [-N system]",
+"       netstat -rs [-s] [-j jid] [-M core] [-N system]",
+"       netstat -g [-W] [-f address_family] [-j jid] [-M core] [-N system]",
+"       netstat -gs [-s] [-f address_family] [-j jid] [-M core] [-N system]",
 "       netstat -Q");
 	exit(1);
 }
