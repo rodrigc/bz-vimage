@@ -90,6 +90,7 @@ ssize_t	  kvm_read(kvm_t *, unsigned long, void *, size_t);
 ssize_t	  kvm_uread
 	    (kvm_t *, struct kinfo_proc *, unsigned long, char *, size_t);
 ssize_t	  kvm_write(kvm_t *, unsigned long, const void *, size_t);
+int	  kvm_select_vnet_by_jid(kvm_t *, int);
 __END_DECLS
 
 #endif /* !_KVM_H_ */

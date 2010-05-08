@@ -195,6 +195,90 @@ _kvm_vnet_selectpid(kvm_t *kd, pid_t pid)
 	return (0);
 }
 
+TAILQ_HEAD(prisonlist, prison);
+int
+_kvm_vnet_selectjid(kvm_t *kd, int jid)
+{
+	struct prisonlist allprison;
+	struct prison pr;
+	struct vnet vnet;
+	struct nlist nl[] = {
+		/*
+		 * Note: kvm_nlist strips the first '_' so add an extra one
+		 * here to __{start,stop}_set_vnet.
+		 */
+#define	NLIST_START_VNET	0
+		{ .n_name = "___start_" VNET_SETNAME },
+#define	NLIST_STOP_VNET		1
+		{ .n_name = "___stop_" VNET_SETNAME },
+#define	NLIST_VNET_DATA		3
+		{ .n_name = "vnet_data" },
+#define	NLIST_ALLPRISON		4
+		{ .n_name = "allprison" },
+		{ .n_name = NULL },
+	};
+	uintptr_t allpp, praddr;
+
+	/*
+	 * Locate and cache locations of important symbols
+	 * using the internal version of _kvm_nlist, turning
+	 * off initialization to avoid recursion in case of
+	 * unresolveable symbols.
+	 */
+	if (_kvm_nlist(kd, nl, 0) != 0) {
+		/*
+		 * XXX-BZ: ___start_/___stop_VNET_SETNAME may fail.
+		 * For now do not report an error here as we are called
+		 * internally and in `void context' until we merge the
+		 * functionality to optionally activate this into programs.
+		 * By that time we can properly fail and let the callers
+		 * handle the error.
+		 */
+		_kvm_err(kd, kd->program, "%s: no namelist", __func__);
+		return (-1);
+	}
+
+	allpp = nl[NLIST_ALLPROC].n_value;
+	if (allpp == 0) {
+		_kvm_err(kd, kd->program, "%s: no allprison", __func__);
+		return (-1);
+	}
+	if (kvm_read(kd, allpp, &allprison, sizeof(allprison)) !=
+	    sizeof(allprison)) {
+		_kvm_err(kd, kd->program, "%s: allprison", __func__);
+		return (-1);
+	}
+	praddr = (uintptr_t)TAILQ_FIRST(&allprison);
+	while (praddr != 0) {
+		if (kvm_read(kd, praddr, &pr, sizeof(pr)) !=
+		    sizeof(pr)) {
+			_kvm_err(kd, kd->program, "%s: prison",
+			    __func__);
+			return (-1);
+		}
+		if (pr.pr_id == jid)
+			break;
+		praddr = (uintptr_t)TAILQ_NEXT(&pr, pr_list);
+	}
+	if (praddr == 0) {
+		_kvm_err(kd, kd->program, "%s: prison with jid %d not found",
+		    __func__, jid);
+		return (-1);
+	}
+	/* pr holds the correct prison. */
+	if (kvm_read(kd, (uintptr_t)pr.pr_vnet, &vnet, sizeof(vnet)) !=
+	    sizeof(vnet)) {
+		_kvm_err(kd, kd->program, "%s: vnet", __func__);
+		return (-1);
+	}
+	kd->vnet_initialized = 1;
+	kd->vnet_start = nl[NLIST_START_VNET].n_value;
+	kd->vnet_stop = nl[NLIST_STOP_VNET].n_value;
+	kd->vnet_current = (uintptr_t)pr.pr_vnet;
+	kd->vnet_base = vnet.v.v_data_base;
+	return (0);
+}
+
 /*
  * Check whether the vnet module has been initialized sucessfully
  * or not, intialize it if permitted.
@@ -207,6 +291,19 @@ _kvm_vnet_initialized(kvm_t *kd, int intialize)
 		return (kd->vnet_initialized);
 
 	(void) _kvm_vnet_selectpid(kd, getpid());
+
+	return (kd->vnet_initialized);
+}
+
+int
+kvm_select_vnet_by_jid(kvm_t *kd, int jid)
+{
+	int error;
+
+	/* If we are already initialized, redo. */
+	error = _kvm_vnet_selectjid(kd, jid);
+	if (error)
+		return (error);
 
 	return (kd->vnet_initialized);
 }
