@@ -755,6 +755,17 @@ DB_SHOW_VIMAGE_COMMAND(recursions, db_show_vimage_recursions)
 		vimage_print_recursion(vse, vr, 1);
 }
 
+DB_SHOW_VIMAGE_COMMAND(vars, db_show_vimage_vars)
+{
+
+	if (!have_addr) {
+		db_printf("usage: show vimage vars "
+		    "<struct vimage_subsys *>\n");
+		return;
+	}
+	db_lookup_vimage_set_variables((struct vimage_subsys *)addr);
+}
+
 static void
 db_show_vimage_print_vs(struct vimage_sysinit *vs)
 {
@@ -897,7 +908,6 @@ DB_SHOW_ALL_COMMAND(vimage_subsys, db_show_all_vimage_subsys)
 			break;
 	}
 }
-
 #endif
 
 /* end */

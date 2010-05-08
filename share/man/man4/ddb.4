@@ -1072,22 +1072,33 @@ present at the address
 .Ar addr .
 .\"
 .Pp
-.It Ic show Cm vimage sysinit Ar addr
-Show system startup interface order information for a virtualized
-subsystem identified by
-.Ar addr .
-.\"
-.Pp
-.It Ic show Cm vimage sysinit Ar addr
-Show system startup interface order information for a virtualized
-subsystem identified by
-.Ar addr .
+.It Ic show Cm vimage recursions Ar addr
+Show information about virtualized subsystem recursions.
 .\"
 .Pp
 .It Ic show Cm vimage subsys Ar addr
 Show information of the virtualization framework for a virtualized
 subsystem indentified by
 .Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage sysinit Ar addr
+Show system startup interface order information for a virtualized
+subsystem identified by
+.Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage sysuninit Ar addr
+Show system startup interface teardown order information for a
+virtualized subsystem identified by
+.Ar addr .
+.\"
+.Pp
+.It Ic show Cm vimage vars Ar addr
+Show a list of all objects for the virtualized subsystem indentified by
+.Ar addr
+with their name, size, the location of the master copy and the
+location of the instance currently selected for debugging.
 .\"
 .Pp
 .It Ic show Cm vmochk
@@ -1101,12 +1112,6 @@ VM object.
 Currently, it is not possible to use this command when
 .Xr witness 4
 is compiled in the kernel.
-.\"
-.Pp
-.It Ic show Cm vnetrcrs
-Show information about
-.Xr vnet 9
-recursions.
 .\"
 .Pp
 .It Ic show Cm vnets

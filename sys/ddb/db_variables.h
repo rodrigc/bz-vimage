@@ -71,6 +71,8 @@ struct db_vimage_variable {
 
 int db_vimage_variable_register(struct vimage_subsys *);
 int db_vimage_variable_unregister(struct vimage_subsys *);
+
+int db_lookup_vimage_set_variables(struct vimage_subsys *);
 #endif
 
 #endif /* _!DDB_DB_VARIABLES_H_ */

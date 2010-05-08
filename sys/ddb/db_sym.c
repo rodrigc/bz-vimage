@@ -321,6 +321,74 @@ db_value_of_name_vimage(name, valuep)
 	return (FALSE);
 }
 
+#ifdef VIMAGE
+#include <sys/elf_common.h>
+#include <sys/linker.h>
+
+static int
+db_lookup_vimage_set_variables_callback(linker_file_t lf, int i,
+    linker_symvaltype_t *symval, void *p)
+{
+	struct vimage_subsys *vse;
+	db_expr_t	value;
+	uintptr_t	current;
+	struct vimage	*v;
+
+	if (db_pager_quit)
+		return (EINTR);
+
+	vse = (struct vimage_subsys *)p;
+	value = (db_expr_t)symval->value;
+
+	/* Return if it does not belong to out linker set. */
+	if (value < vse->v_start ||
+	    value >= (vse->v_start + vse->v_size))
+		return (0);
+	/* Return unless it is an STT_OBJECT. */
+	if (symval->type != STT_OBJECT)
+		return (0);
+	/* Return unless name has our symprefix. */
+	if (symval->name == NULL || strncmp(symval->name, vse->v_symprefix,
+	    strlen(vse->v_symprefix)) != 0)
+		return (0);
+
+	/* Translate the current value. */
+	if (vse->v_db_instance != NULL)
+		v = (struct vimage *)vse->v_db_instance;
+	else
+		v = *((struct vimage **)((uintptr_t)curthread +
+		    vse->v_curvar));
+	if (v == NULL) {
+		db_printf("Cannot figure out current instance to debug.");
+		db_printf("Please set $db_%s to something meaningful.",
+		    vse->name);
+		return (ENOENT);
+	}
+	current = (uintptr_t)value + v->v_data_base;
+
+	db_printf("%-40s %-6zu %p %p\n",
+	    (symval->name + strlen(vse->v_symprefix)), symval->size,
+	    (void *)value, (void *)current);
+
+	return (0);
+}
+
+int
+db_lookup_vimage_set_variables(struct vimage_subsys *vse)
+{
+	int error = 0;
+
+	db_printf("Subsystem '%s' symbols, start=%p stop=%p\n", vse->name,
+	    (void *)vse->v_start, (void *)vse->v_stop);
+	db_printf("%-40s %-6s %-18s %-18s\n", "Name", "Size", "Default at",
+	    "Current at");
+
+	error = linker_ddb_list_symbols(db_lookup_vimage_set_variables_callback,
+	    (void *)vse);
+	return (error);
+}
+#endif
+
 /*
  * Lookup a symbol.
  * If the symbol has a qualifier (e.g., ux:vm_map),
