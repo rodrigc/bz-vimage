@@ -132,14 +132,19 @@ db_var_db_vimage(struct db_variable *vp, db_expr_t *valuep, int op)
 
 	case DB_VAR_SET:
 		p = *(void **)valuep;
+		/* Permit "unset. */
+		if (p == NULL) {
+			vvp->vse->v_db_instance = p;
+			return (1);
+		}
 		LIST_FOREACH(v, &vvp->vse->v_instance_head, v_le) {
 			if (p == v) {
 				vvp->vse->v_db_instance = p;
 				return (1);
 			}
 		}
-		db_printf("db_var_db_vimage: value no valid %s instance\n",
-		    vvp->vse->name);
+		db_printf("db_var_db_vimage: value no valid %s "
+		    "instance\n", vvp->vse->name);
 		return (0);
 
 	default:
@@ -285,7 +290,7 @@ db_value_of_name_vimage(name, valuep)
 	struct vimage	*v;
 
 	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
-		snprintf(tmp, sizeof(tmp), "%s_%s", vse->v_symprefix, name);
+		snprintf(tmp, sizeof(tmp), "%s%s", vse->v_symprefix, name);
 		sym = db_lookup(tmp);
 		if (sym == C_DB_SYM_NULL)
 			continue;
@@ -306,6 +311,9 @@ db_value_of_name_vimage(name, valuep)
 		else
 			v = *((struct vimage **)((uintptr_t)curthread +
 			    vse->v_curvar));
+		/* In case neither is set we cannot translate it. */
+		if (v == NULL)
+			return (FALSE);
 		*valuep = (db_expr_t)((uintptr_t)value + v->v_data_base);
 		return (TRUE);
 	}
