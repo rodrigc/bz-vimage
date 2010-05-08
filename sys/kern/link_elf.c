@@ -163,6 +163,12 @@ static int	link_elf_each_function_name(linker_file_t,
 static int	link_elf_each_function_nameval(linker_file_t,
 				linker_function_nameval_callback_t,
 				void *);
+static int	link_elf_each_symbol_name(linker_file_t,
+				int (*)(const char *, void *),
+				void *);
+static int	link_elf_each_symbol_nameval(linker_file_t,
+				linker_symbol_nameval_callback_t,
+				void *);
 static void	link_elf_reloc_local(linker_file_t);
 static long	link_elf_symtab_get(linker_file_t, const Elf_Sym **);
 static long	link_elf_strtab_get(linker_file_t, caddr_t *);
@@ -177,6 +183,8 @@ static kobj_method_t link_elf_methods[] = {
     KOBJMETHOD(linker_link_preload,	link_elf_link_preload),
     KOBJMETHOD(linker_link_preload_finish, link_elf_link_preload_finish),
     KOBJMETHOD(linker_lookup_set,	link_elf_lookup_set),
+    KOBJMETHOD(linker_each_symbol_name,	link_elf_each_symbol_name),
+    KOBJMETHOD(linker_each_symbol_nameval, link_elf_each_symbol_nameval),
     KOBJMETHOD(linker_each_function_name, link_elf_each_function_name),
     KOBJMETHOD(linker_each_function_nameval, link_elf_each_function_nameval),
     KOBJMETHOD(linker_ctf_get,          link_elf_ctf_get),
@@ -1453,6 +1461,45 @@ link_elf_each_function_nameval(linker_file_t file,
 			if (error)
 				return (error);
 		}
+	}
+	return (0);
+}
+
+static int
+link_elf_each_symbol_name(linker_file_t file,
+  int (*callback)(const char *, void *), void *opaque) {
+    elf_file_t ef = (elf_file_t)file;
+    const Elf_Sym* symp;
+    int i, error;
+	
+    /* Exhaustive search */
+    for (i = 0, symp = ef->ddbsymtab; i < ef->ddbsymcnt; i++, symp++) {
+	error = callback(ef->ddbstrtab + symp->st_name, opaque);
+	if (error)
+	    return (error);
+    }
+    return (0);
+}
+
+static int
+link_elf_each_symbol_nameval(linker_file_t file,
+    linker_symbol_nameval_callback_t callback, void *opaque)
+{
+	linker_symvaltype_t symval;
+	elf_file_t ef = (elf_file_t)file;
+	const Elf_Sym* symp;
+	int i, error;
+
+	/* Exhaustive search */
+	for (i = 0, symp = ef->ddbsymtab; i < ef->ddbsymcnt; i++, symp++) {
+		error = link_elf_symbol_values(file, (c_linker_sym_t) symp,
+		   (linker_symval_t *)&symval);
+		if (error)
+			return (error);
+		symval.type = ELF_ST_TYPE(symp->st_info);
+		error = callback(file, i, &symval, opaque);
+		if (error)
+			return (error);
 	}
 	return (0);
 }

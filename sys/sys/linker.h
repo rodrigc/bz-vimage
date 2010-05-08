@@ -49,6 +49,7 @@ typedef TAILQ_HEAD(, linker_file) linker_file_list_t;
 typedef caddr_t linker_sym_t;		/* opaque symbol */
 typedef c_caddr_t c_linker_sym_t;	/* const opaque symbol */
 typedef int (*linker_function_name_callback_t)(const char *, void *);
+typedef int (*linker_symbol_name_callback_t)(const char *, void *);
 
 /*
  * expanded out linker_sym_t
@@ -60,6 +61,14 @@ typedef struct linker_symval {
 } linker_symval_t;
 
 typedef int (*linker_function_nameval_callback_t)(linker_file_t, int, linker_symval_t *, void *);
+
+typedef struct linker_symvaltype {
+    const char*		name;
+    caddr_t		value;
+    size_t		size;
+    unsigned char	type;
+} linker_symvaltype_t;
+typedef int (*linker_symbol_nameval_callback_t)(linker_file_t, int, linker_symvaltype_t *, void *);
 
 struct common_symbol {
     STAILQ_ENTRY(common_symbol) link;
@@ -162,6 +171,14 @@ int linker_file_function_listall(linker_file_t,
 				 linker_function_nameval_callback_t, void *);
 
 /*
+ * List all symbols in a file.
+ */
+int
+linker_file_symbol_listall(linker_file_t,
+			   linker_symbol_nameval_callback_t, void *);
+
+
+/*
  * Functions soley for use by the linker class handlers.
  */
 int linker_add_class(linker_class_t _cls);
@@ -173,6 +190,8 @@ linker_file_t linker_make_file(const char* _filename, linker_class_t _cls);
  * DDB Helpers, tuned specifically for ddb/db_kld.c
  */
 int linker_ddb_lookup(const char *_symstr, c_linker_sym_t *_sym);
+int linker_ddb_list_symbols(linker_symbol_nameval_callback_t callback_func,
+			    void *arg);
 int linker_ddb_search_symbol(caddr_t _value, c_linker_sym_t *_sym,
 			     long *_diffp);
 int linker_ddb_symbol_values(c_linker_sym_t _sym, linker_symval_t *_symval);

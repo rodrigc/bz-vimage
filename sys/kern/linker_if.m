@@ -75,6 +75,27 @@ METHOD int each_function_nameval {
 };
 
 #
+# Call the callback with each specified symbol defined in the file.
+# Stop and return the error if the callback returns an error.
+#
+METHOD int each_symbol_name {
+	linker_file_t	file;
+	linker_symbol_name_callback_t	callback;
+	void*		opaque;
+};
+
+#
+# Call the callback with each specified symbol and it's value
+# defined in the file.
+# Stop and return the error if the callback returns an error.
+#
+METHOD int each_symbol_nameval {
+	linker_file_t	file;
+	linker_symbol_nameval_callback_t	callback;
+	void*		opaque;
+};
+
+#
 # Search for a linker set in a file.  Return a pointer to the first
 # entry (which is itself a pointer), and the number of entries.
 # "stop" points to the entry beyond the last valid entry.

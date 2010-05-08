@@ -748,6 +748,16 @@ linker_file_function_listall(linker_file_t lf,
 	return (LINKER_EACH_FUNCTION_NAMEVAL(lf, callback_func, arg));
 }
 
+/*
+ * List all symbols in a file.
+ */
+int
+linker_file_symbol_listall(linker_file_t lf,
+    linker_symbol_nameval_callback_t callback_func, void *arg)
+{
+	return (LINKER_EACH_SYMBOL_NAMEVAL(lf, callback_func, arg));
+}
+
 caddr_t
 linker_file_lookup_symbol(linker_file_t file, const char *name, int deps)
 {
@@ -846,7 +856,8 @@ linker_file_lookup_symbol_internal(linker_file_t file, const char *name,
  * routines to perform these operations without locks, and then wrappers that
  * optionally lock.
  *
- * linker_debug_lookup() is ifdef DDB as currently it's only used by DDB.
+ * linker_debug_lookup() and linker_debug_list_symbols are ifdef DDB as
+ * currently it's only used by DDB.
  */
 #ifdef DDB
 static int
@@ -859,6 +870,22 @@ linker_debug_lookup(const char *symstr, c_linker_sym_t *sym)
 			return (0);
 	}
 	return (ENOENT);
+}
+
+static int
+linker_debug_list_symbols(linker_symbol_nameval_callback_t callback_func,
+    void *arg)
+{
+	linker_file_t lf;
+	int error;
+
+	error = 0;
+	TAILQ_FOREACH(lf, &linker_files, link) {
+		error = linker_file_symbol_listall(lf, callback_func, arg);
+		if (error != 0)
+			break;
+	}
+	return (error);
 }
 #endif
 
@@ -938,6 +965,14 @@ linker_ddb_lookup(const char *symstr, c_linker_sym_t *sym)
 {
 
 	return (linker_debug_lookup(symstr, sym));
+}
+
+int
+linker_ddb_list_symbols(linker_symbol_nameval_callback_t callback_func,
+    void *arg)
+{
+
+	return (linker_debug_list_symbols(callback_func, arg));
 }
 
 int
