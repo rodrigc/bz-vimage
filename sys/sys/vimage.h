@@ -139,6 +139,8 @@ struct vimage_subsys {
 	size_t				v_curvar;
 	size_t				v_curvar_lpush;
 
+	void				*v_db_instance;	/* ddb instance */
+
 	size_t				v_instance_size;/* instance struct */
 	struct vimage_instance_head	v_instance_head;/* instance list */
 

@@ -48,13 +48,78 @@ static struct db_variable db_vars[] = {
 	{ "lines",	&db_lines_per_page, FCN_NULL },
 	{ "curcpu",	NULL, db_var_curcpu },
 	{ "db_cpu",	NULL, db_var_db_cpu },
-#ifdef VIMAGE
-	{ "curvnet",	NULL, db_var_curvnet },
-	{ "db_vnet",	NULL, db_var_db_vnet },
-#endif
 };
 static struct db_variable *db_evars =
 	db_vars + sizeof(db_vars)/sizeof(db_vars[0]);
+
+#ifdef VIMAGE
+#include <sys/malloc.h>
+#include <sys/vimage.h>
+
+static MALLOC_DEFINE(M_DDB_VIMAGE_VAR, "ddb_vimage_var",
+    "DDB VIMAGE variables");
+
+struct db_vimage_variable_l db_vimage_vars =
+    LIST_HEAD_INITIALIZER(db_vimage_vars);
+
+int
+db_vimage_variable_register(struct vimage_subsys *vse)
+{
+	struct db_vimage_variable *vvp;
+	char tmp[256];
+	size_t size;
+
+	/* cru|db_ + name + \0 */
+	if ((3 + strlen(vse->name) + 1) >= sizeof(tmp))
+		return (EINVAL);
+
+	snprintf(tmp, sizeof(tmp), "cur%s", vse->name);
+	size = sizeof(*vvp) + strlen(tmp) + 1;
+	vvp = malloc(size, M_DDB_VIMAGE_VAR, M_WAITOK | M_ZERO);
+	vvp->db_v.name = (char *)(vvp + 1);
+	bcopy(tmp, vvp->db_v.name, strlen(tmp) + 1);
+	vvp->db_v.fcn = db_var_curvimage;
+	vvp->vse = vse;
+	LIST_INSERT_HEAD(&db_vimage_vars, vvp, db_vimage_var_le);
+	
+	snprintf(tmp, sizeof(tmp), "db_%s", vse->name);
+	size = sizeof(*vvp) + strlen(tmp) + 1;
+	vvp = malloc(size, M_DDB_VIMAGE_VAR, M_WAITOK | M_ZERO);
+	vvp->db_v.name = (char *)(vvp + 1);
+	bcopy(tmp, vvp->db_v.name, strlen(tmp) + 1);
+	vvp->db_v.fcn = db_var_db_vimage;
+	vvp->vse = vse;
+	LIST_INSERT_HEAD(&db_vimage_vars, vvp, db_vimage_var_le);
+
+	return (0);
+}
+
+int
+db_vimage_variable_unregister(struct vimage_subsys *vse)
+{
+	struct db_vimage_variable *vvp, *vvp1;
+
+	LIST_FOREACH_SAFE(vvp, &db_vimage_vars, db_vimage_var_le, vvp1) {
+		if (vvp->vse == vse) {
+			LIST_REMOVE(vvp, db_vimage_var_le);
+			free(vvp, M_DDB_VIMAGE_VAR);
+		}
+	}
+	return (0);
+}
+
+static struct db_variable *
+db_find_variable_vimage(char *varname)
+{
+	struct db_vimage_variable *vvp;
+
+	LIST_FOREACH(vvp, &db_vimage_vars, db_vimage_var_le) {
+		if (!strcmp(vvp->db_v.name, varname))
+			return ((struct db_variable *)vvp);
+	}
+	return (NULL);
+}
+#endif
 
 static int
 db_find_variable(struct db_variable **varp)
@@ -70,6 +135,13 @@ db_find_variable(struct db_variable **varp)
 				return (1);
 			}
 		}
+#ifdef VIMAGE
+		vp = db_find_variable_vimage(db_tok_string);
+		if (vp != NULL) {
+			*varp = vp;
+			 return (1);
+		}
+#endif
 		for (vp = db_regs; vp < db_eregs; vp++) {
 			if (!strcmp(db_tok_string, vp->name)) {
 				*varp = vp;
@@ -156,4 +228,19 @@ db_set_cmd(db_expr_t dummy1, boolean_t dummy2, db_expr_t dummy3, char *dummy4)
 		db_error("?\n");
 
 	db_write_variable(vp, value);
+}
+
+DB_SHOW_ALL_COMMAND(db_vars, db_show_all_db_vars)
+{
+	struct db_variable *vp;
+#ifdef VIMAGE
+	struct db_vimage_variable *vvp;
+#endif
+
+	for (vp = db_vars; vp < db_evars; vp++)
+		db_printf("%s\n", vp->name);
+#ifdef VIMAGE
+	LIST_FOREACH(vvp, &db_vimage_vars, db_vimage_var_le)
+		db_printf("%s\n", vvp->db_v.name);
+#endif
 }

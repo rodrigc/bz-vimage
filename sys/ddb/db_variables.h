@@ -53,11 +53,24 @@ extern struct db_variable	db_regs[];	/* machine registers */
 extern struct db_variable	*db_eregs;
 
 extern db_varfcn_t	db_var_curcpu;		/* DPCPU default CPU */
-extern db_varfcn_t	db_var_curvnet;		/* Default vnet */
 extern db_varfcn_t	db_var_db_cpu;		/* DPCPU active CPU */
-extern db_varfcn_t	db_var_db_vnet;		/* Active vnet */
 
 int db_read_variable(struct db_variable *, db_expr_t *);
 int db_write_variable(struct db_variable *, db_expr_t);
+
+#ifdef VIMAGE
+extern db_varfcn_t	db_var_curvimage;	/* Default virtual instance */
+extern db_varfcn_t	db_var_db_vimage;	/* Active virtual instance */
+
+LIST_HEAD(db_vimage_variable_l, db_vimage_variable);
+struct db_vimage_variable {
+	struct db_variable		db_v;
+	struct vimage_subsys		*vse;
+	LIST_ENTRY(db_vimage_variable)	db_vimage_var_le;
+};
+
+int db_vimage_variable_register(struct vimage_subsys *);
+int db_vimage_variable_unregister(struct vimage_subsys *);
+#endif
 
 #endif /* _!DDB_DB_VARIABLES_H_ */

@@ -37,8 +37,6 @@ __FBSDID("$FreeBSD: src/sys/ddb/db_sym.c,v 1.40 2010/04/14 23:06:07 julian Exp $
 #include <sys/systm.h>
 #include <sys/vimage.h>
 
-#include <net/vnet.h>
-
 #include <ddb/ddb.h>
 #include <ddb/db_sym.h>
 #include <ddb/db_variables.h>
@@ -63,10 +61,6 @@ static boolean_t	db_symbol_is_ambiguous(c_db_sym_t sym);
 static boolean_t	db_line_at_pc(c_db_sym_t, char **, int *, db_expr_t);
 
 static int db_cpu = -1;
-
-#ifdef VIMAGE
-static void *db_vnet = NULL;
-#endif
 
 /*
  * Validate the CPU number used to interpret per-CPU variables so we can
@@ -120,40 +114,54 @@ db_var_curcpu(struct db_variable *vp, db_expr_t *valuep, int op)
 
 #ifdef VIMAGE
 /*
- * Validate the virtual network pointer used to interpret per-vnet global
- * variable expansion.  Right now we don't do much here, really we should
- * walk the global vnet list to check it's an OK pointer.
+ * Validate the virtual subsystem pointer used to interpret per-subsystem
+ * global variable expansion.
  */
 int
-db_var_db_vnet(struct db_variable *vp, db_expr_t *valuep, int op)
+db_var_db_vimage(struct db_variable *vp, db_expr_t *valuep, int op)
 {
+	struct db_vimage_variable *vvp;
+	struct vimage *v;
+	void *p;
 
+	vvp = (struct db_vimage_variable *)vp;
 	switch (op) {
 	case DB_VAR_GET:
-		*valuep = (db_expr_t)db_vnet;
+		*valuep = (db_expr_t)vvp->vse->v_db_instance;
 		return (1);
 
 	case DB_VAR_SET:
-		db_vnet = *(void **)valuep;
-		return (1);
+		p = *(void **)valuep;
+		LIST_FOREACH(v, &vvp->vse->v_instance_head, v_le) {
+			if (p == v) {
+				vvp->vse->v_db_instance = p;
+				return (1);
+			}
+		}
+		db_printf("db_var_db_vimage: value no valid %s instance\n",
+		    vvp->vse->name);
+		return (0);
 
 	default:
-		db_printf("db_var_db_vnet: unknown operation\n");
+		db_printf("db_var_db_vimage: unknown operation\n");
 		return (0);
 	}
 }
 
 /*
- * Read-only variable reporting the current vnet, which is what we use when
- * db_vnet is set to NULL.
+ * Read-only variable reporting the current virtual instance, which is what
+ * we use when virtual subsystem v_db_instance member is set to NULL.
  */
 int
-db_var_curvnet(struct db_variable *vp, db_expr_t *valuep, int op)
+db_var_curvimage(struct db_variable *vp, db_expr_t *valuep, int op)
 {
+	struct db_vimage_variable *vvp;
 
+	vvp = (struct db_vimage_variable *)vp;
 	switch (op) {
 	case DB_VAR_GET:
-		*valuep = (db_expr_t)curvnet;
+		*valuep = (db_expr_t)*((void **)((uintptr_t)curthread +
+		    vvp->vse->v_curvar));
 		return (1);
 
 	case DB_VAR_SET:
@@ -161,7 +169,7 @@ db_var_curvnet(struct db_variable *vp, db_expr_t *valuep, int op)
 		return (0);
 
 	default:
-		db_printf("db_var_curcpu: unknown operation\n");
+		db_printf("db_var_curvimage: unknown operation\n");
 		return (0);
 	}
 }
@@ -293,8 +301,8 @@ db_value_of_name_vimage(name, valuep)
 		    value >= (vse->v_start + vse->v_size))
 			return (FALSE);
 
-		if (db_vnet != NULL)
-			v = db_vnet;	/* XXX-BZ */
+		if (vse->v_db_instance != NULL)
+			v = (struct vimage *)vse->v_db_instance;
 		else
 			v = *((struct vimage **)((uintptr_t)curthread +
 			    vse->v_curvar));

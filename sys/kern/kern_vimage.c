@@ -56,6 +56,7 @@ __FBSDID("$FreeBSD$");
 #ifdef DDB
 #include <ddb/ddb.h>
 #include <ddb/db_sym.h>
+#include <ddb/db_variables.h>
 #endif
 
 MALLOC_DEFINE(M_VIMAGE, "vimage", "VIMAGE resource accounting");
@@ -224,6 +225,10 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	error = (*vse->v_data_init)(vse);
 	if (error)
 		return (error);
+
+#ifdef DDB
+	db_vimage_variable_register(vse);
+#endif
 	
 	VIMAGE_SUBSYS_LIST_WLOCK();
 	/*
@@ -255,6 +260,9 @@ vimage_subsys_deregister(struct vimage_subsys *vse)
 	LIST_FOREACH(vse2, &vimage_subsys_head, vimage_subsys_le) {
 		if (vse == vse2) {
 			if (refcount_release(&vse->refcnt) == 1) {
+#ifdef DDB
+				db_vimage_variable_unregister(vse);
+#endif
 				LIST_REMOVE(vse, vimage_subsys_le);
 				error = 0;
 			} else {
@@ -849,6 +857,7 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	V_PRINT(v_size, "%zu");
 	V_PRINT(v_curvar, "%zu");
 	V_PRINT(v_curvar_lpush, "%zu");
+	V_PRINT(v_db_instance, "%p");
 	V_PRINT(v_instance_size, "%zu");
 	V_PRINT_PTR(v_instance_head, "%p");
 	V_PRINT_PTR(v_data_free_list, "%p");
