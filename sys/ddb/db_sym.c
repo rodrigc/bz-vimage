@@ -35,6 +35,7 @@ __FBSDID("$FreeBSD: src/sys/ddb/db_sym.c,v 1.40 2010/04/14 23:06:07 julian Exp $
 #include <sys/pcpu.h>
 #include <sys/smp.h>
 #include <sys/systm.h>
+#include <sys/vimage.h>
 
 #include <net/vnet.h>
 
@@ -260,6 +261,9 @@ db_value_of_name_pcpu(name, valuep)
 	return (TRUE);
 }
 
+#ifdef VIMAGE
+extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
+#endif
 boolean_t
 db_value_of_name_vimage(name, valuep)
 	const char	*name;
@@ -269,24 +273,36 @@ db_value_of_name_vimage(name, valuep)
 	static char     tmp[256];
 	db_expr_t	value;
 	c_db_sym_t	sym;
+	struct vimage_subsys *vse;
 	struct vimage	*v;
 
-	if (db_vnet != NULL)
-		v = db_vnet;
-	else
-		v = (struct vimage *)curvnet;
-	snprintf(tmp, sizeof(tmp), "vnet_entry_%s", name);
-	sym = db_lookup(tmp);
-	if (sym == C_DB_SYM_NULL)
-		return (FALSE);
-	db_symbol_values(sym, &name, &value);
-	if (value < VNET_START || value >= VNET_STOP)
-		return (FALSE);
-	*valuep = (db_expr_t)((uintptr_t)value + v->v_data_base);
-	return (TRUE);
-#else
-	return (FALSE);
+	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
+		snprintf(tmp, sizeof(tmp), "%s_%s", vse->v_symprefix, name);
+		sym = db_lookup(tmp);
+		if (sym == C_DB_SYM_NULL)
+			continue;
+		db_symbol_values(sym, &name, &value);
+
+		/*
+		 * In case we found the symbol but it's not part of this
+		 * subsystem, do not try any others. The symprefix must be
+		 * unique.  Include the extra space in checking as it could
+		 * be used by the dynamic data allocator for modules.
+		 */
+		if (value < vse->v_start ||
+		    value >= (vse->v_start + vse->v_size))
+			return (FALSE);
+
+		if (db_vnet != NULL)
+			v = db_vnet;	/* XXX-BZ */
+		else
+			v = *((struct vimage **)((uintptr_t)curthread +
+			    vse->v_curvar));
+		*valuep = (db_expr_t)((uintptr_t)value + v->v_data_base);
+		return (TRUE);
+	}
 #endif
+	return (FALSE);
 }
 
 /*

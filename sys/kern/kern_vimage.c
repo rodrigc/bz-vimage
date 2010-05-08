@@ -63,7 +63,7 @@ MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
 
 static struct sx vimage_subsys_data_sxlock;
 
-/* We do not really export it but link_elf.c knows about our guts. */
+/* We do not really export it but link_elf.c and ddb know about our guts. */
 LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
 
 /*
@@ -210,6 +210,9 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	if (vse->v_data_copy == NULL)
 		vse->v_data_copy = vimage_data_copy;
 
+	/* Initialize size and always force page boundries. */
+	vse->v_size = roundup2(vse->v_stop - vse->v_start, PAGE_SIZE);
+
 	/* Initialize debugging. */
 	SLIST_INIT(&vse->v_recursions);
 
@@ -294,8 +297,7 @@ vimage_subsys_get(const char *setname)
  * Allocate a virtual instance.
  */
 struct vimage *
-vimage_alloc(struct vimage_subsys *vse, uintptr_t start, size_t size,
-    size_t bytes)
+vimage_alloc(struct vimage_subsys *vse)
 {
 	struct vimage *v;
 
@@ -307,15 +309,15 @@ vimage_alloc(struct vimage_subsys *vse, uintptr_t start, size_t size,
 	 * Allocate storage for virtualized global variables and copy in
 	 * initial values from our 'master' copy.
 	 */
-	v->v_data_mem = malloc(size, M_VIMAGE_DATA, M_WAITOK);
-	memcpy(v->v_data_mem, (void *)start, size);
+	v->v_data_mem = malloc(vse->v_size, M_VIMAGE_DATA, M_WAITOK);
+	memcpy(v->v_data_mem, (void *)vse->v_start, vse->v_size);
 
 	/*
 	 * All use of subsystem-specific data will immediately subtract start
 	 * from the base memory pointer, so pre-calculate that now to avoid
 	 * it on each use.
 	 */
-	v->v_data_base = (uintptr_t)v->v_data_mem - start;
+	v->v_data_base = (uintptr_t)v->v_data_mem - vse->v_start;
 
 	/* Initialize / attach subsystm module instances. */
 	CURVIMAGE_SET_QUIET(vse, __func__, v);
@@ -829,8 +831,9 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	db_symbol_values(sym, &funcname, NULL);					\
 	db_printf("  %-30s = %s(%p)\n", # fptr ,				\
 	    (funcname != NULL) ? funcname : "", vse->fptr);
-#define	V_PRINT(name, format)							\
-	db_printf("  %-30s = " format "\n", # name, vse->name);
+#define	V_PRINT_CAST(name, format, cast)					\
+	db_printf("  %-30s = " format "\n", # name, cast vse->name);
+#define	V_PRINT(name, format)	V_PRINT_CAST(name, format, )
 #define	V_PRINT_PTR(name, format)						\
 	db_printf("  %-30s = " format "\n", # name, &vse->name);
 
@@ -840,6 +843,10 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	V_PRINT(NAME, "%s");
 	V_PRINT(setname, "%s");
 	V_PRINT(setname_s, "%s");
+	V_PRINT(v_symprefix, "%s");
+	V_PRINT_CAST(v_start, "%p", (void *));
+	V_PRINT_CAST(v_stop, "%p", (void *));
+	V_PRINT(v_size, "%zu");
 	V_PRINT(v_curvar, "%zu");
 	V_PRINT(v_curvar_lpush, "%zu");
 	V_PRINT(v_instance_size, "%zu");
@@ -855,6 +862,7 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 	V_PRINT_PTR(v_recursions, "%p");
 #undef	V_PRINT_PTR
 #undef	V_PRINT
+#undef	V_PRINT_CAST
 #undef	V_FPTR
 }
 

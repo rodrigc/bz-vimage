@@ -130,6 +130,11 @@ struct vimage_subsys {
 
 	const char			*setname;	/* set_subsys */
 	const char			*setname_s;	/* subsys */
+	const char			*v_symprefix;	/* symbol name prefix */
+
+	uintptr_t			v_start;
+	uintptr_t			v_stop;
+	size_t				v_size;
 
 	size_t				v_curvar;
 	size_t				v_curvar_lpush;
@@ -210,7 +215,7 @@ void vimage_deregister_sysinit(void *);
 void vimage_register_sysuninit(void *);
 void vimage_deregister_sysuninit(void *);
 
-struct vimage *vimage_alloc(struct vimage_subsys *, uintptr_t, size_t, size_t);
+struct vimage *vimage_alloc(struct vimage_subsys *);
 void vimage_destroy(struct vimage_subsys *, struct vimage *);
 
 int vimage_subsys_register(struct vimage_subsys *);

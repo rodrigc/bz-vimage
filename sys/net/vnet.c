@@ -128,7 +128,8 @@ struct vnet *vnet0;
  * size of all kernel virtualized global variables, and the malloc(9) type
  * that will be used to allocate it.
  */
-#define	VNET_BYTES	(VNET_STOP - VNET_START)
+#define	VNET_BYTES							\
+	((uintptr_t)&__stop_set_vnet - (uintptr_t)&__start_set_vnet)
 
 /*
  * VNET_MODMIN is the minimum number of bytes we will reserve for the sum of
@@ -138,8 +139,6 @@ struct vnet *vnet0;
  * have more space than that in practice.
  */
 #define	VNET_MODMIN	8192
-#define	VNET_SIZE	roundup2(VNET_BYTES, PAGE_SIZE)
-#define	VNET_MODEXTRA	(VNET_SIZE - VNET_BYTES)
 
 /*
  * Space to store virtualized global variables from loadable kernel modules,
@@ -156,8 +155,7 @@ struct vnet *
 vnet_alloc(void)
 {
 
-	return ((struct vnet *)vimage_alloc(&vnet_data,
-	    VNET_START, VNET_SIZE, VNET_BYTES));
+	return ((struct vnet *)vimage_alloc(&vnet_data));
 }
 
 /*
@@ -182,6 +180,7 @@ static int
 vnet_data_init(struct vimage_subsys *vse)
 {
 	struct vimage_data_free *df;
+	size_t modextra;
 
 	/* Already initialized? */
 	if (!TAILQ_EMPTY(&vse->v_data_free_list))
@@ -192,12 +191,13 @@ vnet_data_init(struct vimage_subsys *vse)
 	df->vnd_len = VNET_MODMIN;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);
 
-	if (VNET_MODEXTRA < sizeof(*df))
+	modextra = vse->v_size - VNET_BYTES;
+	if (modextra < sizeof(*df))
 		return (0);
 	
 	df = malloc(sizeof(*df), M_VIMAGE_DATA, M_WAITOK | M_ZERO);
-	df->vnd_start = VNET_STOP;
-	df->vnd_len = VNET_MODEXTRA;
+	df->vnd_start = vse->v_stop;
+	df->vnd_len = modextra;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);
 
 	return (0);
@@ -212,6 +212,10 @@ struct vimage_subsys vnet_data =
 	.NAME			= "VNET",
 
 	.setname		= VNET_SETNAME,
+	.v_symprefix		= VNET_SYMPREFIX,
+
+	.v_start		= (uintptr_t)&__start_set_vnet,
+	.v_start		= (uintptr_t)&__stop_set_vnet,
 
 	.v_curvar		= offsetof(struct thread, td_vnet),
 	.v_curvar_lpush		= offsetof(struct thread, td_vnet_lpush),

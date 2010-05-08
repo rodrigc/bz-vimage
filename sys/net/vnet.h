@@ -112,13 +112,6 @@ extern struct vnet *vnet0;
  */
 DECLARE_LINKER_SET(set_vnet);
 
-/*
- * Location of the kernel's 'set_vnet' linker set, used by the vnet(9)
- * and ddb(4).
- */
-#define	VNET_START		(uintptr_t)&__start_set_vnet
-#define	VNET_STOP		(uintptr_t)&__stop_set_vnet
-
 #define	VNET_NAME(n)		vnet_entry_##n
 #define	VNET_DECLARE(t, n)	extern t VNET_NAME(n)
 #define	VNET_DEFINE(t, n)	t VNET_NAME(n) __section(VNET_SETNAME) __used
