@@ -34,18 +34,23 @@
 #ifndef _SYS_VIMAGE_H_
 #define	_SYS_VIMAGE_H_
 
+#if defined(_KERNEL) || defined(_WANT_VIMAGE)
 #include <sys/queue.h>
-#ifdef _KERNEL
 #include <sys/lock.h>
 #include <sys/rwlock.h>
 #include <sys/malloc.h>
 #include <sys/sx.h>
 
-
-MALLOC_DECLARE(M_VIMAGE);
+/*
+ * Export the VIMAGE module data free list malloc accounting type as all
+ * subsystems will have to handle v_data_init themselves.
+ */
 MALLOC_DECLARE(M_VIMAGE_DATA);
-#endif
 
+/*
+ * List of free chunks of memory that can be used by the linker to put the
+ * virtualized global objects from modules in.
+ */
 struct vimage_data_free {
 	TAILQ_ENTRY(vimage_data_free) vnd_link;
 	uintptr_t	vnd_start;
@@ -72,7 +77,7 @@ TAILQ_HEAD(vimage_sysinit_head, vimage_sysinit);
 TAILQ_HEAD(vimage_sysuninit_head, vimage_sysinit);
 
 /*
- * For debugging purposes.
+ * Tracking recursive set operations of subsystem instances.
  */
 struct vimage_recursion {
 	SLIST_ENTRY(vimage_recursion)	vr_le;
@@ -84,6 +89,15 @@ struct vimage_recursion {
 };
 SLIST_HEAD(vimage_recursion_head, vimage_recursion);
 
+/*
+ * VIMAGE allocator.
+ */
+
+/*
+ * Basic description of each virtualized subsystem instance.  Each virtualized
+ * subsytem may overload this and add more per-subsystem data to the end.
+ * The VIMAGE allocator framework will allocate v_instance_size bytes.
+ */
 struct vimage {
 	uintptr_t		 v_data_base;
 	void			*v_data_mem;
@@ -97,7 +111,7 @@ struct vimage {
 LIST_HEAD(vimage_instance_head, vimage);
 
 /*
- * Read locks to access the list of all per-subsystem instance.  If a caller
+ * Read locks to access the list of all per-subsystem instances.  If a caller
  * may sleep while accessing the list, it must use the sleepable lock macros.
  */
 #ifdef VIMAGE
@@ -116,13 +130,18 @@ extern struct sx vimage_list_sxlock;
 #endif /* VIMAGE */
 
 /*
- * Caller of vimage_subsys_register() has to intialize setname and,
- * if dynamic data region support for modules is provided,
- * v_data_init(). v_data_free_list should be statically initialized in
- * this case.
+ * Caller of vimage_subsys_register() has to intialize name, NAME,
+ * setname, v_symprefix, v_start, v_stop, v_curvar, v_curvar_lpush,
+ * v_instance_size and v_sysinit_earliest.
+ *
+ * If dynamic per module data regions are supported, v_data_init() needs to
+ * be implemented and initialized by the subystem implementation as well.
+ * v_data_free_list should be statically initialized in this case.
  * v_data_alloc(), v_data_free() and v_data_copy() may be overloaded,
  * or the default implementation will be used.
- * Other fields are "private" to the implementation.
+ *
+ * Other fields are "private" to the implementation and will be set from
+ * the VIMAGE framework to save per-subsystem state.
  */
 struct vimage_subsys {
 	LIST_ENTRY(vimage_subsys)	vimage_subsys_le; /* all subsys */
@@ -132,6 +151,7 @@ struct vimage_subsys {
 	const char			*name;		/* printfs */
 	const char			*NAME;		/* printfs */
 
+	/* VIMAGE allocator framework. */
 	const char			*setname;	/* set_subsys */
 	const char			*setname_s;	/* subsys */
 	const char			*v_symprefix;	/* symbol name prefix */
@@ -143,10 +163,11 @@ struct vimage_subsys {
 	size_t				v_curvar;
 	size_t				v_curvar_lpush;
 
-	void				*v_db_instance;	/* ddb instance */
-
 	size_t				v_instance_size;/* instance struct */
 	struct vimage_instance_head	v_instance_head;/* instance list */
+
+	/* ddb */
+	void				*v_db_instance;	/* ddb instance */
 
 	/* Dynamic/module data allocator. */
 	TAILQ_HEAD(, vimage_data_free)	v_data_free_list;
@@ -169,6 +190,19 @@ struct vimage_subsys {
 	struct vimage_recursion_head	v_recursions;
 };
 
+#ifdef VIMAGE
+int vimage_subsys_register(struct vimage_subsys *);
+int vimage_subsys_deregister(struct vimage_subsys *);
+
+struct vimage_subsys *vimage_subsys_get(const char *);
+
+struct vimage *vimage_alloc(struct vimage_subsys *);
+void vimage_destroy(struct vimage_subsys *, struct vimage *);
+
+/*
+ * Support for special SYSINIT handlers registered via VIMAGE_SYSINIT()
+ * and VIMAGE_SYSUNINIT() or per-subsystem macros overloading these.
+ */
 extern struct sx		vimage_subsys_sxlock;
 extern struct rwlock		vimage_subsys_rwlock;
 #define	VIMAGE_SUBSYS_LIST_RLOCK()	sx_slock(&vimage_subsys_sxlock)
@@ -176,7 +210,6 @@ extern struct rwlock		vimage_subsys_rwlock;
 #define	VIMAGE_SUBSYS_LIST_RLOCK_NOSLEEP()   rw_rlock(&vimage_subsys_rwlock)
 #define	VIMAGE_SUBSYS_LIST_RUNLOCK_NOSLEEP() rw_runlock(&vimage_subsys_rwlock)
 
-#ifdef VIMAGE
 #define	VIMAGE_SYSINIT(ident, subsystem, order, func, arg, name, v_subsys) \
 	static struct vimage_sysinit ident ## _ ## name ## _init = {	\
 		subsystem,						\
@@ -214,6 +247,7 @@ extern struct rwlock		vimage_subsys_rwlock;
 	SYSUNINIT(ident, subsystem, order, func, arg)
 #endif /* VIMAGE */
 
+#ifdef VIMAGE
 void vimage_sysinit(struct vimage_subsys *);
 void vimage_sysuninit(struct vimage_subsys *);
 void vimage_register_sysinit(void *);
@@ -221,16 +255,14 @@ void vimage_deregister_sysinit(void *);
 void vimage_register_sysuninit(void *);
 void vimage_deregister_sysuninit(void *);
 
-struct vimage *vimage_alloc(struct vimage_subsys *);
-void vimage_destroy(struct vimage_subsys *, struct vimage *);
-
-int vimage_subsys_register(struct vimage_subsys *);
-int vimage_subsys_deregister(struct vimage_subsys *);
-
-struct vimage_subsys *vimage_subsys_get(const char *);
-
+/*
+ * Set and unset operations to tell the kernel on which instance the
+ * current thread is working on, so that the VIMAGE allocator framework
+ * can access the correct copy of global objects.
+ */
 void vimage_log_recursion(struct vimage_subsys *,
     void *, const char *, int, void *, const char *);
+#endif /* VIMAGE */
 
 #if defined(INVARIANTS) || defined(VIMAGE_DEBUG)
 #define	VIMAGE_ASSERT(exp, msg)	KASSERT(exp, msg)
@@ -360,6 +392,11 @@ void vimage_log_recursion(struct vimage_subsys *,
 
 void	vimage_global_eventhandler_iterator_func(void *, ...);
 
+/*
+ * Per subsystem linker-set declarations that will put a set into a dedicated
+ * ELF section.
+ */
+
 #ifdef VIMAGE
 #if defined(__arm__)
 #define	_PROGBITS	"%progbits"
@@ -373,8 +410,9 @@ __asm__(								\
 	"\t.previous");							\
 extern uintptr_t	*__start_ ## SETNAME;				\
 extern uintptr_t	*__stop_ ## SETNAME
-#endif
+#endif /* VIMAGE */
 
+#endif /* defined(_KERNEL) || defined(_WANT_VIMAGE) */
 #endif /* _SYS_VIMAGE_H_ */
 
 /* end */

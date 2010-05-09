@@ -59,12 +59,34 @@ __FBSDID("$FreeBSD$");
 #include <ddb/db_variables.h>
 #endif
 
+/*-
+ * This file implements core functions for the VIMAGE kernel virtualization
+ * framework:
+ *
+ * - Functions to register, deregister and query for a virtualized subsystem.
+ *
+ * - Virtualized subsystem memory allocator to start and teardown instances,
+ *   as well as functions to handle (alloc/copy/free) modules space.
+ *
+ * - Virtualized SYSINITs/SYSUNINITs, which allow subsystems to register
+ *   startup/shutdown events to be run for each instance.
+ *
+ * - Eventhandler helper function.
+ *
+ * - Functions to help with debugging recursive set operations of subsystem
+ *   instances.
+ *
+ * - General interaction kernel debugger (ddb) functions.
+ */
+
+
 MALLOC_DEFINE(M_VIMAGE, "vimage", "VIMAGE resource accounting");
 MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
 
-static struct sx vimage_subsys_data_sxlock;
-
-/* We do not really export it but link_elf.c and ddb know about our guts. */
+/*
+ * List of all registered virtualized subsystems.
+ * We do not really export it but link_elf.c and ddb know about our guts.
+ */
 LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
 
 /*
@@ -91,6 +113,12 @@ struct rwlock		vimage_subsys_rwlock;
  * and the other not, so that the list can be stablized and walked in a variety
  * of contexts.  Both must be acquired exclusively to modify the list, but a
  * read lock of either lock is sufficient to walk the list.
+ * For the moment the same locks are shared between all virtualized subsystems
+ * to traverse their instances.  We really only need to aquire the write locks
+ * on startup or teardown of an instance which is a very rare event. Should
+ * it cause problems we can make them per-subsytem easily as long as subsystems
+ * continue to define their own version of the rlock macros, just calling the
+ * default ones.
  */
 struct rwlock		vimage_list_rwlock;
 struct sx		vimage_list_sxlock;
@@ -105,6 +133,13 @@ struct sx		vimage_list_sxlock;
 	sx_xunlock(&vimage_list_sxlock);					\
 } while (0)
 
+
+/*
+ * Virtual subsystem instance data allocator (module space) lock to protect the
+ * free space lists.
+ */
+static struct sx vimage_subsys_data_sxlock;
+
 /*
  * Global lists of subsystem constructor and destructors for subsystems.
  * They are registered via SUBSYS_SYSINIT() and SUBSYS_SYSUNINIT().  Both
@@ -117,7 +152,15 @@ static struct sx	vimage_sysinit_sxlock;
 #define	VIMAGE_SYSINIT_RLOCK()		sx_slock(&vimage_sysinit_sxlock);
 #define	VIMAGE_SYSINIT_RUNLOCK()	sx_sunlock(&vimage_sysinit_sxlock);
 
+/*
+ * DTrace support.
+ */
 SDT_PROVIDER_DEFINE(vimage);
+/*
+ * Defines for the instance allocation and free framework.  Those were needed
+ * as the FBT provider missed function exists for some reason if compiled at
+ * certain optimization levels.
+ */
 SDT_PROBE_DEFINE1(vimage, functions, vimage_alloc, entry, "int");
 SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int", "struct vimage *");
 SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int", "struct vimage *");
@@ -138,7 +181,7 @@ static void vimage_data_copy_notsupp(struct vimage_subsys * __unused,
 
 
 /*
- * Boot time intialization of the VIMAGe framework.
+ * Boot time intialization of the VIMAGE framework.
  */
 static void
 vimage_init_prelink(void *arg)
@@ -176,8 +219,9 @@ vimage_subsys_register(struct vimage_subsys *vse)
 
 	/*
 	 * Assert a few things but as we might be called from modules
-	 * loaded, do not panic but just log and return an error.
-	 * Where possible, initialize to defaults.
+	 * loaded, do not panic but just log and return an error and
+	 * leave it to the caller to panic or not.  Where possible,
+	 * initialize to defaults.
 	 */
 	if (vse->name == NULL || vse->NAME == NULL) {
 		printf("%s: name or NAME of vse=%p is NULL\n", __func__, vse);
@@ -220,13 +264,17 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	/*
 	 * Initalize dynamic data region for module support. Callee has to
 	 * handle list initialization itself as we do not know variable names
-	 * of the region or extra space that might be available.
+	 * of the region or about extra space that might be available.
 	 */
 	error = (*vse->v_data_init)(vse);
 	if (error)
 		return (error);
 
 #ifdef DDB
+	/*
+	 * Let ddb know about the subsystem and synamicly create $db_<name>
+	 * and cur<name> variables to debug an instance of this subsystem.
+	 */
 	db_vimage_variable_register(vse);
 #endif
 	
@@ -235,6 +283,8 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	 * Ensure a subsytem with the setname has not yet been registered.
 	 * We do not check for the vse pointer as that would still allow
 	 * duplicate subsystem registration.
+	 * The reason we pick the setname is that this is the unique name
+	 * needed for and used by the linker.
 	 */
 	if (vimage_subsys_get(vse->setname) != NULL) {
 		VIMAGE_SUBSYS_LIST_WUNLOCK();
@@ -259,6 +309,8 @@ vimage_subsys_deregister(struct vimage_subsys *vse)
 	VIMAGE_SUBSYS_LIST_WLOCK();
 	LIST_FOREACH(vse2, &vimage_subsys_head, vimage_subsys_le) {
 		if (vse == vse2) {
+			/* Assert that no instance is running anymore? */
+
 			if (refcount_release(&vse->refcnt) == 1) {
 #ifdef DDB
 				db_vimage_variable_unregister(vse);
@@ -302,6 +354,54 @@ vimage_subsys_get(const char *setname)
 }
 
 /*
+ * The VIMAGE allocator provides storage for virtualized global variables
+ * of a virtualized subsystem.  These variables are defined/declared using the
+ * <SUBSYS>_DEFINE()/<SUBSYS>_DECLARE() macros, which place them in the
+ * 'set_<name>' linker set.  The details of the implementation are somewhat
+ * subtle, but allow the majority of most subsystems to maintain
+ * virtualization-agnostic.
+ *
+ * The VIMAGE allocator handles variables in the base kernel vs. modules in
+ * similar but different ways.  In both cases, virtualized global variables
+ * are marked as such by being declared to be part of the substem's linker set.
+ * These "master" copies of global variables serve two functions:
+ *
+ * (1) They contain static initialization or "default" values for global
+ *     variables which will be propagated to each subsytem instance when
+ *     created.  As with normal global variables, they default to zero-filled.
+ *
+ * (2) They act as unique global names by which the variable can be referred
+ *     to, regardless of subsystem instance.  The single global symbol will
+ *     be used to calculate the location of a per-virtual instance variable
+ *     at run-time.
+ *
+ * Each virtual subsystem instance has a complete copy of each virtualized
+ * global variable, stored in a malloc'd block of memory referred to by
+ * <struct vimage *>->v_data_mem.  Critical to the design is that each
+ * per-instance memory block is laid out identically to the master block so
+ * that the offset of each global variable is the same across all blocks.  To
+ * optimize run-time access, a precalculated 'base' address,
+ * <struct vimage *>->v_data_base, is stored in each instance, and is the
+ * amount that can be added to the address of a 'master' instance of a
+ * variable to get to the per-subsystem instance.
+ *
+ * Virtualized global variables from modules are handled in a similar manner,
+ * but as each module has its own 'set_<name>' linker set, and we want to keep
+ * all virtualized globals togther, we reserve space in the kernel's linker set
+ * for potential module variables using a per-subsystem character array, usually
+ * called 'modspace' but not necessarily as the v_data_init function is
+ * subsystem private and handles this internally.  The virtual subsystem
+ * allocator maintains a free list to track what space in the array is free
+ * (all, initially) and as modules are linked, allocates portions of the space
+ * to specific globals.  The kernel module linker queries the subsystem
+ * allocator and will bind references of the global to the location during
+ * linking.  It also calls into the subsystem allocator, once the memory is
+ * initialized, in order to propagate the new static initializations to all
+ * existing subsystem instances so that the soon-to-be executing module will
+ * find every subsystem instance with proper default values.
+ */
+
+/*
  * Allocate a virtual instance.
  */
 struct vimage *
@@ -327,7 +427,7 @@ vimage_alloc(struct vimage_subsys *vse)
 	 */
 	v->v_data_base = (uintptr_t)v->v_data_mem - vse->v_start;
 
-	/* Initialize / attach subsystm module instances. */
+	/* Initialize / attach subsystem module instances. */
 	CURVIMAGE_SET_QUIET(vse, __func__, v);
 	vimage_sysinit(vse);
 	CURVIMAGE_RESTORE(vse, __func__);
@@ -358,7 +458,7 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
 	CURVIMAGE_RESTORE(vse, __func__);
 
 	/*
-	 * Release storage for the virtual network stack instance.
+	 * Release storage for the virtual instance (module) data allocator.
 	 */
 	free(v->v_data_mem, M_VIMAGE_DATA);
 	free(v, M_VIMAGE);
@@ -401,7 +501,7 @@ vimage_data_alloc(struct vimage_subsys *vse, size_t size)
 }
 
 /*
- * Free space for a virtualized global variable on module unload.
+ * Free space for virtualized global variables on module unload.
  */
 static void
 vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
@@ -457,7 +557,7 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 
 /*
  * When a new virtualized global variable has been allocated, propagate its
- * initial value to each already-allocated virtual network stack instance.
+ * initial value to each already-allocated virtual subsystem instance.
  */
 static void
 vimage_data_copy(struct vimage_subsys *vse, void *start, size_t size)
@@ -471,6 +571,10 @@ vimage_data_copy(struct vimage_subsys *vse, void *start, size_t size)
 	VIMAGE_LIST_RUNLOCK();
 }
 
+/*
+ * Dummy functions so we can initialize the functions pointer upon subsytem
+ * registration and do not have to care about at a later time.
+ */
 static int
 vimage_data_init_notsupp(struct vimage_subsys *vse __unused)
 {
@@ -503,7 +607,7 @@ vimage_data_copy_notsupp(struct vimage_subsys *vse __unused,
 
 /*
  * Support for special SYSINIT handlers registered via VIMAGE_SYSINIT()
- * and VIMAGE_SYSUNINIT().
+ * and VIMAGE_SYSUNINIT() or per-subsystem macros overloading these.
  */
 static void
 vimage_sysinit_iterator(struct vimage_subsys *vse, struct vimage_sysinit *vs)
@@ -526,7 +630,7 @@ vimage_sysinit_iterator(struct vimage_subsys *vse, struct vimage_sysinit *vs)
 /*
  * Invoke all registered subsystem constructors on the current subsystem.  Used
  * during subsystem construction.  The caller is responsible for ensuring the
- * new subsystem is the current subsystem.
+ * new subsystem instance is the current subsystem instance.
  */
 void
 vimage_sysinit(struct vimage_subsys *vse)
@@ -543,7 +647,7 @@ vimage_sysinit(struct vimage_subsys *vse)
 /*
  * Invoke all registered subsystem destructors on the current subsystem.  Used
  * during subsystem destruction.  The caller is responsible for ensuring the
- * dying subsystem the current subsystem.
+ * dying subsystem instance is the current subsystem instance.
  */
 void
 vimage_sysuninit(struct vimage_subsys *vse)
@@ -659,7 +763,7 @@ vimage_deregister_sysuninit(void *arg)
  */
 /*
  * Invoke the eventhandler function originally registered with the possibly
- * registered argument for all virtual network stack instances.
+ * registered argument for all virtualized subsystem instances.
  *
  * This iterator can only be used for eventhandlers that do not take any
  * additional arguments, as we do ignore the variadic arguments from the
@@ -687,6 +791,11 @@ vimage_global_eventhandler_iterator_func(void *arg, ...)
 	VIMAGE_LIST_RUNLOCK();
 }
 
+#ifdef VIMAGE_DEBUG
+/*
+ * Functions to help with debugging recursive set operations of subsystem
+ * instances.
+ */
 static void
 vimage_print_recursion(struct vimage_subsys *vse,
     struct vimage_recursion *vr, int brief)
@@ -737,8 +846,13 @@ vimage_log_recursion(struct vimage_subsys *vse,
 	kdb_backtrace();
 #endif
 }
+#endif
 
 #ifdef DDB
+/*
+ * Interactive kernel debugger (ddb) commands.
+ */
+#ifdef VIMAGE_DEBUG
 DB_SHOW_VIMAGE_COMMAND(recursions, db_show_vimage_recursions)
 {
 	struct vimage_subsys *vse;
@@ -754,6 +868,7 @@ DB_SHOW_VIMAGE_COMMAND(recursions, db_show_vimage_recursions)
 	SLIST_FOREACH(vr, &vse->v_recursions, vr_le)
 		vimage_print_recursion(vse, vr, 1);
 }
+#endif
 
 DB_SHOW_VIMAGE_COMMAND(vars, db_show_vimage_vars)
 {
