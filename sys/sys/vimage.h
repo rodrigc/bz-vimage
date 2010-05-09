@@ -36,7 +36,11 @@
 
 #include <sys/queue.h>
 #ifdef _KERNEL
+#include <sys/lock.h>
+#include <sys/rwlock.h>
 #include <sys/malloc.h>
+#include <sys/sx.h>
+
 
 MALLOC_DECLARE(M_VIMAGE);
 MALLOC_DECLARE(M_VIMAGE_DATA);
@@ -284,7 +288,7 @@ void vimage_log_recursion(struct vimage_subsys *,
 #define	VIMAGE_FOREACH(vse, arg)					\
 	LIST_FOREACH((arg), &(vse)->v_instance_head, v_le)
 #else /*!VIMAGE */
-#define	VIMAGE_FOREACH(vse, arg)		do { } while(0)
+#define	VIMAGE_FOREACH(vse, arg)
 #endif /* VIMAGE */
 
 

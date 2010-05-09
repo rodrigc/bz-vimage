@@ -9,7 +9,11 @@
  *
  * Copyright (c) 2009 Jeffrey Roberson <jeff@freebsd.org>
  * Copyright (c) 2009 Robert N. M. Watson
+ * Copyright (c) 2010 The FreeBSD Foundation
  * All rights reserved.
+ *
+ * Portions of this software were developed by CK Software GmbH
+ * under sponsorship from the FreeBSD Foundation.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -36,8 +40,9 @@
  */
 
 /*-
- * This header file defines several sets of interfaces supporting virtualized
- * network stacks:
+ * This header file extends the definitions of the general VIMAGE framework
+ * and defines several sets of interfaces supporting virtualized network
+ * stacks:
  *
  * - Definition of 'struct vnet' and functions and macros to allocate/free/
  *   manipulate it.
@@ -49,22 +54,31 @@
  *   destructors to be run for each network stack subsystem as virtual
  *   instances are created and destroyed.
  *
+ * - Virtualized eventhandler and sysctl support.
+ *
  * If VIMAGE isn't compiled into the kernel, virtualized global variables
- * compile to normal global variables, and virtualized sysinits to regular
- * sysinits.
+ * compile to normal global variables, and virtualized sysinits, sysctl
+ * and eventhandler macros to regular, non-virtualized ones.
  */
 
 #ifndef _NET_VNET_H_
 #define	_NET_VNET_H_
 
-/*
- * struct vnet describes a virtualized network stack, and is primarily a
- * pointer to storage for virtualized global variables.  Expose to userspace
- * as required for libkvm.
- */
 #if defined(_KERNEL) || defined(_WANT_VNET)
 #include <sys/vimage.h>
 
+/*
+ * Description of the virtual networks specific information that the generic
+ * VIMAGE framework needs to know.
+ */
+extern struct vimage_subsys vnet_data;
+
+/*
+ * struct vnet describes a virtualized network stack instance and overloads the
+ * generic struct vimage for that.  It is primarily a pointer to storage for
+ * virtualized global variables with some network stack specific extensions.
+ * Exported to userspcae for kvm(3).
+ */
 struct vnet {
 	struct vimage		v;
 	u_int			vnet_ifcnt;
@@ -72,33 +86,40 @@ struct vnet {
 };
 
 /*
- * These two virtual network stack allocator definitions are also required
- * for libkvm so that it can evaluate virtualized global variables.
+ * XXX These two virtual network stack linker-set related definitions are also
+ * shared with kvm(3) for historical reasons.  New code might want to get the
+ * information from 'struct vimage_subsys'.
  */
 #define	VNET_SETNAME		"set_vnet"
 #define	VNET_SYMPREFIX		"vnet_entry_"
 #endif /* _KERNEL || _WANT_VNET */
 
+
 #ifdef _KERNEL
 #ifdef VIMAGE
-#include <sys/lock.h>
 #include <sys/proc.h>			/* for struct thread */
-#include <sys/rwlock.h>
-#include <sys/sx.h>
 
 /*
- * Functions to allocate and destroy virtual network stacks.
+ * Cache of the network stack for the base system. We can always use this
+ * to compare any vnet to, no matter whether we can get to an ucred and the
+ * prison or not.  It is espcially used by DEFAULT_VNET() checks.
+ */
+extern struct vnet *vnet0;
+
+/*
+ * Functions to allocate and destroy virtual network stacks used by
+ * the kernel jail framework.
  */
 struct vnet *vnet_alloc(void);
 void vnet_destroy(struct vnet *vnet);
 
 /*
- * The current virtual network stack -- we may wish to move this to struct
- * pcpu in the future.
+ * The current virtual network stack.
+ * XXX May we wish to move this to struct pcpu in the future and adjust the
+ * VIMAGE framework?
  */
 #define	curvnet	curthread->td_vnet
 
-extern struct vnet *vnet0;
 #define	IS_DEFAULT_VNET(arg)	((arg) == vnet0)
 
 #define	CRED_TO_VNET(cr)	(cr)->cr_prison->pr_vnet
@@ -106,8 +127,8 @@ extern struct vnet *vnet0;
 #define	P_TO_VNET(p)		CRED_TO_VNET((p)->p_ucred)
 
 /*
- * VIMAGE subsystem allocator, using a link_set for each subsystem, with will
- * put into a dedicated elf section, and allows global variables to be
+ * VIMAGE subsystem allocator, using a linker-set for each subsystem, which
+ * will be put into a dedicated elf section, and allows global variables to be
  * automatically instantiated for each network stack instance.
  */
 DECLARE_LINKER_SET(set_vnet);
@@ -123,7 +144,8 @@ DECLARE_LINKER_SET(set_vnet);
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR(((struct vimage *)(vnet))->v_data_base, n)
+#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR(((struct vimage *)		\
+				    (vnet))->v_data_base, n)
 #define	VNET_VNET(vnet, n)	(*VNET_VNET_PTR((vnet), n))
 
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)
@@ -161,9 +183,35 @@ DECLARE_LINKER_SET(set_vnet);
 #endif /* VIMAGE */
 
 /*
- * EVENTHANDLER(9) extensions.
+ * Various macros -- get and set the current network stack, iterator
+ * macros, but also assertions.
+ * A set of read locks to stabilize the list while traversing.
+ *
+ * XXX we need to decide whether to deprecate the lock macros or keep them
+ * to leave the possibility for per-subsystem locking.
  */
-#include <sys/eventhandler.h>
+#define	CURVNET_SET_QUIET(arg)	CURVIMAGE_SET_QUIET(&vnet_data, vnet, arg)
+#define	CURVNET_SET(arg)	CURVIMAGE_SET(&vnet_data, vnet, arg)
+#define	CURVNET_RESTORE()	CURVIMAGE_RESTORE(&vnet_data, vnet)
+
+#define	VNET_ASSERT(exp, msg)		VIMAGE_ASSERT(exp, msg)
+
+#ifdef VIMAGE
+#define	VNET_ITERATOR_DECL(arg)		struct vimage *arg
+#else /* !VIMAGE */
+#define	VNET_ITERATOR_DECL(arg)
+#endif /* VIMAGE */
+#define	VNET_FOREACH(arg)		VIMAGE_FOREACH(&vnet_data, arg)
+
+#define	VNET_LIST_RLOCK()		VIMAGE_LIST_RLOCK()
+#define	VNET_LIST_RLOCK_NOSLEEP()	VIMAGE_LIST_RLOCK_NOSLEEP()
+#define	VNET_LIST_RUNLOCK()		VIMAGE_LIST_RUNLOCK()
+#define	VNET_LIST_RUNLOCK_NOSLEEP()	VIMAGE_LIST_RUNLOCK_NOSLEEP()
+
+/*
+ * EVENTHANDLER(9) extensions, include <sys/eventhandler.h> to expose those.
+ */
+#ifdef EVENTHANDLER_REGISTER
 #ifdef VIMAGE
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(tag, name, func, arg, priority) \
 do {									\
@@ -189,35 +237,10 @@ do {									\
 #define VNET_GLOBAL_EVENTHANDLER_REGISTER(name, func, arg, priority)	\
 	eventhandler_register(NULL, #name, func, arg, priority)
 #endif /* VIMAGE */
+#endif /* EVENTHANDLER_REGISTER */
 
 /*
- * Various macros -- get and set the current network stack, but also
- * assertions.
- */
-#define	CURVNET_SET_QUIET(arg)	CURVIMAGE_SET_QUIET(&vnet_data, vnet, arg)
-#define	CURVNET_SET(arg)	CURVIMAGE_SET(&vnet_data, vnet, arg)
-#define	CURVNET_RESTORE()	CURVIMAGE_RESTORE(&vnet_data, vnet)
-
-#define	VNET_ASSERT(exp, msg)		VIMAGE_ASSERT(exp, msg)
-
-/*
- * Iteration macros to walk the global list of virtual network stacks.
- */
-#ifdef VIMAGE
-#define	VNET_ITERATOR_DECL(arg)		struct vimage *arg
-#else /* !VIMAGE */
-#define	VNET_ITERATOR_DECL(arg)
-#endif /* VIMAGE */
-#define	VNET_FOREACH(arg)		VIMAGE_FOREACH(&vnet_data, arg)
-
-#define	VNET_LIST_RLOCK()		VIMAGE_LIST_RLOCK()
-#define	VNET_LIST_RLOCK_NOSLEEP()	VIMAGE_LIST_RLOCK_NOSLEEP()
-#define	VNET_LIST_RUNLOCK()		VIMAGE_LIST_RUNLOCK()
-#define	VNET_LIST_RUNLOCK_NOSLEEP()	VIMAGE_LIST_RUNLOCK_NOSLEEP()
-
-
-/*
- * Sysctl variants for subsystem-virtualized global variables.  Include
+ * Sysctl variants for VNET-virtualized global variables.  Include
  * <sys/sysctl.h> to expose these definitions.
  */
 #ifdef SYSCTL_OID
@@ -252,8 +275,6 @@ do {									\
  * SYSINIT/SYSUNINIT variants that provide per-vnet constructors and
  * destructors.
  */
-extern struct vimage_subsys vnet_data;
-
 #define	VNET_SYSINIT(ident, subsystem, order, func, arg)		\
     VIMAGE_SYSINIT(ident, subsystem, order, func, arg, vnet, &vnet_data)
 #define	VNET_SYSUNINIT(ident, subsystem, order, func, arg)		\
