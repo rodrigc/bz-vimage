@@ -40,7 +40,7 @@
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: src/sys/i386/include/pmap.h,v 1.65.2.2 2000/11/30 01:54:42 peter
  *	JNPR: pmap.h,v 1.7.2.1 2007/09/10 07:44:12 girish
- *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.11 2010/04/17 00:05:22 jmallett Exp $
+ *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.13 2010/05/06 04:23:52 alc Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -88,6 +88,8 @@ struct pmap {
 	pd_entry_t *pm_segtab;	/* KVA of segment table */
 	TAILQ_HEAD(, pv_entry) pm_pvlist;	/* list of mappings in
 						 * pmap */
+	uint32_t	pm_gen_count;	/* generation count (pmap lock dropped) */
+	u_int		pm_retries;
 	int pm_active;		/* active on cpus */
 	struct {
 		u_int32_t asid:ASID_BITS;	/* TLB address space tag */
@@ -173,7 +175,6 @@ void pmap_unmapdev(vm_offset_t, vm_size_t);
 vm_offset_t pmap_steal_memory(vm_size_t size);
 void pmap_set_modified(vm_offset_t pa);
 int page_is_managed(vm_offset_t pa);
-void pmap_page_is_free(vm_page_t m);
 void pmap_kenter(vm_offset_t va, vm_paddr_t pa);
 void pmap_kremove(vm_offset_t va);
 void *pmap_kenter_temporary(vm_paddr_t pa, int i);

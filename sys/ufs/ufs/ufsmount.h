@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ufsmount.h	8.6 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/ufs/ufs/ufsmount.h,v 1.40 2010/04/24 07:05:35 jeff Exp $
+ * $FreeBSD: src/sys/ufs/ufs/ufsmount.h,v 1.41 2010/05/07 00:41:12 mckusick Exp $
  */
 
 #ifndef _UFS_UFS_UFSMOUNT_H_
@@ -129,6 +129,7 @@ struct ufsmount {
  */
 #define	QTF_OPENING	0x01			/* Q_QUOTAON in progress */
 #define	QTF_CLOSING	0x02			/* Q_QUOTAOFF in progress */
+#define QTF_64BIT	0x04			/* 64-bit quota file */
 
 /* Convert mount ptr to ufsmount ptr. */
 #define VFSTOUFS(mp)	((struct ufsmount *)((mp)->mnt_data))

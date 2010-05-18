@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_dev_ns8250.c,v 1.30 2009/04/08 00:14:06 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_dev_ns8250.c,v 1.31 2010/05/02 19:07:19 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -604,7 +604,7 @@ ns8250_bus_ipend(struct uart_softc *sc)
 	if (ipend == 0)
 		ns8250_clrint(bas);
 	uart_unlock(sc->sc_hwmtx);
-	return ((sc->sc_leaving) ? 0 : ipend);
+	return (ipend);
 }
 
 static int

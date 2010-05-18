@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/mips/mpboot.S,v 1.4 2010/04/17 07:20:01 jmallett Exp $
+ * $FreeBSD: src/sys/mips/mips/mpboot.S,v 1.5 2010/05/16 19:43:48 rrs Exp $
  */
 
 #include <machine/asm.h>
@@ -76,9 +76,10 @@ GLOBAL(mpentry)
 
 	PTR_LA	gp, _C_LABEL(_gp)
 
+#ifndef TARGET_XLR_XLS
 	jal	platform_init_ap
 	move	a0, s0
-
+#endif
 	jal	smp_init_secondary
 	move	a0, s0
 

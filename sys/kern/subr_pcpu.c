@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.16 2009/08/12 12:06:16 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.18 2010/05/14 21:11:58 bz Exp $");
 
 #include "opt_ddb.h"
 
@@ -125,7 +125,7 @@ dpcpu_startup(void *dummy __unused)
 
 	df = malloc(sizeof(*df), M_PCPU, M_WAITOK | M_ZERO);
 	df->df_start = (uintptr_t)&DPCPU_NAME(modspace);
-	df->df_len = DPCPU_MODSIZE;
+	df->df_len = DPCPU_MODMIN;
 	TAILQ_INSERT_HEAD(&dpcpu_head, df, df_link);
 	sx_init(&dpcpu_lock, "dpcpu alloc lock");
 }
@@ -363,7 +363,7 @@ show_pcpu(struct pcpu *pc)
 
 #ifdef WITNESS
 	db_printf("spin locks held:\n");
-	witness_list_locks(&pc->pc_spinlocks);
+	witness_list_locks(&pc->pc_spinlocks, db_printf);
 #endif
 }
 

@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.18 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.19 2010/05/16 20:31:31 nwhitehorn Exp $");
 
 /*
  * Mac 'Kauai' PCI ATA controller
@@ -220,8 +220,9 @@ ata_kauai_probe(device_t dev)
 	if (compatstring != NULL && strcmp(compatstring,"shasta-ata") == 0)
 		sc->shasta = 1;
 
-	/* Regular Kauai controllers apparently need this hack */
-	if (!sc->shasta)
+	/* Pre-K2 controllers apparently need this hack */
+	if (!sc->shasta &&
+	    (compatstring == NULL || strcmp(compatstring, "K2-UATA") != 0))
 		bus_set_resource(dev, SYS_RES_IRQ, 0, 39, 1);
 
         rid = PCIR_BARS;

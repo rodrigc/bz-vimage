@@ -30,7 +30,7 @@
 #include "opt_hwpmc_hooks.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.289 2009/10/25 04:34:47 jkoshy Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.292 2010/05/04 06:06:01 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -398,7 +398,7 @@ thread_exit(void)
 
 			/*
 			 * The test below is NOT true if we are the
-			 * sole exiting thread. P_STOPPED_SNGL is unset
+			 * sole exiting thread. P_STOPPED_SINGLE is unset
 			 * in exit1() after it is the only survivor.
 			 */
 			if (P_SHOULDSTOP(p) == P_STOPPED_SINGLE) {
@@ -431,8 +431,7 @@ thread_exit(void)
 #endif
 	PROC_UNLOCK(p);
 	thread_lock(td);
-	/* Save our tick information with both the thread and proc locked */
-	ruxagg(&p->p_rux, td);
+	ruxagg_locked(&p->p_rux, td);
 	PROC_SUNLOCK(p);
 	td->td_state = TDS_INACTIVE;
 #ifdef WITNESS

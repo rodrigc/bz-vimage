@@ -27,7 +27,7 @@
 # SUCH DAMAGE.
 #
 #	@(#)vnode_if.src	8.12 (Berkeley) 5/14/95
-# $FreeBSD: src/sys/kern/vnode_if.src,v 1.102 2009/06/21 19:21:01 kib Exp $
+# $FreeBSD: src/sys/kern/vnode_if.src,v 1.103 2010/05/12 21:24:46 zml Exp $
 #
 
 #
@@ -450,6 +450,13 @@ vop_advlockasync {
 	IN int flags;
 	IN struct task *task;	
 	INOUT void **cookiep;
+};
+
+
+%% advlockpurge	vp	E E E
+
+vop_advlockpurge {
+	IN struct vnode *vp;
 };
 
 

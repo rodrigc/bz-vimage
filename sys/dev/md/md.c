@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/dev/md/md.c,v 1.184 2010/02/27 10:41:30 trasz Exp $
+ * $FreeBSD: src/sys/dev/md/md.c,v 1.185 2010/05/03 20:31:13 kib Exp $
  *
  */
 
@@ -665,11 +665,13 @@ mdstart_swap(struct md_s *sc, struct bio *bp)
 		sf_buf_free(sf);
 		sched_unpin();
 		vm_page_wakeup(m);
+		vm_page_lock(m);
 		vm_page_lock_queues();
 		vm_page_activate(m);
 		if (bp->bio_cmd == BIO_WRITE)
 			vm_page_dirty(m);
 		vm_page_unlock_queues();
+		vm_page_unlock(m);
 
 		/* Actions on further pages start at offset 0 */
 		p += PAGE_SIZE - offs;

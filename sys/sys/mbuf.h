@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)mbuf.h	8.5 (Berkeley) 2/19/95
- * $FreeBSD: src/sys/sys/mbuf.h,v 1.235 2009/06/22 22:20:38 andre Exp $
+ * $FreeBSD: src/sys/sys/mbuf.h,v 1.236 2010/05/07 22:09:17 fabient Exp $
  */
 
 #ifndef _SYS_MBUF_H_
@@ -522,6 +522,9 @@ m_getjcl(int how, short type, int flags, int size)
 	struct mb_args args;
 	struct mbuf *m, *n;
 	uma_zone_t zone;
+
+	if (size == MCLBYTES)
+		return m_getcl(how, type, flags);
 
 	args.flags = flags;
 	args.type = type;

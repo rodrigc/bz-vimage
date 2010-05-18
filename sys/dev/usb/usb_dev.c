@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_dev.c,v 1.37 2010/04/22 22:15:08 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_dev.c,v 1.38 2010/05/12 22:28:40 thompsa Exp $ */
 /*-
  * Copyright (c) 2006-2008 Hans Petter Selasky. All rights reserved.
  *
@@ -182,7 +182,7 @@ usb_loc_fill(struct usb_fs_privdata* pd, struct usb_cdev_privdata *cpd)
  *  0: Success, refcount incremented on the given USB device.
  *  Else: Failure.
  *------------------------------------------------------------------------*/
-usb_error_t
+static usb_error_t
 usb_ref_device(struct usb_cdev_privdata *cpd, 
     struct usb_cdev_refdata *crd, int need_uref)
 {
@@ -327,7 +327,7 @@ usb_usb_ref_device(struct usb_cdev_privdata *cpd,
  * This function will release the reference count by one unit for the
  * given USB device.
  *------------------------------------------------------------------------*/
-void
+static void
 usb_unref_device(struct usb_cdev_privdata *cpd,
     struct usb_cdev_refdata *crd)
 {

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net80211/ieee80211_ht.h,v 1.16 2010/04/28 14:59:05 rpaulo Exp $
+ * $FreeBSD: src/sys/net80211/ieee80211_ht.h,v 1.17 2010/04/29 15:19:11 rpaulo Exp $
  */
 #ifndef _NET80211_IEEE80211_HT_H_
 #define _NET80211_IEEE80211_HT_H_
@@ -143,7 +143,7 @@ struct ieee80211_rx_ampdu {
 	int		rxa_nframes;	/* frames since ADDBA */
 	struct mbuf *rxa_m[IEEE80211_AGGR_BAWMAX];
 	void		*rxa_private;
-	uint64_t	rxa_pad[4];
+	uint64_t	rxa_pad[3];
 };
 
 void	ieee80211_ht_attach(struct ieee80211com *);

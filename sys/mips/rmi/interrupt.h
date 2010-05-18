@@ -25,19 +25,16 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *__FBSDID("$FreeBSD: src/sys/mips/rmi/interrupt.h,v 1.2 2010/02/20 16:30:29 rrs Exp $")
+ *__FBSDID("$FreeBSD: src/sys/mips/rmi/interrupt.h,v 1.3 2010/05/16 19:43:48 rrs Exp $")
  * RMI_BSD */
 #ifndef _RMI_INTERRUPT_H_
 #define _RMI_INTERRUPT_H_
 
 /* Defines for the IRQ numbers */
 
-#define IRQ_DUMMY_UART           2
-#define IRQ_IPI_SMP_FUNCTION     3
-#define IRQ_IPI_SMP_RESCHEDULE   4
-#define IRQ_REMOTE_DEBUG         5
-#define IRQ_MSGRING              6
-#define IRQ_TIMER                7
+#define IRQ_IPI			41  /* 8-39 are mapped by PIC intr 0-31 */
+#define IRQ_MSGRING             6
+#define IRQ_TIMER               7
 
 /*
  * XLR needs custom pre and post handlers for PCI/PCI-e interrupts

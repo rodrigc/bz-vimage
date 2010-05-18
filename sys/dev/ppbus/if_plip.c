@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ppbus/if_plip.c,v 1.51 2009/04/16 20:30:28 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ppbus/if_plip.c,v 1.52 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Parallel port TCP/IP interfaces added.  I looked at the driver from
@@ -262,7 +262,7 @@ lp_attach(device_t dev)
 	ifp->if_output = lpoutput;
 	ifp->if_hdrlen = 0;
 	ifp->if_addrlen = 0;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	if_attach(ifp);
 
 	bpfattach(ifp, DLT_NULL, sizeof(u_int32_t));

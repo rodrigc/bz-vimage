@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_vnops.c,v 1.295 2010/04/03 08:39:00 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_vnops.c,v 1.298 2010/05/06 18:52:41 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -54,6 +54,7 @@ __FBSDID("$FreeBSD: src/sys/kern/vfs_vnops.c,v 1.295 2010/04/03 08:39:00 avg Exp
 #include <sys/bio.h>
 #include <sys/buf.h>
 #include <sys/filio.h>
+#include <sys/resourcevar.h>
 #include <sys/sx.h>
 #include <sys/ttycom.h>
 #include <sys/conf.h>
@@ -1337,4 +1338,22 @@ vn_vget_ino(struct vnode *vp, ino_t ino, int lkflags, struct vnode **rvp)
 		error = ENOENT;
 	}
 	return (error);
+}
+
+int
+vn_rlimit_fsize(const struct vnode *vp, const struct uio *uio,
+    const struct thread *td)
+{
+
+	if (vp->v_type != VREG || td == NULL)
+		return (0);
+	PROC_LOCK(td->td_proc);
+	if ((uoff_t)uio->uio_offset + uio->uio_resid >
+	    lim_cur(td->td_proc, RLIMIT_FSIZE)) {
+		psignal(td->td_proc, SIGXFSZ);
+		PROC_UNLOCK(td->td_proc);
+		return (EFBIG);
+	}
+	PROC_UNLOCK(td->td_proc);
+	return (0);
 }

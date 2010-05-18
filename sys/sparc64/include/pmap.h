@@ -33,7 +33,7 @@
  *	from: hp300: @(#)pmap.h 7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h        7.4 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/pmap.h,v 1.70 2000/11/30
- * $FreeBSD: src/sys/sparc64/include/pmap.h,v 1.50 2010/02/20 23:24:19 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/pmap.h,v 1.51 2010/04/30 00:46:43 kmacy Exp $
  */
 
 #ifndef	_MACHINE_PMAP_H_
@@ -62,6 +62,8 @@ struct pmap {
 	struct	tte *pm_tsb;
 	vm_object_t pm_tsb_obj;
 	u_int	pm_active;
+	uint32_t	pm_gen_count;	/* generation count (pmap lock dropped) */
+	u_int			pm_retries;
 	u_int	pm_context[MAXCPU];
 	struct	pmap_statistics pm_stats;
 };

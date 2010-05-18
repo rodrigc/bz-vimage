@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_generic.c,v 1.23 2010/04/22 22:15:08 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_generic.c,v 1.24 2010/05/12 22:42:35 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -1735,14 +1735,34 @@ ugen_set_power_mode(struct usb_fifo *f, int mode)
 		break;
 
 	case USB_POWER_MODE_RESUME:
-		err = usbd_req_clear_port_feature(udev->parent_hub,
-		    NULL, udev->port_no, UHF_PORT_SUSPEND);
+#if USB_HAVE_POWERD
+		/* let USB-powerd handle resume */
+		USB_BUS_LOCK(udev->bus);
+		udev->pwr_save.write_refs++;
+		udev->pwr_save.last_xfer_time = ticks;
+		USB_BUS_UNLOCK(udev->bus);
+
+		/* set new power mode */
+		usbd_set_power_mode(udev, USB_POWER_MODE_SAVE);
+
+		/* wait for resume to complete */
+		usb_pause_mtx(NULL, hz / 4);
+
+		/* clear write reference */
+		USB_BUS_LOCK(udev->bus);
+		udev->pwr_save.write_refs--;
+		USB_BUS_UNLOCK(udev->bus);
+#endif
 		mode = USB_POWER_MODE_SAVE;
 		break;
 
 	case USB_POWER_MODE_SUSPEND:
-		err = usbd_req_set_port_feature(udev->parent_hub,
-		    NULL, udev->port_no, UHF_PORT_SUSPEND);
+#if USB_HAVE_POWERD
+		/* let USB-powerd handle suspend */
+		USB_BUS_LOCK(udev->bus);
+		udev->pwr_save.last_xfer_time = ticks - (256 * hz);
+		USB_BUS_UNLOCK(udev->bus);
+#endif
 		mode = USB_POWER_MODE_SAVE;
 		break;
 

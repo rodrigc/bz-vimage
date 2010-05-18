@@ -36,7 +36,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man5/fdescfs.5,v 1.16 2006/11/22 15:52:24 rodrigc Exp $
+.\" $FreeBSD: src/share/man/man5/fdescfs.5,v 1.17 2010/05/13 12:08:11 uqs Exp $
 .\"
 .Dd December 14, 1996
 .Dt FDESCFS 5
@@ -87,6 +87,10 @@ call other than
 and
 .Dv O_RDWR
 are ignored.
+.Sh FILES
+.Bl -tag -width /dev/stderr -compact
+.It Pa /dev/fd/#
+.El
 .Sh EXAMPLES
 To mount a  
 .Nm
@@ -94,10 +98,6 @@ volume located on
 .Pa /dev/fd :
 .Pp
 .Dl "mount -t fdescfs null /dev/fd"
-.Sh FILES
-.Bl -tag -width /dev/stderr -compact
-.It Pa /dev/fd/#
-.El
 .Sh SEE ALSO
 .Xr mount 8
 .Sh HISTORY

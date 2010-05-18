@@ -36,7 +36,7 @@
  *	from: Utah Hdr: machparam.h 1.11 89/08/14
  *	from: @(#)param.h	8.1 (Berkeley) 6/10/93
  *	JNPR: param.h,v 1.6.2.1 2007/09/10 07:49:36 girish
- * $FreeBSD: src/sys/mips/include/param.h,v 1.13 2010/04/18 22:32:07 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/param.h,v 1.14 2010/05/16 19:43:48 rrs Exp $
  */
 
 #ifndef _MIPS_INCLUDE_PARAM_H_
@@ -70,7 +70,7 @@
 #define	MID_MACHINE	0	/* None but has to be defined */
 
 #ifdef SMP
-#define	MAXSMPCPU	16
+#define	MAXSMPCPU	32
 #define	MAXCPU		MAXSMPCPU
 #else
 #define	MAXSMPCPU	1

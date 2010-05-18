@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/usb_controller.c,v 1.27 2010/03/11 08:33:39 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/usb_controller.c,v 1.28 2010/05/12 22:51:45 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -234,11 +234,12 @@ usb_bus_explore(struct usb_proc_msg *pm)
 
 		USB_BUS_UNLOCK(bus);
 
+#if USB_HAVE_POWERD
 		/*
 		 * First update the USB power state!
 		 */
 		usb_bus_powerd(bus);
-
+#endif
 		 /* Explore the Root USB HUB. */
 		(udev->hub->explore) (udev);
 		USB_BUS_LOCK(bus);
@@ -301,11 +302,13 @@ usb_power_wdog(void *arg)
 	usb_proc_rewakeup(&bus->explore_proc);	/* recover from DDB */
 #endif
 
+#if USB_HAVE_POWERD
 	USB_BUS_UNLOCK(bus);
 
 	usb_bus_power_update(bus);
 
 	USB_BUS_LOCK(bus);
+#endif
 }
 
 /*------------------------------------------------------------------------*

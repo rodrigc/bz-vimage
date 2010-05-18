@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/agp/agp_i810.c,v 1.56 2010/03/12 21:34:23 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/agp/agp_i810.c,v 1.58 2010/05/05 03:45:46 alc Exp $");
 
 #include "opt_bus.h"
 
@@ -1010,10 +1010,10 @@ agp_i810_free_memory(device_t dev, struct agp_memory *mem)
 	
 			VM_OBJECT_LOCK(mem->am_obj);
 			m = vm_page_lookup(mem->am_obj, 0);
-			VM_OBJECT_UNLOCK(mem->am_obj);
-			vm_page_lock_queues();
+			vm_page_lock(m);
 			vm_page_unwire(m, 0);
-			vm_page_unlock_queues();
+			vm_page_unlock(m);
+			VM_OBJECT_UNLOCK(mem->am_obj);
 		} else {
 			contigfree(sc->argb_cursor, mem->am_size, M_AGP);
 			sc->argb_cursor = NULL;

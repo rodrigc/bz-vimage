@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ahci/ahci.h,v 1.11 2010/02/14 12:30:35 mav Exp $
+ * $FreeBSD: src/sys/dev/ahci/ahci.h,v 1.12 2010/05/02 12:07:47 mav Exp $
  */
 
 /* ATA register defines */
@@ -372,6 +372,7 @@ struct ahci_device {
 	u_int			bytecount;
 	u_int			atapi;
 	u_int			tags;
+	u_int			caps;
 };
 
 /* structure describing an ATA channel */

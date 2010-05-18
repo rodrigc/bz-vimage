@@ -6,7 +6,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/db_trace.c,v 1.6 2010/03/20 05:07:15 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/db_trace.c,v 1.7 2010/05/05 04:37:45 neel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -181,7 +181,7 @@ loop:
 	}
 	/* check for bad PC */
 	/*XXX MIPS64 bad: These hard coded constants are lame */
-	if (pc & 3 || pc < (uintptr_t)0x80000000 || pc >= (uintptr_t)edata) {
+	if (pc & 3 || pc < (uintptr_t)0x80000000) {
 		(*printfn) ("PC 0x%x: not in kernel\n", pc);
 		ra = 0;
 		goto done;

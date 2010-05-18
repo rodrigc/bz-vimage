@@ -27,7 +27,7 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/ucom.4,v 1.11 2010/03/02 21:59:03 joel Exp $
+.\" $FreeBSD: src/share/man/man4/ucom.4,v 1.12 2010/05/13 12:07:55 uqs Exp $
 .\"
 .Dd March 1, 2008
 .Dt UCOM 4
@@ -68,14 +68,6 @@ The
 .Va portno
 locater can be used to decide which port to use for devices that have
 multiple external ports.
-.Sh BUGS
-Prior to
-.Fx 6.0
-.Nm
-created
-.Pa /dev/ucom?
-rather than the uniform device names created today.
-Old scripts must be adjusted accordingly.
 .Sh FILES
 .Bl -tag -width ".Pa /dev/cuaU?"
 .It Pa /dev/cuaU?
@@ -103,3 +95,11 @@ This manual page was adopted from
 by
 .An Tom Rhodes Aq trhodes@FreeBSD.org
 in April 2002.
+.Sh BUGS
+Prior to
+.Fx 6.0
+.Nm
+created
+.Pa /dev/ucom?
+rather than the uniform device names created today.
+Old scripts must be adjusted accordingly.

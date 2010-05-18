@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 12/13/93
-# $FreeBSD: src/share/man/man3/Makefile,v 1.51 2010/01/09 12:31:11 delphij Exp $
+# $FreeBSD: src/share/man/man3/Makefile,v 1.52 2010/05/09 14:21:34 jilles Exp $
 
 .include <bsd.own.mk>
 
@@ -251,7 +251,11 @@ PTHREAD_MLINKS+=pthread_barrierattr.3 pthread_barrierattr_destroy.3 \
 PTHREAD_MLINKS+=pthread_barrier_destroy.3 pthread_barrier_init.3 \
 		pthread_barrier_destroy.3 pthread_barrier_wait.3
 PTHREAD_MLINKS+=pthread_condattr.3 pthread_condattr_destroy.3 \
-		pthread_condattr.3 pthread_condattr_init.3
+		pthread_condattr.3 pthread_condattr_init.3 \
+		pthread_condattr.3 pthread_condattr_getclock.3 \
+		pthread_condattr.3 pthread_condattr_setclock.3 \
+		pthread_condattr.3 pthread_condattr_getpshared.3 \
+		pthread_condattr.3 pthread_condattr_setpshared.3
 PTHREAD_MLINKS+=pthread_getconcurrency.3 pthread_setconcurrency.3
 PTHREAD_MLINKS+=pthread_multi_np.3 pthread_single_np.3
 PTHREAD_MLINKS+=pthread_mutexattr.3 pthread_mutexattr_destroy.3 \

@@ -51,7 +51,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ie/if_ie.c,v 1.112 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ie/if_ie.c,v 1.113 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Intel 82586 Ethernet chip
@@ -318,7 +318,7 @@ ie_attach(device_t dev)
 	ifp->if_start = iestart;
 	ifp->if_ioctl = ieioctl;
 	ifp->if_init = ieinit;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 
 	ether_ifattach(ifp, sc->enaddr);
 

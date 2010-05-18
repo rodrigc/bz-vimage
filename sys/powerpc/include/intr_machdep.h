@@ -22,13 +22,18 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/intr_machdep.h,v 1.12 2009/04/24 03:51:11 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/include/intr_machdep.h,v 1.13 2010/05/16 15:18:25 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
 #define	_MACHINE_INTR_MACHDEP_H_
 
 #define	INTR_VECTORS	256
+
+/*
+ * Default base address for MSI messages on PowerPC
+ */
+#define	MSI_INTEL_ADDR_BASE		0xfee00000
 
 extern device_t pic;
 extern device_t pic8259;

@@ -55,7 +55,7 @@
 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/uart_dev_oct16550.c,v 1.2 2010/01/11 04:29:26 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/uart_dev_oct16550.c,v 1.3 2010/05/02 19:07:19 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -644,11 +644,8 @@ oct16550_bus_ipend(struct uart_softc *sc)
         if (ipend)	octeon_led_run_wheel(&where1, 6 + device_get_unit(sc->sc_dev));
 #endif
 
-	return ((sc->sc_leaving) ? 0 : ipend);
+	return (ipend);
 }
-
-
-
 
 static int
 oct16550_bus_param (struct uart_softc *sc, int baudrate, int databits,

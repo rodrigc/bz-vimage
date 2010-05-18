@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/common/module.c,v 1.29 2009/12/31 12:17:38 nyan Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/common/module.c,v 1.30 2010/05/10 18:23:00 imp Exp $");
 
 /*
  * file/module function dispatcher, support, etc.
@@ -295,7 +295,8 @@ file_load(char *filename, vm_offset_t dest, struct preloaded_file **result)
 }
 
 static int
-file_load_dependencies(struct preloaded_file *base_file) {
+file_load_dependencies(struct preloaded_file *base_file)
+{
     struct file_metadata *md;
     struct preloaded_file *fp;
     struct mod_depend *verinfo;

@@ -49,7 +49,7 @@
   */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.23 2010/04/24 17:32:52 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.27 2010/05/16 23:45:10 alc Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -1557,6 +1557,8 @@ mmu_booke_enter_locked(mmu_t mmu, pmap_t pmap, vm_offset_t va, vm_page_t m,
 		KASSERT((va <= VM_MAXUSER_ADDRESS),
 		    ("mmu_booke_enter_locked: user pmap, non user va"));
 	}
+	KASSERT((m->oflags & VPO_BUSY) != 0 || VM_OBJECT_LOCKED(m->object),
+	    ("mmu_booke_enter_locked: page %p is not busy", m));
 
 	PMAP_LOCK_ASSERT(pmap, MA_OWNED);
 
@@ -1722,9 +1724,11 @@ mmu_booke_enter_quick(mmu_t mmu, pmap_t pmap, vm_offset_t va, vm_page_t m,
     vm_prot_t prot)
 {
 
+	vm_page_lock_queues();
 	PMAP_LOCK(pmap);
 	mmu_booke_enter_locked(mmu, pmap, va, m,
 	    prot & (VM_PROT_READ | VM_PROT_EXECUTE), FALSE);
+	vm_page_unlock_queues();
 	PMAP_UNLOCK(pmap);
 }
 
@@ -1783,8 +1787,7 @@ mmu_booke_remove_all(mmu_t mmu, vm_page_t m)
 	pv_entry_t pv, pvn;
 	uint8_t hold_flag;
 
-	mtx_assert(&vm_page_queue_mtx, MA_OWNED);
-
+	vm_page_lock_queues();
 	for (pv = TAILQ_FIRST(&m->md.pv_list); pv != NULL; pv = pvn) {
 		pvn = TAILQ_NEXT(pv, pv_link);
 
@@ -1794,6 +1797,7 @@ mmu_booke_remove_all(mmu_t mmu, vm_page_t m)
 		PMAP_UNLOCK(pv->pv_pmap);
 	}
 	vm_page_flag_clear(m, PG_WRITEABLE);
+	vm_page_unlock_queues();
 }
 
 /*
@@ -1915,16 +1919,11 @@ mmu_booke_protect(mmu_t mmu, pmap_t pmap, vm_offset_t sva, vm_offset_t eva,
 				tlb_miss_lock();
 
 				/* Handle modified pages. */
-				if (PTE_ISMODIFIED(pte))
+				if (PTE_ISMODIFIED(pte) && PTE_ISMANAGED(pte))
 					vm_page_dirty(m);
 
-				/* Referenced pages. */
-				if (PTE_ISREFERENCED(pte))
-					vm_page_flag_set(m, PG_REFERENCED);
-
 				tlb0_flush_entry(va);
-				pte->flags &= ~(PTE_UW | PTE_SW | PTE_MODIFIED |
-				    PTE_REFERENCED);
+				pte->flags &= ~(PTE_UW | PTE_SW | PTE_MODIFIED);
 
 				tlb_miss_unlock();
 				mtx_unlock_spin(&tlbivax_mutex);
@@ -1944,11 +1943,19 @@ mmu_booke_remove_write(mmu_t mmu, vm_page_t m)
 	pv_entry_t pv;
 	pte_t *pte;
 
-	mtx_assert(&vm_page_queue_mtx, MA_OWNED);
-	if ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) != 0 ||
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("mmu_booke_remove_write: page %p is not managed", m));
+
+	/*
+	 * If the page is not VPO_BUSY, then PG_WRITEABLE cannot be set by
+	 * another thread while the object is locked.  Thus, if PG_WRITEABLE
+	 * is clear, no page table entries need updating.
+	 */
+	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	if ((m->oflags & VPO_BUSY) == 0 &&
 	    (m->flags & PG_WRITEABLE) == 0)
 		return;
-
+	vm_page_lock_queues();
 	TAILQ_FOREACH(pv, &m->md.pv_list, pv_link) {
 		PMAP_LOCK(pv->pv_pmap);
 		if ((pte = pte_find(mmu, pv->pv_pmap, pv->pv_va)) != NULL) {
@@ -1962,13 +1969,8 @@ mmu_booke_remove_write(mmu_t mmu, vm_page_t m)
 				if (PTE_ISMODIFIED(pte))
 					vm_page_dirty(m);
 
-				/* Referenced pages. */
-				if (PTE_ISREFERENCED(pte))
-					vm_page_flag_set(m, PG_REFERENCED);
-
 				/* Flush mapping from TLB0. */
-				pte->flags &= ~(PTE_UW | PTE_SW | PTE_MODIFIED |
-				    PTE_REFERENCED);
+				pte->flags &= ~(PTE_UW | PTE_SW | PTE_MODIFIED);
 
 				tlb_miss_unlock();
 				mtx_unlock_spin(&tlbivax_mutex);
@@ -1977,6 +1979,7 @@ mmu_booke_remove_write(mmu_t mmu, vm_page_t m)
 		PMAP_UNLOCK(pv->pv_pmap);
 	}
 	vm_page_flag_clear(m, PG_WRITEABLE);
+	vm_page_unlock_queues();
 }
 
 static void
@@ -2034,11 +2037,12 @@ mmu_booke_extract_and_hold(mmu_t mmu, pmap_t pmap, vm_offset_t va,
 	pte_t *pte;
 	vm_page_t m;
 	uint32_t pte_wbit;
-
+	vm_paddr_t pa;
+	
 	m = NULL;
-	vm_page_lock_queues();
+	pa = 0;	
 	PMAP_LOCK(pmap);
-
+retry:
 	pte = pte_find(mmu, pmap, va);
 	if ((pte != NULL) && PTE_ISVALID(pte)) {
 		if (pmap == kernel_pmap)
@@ -2047,12 +2051,14 @@ mmu_booke_extract_and_hold(mmu_t mmu, pmap_t pmap, vm_offset_t va,
 			pte_wbit = PTE_UW;
 
 		if ((pte->flags & pte_wbit) || ((prot & VM_PROT_WRITE) == 0)) {
+			if (vm_page_pa_tryrelock(pmap, PTE_PA(pte), &pa))
+				goto retry;
 			m = PHYS_TO_VM_PAGE(PTE_PA(pte));
 			vm_page_hold(m);
 		}
 	}
 
-	vm_page_unlock_queues();
+	PA_UNLOCK_COND(pa);
 	PMAP_UNLOCK(pmap);
 	return (m);
 }
@@ -2395,8 +2401,7 @@ mmu_booke_page_wired_mappings(mmu_t mmu, vm_page_t m)
 
 	if ((m->flags & PG_FICTITIOUS) != 0)
 		return (count);
-	mtx_assert(&vm_page_queue_mtx, MA_OWNED);
-
+	vm_page_lock_queues();
 	TAILQ_FOREACH(pv, &m->md.pv_list, pv_link) {
 		PMAP_LOCK(pv->pv_pmap);
 		if ((pte = pte_find(mmu, pv->pv_pmap, pv->pv_va)) != NULL)
@@ -2404,7 +2409,7 @@ mmu_booke_page_wired_mappings(mmu_t mmu, vm_page_t m)
 				count++;
 		PMAP_UNLOCK(pv->pv_pmap);
 	}
-
+	vm_page_unlock_queues();
 	return (count);
 }
 

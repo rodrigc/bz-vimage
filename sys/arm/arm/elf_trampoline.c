@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/elf_trampoline.c,v 1.26 2010/01/04 03:35:45 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/elf_trampoline.c,v 1.27 2010/05/04 10:14:05 kevlo Exp $");
 #include <machine/asm.h>
 #include <sys/param.h>
 #include <sys/elf32.h>
@@ -57,7 +57,7 @@ void __startC(void);
 #define cpu_idcache_wbinv_all	arm8_cache_purgeID
 #elif defined(CPU_ARM9)
 #define cpu_idcache_wbinv_all	arm9_idcache_wbinv_all
-#elif defined(CPU_FA526)
+#elif defined(CPU_FA526) || defined(CPU_FA626TE)
 #define cpu_idcache_wbinv_all	fa526_idcache_wbinv_all
 #elif defined(CPU_ARM9E)
 #define cpu_idcache_wbinv_all	armv5_ec_idcache_wbinv_all

@@ -1,5 +1,5 @@
 /*	$OpenBSD: if_upgt.c,v 1.35 2008/04/16 18:32:15 damien Exp $ */
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_upgt.c,v 1.15 2009/11/26 00:43:17 thompsa Exp $ */
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_upgt.c,v 1.16 2010/05/03 07:32:50 sobomax Exp $ */
 
 /*
  * Copyright (c) 2007 Marcus Glocker <mglocker@openbsd.org>
@@ -331,7 +331,7 @@ upgt_attach(device_t dev)
 	ifp->if_init = upgt_init;
 	ifp->if_ioctl = upgt_ioctl;
 	ifp->if_start = upgt_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic = ifp->if_l2com;

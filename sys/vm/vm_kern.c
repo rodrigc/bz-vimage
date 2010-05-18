@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_kern.c,v 1.142 2010/04/18 22:32:07 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_kern.c,v 1.144 2010/05/03 07:08:16 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -380,10 +380,8 @@ retry:
 				i -= PAGE_SIZE;
 				m = vm_page_lookup(kmem_object,
 						   OFF_TO_IDX(offset + i));
-				vm_page_lock_queues();
 				vm_page_unwire(m, 0);
 				vm_page_free(m);
-				vm_page_unlock_queues();
 			}
 			VM_OBJECT_UNLOCK(kmem_object);
 			vm_map_delete(map, addr, addr + size);

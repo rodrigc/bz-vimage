@@ -1,5 +1,5 @@
 .\" $Id$
-.\" $FreeBSD: src/share/man/man4/vkbd.4,v 1.8 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/vkbd.4,v 1.9 2010/05/13 12:07:55 uqs Exp $
 .\"
 .Dd August 12, 2004
 .Dt VKBD 4
@@ -130,6 +130,13 @@ All queued scan codes are thrown away.
 .Xr atkbdc 4 ,
 .Xr psm 4 ,
 .Xr syscons 4
+.Sh HISTORY
+The
+.Nm
+module was implemented in
+.Fx 6.0 .
+.Sh AUTHORS
+.An Maksim Yevmenkin Aq m_evmenkin@yahoo.com
 .Sh CAVEATS
 The
 .Nm
@@ -144,10 +151,3 @@ at the same time.
 It is, however, in principal possible to obtain AT scan
 codes from the different sources and write them into the same virtual keyboard.
 The virtual keyboard state synchronization is the user's responsibility.
-.Sh HISTORY
-The
-.Nm
-module was implemented in
-.Fx 6.0 .
-.Sh AUTHORS
-.An Maksim Yevmenkin Aq m_evmenkin@yahoo.com

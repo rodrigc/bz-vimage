@@ -1,7 +1,7 @@
 /*	$NetBSD: smc90cx6.c,v 1.38 2001/07/07 15:57:53 thorpej Exp $ */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cm/smc90cx6.c,v 1.22 2010/03/01 16:52:11 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cm/smc90cx6.c,v 1.23 2010/05/03 07:32:50 sobomax Exp $");
 
 /*-
  * Copyright (c) 1994, 1995, 1998 The NetBSD Foundation, Inc.
@@ -189,7 +189,7 @@ cm_attach(dev)
 	ifp->if_ioctl = cm_ioctl;
 	ifp->if_init = cm_init;
 	/* XXX IFQ_SET_READY(&ifp->if_snd); */
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_flags = IFF_BROADCAST | IFF_SIMPLEX;
 
 	arc_ifattach(ifp, linkaddress);

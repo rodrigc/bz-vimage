@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/snc/dp83932.c,v 1.26 2009/06/26 11:45:06 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/dev/snc/dp83932.c,v 1.27 2010/05/03 07:32:50 sobomax Exp $	*/
 /*	$NecBSD: dp83932.c,v 1.5 1999/07/29 05:08:44 kmatsuda Exp $	*/
 /*	$NetBSD: if_snc.c,v 1.18 1998/04/25 21:27:40 scottr Exp $	*/
 
@@ -177,7 +177,7 @@ sncconfig(sc, media, nmedia, defmedia, myea)
 	ifp->if_flags = IFF_BROADCAST | IFF_SIMPLEX | IFF_MULTICAST;
         ifp->if_init = sncinit;
         ifp->if_mtu = ETHERMTU;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 
 	/* Initialize media goo. */
 	ifmedia_init(&sc->sc_media, 0, snc_mediachange,

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/gnu/fs/xfs/FreeBSD/xfs_vnops.c,v 1.17 2010/01/07 21:01:37 mbr Exp $
+ * $FreeBSD: src/sys/gnu/fs/xfs/FreeBSD/xfs_vnops.c,v 1.18 2010/05/05 16:44:25 trasz Exp $
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -598,16 +598,8 @@ xfs_write_file(xfs_inode_t *xip, struct uio *uio, int ioflag)
 	 */
 #if 0
 	td = uio->uio_td;
-	if (vp->v_type == VREG && td != NULL) {
-		PROC_LOCK(td->td_proc);
-		if (uio->uio_offset + uio->uio_resid >
-		    lim_cur(td->td_proc, RLIMIT_FSIZE)) {
-			psignal(td->td_proc, SIGXFSZ);
-			PROC_UNLOCK(td->td_proc);
-			return (EFBIG);
-		}
-		PROC_UNLOCK(td->td_proc);
-	}
+	if (vn_rlimit_fsize(vp, uio, uio->uio_td))
+		return (EFBIG);
 #endif
 
 	resid = uio->uio_resid;

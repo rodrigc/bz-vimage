@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/re/if_re.c,v 1.168 2010/04/09 22:50:28 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/re/if_re.c,v 1.169 2010/05/07 23:05:27 yongari Exp $");
 
 /*
  * RealTek 8139C+/8169/8169S/8110S/8168/8111/8101E PCI NIC driver
@@ -1162,9 +1162,11 @@ re_attach(device_t dev)
 	msic = 0;
 	if (pci_find_extcap(dev, PCIY_EXPRESS, &reg) == 0) {
 		sc->rl_flags |= RL_FLAG_PCIE;
-		/* Set PCIe maximum read request size to 2048. */
-		if (pci_get_max_read_req(dev) < 2048)
-			pci_set_max_read_req(dev, 2048);
+		if (devid != RT_DEVICEID_8101E) {
+			/* Set PCIe maximum read request size to 2048. */
+			if (pci_get_max_read_req(dev) < 2048)
+				pci_set_max_read_req(dev, 2048);
+		}
 		msic = pci_msi_count(dev);
 		if (bootverbose)
 			device_printf(dev, "MSI count : %d\n", msic);

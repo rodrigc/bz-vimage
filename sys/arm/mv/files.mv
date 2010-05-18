@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/arm/mv/files.mv,v 1.6 2009/06/24 15:41:18 raj Exp $
+# $FreeBSD: src/sys/arm/mv/files.mv,v 1.7 2010/05/02 19:28:30 mav Exp $
 #
 # The Marvell CPU cores
 # - Compliant with V5TE architecture
@@ -30,6 +30,7 @@ arm/mv/timer.c			standard
 arm/mv/twsi.c			optional	iicbus
 
 dev/mge/if_mge.c		optional	mge
+dev/mvs/mvs_soc.c		optional	mvs
 dev/uart/uart_bus_mbus.c	optional	uart
 dev/uart/uart_cpu_mv.c		optional	uart
 dev/uart/uart_dev_ns8250.c	optional	uart

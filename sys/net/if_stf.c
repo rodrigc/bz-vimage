@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/net/if_stf.c,v 1.75 2009/08/01 19:26:27 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/net/if_stf.c,v 1.76 2010/05/03 07:32:50 sobomax Exp $	*/
 /*	$KAME: if_stf.c,v 1.73 2001/12/03 11:08:30 keiichi Exp $	*/
 
 /*-
@@ -252,7 +252,7 @@ stf_clone_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 	ifp->if_mtu    = IPV6_MMTU;
 	ifp->if_ioctl  = stf_ioctl;
 	ifp->if_output = stf_output;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	if_attach(ifp);
 	bpfattach(ifp, DLT_NULL, sizeof(u_int32_t));
 	return (0);

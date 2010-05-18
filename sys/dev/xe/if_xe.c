@@ -57,7 +57,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/xe/if_xe.c,v 1.70 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/xe/if_xe.c,v 1.71 2010/05/03 07:32:50 sobomax Exp $");
 
 /*		
  * FreeBSD device driver for Xircom CreditCard PCMCIA Ethernet adapters.  The
@@ -254,7 +254,7 @@ xe_attach(device_t dev)
 	scp->ifp->if_ioctl = xe_ioctl;
 	scp->ifp->if_init = xe_init;
 	scp->ifp->if_baudrate = 100000000;
-	IFQ_SET_MAXLEN(&scp->ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&scp->ifp->if_snd, ifqmaxlen);
 
 	/* Initialise the ifmedia structure */
 	ifmedia_init(scp->ifm, 0, xe_media_change, xe_media_status);

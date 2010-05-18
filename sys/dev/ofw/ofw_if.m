@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.2 2009/06/14 00:05:38 marius Exp $
+# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.4 2010/05/16 22:01:43 nwhitehorn Exp $
 #
 
 #include <dev/ofw/openfirm.h>

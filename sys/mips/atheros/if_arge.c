@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/if_arge.c,v 1.2 2010/04/08 18:32:13 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/if_arge.c,v 1.3 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * AR71XX gigabit ethernet driver
@@ -312,8 +312,8 @@ arge_attach(device_t dev)
 	sc->arge_if_flags = ifp->if_flags;
 
 	/* XXX: add real size */
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ifp->if_capenable = ifp->if_capabilities;

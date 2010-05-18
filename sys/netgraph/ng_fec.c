@@ -34,7 +34,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_fec.c,v 1.35 2010/01/18 20:34:00 thompsa Exp $
+ * $FreeBSD: src/sys/netgraph/ng_fec.c,v 1.36 2010/05/03 07:32:50 sobomax Exp $
  */
 /*-
  * Copyright (c) 1996-1999 Whistle Communications, Inc.
@@ -1227,7 +1227,7 @@ ng_fec_constructor(node_p node)
 	ifp->if_start = ng_fec_start;
 	ifp->if_ioctl = ng_fec_ioctl;
 	ifp->if_init = ng_fec_init;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_mtu = NG_FEC_MTU_DEFAULT;
 	ifp->if_flags = (IFF_SIMPLEX|IFF_BROADCAST|IFF_MULTICAST);
 	ifp->if_addrlen = 0;			/* XXX */

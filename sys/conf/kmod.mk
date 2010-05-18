@@ -1,5 +1,5 @@
 #	From: @(#)bsd.prog.mk	5.26 (Berkeley) 6/25/91
-# $FreeBSD: src/sys/conf/kmod.mk,v 1.232 2010/04/22 09:24:01 netchild Exp $
+# $FreeBSD: src/sys/conf/kmod.mk,v 1.233 2010/05/02 19:28:30 mav Exp $
 #
 # The include file <bsd.kmod.mk> handles building and installing loadable
 # kernel modules.
@@ -342,7 +342,7 @@ MFILES?= dev/acpica/acpi_if.m dev/acpi_support/acpi_wmi_if.m \
 	dev/agp/agp_if.m dev/ata/ata_if.m dev/eisa/eisa_if.m \
 	dev/iicbus/iicbb_if.m dev/iicbus/iicbus_if.m \
 	dev/mmc/mmcbr_if.m dev/mmc/mmcbus_if.m \
-	dev/mii/miibus_if.m dev/ofw/ofw_bus_if.m \
+	dev/mii/miibus_if.m dev/mvs/mvs_if.m dev/ofw/ofw_bus_if.m \
 	dev/pccard/card_if.m dev/pccard/power_if.m dev/pci/pci_if.m \
 	dev/pci/pcib_if.m dev/ppbus/ppbus_if.m dev/smbus/smbus_if.m \
 	dev/sound/pcm/ac97_if.m dev/sound/pcm/channel_if.m \

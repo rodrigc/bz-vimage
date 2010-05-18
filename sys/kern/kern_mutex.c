@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_mutex.c,v 1.218 2010/01/23 15:54:21 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_mutex.c,v 1.219 2010/05/11 18:24:22 attilio Exp $");
 
 #include "opt_adaptive_mutexes.h"
 #include "opt_ddb.h"
@@ -485,7 +485,7 @@ _mtx_lock_spin_failed(struct mtx *m)
 	printf( "spin lock %p (%s) held by %p (tid %d) too long\n",
 	    m, m->lock_object.lo_name, td, td->td_tid);
 #ifdef WITNESS
-	witness_display_spinlock(&m->lock_object, td);
+	witness_display_spinlock(&m->lock_object, td, printf);
 #endif
 	panic("spin lock held too long");
 }

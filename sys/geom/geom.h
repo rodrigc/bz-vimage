@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/geom.h,v 1.106 2009/06/30 14:34:06 trasz Exp $
+ * $FreeBSD: src/sys/geom/geom.h,v 1.107 2010/05/05 18:53:24 jh Exp $
  */
 
 #ifndef _GEOM_GEOM_H_
@@ -352,6 +352,9 @@ g_free(void *ptr)
 	do {							\
 		sx_assert(&topology_lock, SX_UNLOCKED);		\
 	} while (0)
+
+#define g_topology_sleep(chan, timo)				\
+	sx_sleep(chan, &topology_lock, 0, "gtopol", timo)
 
 #define DECLARE_GEOM_CLASS(class, name) 			\
 	static moduledata_t name##_mod = {			\

@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.208 2010/03/11 14:17:37 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.209 2010/05/05 21:07:47 kib Exp $");
 
 #include "opt_cpu.h"
 
@@ -727,7 +727,7 @@ printcpuinfo(void)
 				printf("\n  Features2=0x%b", cpu_feature2,
 				"\020"
 				"\001SSE3"	/* SSE3 */
-				"\002<b1>"
+				"\002PCLMULQDQ"	/* Carry-Less Mul Quadword */
 				"\003DTES64"	/* 64-bit Debug Trace */
 				"\004MON"	/* MONITOR/MWAIT Instructions */
 				"\005DS_CPL"	/* CPL Qualified Debug Store */
@@ -751,7 +751,7 @@ printcpuinfo(void)
 				"\027MOVBE"
 				"\030POPCNT"
 				"\031<b24>"
-				"\032<b25>"
+				"\032AESNI"	/* AES Crypto*/
 				"\033XSAVE"
 				"\034OSXSAVE"
 				"\035<b28>"

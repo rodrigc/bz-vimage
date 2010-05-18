@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include "opt_inet6.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/flowtable.c,v 1.32 2010/04/27 23:48:50 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/net/flowtable.c,v 1.34 2010/05/16 21:48:39 kmacy Exp $");
 
 #include <sys/param.h>  
 #include <sys/types.h>
@@ -417,7 +417,6 @@ flowtable_pcpu_unlock(struct flowtable *table, uint32_t hash)
 #define FL_ENTRY_UNLOCK(table, hash) (table)->ft_unlock((table), (hash))
 
 #define FL_STALE 	(1<<8)
-#define FL_IPV6  	(1<<9)
 #define FL_OVERWRITE	(1<<10)
 
 void
@@ -1389,8 +1388,10 @@ fle_free(struct flentry *fle, struct flowtable *ft)
 
 	rt = __DEVOLATILE(struct rtentry *, fle->f_rt);
 	lle = __DEVOLATILE(struct llentry *, fle->f_lle);
-	RTFREE(rt);
-	LLE_FREE(lle);
+	if (rt != NULL)
+		RTFREE(rt);
+	if (lle != NULL)
+		LLE_FREE(lle);
 	flow_free(fle, ft);
 }
 

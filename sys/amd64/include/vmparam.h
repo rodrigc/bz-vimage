@@ -38,7 +38,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)vmparam.h	5.9 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.59 2009/05/16 22:08:00 kmacy Exp $
+ * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.60 2010/04/30 00:46:43 kmacy Exp $
  */
 
 
@@ -143,6 +143,10 @@
  */
 #ifndef	VM_LEVEL_0_ORDER
 #define	VM_LEVEL_0_ORDER	9
+#endif
+
+#ifdef	SMP
+#define	PA_LOCK_COUNT	256
 #endif
 
 /*

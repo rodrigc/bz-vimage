@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powerpc/openpic.c,v 1.22 2009/06/10 12:47:54 grehan Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/openpic.c,v 1.23 2010/05/16 15:18:25 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -99,6 +99,16 @@ openpic_attach(device_t dev)
 
 	sc->sc_bt = rman_get_bustag(sc->sc_memr);
 	sc->sc_bh = rman_get_bushandle(sc->sc_memr);
+
+	/* Reset the PIC */
+	x = openpic_read(sc, OPENPIC_CONFIG);
+	x |= OPENPIC_CONFIG_RESET;
+	openpic_write(sc, OPENPIC_CONFIG, x);
+
+	while (openpic_read(sc, OPENPIC_CONFIG) & OPENPIC_CONFIG_RESET) {
+		powerpc_sync();
+		DELAY(100);
+	}
 
 	x = openpic_read(sc, OPENPIC_FEATURE);
 	switch (x & OPENPIC_FEATURE_VERSION_MASK) {

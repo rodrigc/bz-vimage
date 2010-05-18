@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_sg.c,v 1.17 2010/03/17 18:53:58 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_sg.c,v 1.19 2010/05/11 22:51:13 mjacob Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -303,7 +303,14 @@ sgregister(struct cam_periph *periph, void *arg)
 	softc->dev = make_dev(&sg_cdevsw, periph->unit_number,
 			      UID_ROOT, GID_OPERATOR, 0600, "%s%d",
 			      periph->periph_name, periph->unit_number);
-	(void)make_dev_alias(softc->dev, "sg%c", 'a' + periph->unit_number);
+	if (periph->unit_number < 26) {
+		(void)make_dev_alias(softc->dev, "sg%c",
+		    periph->unit_number + 'a');
+	} else {
+		(void)make_dev_alias(softc->dev, "sg%c%c",
+		    ((periph->unit_number / 26) - 1) + 'a',
+		    (periph->unit_number % 26) + 'a');
+	}
 	cam_periph_lock(periph);
 	softc->dev->si_drv1 = periph;
 

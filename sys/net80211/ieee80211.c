@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211.c,v 1.90 2010/04/07 15:29:13 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211.c,v 1.91 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * IEEE 802.11 generic handler
@@ -394,8 +394,8 @@ ieee80211_vap_setup(struct ieee80211com *ic, struct ieee80211vap *vap,
 	ifp->if_ioctl = ieee80211_ioctl;
 	ifp->if_init = ieee80211_init;
 	/* NB: input+output filled in by ether_ifattach */
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	vap->iv_ifp = ifp;

@@ -38,7 +38,7 @@
  *
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/i386/include/pmap.h,v 1.143 2010/01/23 18:42:28 alc Exp $
+ * $FreeBSD: src/sys/i386/include/pmap.h,v 1.144 2010/04/30 00:46:43 kmacy Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -420,11 +420,14 @@ struct pmap {
 	u_int			pm_active;	/* active on cpus */
 	struct pmap_statistics	pm_stats;	/* pmap statistics */
 	LIST_ENTRY(pmap) 	pm_list;	/* List of all pmaps */
+	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
+	u_int			pm_retries;
 #ifdef PAE
 	pdpt_entry_t		*pm_pdpt;	/* KVA of page director pointer
 						   table */
 #endif
 	vm_page_t		pm_root;	/* spare page table pages */
+
 };
 
 typedef struct pmap	*pmap_t;

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)resource.h	8.4 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/resource.h,v 1.35 2009/06/23 20:45:22 kib Exp $
+ * $FreeBSD: src/sys/sys/resource.h,v 1.36 2010/05/04 05:55:37 kib Exp $
  */
 
 #ifndef _SYS_RESOURCE_H_
@@ -56,6 +56,7 @@
 
 #define	RUSAGE_SELF	0
 #define	RUSAGE_CHILDREN	-1
+#define	RUSAGE_THREAD	1
 
 struct rusage {
 	struct timeval ru_utime;	/* user time used */

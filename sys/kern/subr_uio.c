@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_uio.c,v 1.1 2010/02/21 19:53:33 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_uio.c,v 1.3 2010/05/08 20:34:01 alc Exp $");
 
 #include "opt_zero.h"
 
@@ -104,9 +104,10 @@ retry:
 	if ((user_pg = vm_page_lookup(uobject, upindex)) != NULL) {
 		if (vm_page_sleep_if_busy(user_pg, TRUE, "vm_pgmoveco"))
 			goto retry;
-		vm_page_lock_queues();
+		vm_page_lock(user_pg);
 		pmap_remove_all(user_pg);
 		vm_page_free(user_pg);
+		vm_page_unlock(user_pg);
 	} else {
 		/*
 		 * Even if a physical page does not exist in the
@@ -115,11 +116,9 @@ retry:
 		 */
 		if (uobject->backing_object != NULL)
 			pmap_remove(map->pmap, uaddr, uaddr + PAGE_SIZE);
-		vm_page_lock_queues();
 	}
 	vm_page_insert(kern_pg, uobject, upindex);
 	vm_page_dirty(kern_pg);
-	vm_page_unlock_queues();
 	VM_OBJECT_UNLOCK(uobject);
 	vm_map_lookup_done(map, entry);
 	return(KERN_SUCCESS);

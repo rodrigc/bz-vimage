@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.154 2009/12/28 22:56:30 antoine Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.156 2010/05/03 17:35:31 alc Exp $");
 
 /* I should really use ktr.. */
 /*
@@ -1022,10 +1022,8 @@ obj_alloc(uma_zone_t zone, int bytes, u_int8_t *flags, int wait)
 			while (pages != startpages) {
 				pages--;
 				p = TAILQ_LAST(&object->memq, pglist);
-				vm_page_lock_queues();
 				vm_page_unwire(p, 0);
 				vm_page_free(p);
-				vm_page_unlock_queues();
 			}
 			retkva = 0;
 			goto done;
@@ -2891,13 +2889,11 @@ uma_zone_set_obj(uma_zone_t zone, struct vm_object *obj, int count)
 
 	if (kva == 0)
 		return (0);
-	if (obj == NULL) {
-		obj = vm_object_allocate(OBJT_DEFAULT,
-		    pages);
-	} else {
+	if (obj == NULL)
+		obj = vm_object_allocate(OBJT_PHYS, pages);
+	else {
 		VM_OBJECT_LOCK_INIT(obj, "uma object");
-		_vm_object_allocate(OBJT_DEFAULT,
-		    pages, obj);
+		_vm_object_allocate(OBJT_PHYS, pages, obj);
 	}
 	ZONE_LOCK(zone);
 	keg->uk_kva = kva;

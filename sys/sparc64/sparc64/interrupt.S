@@ -25,7 +25,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/interrupt.S,v 1.11 2009/12/23 20:23:04 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/interrupt.S,v 1.12 2010/05/02 12:08:15 marius Exp $");
 
 #include <machine/asi.h>
 #include <machine/asmacros.h>
@@ -83,8 +83,11 @@ ENTRY(intr_vector)
 	 * The 2nd word points to code to execute and the 3rd is an argument
 	 * to pass.  Jump to it.
 	 */
-	brnz,a,pt %g3, 1f
-	 nop
+	brnz,pt %g3, 1f
+	/*
+	 * NB: Zeus CPUs set some undocumented bits in the first data word.
+	 */
+	 and	%g3, IV_MAX - 1, %g3
 	jmpl	%g4, %g0
 	 nop
 	/* NOTREACHED */

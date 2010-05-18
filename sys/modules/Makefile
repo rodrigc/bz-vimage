@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.650 2010/04/14 20:45:33 yongari Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.652 2010/05/12 17:30:46 brueffer Exp $
 
 .include <bsd.own.mk>
 
@@ -144,6 +144,7 @@ SUBDIR=	${_3dfx} \
 	${_iwn} \
 	${_iwnfw} \
 	${_ixgb} \
+	${_ixgbe} \
 	jme \
 	joy \
 	kbdmux \
@@ -188,7 +189,9 @@ SUBDIR=	${_3dfx} \
 	msdosfs_iconv \
 	${_mse} \
 	msk \
+	mvs \
 	mwl \
+	mwlfw \
 	mxge \
 	my \
 	${_ncp} \
@@ -464,6 +467,7 @@ _iwifw=		iwifw
 _iwn=		iwn
 _iwnfw=		iwnfw
 _ixgb=		ixgb
+_ixgbe=		ixgbe
 _mly=		mly
 _nfe=		nfe
 _nve=		nve
@@ -536,6 +540,7 @@ _iwifw=		iwifw
 _iwn=		iwn
 _iwnfw=		iwnfw
 _ixgb=		ixgb
+_ixgbe=		ixgbe
 _lindev=	lindev
 _linprocfs=	linprocfs
 _linsysfs=	linsysfs

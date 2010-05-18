@@ -25,7 +25,7 @@
  *
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vfsops.c 1.36
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.60 2010/04/16 07:02:28 jh Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.61 2010/05/06 19:22:50 kib Exp $
  */
 
 #include <sys/param.h>
@@ -115,17 +115,21 @@ SYSCTL_INT(_debug_sizeof, OID_AUTO, cdev_priv, CTLFLAG_RD,
     0, sizeof(struct cdev_priv), "sizeof(struct cdev_priv)");
 
 struct cdev *
-devfs_alloc(void)
+devfs_alloc(int flags)
 {
 	struct cdev_priv *cdp;
 	struct cdev *cdev;
 	struct timespec ts;
 
-	cdp = malloc(sizeof *cdp, M_CDEVP, M_USE_RESERVE | M_ZERO | M_WAITOK);
+	cdp = malloc(sizeof *cdp, M_CDEVP, M_USE_RESERVE | M_ZERO |
+	    ((flags & MAKEDEV_NOWAIT) ? M_NOWAIT : M_WAITOK));
+	if (cdp == NULL)
+		return (NULL);
 
 	cdp->cdp_dirents = &cdp->cdp_dirent0;
 	cdp->cdp_dirent0 = NULL;
 	cdp->cdp_maxdirent = 0;
+	cdp->cdp_inode = 0;
 
 	cdev = &cdp->cdp_c;
 
@@ -133,6 +137,7 @@ devfs_alloc(void)
 	LIST_INIT(&cdev->si_children);
 	vfs_timestamp(&ts);
 	cdev->si_atime = cdev->si_mtime = cdev->si_ctime = ts;
+	cdev->si_cred = NULL;
 
 	return (cdev);
 }

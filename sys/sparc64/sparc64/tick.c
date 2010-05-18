@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/tick.c,v 1.26 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/tick.c,v 1.27 2010/05/02 19:38:17 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -120,7 +120,8 @@ cpu_initclocks(void)
 		 */
 	} else {
 		clock = PCPU_GET(clock);
-		intr_setup(PIL_TICK, PCPU_GET(impl) < CPU_IMPL_ULTRASPARCIII ?
+		intr_setup(PIL_TICK, PCPU_GET(impl) >= CPU_IMPL_ULTRASPARCI &&
+		    PCPU_GET(impl) < CPU_IMPL_ULTRASPARCIII ?
 		    tick_hardclock_bbwar : tick_hardclock, -1, NULL, NULL);
 		set_cputicker(tick_cputicks, clock, 0);
 	}
@@ -325,7 +326,8 @@ void
 tick_clear(u_int cpu_impl)
 {
 
-	if (cpu_impl >= CPU_IMPL_ULTRASPARCIII)
+	if (cpu_impl == CPU_IMPL_SPARC64V ||
+	    cpu_impl >= CPU_IMPL_ULTRASPARCIII)
 		wrstick(0, 0);
 	wrpr(tick, 0, 0);
 }
@@ -334,7 +336,8 @@ void
 tick_stop(u_int cpu_impl)
 {
 
-	if (cpu_impl >= CPU_IMPL_ULTRASPARCIII)
+	if (cpu_impl == CPU_IMPL_SPARC64V ||
+	    cpu_impl >= CPU_IMPL_ULTRASPARCIII)
 		wrstickcmpr(1L << 63, 0);
 	wrtickcmpr(1L << 63, 0);
 }

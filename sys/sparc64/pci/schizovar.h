@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/pci/schizovar.h,v 1.4 2010/03/17 20:01:01 marius Exp $
+ * $FreeBSD: src/sys/sparc64/pci/schizovar.h,v 1.5 2010/05/14 20:00:21 marius Exp $
  */
 
 #ifndef _SPARC64_PCI_SCHIZOVAR_H_
@@ -44,9 +44,8 @@ struct schizo_softc {
 #define	SCHIZO_MODE_XMS			2
 
 	u_int				sc_flags;
-#define	SCHIZO_FLAGS_ARMED		(1 << 0)
-#define	SCHIZO_FLAGS_BSWAR		(1 << 1)
-#define	SCHIZO_FLAGS_CDMA		(1 << 2)
+#define	SCHIZO_FLAGS_BSWAR		(1 << 0)
+#define	SCHIZO_FLAGS_CDMA		(1 << 1)
 
 	bus_addr_t			sc_cdma_clr;
 	uint32_t			sc_cdma_state;
@@ -70,6 +69,9 @@ struct schizo_softc {
 	bus_space_tag_t			sc_pci_iot;
 	bus_space_tag_t			sc_pci_memt;
 	bus_dma_tag_t			sc_pci_dmat;
+
+	uint32_t			sc_stats_dma_ce;
+	uint32_t			sc_stats_pci_non_fatal;
 
 	uint8_t				sc_pci_secbus;
 	uint8_t				sc_pci_subbus;

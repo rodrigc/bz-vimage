@@ -173,7 +173,7 @@ WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wl/if_wl.c,v 1.78 2009/11/19 18:11:23 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wl/if_wl.c,v 1.79 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * NOTE:
@@ -559,7 +559,7 @@ wlattach(device_t device)
     ifp->if_init = wlinit;
     ifp->if_start = wlstart;
     ifp->if_ioctl = wlioctl;
-    ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+    ifp->if_snd.ifq_maxlen = ifqmaxlen;
     /* no entries
        ifp->if_done
        ifp->if_reset

@@ -21,7 +21,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fe/if_fe.c,v 1.101 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fe/if_fe.c,v 1.102 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  *
@@ -766,7 +766,7 @@ fe_attach (device_t dev)
 	 * Set fixed interface flags.
 	 */
  	ifp->if_flags = IFF_BROADCAST | IFF_SIMPLEX | IFF_MULTICAST;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 
 #if FE_SINGLE_TRANSMISSION
 	/* Override txb config to allocate minimum.  */

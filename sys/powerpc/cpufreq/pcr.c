@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.1 2009/06/23 04:28:32 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.2 2010/05/16 15:21:13 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -200,6 +200,11 @@ pcr_attach(device_t dev)
 	if (cpu <= 0) {
 		device_printf(dev,"No CPU device tree node!\n");
 		return (ENXIO);
+	}
+
+	if (OF_getproplen(cpu, "power-mode-data") <= 0) {
+		/* Use the first CPU's node */
+		cpu = OF_child(OF_parent(cpu));
 	}
 
 	/*

@@ -8,7 +8,7 @@
  *
  *	from: src/sys/alpha/include/smp.h,v 1.8 2005/01/05 20:05:50 imp
  *	JNPR: smp.h,v 1.3 2006/12/02 09:53:41 katta
- * $FreeBSD: src/sys/mips/include/smp.h,v 1.5 2010/03/11 07:17:14 neel Exp $
+ * $FreeBSD: src/sys/mips/include/smp.h,v 1.6 2010/05/16 19:43:48 rrs Exp $
  *
  */
 
@@ -26,6 +26,7 @@
 #define	IPI_AST			0x0004
 #define	IPI_STOP		0x0008
 #define	IPI_STOP_HARD		0x0008
+#define	IPI_PREEMPT		0x0010
 
 #ifndef LOCORE
 

@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.3 2010/03/02 12:11:00 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.4 2010/05/16 19:43:48 rrs Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -636,4 +636,4 @@ static driver_t xlr_pcib_driver = {
 	sizeof(struct xlr_pcib_softc),
 };
 
-DRIVER_MODULE(pcib, nexus, xlr_pcib_driver, pcib_devclass, 0, 0);
+DRIVER_MODULE(pcib, iodi, xlr_pcib_driver, pcib_devclass, 0, 0);

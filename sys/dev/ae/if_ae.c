@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ae/if_ae.c,v 1.9 2010/01/10 14:48:42 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ae/if_ae.c,v 1.10 2010/05/03 07:32:50 sobomax Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -378,7 +378,7 @@ ae_attach(device_t dev)
 	ifp->if_init = ae_init;
 	ifp->if_capabilities = IFCAP_VLAN_MTU | IFCAP_VLAN_HWTAGGING;
 	ifp->if_hwassist = 0;
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_MAXLEN(&ifp->if_snd, ifp->if_snd.ifq_drv_maxlen);
 	IFQ_SET_READY(&ifp->if_snd);
 	if (pci_find_extcap(dev, PCIY_PMG, &pmc) == 0) {

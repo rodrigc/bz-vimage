@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.44 2010/02/02 11:09:28 mav Exp $
+ * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.45 2010/05/02 12:07:47 mav Exp $
  */
 
 #ifndef _CAM_CAM_CCB_H
@@ -837,12 +837,21 @@ struct ccb_trans_settings_sata {
 #define	CTS_SATA_VALID_PM		0x08
 #define	CTS_SATA_VALID_TAGS		0x10
 #define	CTS_SATA_VALID_ATAPI		0x20
+#define	CTS_SATA_VALID_CAPS		0x40
 	int		mode;		/* Legacy PATA mode */
 	u_int 		bytecount;	/* Length of PIO transaction */
 	int		revision;	/* SATA revision */
 	u_int 		pm_present;	/* PM is present (XPT->SIM) */
 	u_int 		tags;		/* Number of allowed tags */
 	u_int 		atapi;		/* Length of ATAPI CDB */
+	u_int 		caps;		/* Device and host SATA caps. */
+#define	CTS_SATA_CAPS_H			0x0000ffff
+#define	CTS_SATA_CAPS_H_PMREQ		0x00000001
+#define	CTS_SATA_CAPS_H_APST		0x00000002
+#define	CTS_SATA_CAPS_H_DMAAA		0x00000010 /* Auto-activation */
+#define	CTS_SATA_CAPS_D			0xffff0000
+#define	CTS_SATA_CAPS_D_PMREQ		0x00010000
+#define	CTS_SATA_CAPS_D_APST		0x00020000
 };
 
 /* Get/Set transfer rate/width/disconnection/tag queueing settings */

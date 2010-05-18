@@ -31,7 +31,7 @@
 /* $KAME: sctp_pcb.h,v 1.21 2005/07/16 01:18:47 suz Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_pcb.h,v 1.44 2010/04/03 15:40:14 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_pcb.h,v 1.45 2010/05/16 17:03:56 rrs Exp $");
 
 #ifndef __sctp_pcb_h__
 #define __sctp_pcb_h__
@@ -177,8 +177,6 @@ struct sctp_epinfo {
 	struct sctppcbhead listhead;
 	struct sctpladdr addr_wq;
 
-	struct sctpiterators iteratorhead;
-	int threads_must_exit;
 	/* ep zone info */
 	sctp_zone_t ipi_zone_ep;
 	sctp_zone_t ipi_zone_asoc;
@@ -191,10 +189,10 @@ struct sctp_epinfo {
 	sctp_zone_t ipi_zone_asconf_ack;
 
 	struct rwlock ipi_ep_mtx;
-	struct mtx it_mtx;
 	struct mtx ipi_iterator_wq_mtx;
 	struct rwlock ipi_addr_mtx;
 	struct mtx ipi_pktlog_mtx;
+	struct mtx wq_addr_mtx;
 	uint32_t ipi_count_ep;
 
 	/* assoc/tcb zone info */
@@ -228,14 +226,9 @@ struct sctp_epinfo {
 	uint32_t ipi_free_chunks;
 	uint32_t ipi_free_strmoq;
 
-
 	struct sctpvtaghead vtag_timewait[SCTP_STACK_VTAG_HASH_SIZE];
 
 	/* address work queue handling */
-#if defined(SCTP_USE_THREAD_BASED_ITERATOR)
-	uint32_t iterator_running;
-	SCTP_PROCESS_STRUCT thread_proc;
-#endif
 	struct sctp_timer addr_wq_timer;
 
 };

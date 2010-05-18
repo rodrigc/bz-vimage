@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wi/if_wi.c,v 1.233 2009/09/08 13:19:05 phk Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wi/if_wi.c,v 1.234 2010/05/03 07:32:50 sobomax Exp $");
 
 #define WI_HERMES_STATS_WAR	/* Work around stats counter bug. */
 
@@ -333,8 +333,8 @@ wi_attach(device_t dev)
 	ifp->if_ioctl = wi_ioctl;
 	ifp->if_start = wi_start;
 	ifp->if_init = wi_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

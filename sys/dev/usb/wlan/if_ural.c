@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.24 2010/04/22 21:31:34 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.25 2010/05/03 07:32:50 sobomax Exp $	*/
 
 /*-
  * Copyright (c) 2005, 2006
@@ -21,7 +21,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.24 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.25 2010/05/03 07:32:50 sobomax Exp $");
 
 /*-
  * Ralink Technology RT2500USB chipset driver
@@ -467,8 +467,8 @@ ural_attach(device_t self)
 	ifp->if_init = ural_init;
 	ifp->if_ioctl = ural_ioctl;
 	ifp->if_start = ural_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

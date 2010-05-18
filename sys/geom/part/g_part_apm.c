@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_apm.c,v 1.12 2010/04/23 03:11:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_apm.c,v 1.13 2010/05/16 22:21:33 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/apm.h>
@@ -129,6 +129,26 @@ apm_parse_type(const char *type, char *buf, size_t bufsz)
 		    !strcmp(type, APM_ENT_TYPE_UNUSED))
 			return (EINVAL);
 		strncpy(buf, type, bufsz);
+		return (0);
+	}
+	alias = g_part_alias_name(G_PART_ALIAS_APPLE_BOOT);
+	if (!strcasecmp(type, alias)) {
+		strcpy(buf, APM_ENT_TYPE_APPLE_BOOT);
+		return (0);
+	}
+	alias = g_part_alias_name(G_PART_ALIAS_APPLE_HFS);
+	if (!strcasecmp(type, alias)) {
+		strcpy(buf, APM_ENT_TYPE_APPLE_HFS);
+		return (0);
+	}
+	alias = g_part_alias_name(G_PART_ALIAS_APPLE_UFS);
+	if (!strcasecmp(type, alias)) {
+		strcpy(buf, APM_ENT_TYPE_APPLE_UFS);
+		return (0);
+	}
+	alias = g_part_alias_name(G_PART_ALIAS_FREEBSD_BOOT);
+	if (!strcasecmp(type, alias)) {
+		strcpy(buf, APM_ENT_TYPE_APPLE_BOOT);
 		return (0);
 	}
 	alias = g_part_alias_name(G_PART_ALIAS_FREEBSD);
@@ -445,6 +465,12 @@ g_part_apm_type(struct g_part_table *basetable, struct g_part_entry *baseentry,
 
 	entry = (struct g_part_apm_entry *)baseentry;
 	type = entry->ent.ent_type;
+	if (!strcmp(type, APM_ENT_TYPE_APPLE_BOOT))
+		return (g_part_alias_name(G_PART_ALIAS_APPLE_BOOT));
+	if (!strcmp(type, APM_ENT_TYPE_APPLE_HFS))
+		return (g_part_alias_name(G_PART_ALIAS_APPLE_HFS));
+	if (!strcmp(type, APM_ENT_TYPE_APPLE_UFS))
+		return (g_part_alias_name(G_PART_ALIAS_APPLE_UFS));
 	if (!strcmp(type, APM_ENT_TYPE_FREEBSD))
 		return (g_part_alias_name(G_PART_ALIAS_FREEBSD));
 	if (!strcmp(type, APM_ENT_TYPE_FREEBSD_SWAP))

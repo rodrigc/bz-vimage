@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/ipw/if_ipw.c,v 1.52 2010/04/17 18:18:46 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/ipw/if_ipw.c,v 1.54 2010/05/11 17:14:17 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2004-2006
@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ipw/if_ipw.c,v 1.52 2010/04/17 18:18:46 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ipw/if_ipw.c,v 1.54 2010/05/11 17:14:17 bschmidt Exp $");
 
 /*-
  * Intel(R) PRO/Wireless 2100 MiniPCI driver
@@ -289,8 +289,8 @@ ipw_attach(device_t dev)
 	ifp->if_init = ipw_init;
 	ifp->if_ioctl = ipw_ioctl;
 	ifp->if_start = ipw_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;
@@ -2505,19 +2505,19 @@ ipw_config(struct ipw_softc *sc)
 	if (error != 0)
 		return error;
 
-	data = htole32(0x3); /* 1, 2 */
+	data = htole32(0xf); /* 1, 2, 5.5, 11 */
 	DPRINTF(("Setting basic tx rates to 0x%x\n", le32toh(data)));
 	error = ipw_cmd(sc, IPW_CMD_SET_BASIC_TX_RATES, &data, sizeof data);
 	if (error != 0)
 		return error;
 
-	/* NB: use the same rate set */
+	/* Use the same rate set */
 	DPRINTF(("Setting msdu tx rates to 0x%x\n", le32toh(data)));
 	error = ipw_cmd(sc, IPW_CMD_SET_MSDU_TX_RATES, &data, sizeof data);
 	if (error != 0)
 		return error;
 
-	data = htole32(0xf); /* 1, 2, 5.5, 11 */
+	/* Use the same rate set */
 	DPRINTF(("Setting tx rates to 0x%x\n", le32toh(data)));
 	error = ipw_cmd(sc, IPW_CMD_SET_TX_RATES, &data, sizeof data);
 	if (error != 0)

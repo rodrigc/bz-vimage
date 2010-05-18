@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/identcpu.c,v 1.20 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/identcpu.c,v 1.21 2010/05/02 19:38:17 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -41,7 +41,7 @@ cpu_identify(u_long vers, u_int freq, u_int id)
 
 	switch (VER_MANUF(vers)) {
 	case 0x04:
-		manus = "HAL";
+		manus = "HAL/Fujitsu";
 		break;
 	case 0x13:
 	case 0x17:
@@ -57,6 +57,27 @@ cpu_identify(u_long vers, u_int freq, u_int id)
 	case CPU_IMPL_SPARC64:
 		impls = "SPARC64";
 		break;
+	case CPU_IMPL_SPARC64II:
+		impls = "SPARC64-II";
+		break;
+	case CPU_IMPL_SPARC64III:
+		impls = "SPARC64-III";
+		break;
+	case CPU_IMPL_SPARC64IV:
+		impls = "SPARC64-IV";
+		break;
+	case CPU_IMPL_SPARC64V:
+		impls = "SPARC64-V";
+		break;
+	case CPU_IMPL_SPARC64VI:
+		impls = "SPARC64-VI";
+		break;
+	case CPU_IMPL_SPARC64VII:
+		impls = "SPARC64-VII";
+		break;
+	case CPU_IMPL_SPARC64VIIIfx:
+		impls = "SPARC64-VIIIfx";
+		break;
 	case CPU_IMPL_ULTRASPARCI:
 		impls = "UltraSparc-I";
 		break;
@@ -67,7 +88,6 @@ cpu_identify(u_long vers, u_int freq, u_int id)
 		impls = "UltraSparc-IIi";
 		break;
 	case CPU_IMPL_ULTRASPARCIIe:
-		/* V9 Manual says `UltraSparc-e'.  I assume this is wrong. */
 		impls = "UltraSparc-IIe";
 		break;
 	case CPU_IMPL_ULTRASPARCIII:

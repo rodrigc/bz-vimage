@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mwl/if_mwl.c,v 1.9 2009/11/19 22:06:40 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mwl/if_mwl.c,v 1.10 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Driver for the Marvell 88W8363 Wireless LAN controller.
@@ -404,8 +404,8 @@ mwl_attach(uint16_t devid, struct mwl_softc *sc)
 	ifp->if_start = mwl_start;
 	ifp->if_ioctl = mwl_ioctl;
 	ifp->if_init = mwl_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

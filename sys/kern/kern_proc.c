@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.297 2010/04/29 09:55:51 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.299 2010/05/05 16:05:51 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -901,7 +901,7 @@ fill_kinfo_thread(struct thread *td, struct kinfo_proc *kp, int preferthread)
 	kp->ki_pri.pri_user = td->td_user_pri;
 
 	if (preferthread) {
-		kp->ki_runtime = cputick2usec(td->td_runtime);
+		kp->ki_runtime = cputick2usec(td->td_rux.rux_runtime);
 		kp->ki_pctcpu = sched_pctcpu(td);
 		kp->ki_estcpu = td->td_estcpu;
 	}

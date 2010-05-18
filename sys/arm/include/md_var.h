@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: FreeBSD: src/sys/i386/include/md_var.h,v 1.40 2001/07/12
- * $FreeBSD: src/sys/arm/include/md_var.h,v 1.7 2010/02/20 14:54:11 kevlo Exp $
+ * $FreeBSD: src/sys/arm/include/md_var.h,v 1.8 2010/05/12 05:50:56 kevlo Exp $
  */
 
 #ifndef	_MACHINE_MD_VAR_H_
@@ -57,7 +57,6 @@ enum cpu_class {
 	CPU_CLASS_ARM7,
 	CPU_CLASS_ARM7TDMI,
 	CPU_CLASS_ARM8,
-	CPU_CLASS_ARM9,
 	CPU_CLASS_ARM9TDMI,
 	CPU_CLASS_ARM9ES,
 	CPU_CLASS_ARM9EJS,

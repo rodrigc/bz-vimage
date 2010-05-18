@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iicbus/if_ic.c,v 1.30 2009/04/16 20:30:28 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iicbus/if_ic.c,v 1.31 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * I2C bus IP driver
@@ -181,7 +181,7 @@ icattach(device_t dev)
 	ifp->if_output = icoutput;
 	ifp->if_hdrlen = 0;
 	ifp->if_addrlen = 0;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 
 	ic_alloc_buffers(sc, ICMTU);
 

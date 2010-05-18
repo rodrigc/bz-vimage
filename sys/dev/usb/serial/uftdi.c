@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.23 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.24 2010/05/12 22:58:59 thompsa Exp $");
 
 /*
  * NOTE: all function names beginning like "uftdi_cfg_" can only
@@ -212,6 +212,7 @@ static struct usb_device_id uftdi_devs[] = {
 	UFTDI_DEV(ATMEL, STK541, 8U232AM),
 	UFTDI_DEV(DRESDENELEKTRONIK, SENSORTERMINALBOARD, 8U232AM),
 	UFTDI_DEV(DRESDENELEKTRONIK, WIRELESSHANDHELDTERMINAL, 8U232AM),
+	UFTDI_DEV(FTDI, GAMMASCOUT, 8U232AM),
 	UFTDI_DEV(FTDI, SERIAL_8U100AX, SIO),
 	UFTDI_DEV(FTDI, SERIAL_2232C, 8U232AM),
 	UFTDI_DEV(FTDI, SERIAL_2232D, 8U232AM),

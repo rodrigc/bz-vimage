@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.sparc64,v 1.113 2010/04/24 16:27:43 marius Exp $
+# $FreeBSD: src/sys/conf/files.sparc64,v 1.114 2010/05/02 19:38:17 marius Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -138,3 +138,4 @@ sparc64/sparc64/tsb.c		standard
 sparc64/sparc64/uio_machdep.c	standard
 sparc64/sparc64/upa.c		optional	creator
 sparc64/sparc64/vm_machdep.c	standard
+sparc64/sparc64/zeus.c		standard

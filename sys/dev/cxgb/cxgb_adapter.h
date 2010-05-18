@@ -25,7 +25,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/dev/cxgb/cxgb_adapter.h,v 1.53 2010/04/02 17:50:52 np Exp $
+$FreeBSD: src/sys/dev/cxgb/cxgb_adapter.h,v 1.54 2010/05/05 22:52:06 np Exp $
 
 ***************************************************************************/
 
@@ -204,6 +204,7 @@ struct sge_fl {
 	uint32_t	cidx;
 	uint32_t	pidx;
 	uint32_t	gen;
+	uint32_t	db_pending;
 	bus_addr_t	phys_addr;
 	uint32_t	cntxt_id;
 	uint32_t	empty;
@@ -232,6 +233,7 @@ struct sge_txq {
 	uint32_t	pidx;
 	uint32_t	gen;
 	uint32_t	unacked;
+	uint32_t	db_pending;
 	struct tx_desc	*desc;
 	struct tx_sw_desc *sdesc;
 	uint32_t	token;

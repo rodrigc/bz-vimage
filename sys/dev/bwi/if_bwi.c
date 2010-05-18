@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi.c,v 1.11 2010/04/07 17:49:47 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi.c,v 1.12 2010/05/03 07:32:50 sobomax Exp $");
 
 #include "opt_inet.h"
 #include "opt_bwi.h"
@@ -461,8 +461,8 @@ bwi_attach(struct bwi_softc *sc)
 	ifp->if_init = bwi_init;
 	ifp->if_ioctl = bwi_ioctl;
 	ifp->if_start = bwi_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 	callout_init_mtx(&sc->sc_watchdog_timer, &sc->sc_mtx, 0);
 

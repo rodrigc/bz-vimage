@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/hwpmc/hwpmc_mod.c,v 1.49 2010/03/31 20:00:44 fabient Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/hwpmc/hwpmc_mod.c,v 1.50 2010/05/01 22:04:58 rstone Exp $");
 
 #include <sys/param.h>
 #include <sys/eventhandler.h>
@@ -2675,16 +2675,16 @@ pmc_start(struct pmc *pm)
 			PMCDBG(PMC,OPS,1, "po=%p in global list", po);
 		}
 		po->po_sscount++;
-	}
 
-	/*
-	 * Log mapping information for all existing processes in the
-	 * system.  Subsequent mappings are logged as they happen;
-	 * see pmc_process_mmap().
-	 */
-	if (po->po_logprocmaps == 0) {
-		pmc_log_all_process_mappings(po);
-		po->po_logprocmaps = 1;
+		/*
+		 * Log mapping information for all existing processes in the
+		 * system.  Subsequent mappings are logged as they happen;
+		 * see pmc_process_mmap().
+		 */
+		if (po->po_logprocmaps == 0) {
+			pmc_log_all_process_mappings(po);
+			po->po_logprocmaps = 1;
+		}
 	}
 
 	/*

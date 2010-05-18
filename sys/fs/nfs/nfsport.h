@@ -29,11 +29,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.18 2010/04/24 22:52:14 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.19 2010/05/08 14:50:12 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSPORT_H_
-#define	_NFSPORT_NFS_H_
+#define	_NFS_NFSPORT_H_
 
 /*
  * In general, I'm not fond of #includes in .h files, but this seems
@@ -918,4 +918,4 @@ struct nfsreq {
 
 #endif	/* _KERNEL */
 
-#endif	/* _NFSPORT_NFS_H */
+#endif	/* _NFS_NFSPORT_H */

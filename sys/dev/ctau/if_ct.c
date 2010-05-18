@@ -22,7 +22,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ctau/if_ct.c,v 1.40 2009/11/17 16:43:02 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ctau/if_ct.c,v 1.41 2010/05/03 07:32:50 sobomax Exp $");
 
 #include <sys/param.h>
 #include <sys/proc.h>
@@ -722,8 +722,8 @@ static int ct_attach (device_t dev)
 			ct_bus_dma_mem_free (&d->dmamem);
 			continue;
 		}
-		d->queue.ifq_maxlen = IFQ_MAXLEN;
-		d->hi_queue.ifq_maxlen = IFQ_MAXLEN;
+		d->queue.ifq_maxlen = ifqmaxlen;
+		d->hi_queue.ifq_maxlen = ifqmaxlen;
 		mtx_init (&d->queue.ifq_mtx, "ct_queue", NULL, MTX_DEF);
 		mtx_init (&d->hi_queue.ifq_mtx, "ct_queue_hi", NULL, MTX_DEF);
 #else /*NETGRAPH*/

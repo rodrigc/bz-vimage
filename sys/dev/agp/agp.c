@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/agp/agp.c,v 1.67 2010/01/07 21:01:37 mbr Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/agp/agp.c,v 1.69 2010/05/05 03:45:46 alc Exp $");
 
 #include "opt_agp.h"
 #include "opt_bus.h"
@@ -623,9 +623,9 @@ bad:
 		m = vm_page_lookup(mem->am_obj, OFF_TO_IDX(k));
 		if (k >= i)
 			vm_page_wakeup(m);
-		vm_page_lock_queues();
+		vm_page_lock(m);
 		vm_page_unwire(m, 0);
-		vm_page_unlock_queues();
+		vm_page_unlock(m);
 	}
 	VM_OBJECT_UNLOCK(mem->am_obj);
 
@@ -657,9 +657,9 @@ agp_generic_unbind_memory(device_t dev, struct agp_memory *mem)
 	VM_OBJECT_LOCK(mem->am_obj);
 	for (i = 0; i < mem->am_size; i += PAGE_SIZE) {
 		m = vm_page_lookup(mem->am_obj, atop(i));
-		vm_page_lock_queues();
+		vm_page_lock(m);
 		vm_page_unwire(m, 0);
-		vm_page_unlock_queues();
+		vm_page_unlock(m);
 	}
 	VM_OBJECT_UNLOCK(mem->am_obj);
 		

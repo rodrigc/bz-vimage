@@ -33,7 +33,7 @@
  *	from: hp300: @(#)pmap.h 7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h        7.4 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/pmap.h,v 1.70 2000/11/30
- * $FreeBSD: src/sys/sun4v/include/pmap.h,v 1.9 2009/07/12 23:31:20 alc Exp $
+ * $FreeBSD: src/sys/sun4v/include/pmap.h,v 1.10 2010/04/30 00:46:43 kmacy Exp $
  */
 
 #ifndef	_MACHINE_PMAP_H_
@@ -75,6 +75,8 @@ struct pmap {
 	struct tte_hash        *pm_hash;
 	TAILQ_HEAD(,pv_entry)	pm_pvlist;	/* list of mappings in pmap */
 	struct hv_tsb_info      pm_tsb;
+	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
+	u_int			pm_retries;
 	pmap_cpumask_t          pm_active;      /* mask of cpus currently using pmap */
 	pmap_cpumask_t          pm_tlbactive;   /* mask of cpus that have used this pmap */
 	struct	pmap_statistics pm_stats;

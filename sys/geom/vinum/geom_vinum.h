@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/vinum/geom_vinum.h,v 1.18 2009/05/06 19:34:32 lulf Exp $
+ * $FreeBSD: src/sys/geom/vinum/geom_vinum.h,v 1.19 2010/05/10 19:12:23 jh Exp $
  */
 
 #ifndef	_GEOM_VINUM_H_
@@ -122,6 +122,7 @@ int			 gv_detach_sd(struct gv_sd *, int);
 void	gv_worker(void *);
 void	gv_post_event(struct gv_softc *, int, void *, void *, intmax_t,
 	    intmax_t);
+void	gv_worker_exit(struct gv_softc *);
 struct gv_event *gv_get_event(struct gv_softc *);
 void	gv_remove_event(struct gv_softc *, struct gv_event *);
 void	gv_drive_tasted(struct gv_softc *, struct g_provider *);

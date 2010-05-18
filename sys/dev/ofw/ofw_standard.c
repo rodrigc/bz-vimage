@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_standard.c,v 1.6 2010/04/02 21:48:27 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_standard.c,v 1.8 2010/05/16 22:01:43 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>

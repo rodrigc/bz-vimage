@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/sge.4,v 1.1 2010/04/14 21:27:48 yongari Exp $
+.\" $FreeBSD: src/share/man/man4/sge.4,v 1.3 2010/05/10 17:48:00 yongari Exp $
 .\"
-.Dd April 14, 2010
+.Dd May 10, 2010
 .Dt SGE 4
 .Os
 .Sh NAME
@@ -53,11 +53,11 @@ controllers and SiS191 Fast/Gigabit Ethernet controllers.
 .Pp
 All LOMs supported by the
 .Nm
-driver have TCP/UDP/IP checksum offload for transmit and receive.
-Due to lack of documentation more offloading features like TCP
-segmentation offload (TSO), hardware VLAN tag stripping/insertion
-features, Wake On Lan (WOL), Jumbo frame and an interrupt moderation
-mechanism are not supported yet.
+driver have TCP/UDP/IP checksum offload for transmit and receive,
+TCP segmentation offload (TSO), hardware VLAN tag stripping/insertion
+features.
+Due to lack of documentation Wake On Lan (WOL), Jumbo frame and an
+interrupt moderation mechanism are not supported yet.
 .Pp
 The
 .Nm

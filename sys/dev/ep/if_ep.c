@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ep/if_ep.c,v 1.156 2010/01/08 15:44:49 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ep/if_ep.c,v 1.157 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  *	Modified from the FreeBSD 1.1.5.1 version by:
@@ -306,8 +306,8 @@ ep_attach(struct ep_softc *sc)
 	ifp->if_start = epstart;
 	ifp->if_ioctl = epioctl;
 	ifp->if_init = epinit;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	callout_init_mtx(&sc->watchdog_timer, &sc->sc_mtx, 0);

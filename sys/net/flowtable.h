@@ -25,7 +25,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/net/flowtable.h,v 1.13 2010/03/12 05:03:26 kmacy Exp $
+$FreeBSD: src/sys/net/flowtable.h,v 1.14 2010/05/16 21:48:39 kmacy Exp $
 
 ***************************************************************************/
 
@@ -37,6 +37,7 @@ $FreeBSD: src/sys/net/flowtable.h,v 1.13 2010/03/12 05:03:26 kmacy Exp $
 #define	FL_HASH_ALL	(1<<0)	/* hash 4-tuple + protocol */
 #define	FL_PCPU		(1<<1)	/* pcpu cache */
 #define	FL_NOAUTO	(1<<2)	/* don't automatically add flentry on miss */
+#define FL_IPV6  	(1<<9)
 
 #define	FL_TCP		(1<<11)
 #define	FL_SCTP		(1<<12)

@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/ksyms.4,v 1.1 2009/05/26 21:39:09 sson Exp $
+.\" $FreeBSD: src/share/man/man4/ksyms.4,v 1.2 2010/05/13 12:07:55 uqs Exp $
 .\"
 .Dd April 5, 2009
 .Dt KSYMS 4
@@ -130,6 +130,12 @@ driver first appeared in
 .Fx 8.0
 to support 
 .Xr lockstat 1 .
+.Sh AUTHORS
+The
+.Nm
+driver was written by
+.An Stacey Son
+.Aq sson@freebsd.org .
 .Sh BUGS
 Because files can be dynamically linked into the kernel at any time the symbol 
 information can vary.  When you open the
@@ -150,9 +156,3 @@ can be used to get the memory address where the symbol table is stored to
 save kernel memory. 
 .Xr mmap 2
 may also be used but it will map it to another address. 
-.Sh AUTHORS
-The 
-.Nm
-driver was written by 
-.An Stacey Son
-.Aq sson@freebsd.org .

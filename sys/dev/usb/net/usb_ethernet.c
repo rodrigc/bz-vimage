@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/net/usb_ethernet.c,v 1.9 2009/08/20 19:17:53 jhb Exp $ */
+/* $FreeBSD: src/sys/dev/usb/net/usb_ethernet.c,v 1.10 2010/05/03 07:32:50 sobomax Exp $ */
 /*-
  * Copyright (c) 2009 Andrew Thompson (thompsa@FreeBSD.org)
  *
@@ -214,8 +214,8 @@ ue_attach_post_task(struct usb_proc_msg *_task)
 		ifp->if_ioctl = uether_ioctl;
 	ifp->if_start = ue_start;
 	ifp->if_init = ue_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 	ue->ue_ifp = ifp;
 

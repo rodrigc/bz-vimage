@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/cpu.c,v 1.4 2010/03/04 05:23:08 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/cpu.c,v 1.5 2010/05/16 19:43:48 rrs Exp $");
 
 #include "opt_cputype.h"
 
@@ -177,6 +177,9 @@ cpu_identify(void)
 		break;
 	case MIPS_PRID_CID_LEXRA:
 		printf("Lexra");
+		break;
+	case MIPS_PRID_CID_RMI:
+		printf("RMI");
 		break;
 	case MIPS_PRID_CID_CAVIUM:
 		printf("Cavium");

@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/smc/if_smc.c,v 1.8 2009/06/11 17:14:54 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/smc/if_smc.c,v 1.9 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Driver for SMSC LAN91C111, may work for older variants.
@@ -347,7 +347,7 @@ smc_attach(device_t dev)
 	ifp->if_init = smc_init;
 	ifp->if_ioctl = smc_ioctl;
 	ifp->if_start = smc_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ifp->if_capabilities = ifp->if_capenable = 0;

@@ -76,7 +76,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/adm5120/if_admsw.c,v 1.9 2010/01/10 20:11:10 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/adm5120/if_admsw.c,v 1.11 2010/05/13 01:50:29 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -528,7 +528,7 @@ admsw_attach(device_t dev)
 		ifmedia_add(&sc->sc_ifmedia[i], IFM_ETHER|IFM_AUTO, 0, NULL);
 		ifmedia_set(&sc->sc_ifmedia[i], IFM_ETHER|IFM_AUTO);
 
-		ifp = sc->sc_ifnet[i] = if_alloc(IFT_ETHER);;
+		ifp = sc->sc_ifnet[i] = if_alloc(IFT_ETHER);
 
 		/* Setup interface parameters */
 		ifp->if_softc = sc;
@@ -540,8 +540,8 @@ admsw_attach(device_t dev)
 		ifp->if_init = admsw_init;
 		ifp->if_mtu = ETHERMTU;
 		ifp->if_baudrate = IF_Mbps(100);
-		IFQ_SET_MAXLEN(&ifp->if_snd, max(ADMSW_NTXLDESC, IFQ_MAXLEN));
-		ifp->if_snd.ifq_drv_maxlen = max(ADMSW_NTXLDESC, IFQ_MAXLEN);
+		IFQ_SET_MAXLEN(&ifp->if_snd, max(ADMSW_NTXLDESC, ifqmaxlen));
+		ifp->if_snd.ifq_drv_maxlen = max(ADMSW_NTXLDESC, ifqmaxlen);
 		IFQ_SET_READY(&ifp->if_snd);
 		ifp->if_capabilities |= IFCAP_VLAN_MTU;
 

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/siis/siis.h,v 1.9 2010/02/02 11:09:28 mav Exp $
+ * $FreeBSD: src/sys/dev/siis/siis.h,v 1.10 2010/05/02 12:07:47 mav Exp $
  */
 
 /* ATA register defines */
@@ -358,6 +358,7 @@ struct siis_device {
 	u_int			bytecount;
 	u_int			atapi;
 	u_int			tags;
+	u_int			caps;
 };
 
 /* structure describing an ATA channel */

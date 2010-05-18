@@ -31,7 +31,7 @@
 
 #include <sys/cdefs.h>
 #ifdef __FreeBSD__
-__FBSDID("$FreeBSD: src/sys/dev/malo/if_malo.c,v 1.12 2010/03/29 17:25:06 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/malo/if_malo.c,v 1.13 2010/05/03 07:32:50 sobomax Exp $");
 #endif
 
 #include "opt_malo.h"
@@ -275,8 +275,8 @@ malo_attach(uint16_t devid, struct malo_softc *sc)
 	ifp->if_start = malo_start;
 	ifp->if_ioctl = malo_ioctl;
 	ifp->if_init = malo_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.264 2010/01/23 15:54:21 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.265 2010/05/16 19:43:48 rrs Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -80,7 +80,7 @@ dtrace_vtime_switch_func_t	dtrace_vtime_switch_func;
 #include <machine/cpu.h>
 #include <machine/smp.h>
 
-#if defined(__sparc64__) || defined(__mips__)
+#if defined(__sparc64__)
 #error "This architecture is not currently compatible with ULE"
 #endif
 

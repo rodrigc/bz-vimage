@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/sparc64/loader/main.c,v 1.48 2010/02/20 23:24:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/sparc64/loader/main.c,v 1.49 2010/05/02 19:38:17 marius Exp $");
 
 /*
  * FreeBSD/sparc64 kernel loader - machine dependent part
@@ -451,7 +451,8 @@ dtlb_va_to_pa_sun4u(vm_offset_t va)
 		reg = dtlb_get_data_sun4u(i);
 		wrpr(pstate, pstate, 0);
 		reg >>= TD_PA_SHIFT;
-		if (cpu_impl >= CPU_IMPL_ULTRASPARCIII)
+		if (cpu_impl == CPU_IMPL_SPARC64V ||
+		    cpu_impl >= CPU_IMPL_ULTRASPARCIII)
 			return (reg & TD_PA_CH_MASK);
 		return (reg & TD_PA_SF_MASK);
 	}
@@ -474,7 +475,8 @@ itlb_va_to_pa_sun4u(vm_offset_t va)
 		reg = itlb_get_data_sun4u(i);
 		wrpr(pstate, pstate, 0);
 		reg >>= TD_PA_SHIFT;
-		if (cpu_impl >= CPU_IMPL_ULTRASPARCIII)
+		if (cpu_impl == CPU_IMPL_SPARC64V ||
+		    cpu_impl >= CPU_IMPL_ULTRASPARCIII)
 			return (reg & TD_PA_CH_MASK);
 		return (reg & TD_PA_SF_MASK);
 	}
@@ -696,6 +698,7 @@ cpu_cpuid_prop_sun4u(void)
 
 	switch (cpu_impl) {
 	case CPU_IMPL_SPARC64:
+	case CPU_IMPL_SPARC64V:
 	case CPU_IMPL_ULTRASPARCI:
 	case CPU_IMPL_ULTRASPARCII:
 	case CPU_IMPL_ULTRASPARCIIi:
@@ -720,6 +723,7 @@ cpu_get_mid_sun4u(void)
 
 	switch (cpu_impl) {
 	case CPU_IMPL_SPARC64:
+	case CPU_IMPL_SPARC64V:
 	case CPU_IMPL_ULTRASPARCI:
 	case CPU_IMPL_ULTRASPARCII:
 	case CPU_IMPL_ULTRASPARCIIi:

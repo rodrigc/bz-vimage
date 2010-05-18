@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_events.c,v 1.3 2009/10/05 08:44:31 lulf Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_events.c,v 1.4 2010/05/10 19:12:23 jh Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -56,6 +56,20 @@ gv_post_event(struct gv_softc *sc, int event, void *arg1, void *arg2,
 	TAILQ_INSERT_TAIL(&sc->equeue, ev, events);
 	wakeup(sc);
 	mtx_unlock(&sc->equeue_mtx);
+}
+
+void
+gv_worker_exit(struct gv_softc *sc)
+{
+	struct gv_event *ev;
+
+	ev = g_malloc(sizeof(*ev), M_WAITOK | M_ZERO);
+	ev->type = GV_EVENT_THREAD_EXIT;
+
+	mtx_lock(&sc->equeue_mtx);
+	TAILQ_INSERT_TAIL(&sc->equeue, ev, events);
+	wakeup(sc);
+	msleep(sc->worker, &sc->equeue_mtx, PDROP, "gv_wor", 0);
 }
 
 struct gv_event *

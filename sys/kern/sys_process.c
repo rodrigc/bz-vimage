@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sys_process.c,v 1.164 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sys_process.c,v 1.165 2010/04/30 00:46:43 kmacy Exp $");
 
 #include "opt_compat.h"
 
@@ -328,9 +328,9 @@ proc_rwmem(struct proc *p, struct uio *uio)
 		/*
 		 * Hold the page in memory.
 		 */
-		vm_page_lock_queues();
+		vm_page_lock(m);
 		vm_page_hold(m);
-		vm_page_unlock_queues();
+		vm_page_unlock(m);
 
 		/*
 		 * We're done with tmap now.
@@ -349,9 +349,9 @@ proc_rwmem(struct proc *p, struct uio *uio)
 		/*
 		 * Release the page.
 		 */
-		vm_page_lock_queues();
+		vm_page_lock(m);
 		vm_page_unhold(m);
-		vm_page_unlock_queues();
+		vm_page_unlock(m);
 
 	} while (error == 0 && uio->uio_resid > 0);
 

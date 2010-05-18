@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/pci/if_rl.c,v 1.189 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/pci/if_rl.c,v 1.190 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * RealTek 8129/8139 PCI NIC driver
@@ -942,8 +942,8 @@ rl_attach(device_t dev)
 #ifdef DEVICE_POLLING
 	ifp->if_capabilities |= IFCAP_POLLING;
 #endif
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	/*

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.72 2009/07/10 15:28:33 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.73 2010/05/03 07:32:50 sobomax Exp $");
 
 /*-
  * Intel(R) PRO/Wireless 2200BG/2225BG/2915ABG driver
@@ -363,8 +363,8 @@ iwi_attach(device_t dev)
 	ifp->if_init = iwi_init;
 	ifp->if_ioctl = iwi_ioctl;
 	ifp->if_start = iwi_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

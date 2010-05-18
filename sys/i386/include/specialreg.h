@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)specialreg.h	7.1 (Berkeley) 5/9/91
- * $FreeBSD: src/sys/i386/include/specialreg.h,v 1.59 2010/03/24 03:07:35 alc Exp $
+ * $FreeBSD: src/sys/i386/include/specialreg.h,v 1.60 2010/05/05 21:07:47 kib Exp $
  */
 
 #ifndef _MACHINE_SPECIALREG_H_
@@ -110,6 +110,7 @@
 #define	CPUID_PBE	0x80000000
 
 #define	CPUID2_SSE3	0x00000001
+#define	CPUID2_PCLMULQDQ 0x00000002
 #define	CPUID2_DTES64	0x00000004
 #define	CPUID2_MON	0x00000008
 #define	CPUID2_DS_CPL	0x00000010
@@ -128,6 +129,7 @@
 #define	CPUID2_X2APIC	0x00200000
 #define	CPUID2_MOVBE	0x00400000
 #define	CPUID2_POPCNT	0x00800000
+#define	CPUID2_AESNI	0x02000000
 
 /*
  * Important bits in the AMD extended cpuid flags

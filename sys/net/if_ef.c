@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net/if_ef.c,v 1.51 2009/11/06 14:55:01 jhb Exp $
+ * $FreeBSD: src/sys/net/if_ef.c,v 1.52 2010/05/03 07:32:50 sobomax Exp $
  */
 
 #include "opt_inet.h"
@@ -129,7 +129,7 @@ ef_attach(struct efnet *sc)
 
 	ifp->if_start = ef_start;
 	ifp->if_init = ef_init;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_flags = (IFF_BROADCAST | IFF_SIMPLEX | IFF_MULTICAST);
 	/*
 	 * Attach the interface

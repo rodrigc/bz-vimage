@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/if_npe.c,v 1.20 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/if_npe.c,v 1.21 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Intel XScale NPE Ethernet driver.
@@ -360,7 +360,7 @@ npe_attach(device_t dev)
 	ifp->if_ioctl = npeioctl;
 	ifp->if_init = npeinit;
 	IFQ_SET_MAXLEN(&ifp->if_snd, sc->txdma.nbuf - 1);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 	ifp->if_linkmib = &sc->mibdata;
 	ifp->if_linkmiblen = sizeof(sc->mibdata);

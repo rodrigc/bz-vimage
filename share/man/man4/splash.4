@@ -24,7 +24,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/splash.4,v 1.29 2010/04/07 18:04:25 jkim Exp $
+.\" $FreeBSD: src/share/man/man4/splash.4,v 1.30 2010/05/13 12:07:55 uqs Exp $
 .\"
 .Dd April 7, 2010
 .Dt SPLASH 4
@@ -221,10 +221,6 @@ necessary to load the VESA module.
 Just load the bitmap file and the splash decoder module as in the
 first example above.
 .\".Sh DIAGNOSTICS
-.Sh CAVEATS
-Both the splash screen and the screen saver work with
-.Xr syscons 4
-only.
 .Sh SEE ALSO
 .Xr vidcontrol 1 ,
 .Xr syscons 4 ,
@@ -257,6 +253,10 @@ module was written by
 based on the
 .Pa splash_bmp
 code.
+.Sh CAVEATS
+Both the splash screen and the screen saver work with
+.Xr syscons 4
+only.
 .Sh BUGS
 If you load a screen saver while another screen saver has already
 been loaded, the first screen saver will not be automatically unloaded

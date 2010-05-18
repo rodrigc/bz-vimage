@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/taskqueue.h,v 1.22 2009/08/18 13:55:48 pjd Exp $
+ * $FreeBSD: src/sys/sys/taskqueue.h,v 1.23 2010/04/30 16:29:05 zml Exp $
  */
 
 #ifndef _SYS_TASKQUEUE_H_
@@ -75,6 +75,7 @@ void	taskqueue_thread_enqueue(void *context);
 	(task)->ta_priority = (priority);		\
 	(task)->ta_func = (func);			\
 	(task)->ta_context = (context);			\
+	(task)->ta_flags = 0;				\
 } while (0)
 
 /*

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/ofw_machdep.c,v 1.26 2010/03/23 01:11:10 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/ofw_machdep.c,v 1.28 2010/05/16 22:01:43 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -77,6 +77,7 @@ static int	(*ofwcall)(void *);
 static void	*fdt;
 int		ofw_real_mode;
 
+static void	ofw_quiesce(void);
 static int	openfirmware(void *args);
 
 /*
@@ -295,6 +296,12 @@ OF_bootstrap()
 			return status;
 
 		OF_init(openfirmware);
+
+		/*
+		 * On some machines, we need to quiesce OF to turn off
+		 * background processes.
+		 */
+		ofw_quiesce();
 	} else {
 		status = OF_install(OFW_FDT, 0);
 
@@ -305,6 +312,39 @@ OF_bootstrap()
 	} 
 
 	return (status);
+}
+
+static void
+ofw_quiesce(void)
+{
+	phandle_t rootnode;
+	char model[32];
+	struct {
+		cell_t name;
+		cell_t nargs;
+		cell_t nreturns;
+	} args;
+
+	/*
+	 * Only quiesce Open Firmware on PowerMac11,2 and 12,1. It is
+	 * necessary there to shut down a background thread doing fan
+	 * management, and is harmful on other machines.
+	 *
+	 * Note: we don't need to worry about which OF module we are
+	 * using since this is called only from very early boot, within
+	 * OF's boot context.
+	 */
+
+	rootnode = OF_finddevice("/");
+	if (OF_getprop(rootnode, "model", model, sizeof(model)) > 0) {
+		if (strcmp(model, "PowerMac11,2") == 0 ||
+		    strcmp(model, "PowerMac12,1") == 0) {
+			args.name = (cell_t)(uintptr_t)"quiesce";
+			args.nargs = 0;
+			args.nreturns = 0;
+			openfirmware(&args);
+		}
+	}
 }
 
 static int

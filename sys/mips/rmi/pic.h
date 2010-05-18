@@ -25,7 +25,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * __FBSDID("$FreeBSD: src/sys/mips/rmi/pic.h,v 1.4 2010/01/29 04:03:36 rrs Exp $");
+ * __FBSDID("$FreeBSD: src/sys/mips/rmi/pic.h,v 1.5 2010/05/16 19:43:48 rrs Exp $");
  *
  * RMI_BSD */
 #ifndef _RMI_PIC_H_
@@ -279,6 +279,18 @@ pic_delayed_ack(int irq, int haslock)
 		  mtx_unlock_spin(&xlr_pic_lock);
 		return;
 	}
+}
+
+static inline
+void pic_send_ipi(int cpu, int ipi, int haslock)
+{
+        xlr_reg_t *mmio = xlr_io_mmio(XLR_IO_PIC_OFFSET);
+        int tid, pid;
+
+        tid = cpu & 0x3;
+        pid = (cpu >> 2) & 0x7;
+
+	xlr_write_reg(mmio, PIC_IPI,  (pid << 20) | (tid << 16) | ipi);
 }
 
 #endif				/* _RMI_PIC_H_ */

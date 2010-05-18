@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.40 2010/04/14 20:55:33 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.41 2010/05/14 22:18:34 jfv Exp $*/
 
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
@@ -2969,7 +2969,9 @@ err_tx_desc:
 		igb_dma_free(adapter, &txr->txdma);
 	free(adapter->rx_rings, M_DEVBUF);
 rx_fail:
+#if __FreeBSD_version >= 800000
 	buf_ring_free(txr->br, M_DEVBUF);
+#endif
 	free(adapter->tx_rings, M_DEVBUF);
 tx_fail:
 	free(adapter->queues, M_DEVBUF);

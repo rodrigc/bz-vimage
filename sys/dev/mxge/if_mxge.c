@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.78 2010/04/15 14:26:52 gallatin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.79 2010/05/07 22:09:17 fabient Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -2400,10 +2400,7 @@ mxge_get_buf_big(struct mxge_slice_state *ss, bus_dmamap_t map, int idx)
 	mxge_rx_ring_t *rx = &ss->rx_big;
 	int cnt, err, i;
 
-	if (rx->cl_size == MCLBYTES)
-		m = m_getcl(M_DONTWAIT, MT_DATA, M_PKTHDR);
-	else
-		m = m_getjcl(M_DONTWAIT, MT_DATA, M_PKTHDR, rx->cl_size);
+	m = m_getjcl(M_DONTWAIT, MT_DATA, M_PKTHDR, rx->cl_size);
 	if (m == NULL) {
 		rx->alloc_fail++;
 		err = ENOBUFS;

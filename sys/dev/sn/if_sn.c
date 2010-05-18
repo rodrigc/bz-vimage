@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/sn/if_sn.c,v 1.58 2009/11/19 22:06:40 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/sn/if_sn.c,v 1.59 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * This is a driver for SMC's 9000 series of Ethernet adapters.
@@ -207,8 +207,8 @@ sn_attach(device_t dev)
 	ifp->if_ioctl = snioctl;
 	ifp->if_init = sninit;
 	ifp->if_baudrate = 10000000;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ether_ifattach(ifp, eaddr);

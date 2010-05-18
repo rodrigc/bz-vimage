@@ -34,7 +34,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)conf.h	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/conf.h,v 1.254 2009/12/29 21:51:28 rnoland Exp $
+ * $FreeBSD: src/sys/sys/conf.h,v 1.255 2010/05/06 19:22:50 kib Exp $
  */
 
 #ifndef _SYS_CONF_H_
@@ -262,8 +262,10 @@ struct cdev *make_dev(struct cdevsw *_devsw, int _unit, uid_t _uid, gid_t _gid,
 struct cdev *make_dev_cred(struct cdevsw *_devsw, int _unit,
 		struct ucred *_cr, uid_t _uid, gid_t _gid, int _perms,
 		const char *_fmt, ...) __printflike(7, 8);
-#define MAKEDEV_REF     0x1
-#define MAKEDEV_WHTOUT	0x2
+#define	MAKEDEV_REF     0x1
+#define	MAKEDEV_WHTOUT	0x2
+#define	MAKEDEV_NOWAIT	0x4
+#define	MAKEDEV_WAITOK	0x8
 struct cdev *make_dev_credf(int _flags,
 		struct cdevsw *_devsw, int _unit,
 		struct ucred *_cr, uid_t _uid, gid_t _gid, int _mode,

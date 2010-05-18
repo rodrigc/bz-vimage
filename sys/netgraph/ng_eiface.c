@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_eiface.c,v 1.56 2010/01/18 20:34:00 thompsa Exp $
+ * $FreeBSD: src/sys/netgraph/ng_eiface.c,v 1.57 2010/05/03 07:32:50 sobomax Exp $
  */
 
 #include <sys/param.h>
@@ -369,7 +369,7 @@ ng_eiface_constructor(node_p node)
 	ifp->if_output = ether_output;
 	ifp->if_start = ng_eiface_start;
 	ifp->if_ioctl = ng_eiface_ioctl;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_flags = (IFF_SIMPLEX | IFF_BROADCAST | IFF_MULTICAST);
 
 	/* Give this node the same name as the interface (if possible) */

@@ -66,7 +66,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/esp/esp_sbus.c,v 1.18 2010/04/27 15:50:25 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/esp/esp_sbus.c,v 1.19 2010/05/10 20:02:39 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -79,6 +79,7 @@ __FBSDID("$FreeBSD: src/sys/dev/esp/esp_sbus.c,v 1.18 2010/04/27 15:50:25 marius
 #include <dev/ofw/ofw_bus.h>
 #include <dev/ofw/openfirm.h>
 #include <machine/bus.h>
+#include <machine/ofw_machdep.h>
 #include <machine/resource.h>
 #include <sys/rman.h>
 

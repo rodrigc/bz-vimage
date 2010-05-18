@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_pipe.c,v 1.4 2010/04/07 16:29:10 joel Exp $
+ * $FreeBSD: src/sys/netgraph/ng_pipe.c,v 1.5 2010/04/30 07:09:13 trasz Exp $
  */
 
 /*
@@ -816,14 +816,17 @@ pipe_dequeue(struct hookinfo *hinfo, struct timeval *now) {
 		}
 
 		/* Randomly discard the frame, according to BER setting */
-		if (hinfo->cfg.ber && 
-		    ((oldrand = rand) ^ (rand = random())<<17) >=
-		    hinfo->ber_p[priv->overhead + m->m_pkthdr.len] ) {
-			hinfo->stats.out_disc_frames++;
-			hinfo->stats.out_disc_octets += m->m_pkthdr.len;
-			uma_zfree(ngp_zone, ngp_h);
-			m_freem(m);
-			continue;
+		if (hinfo->cfg.ber) {
+			oldrand = rand;
+			rand = random();
+			if (((oldrand ^ rand) << 17) >=
+			    hinfo->ber_p[priv->overhead + m->m_pkthdr.len]) {
+				hinfo->stats.out_disc_frames++;
+				hinfo->stats.out_disc_octets += m->m_pkthdr.len;
+				uma_zfree(ngp_zone, ngp_h);
+				m_freem(m);
+				continue;
+			}
 		}
 
 		/* Discard frame if outbound queue size limit exceeded */

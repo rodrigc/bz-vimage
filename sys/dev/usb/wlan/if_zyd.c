@@ -1,6 +1,6 @@
 /*	$OpenBSD: if_zyd.c,v 1.52 2007/02/11 00:08:04 jsg Exp $	*/
 /*	$NetBSD: if_zyd.c,v 1.7 2007/06/21 04:04:29 kiyohara Exp $	*/
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.27 2010/04/22 21:31:34 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.28 2010/05/03 07:32:50 sobomax Exp $	*/
 
 /*-
  * Copyright (c) 2006 by Damien Bergamini <damien.bergamini@free.fr>
@@ -20,7 +20,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.27 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.28 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * ZyDAS ZD1211/ZD1211B USB WLAN driver.
@@ -381,7 +381,7 @@ zyd_attach(device_t dev)
 	ifp->if_init = zyd_init;
 	ifp->if_ioctl = zyd_ioctl;
 	ifp->if_start = zyd_start;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic = ifp->if_l2com;

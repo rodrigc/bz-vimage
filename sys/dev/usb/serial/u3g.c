@@ -16,7 +16,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.35 2010/04/22 21:31:34 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.36 2010/05/12 22:57:16 thompsa Exp $
  */
 
 /*
@@ -71,7 +71,7 @@ SYSCTL_INT(_hw_usb_u3g, OID_AUTO, debug, CTLFLAG_RW,
     &u3g_debug, 0, "Debug level");
 #endif
 
-#define	U3G_MAXPORTS		8
+#define	U3G_MAXPORTS		12
 #define	U3G_CONFIG_INDEX	0
 #define	U3G_BSIZE		2048
 

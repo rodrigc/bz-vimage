@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.272 2010/04/10 13:54:00 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.273 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Driver for the Atheros Wireless LAN controller.
@@ -562,8 +562,8 @@ ath_attach(u_int16_t devid, struct ath_softc *sc)
 	ifp->if_start = ath_start;
 	ifp->if_ioctl = ath_ioctl;
 	ifp->if_init = ath_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic->ic_ifp = ifp;

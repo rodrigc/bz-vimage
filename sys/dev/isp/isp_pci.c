@@ -28,7 +28,7 @@
  * FreeBSD Version.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_pci.c,v 1.153 2010/03/17 02:48:14 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_pci.c,v 1.154 2010/05/03 18:39:40 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -45,6 +45,11 @@ __FBSDID("$FreeBSD: src/sys/dev/isp/isp_pci.c,v 1.153 2010/03/17 02:48:14 mjacob
 #include <sys/rman.h>
 #include <sys/malloc.h>
 #include <sys/uio.h>
+
+#ifdef __sparc64__
+#include <dev/ofw/openfirm.h>
+#include <machine/ofw_machdep.h>
+#endif
 
 #include <dev/isp/isp_freebsd.h>
 
@@ -517,7 +522,11 @@ isp_get_specific_options(device_t dev, int chan, ispsoftc_t *isp)
 		if (IS_FC(isp)) {
 			ISP_FC_PC(isp, chan)->default_id = 109 - chan;
 		} else {
+#ifdef __sparc64__
+			ISP_SPI_PC(isp, chan)->iid = OF_getscsinitid(dev);
+#else
 			ISP_SPI_PC(isp, chan)->iid = 7;
+#endif
 		}
 	} else {
 		if (IS_FC(isp)) {

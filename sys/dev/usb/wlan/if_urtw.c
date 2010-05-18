@@ -15,7 +15,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_urtw.c,v 1.17 2010/04/07 17:48:13 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_urtw.c,v 1.18 2010/05/03 07:32:50 sobomax Exp $");
 #include <sys/param.h>
 #include <sys/sockio.h>
 #include <sys/sysctl.h>
@@ -867,8 +867,8 @@ urtw_attach(device_t dev)
 	ifp->if_ioctl = urtw_ioctl;
 	ifp->if_start = urtw_start;
 	/* XXX URTW_TX_DATA_LIST_COUNT */
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic = ifp->if_l2com;

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/isp/ispvar.h,v 1.88 2010/03/26 15:13:31 mjacob Exp $ */
+/* $FreeBSD: src/sys/dev/isp/ispvar.h,v 1.89 2010/05/15 20:26:10 mjacob Exp $ */
 /*-
  *  Copyright (c) 1997-2009 by Matthew Jacob
  *  All rights reserved.
@@ -426,6 +426,7 @@ typedef struct {
 			new_portid	: 24;
 	uint64_t	node_wwn;
 	uint64_t	port_wwn;
+	uint32_t	gone_timer;
 } fcportdb_t;
 
 #define	FC_PORTDB_STATE_NIL		0

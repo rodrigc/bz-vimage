@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_lem.c,v 1.4 2010/04/14 18:29:01 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_lem.c,v 1.5 2010/05/14 22:18:34 jfv Exp $*/
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -2422,10 +2422,10 @@ lem_setup_interface(device_t dev, struct adapter *adapter)
 	ifp->if_capabilities |= IFCAP_POLLING;
 #endif
 
-	/* Enable All WOL methods by default */
+	/* Enable only WOL MAGIC by default */
 	if (adapter->wol) {
 		ifp->if_capabilities |= IFCAP_WOL;
-		ifp->if_capenable |= IFCAP_WOL;
+		ifp->if_capenable |= IFCAP_WOL_MAGIC;
 	}
 		
 	/*

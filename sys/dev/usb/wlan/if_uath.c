@@ -49,7 +49,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_uath.c,v 1.20 2010/01/29 02:32:46 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_uath.c,v 1.21 2010/05/03 07:32:50 sobomax Exp $");
 
 /*-
  * Driver for Atheros AR5523 USB parts.
@@ -438,8 +438,8 @@ uath_attach(device_t dev)
 	ifp->if_ioctl = uath_ioctl;
 	ifp->if_start = uath_start;
 	/* XXX UATH_TX_DATA_LIST_COUNT */
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	ic = ifp->if_l2com;

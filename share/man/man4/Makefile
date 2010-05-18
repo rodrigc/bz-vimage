@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/18/93
-# $FreeBSD: src/share/man/man4/Makefile,v 1.477 2010/04/14 21:27:48 yongari Exp $
+# $FreeBSD: src/share/man/man4/Makefile,v 1.478 2010/05/02 19:28:30 mav Exp $
 
 MAN=	aac.4 \
 	acpi.4 \
@@ -220,6 +220,7 @@ MAN=	aac.4 \
 	msk.4 \
 	mtio.4 \
 	multicast.4 \
+	mvs.4 \
 	mwl.4 \
 	mwlfw.4 \
 	mxge.4 \

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/device_pager.c,v 1.93 2009/12/29 21:51:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/device_pager.c,v 1.95 2010/05/06 18:58:32 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -251,12 +251,14 @@ dev_pager_getpages(object, m, count, reqpage)
 		VM_OBJECT_LOCK(object);
 		dev_pager_updatefake(page, paddr, memattr);
 		if (count > 1) {
-			vm_page_lock_queues();
+
 			for (i = 0; i < count; i++) {
-				if (i != reqpage)
+				if (i != reqpage) {
+					vm_page_lock(m[i]);
 					vm_page_free(m[i]);
+					vm_page_unlock(m[i]);
+				}
 			}
-			vm_page_unlock_queues();
 		}
 	} else {
 		/*
@@ -266,10 +268,11 @@ dev_pager_getpages(object, m, count, reqpage)
 		page = dev_pager_getfake(paddr, memattr);
 		VM_OBJECT_LOCK(object);
 		TAILQ_INSERT_TAIL(&object->un_pager.devp.devp_pglist, page, pageq);
-		vm_page_lock_queues();
-		for (i = 0; i < count; i++)
+		for (i = 0; i < count; i++) {
+			vm_page_lock(m[i]);
 			vm_page_free(m[i]);
-		vm_page_unlock_queues();
+			vm_page_unlock(m[i]);
+		}
 		vm_page_insert(page, object, offset);
 		m[reqpage] = page;
 	}

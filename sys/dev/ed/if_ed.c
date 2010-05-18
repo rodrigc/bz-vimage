@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ed/if_ed.c,v 1.283 2009/11/17 14:23:09 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ed/if_ed.c,v 1.284 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Device driver for National Semiconductor DS8390/WD83C690 based ethernet
@@ -283,8 +283,8 @@ ed_attach(device_t dev)
 	ifp->if_start = ed_start;
 	ifp->if_ioctl = ed_ioctl;
 	ifp->if_init = ed_init;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 	ifp->if_linkmib = &sc->mibdata;
 	ifp->if_linkmiblen = sizeof sc->mibdata;

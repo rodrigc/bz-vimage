@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/my/if_my.c,v 1.48 2009/11/19 18:43:43 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/my/if_my.c,v 1.49 2010/05/03 07:32:50 sobomax Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -902,8 +902,8 @@ my_attach(device_t dev)
 	ifp->if_start = my_start;
 	ifp->if_init = my_init;
 	ifp->if_baudrate = 10000000;
-	IFQ_SET_MAXLEN(&ifp->if_snd, IFQ_MAXLEN);
-	ifp->if_snd.ifq_drv_maxlen = IFQ_MAXLEN;
+	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
+	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;
 	IFQ_SET_READY(&ifp->if_snd);
 
 	if (sc->my_info->my_did == MTD803ID)

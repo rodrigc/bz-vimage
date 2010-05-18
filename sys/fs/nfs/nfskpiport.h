@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfskpiport.h,v 1.1 2009/05/04 15:23:58 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfskpiport.h,v 1.2 2010/05/08 14:50:12 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSKPIPORT_H_
-#define	_NFSKPIPORT_NFS_H_
+#define	_NFS_NFSKPIPORT_H_
 /*
  * These definitions are needed since the generic code is now using Darwin8
  * KPI stuff. (I know, seems a bit silly, but I want the code to build on
@@ -70,4 +70,4 @@ typedef struct mbuf *		mbuf_t;
 #define	uio_iov_len(p)		((p)->uio_iov->iov_len)
 #define	uio_iov_len_add(p, v)	((p)->uio_iov->iov_len += (v))
 
-#endif	/* _NFSKPIPORT_NFS_H */
+#endif	/* _NFS_NFSKPIPORT_H */

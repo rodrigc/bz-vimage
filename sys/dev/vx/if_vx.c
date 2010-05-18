@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/vx/if_vx.c,v 1.62 2009/11/19 22:06:40 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/vx/if_vx.c,v 1.63 2010/05/03 07:32:50 sobomax Exp $");
 
 /*
  * Created from if_ep.c driver by Fred Gray (fgray@rice.edu) to support
@@ -189,7 +189,7 @@ vx_attach(device_t dev)
 	}
 
 	ifp->if_mtu = ETHERMTU;
-	ifp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_flags = IFF_BROADCAST | IFF_SIMPLEX | IFF_MULTICAST;
 	ifp->if_start = vx_start;
 	ifp->if_ioctl = vx_ioctl;

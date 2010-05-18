@@ -39,14 +39,13 @@
  *
  *	@(#)ufs_vnops.c	8.7 (Berkeley) 2/3/94
  *	@(#)ufs_vnops.c 8.27 (Berkeley) 5/27/95
- * $FreeBSD: src/sys/fs/ext2fs/ext2_vnops.c,v 1.3 2010/02/20 10:19:19 uqs Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_vnops.c,v 1.4 2010/05/05 16:44:25 trasz Exp $
  */
 
 #include "opt_suiddir.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
-#include <sys/resourcevar.h>
 #include <sys/kernel.h>
 #include <sys/fcntl.h>
 #include <sys/stat.h>
@@ -54,7 +53,6 @@
 #include <sys/buf.h>
 #include <sys/endian.h>
 #include <sys/priv.h>
-#include <sys/proc.h>
 #include <sys/mount.h>
 #include <sys/unistd.h>
 #include <sys/time.h>
@@ -71,7 +69,6 @@
 
 #include <fs/fifofs/fifo.h>
 
-#include <sys/signalvar.h>
 #include <ufs/ufs/dir.h>
 
 #include <fs/ext2fs/inode.h>

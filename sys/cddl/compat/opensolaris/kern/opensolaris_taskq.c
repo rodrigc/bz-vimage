@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_taskq.c,v 1.2 2010/04/19 09:03:36 delphij Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_taskq.c,v 1.3 2010/05/16 15:12:34 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -39,12 +39,6 @@ __FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_taskq.c,v 1
 #include <vm/uma.h>
 
 static uma_zone_t taskq_zone;
-
-struct ostask {
-	struct task	ost_task;
-	task_func_t	*ost_func;
-	void		*ost_arg;
-};
 
 taskq_t *system_taskq = NULL;
 
@@ -136,6 +130,35 @@ taskq_dispatch(taskq_t *tq, task_func_t func, void *arg, uint_t flags)
 	task->ost_arg = arg;
 
 	TASK_INIT(&task->ost_task, 0, taskq_run, task);
+	taskqueue_enqueue(tq->tq_queue, &task->ost_task);
+
+	return ((taskqid_t)(void *)task);
+}
+
+#define	TASKQ_MAGIC	0x74541c
+
+static void
+taskq_run_safe(void *arg, int pending __unused)
+{
+	struct ostask *task = arg;
+
+	ASSERT(task->ost_magic == TASKQ_MAGIC);
+	task->ost_func(task->ost_arg);
+	task->ost_magic = 0;
+}
+
+taskqid_t
+taskq_dispatch_safe(taskq_t *tq, task_func_t func, void *arg,
+    struct ostask *task)
+{
+
+	ASSERT(task->ost_magic != TASKQ_MAGIC);
+
+	task->ost_magic = TASKQ_MAGIC;
+	task->ost_func = func;
+	task->ost_arg = arg;
+
+	TASK_INIT(&task->ost_task, 0, taskq_run_safe, task);
 	taskqueue_enqueue(tq->tq_queue, &task->ost_task);
 
 	return ((taskqid_t)(void *)task);

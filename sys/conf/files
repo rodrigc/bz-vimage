@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/files,v 1.1514 2010/04/28 22:25:27 jkim Exp $
+# $FreeBSD: src/sys/conf/files,v 1.1516 2010/05/17 03:51:57 mav Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -1293,6 +1293,9 @@ dev/mpt/mpt_pci.c		optional mpt pci
 dev/mpt/mpt_raid.c		optional mpt
 dev/mpt/mpt_user.c		optional mpt
 dev/msk/if_msk.c		optional msk inet
+dev/mvs/mvs.c			optional mvs
+dev/mvs/mvs_if.m		optional mvs
+dev/mvs/mvs_pci.c		optional mvs pci
 dev/mwl/if_mwl.c		optional mwl
 dev/mwl/if_mwl_pci.c		optional mwl pci
 dev/mwl/mwlhal.c		optional mwl

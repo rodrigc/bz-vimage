@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/udp6_usrreq.c,v 1.115 2009/08/01 19:26:27 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/udp6_usrreq.c,v 1.116 2010/05/09 20:32:00 kmacy Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1079,7 +1079,9 @@ udp6_send(struct socket *so, int flags, struct mbuf *m,
 	mac_inpcb_create_mbuf(inp, m);
 #endif
 	error = udp6_output(inp, m, addr, control, td);
+#ifdef INET
 out:
+#endif	
 	INP_WUNLOCK(inp);
 	INP_INFO_WUNLOCK(&V_udbinfo);
 	return (error);

@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.185 2009/06/22 22:20:38 andre Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.186 2010/05/01 18:34:50 zec Exp $");
 
 #include "opt_param.h"
 #include "opt_mbuf_stress_test.h"
@@ -948,9 +948,8 @@ m_adj(struct mbuf *mp, int req_len)
 				len = 0;
 			}
 		}
-		m = mp;
 		if (mp->m_flags & M_PKTHDR)
-			m->m_pkthdr.len -= (req_len - len);
+			mp->m_pkthdr.len -= (req_len - len);
 	} else {
 		/*
 		 * Trim from tail.  Scan the mbuf chain,

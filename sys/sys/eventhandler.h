@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/eventhandler.h,v 1.47 2010/03/19 19:51:03 bz Exp $
+ * $FreeBSD: src/sys/sys/eventhandler.h,v 1.48 2010/05/11 22:46:36 pjd Exp $
  */
 
 #ifndef SYS_EVENTHANDLER_H
@@ -183,10 +183,6 @@ EVENTHANDLER_DECLARE(shutdown_final, shutdown_fn);
 typedef void (*vm_lowmem_handler_t)(void *, int);
 #define	LOWMEM_PRI_DEFAULT	EVENTHANDLER_PRI_FIRST
 EVENTHANDLER_DECLARE(vm_lowmem, vm_lowmem_handler_t);
-
-/* Low vnodes event */
-typedef void (*vfs_lowvnodes_handler_t)(void *, int);
-EVENTHANDLER_DECLARE(vfs_lowvnodes, vfs_lowvnodes_handler_t);
 
 /* Root mounted event */
 typedef void (*mountroot_handler_t)(void *);

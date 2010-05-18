@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clvfsops.c,v 1.10 2010/04/24 22:52:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clvfsops.c,v 1.11 2010/05/17 23:55:38 rmacklem Exp $");
 
 
 #include "opt_bootp.h"
@@ -953,7 +953,7 @@ nfs_mount(struct mount *mp)
 
 	if (vfs_getopt(mp->mnt_optnew, "fh", (void **)&args.fh,
 	    &args.fhsize) == 0) {
-		if (args.fhsize > NFSX_FHMAX) {
+		if (args.fhsize < 0 || args.fhsize > NFSX_FHMAX) {
 			vfs_mount_error(mp, "Bad file handle");
 			error = EINVAL;
 			goto out;

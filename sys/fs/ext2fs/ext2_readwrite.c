@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ufs_readwrite.c	8.7 (Berkeley) 1/21/94
- * $FreeBSD: src/sys/fs/ext2fs/ext2_readwrite.c,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_readwrite.c,v 1.2 2010/05/05 16:44:25 trasz Exp $
  */
 
 /* XXX TODO: remove these obfuscations (as in ffs_vnops.c). */
@@ -168,7 +168,6 @@ WRITE(ap)
 	struct inode *ip;
 	FS *fs;
 	struct buf *bp;
-	struct thread *td;
 	daddr_t lbn;
 	off_t osize;
 	int blkoffset, error, flags, ioflag, resid, size, seqcount, xfersize;
@@ -213,17 +212,8 @@ WRITE(ap)
 	 * Maybe this should be above the vnode op call, but so long as
 	 * file servers have no limits, I don't think it matters.
 	 */
-	td = uio->uio_td;
-	if (vp->v_type == VREG && td != NULL) {
-		PROC_LOCK(td->td_proc);
-		if (uio->uio_offset + uio->uio_resid >
-		    lim_cur(td->td_proc, RLIMIT_FSIZE)) {
-			psignal(td->td_proc, SIGXFSZ);
-			PROC_UNLOCK(td->td_proc);
-			return (EFBIG);
-		}
-		PROC_UNLOCK(td->td_proc);
-	}
+	if (vn_rlimit_fsize(vp, uio, uio->uio_td))
+		return (EFBIG);
 
 	resid = uio->uio_resid;
 	osize = ip->i_size;

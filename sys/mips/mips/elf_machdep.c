@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/elf_machdep.c,v 1.11 2010/02/18 05:49:52 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/elf_machdep.c,v 1.12 2010/05/13 01:50:29 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -159,7 +159,7 @@ static int
 elf_reloc_internal(linker_file_t lf, Elf_Addr relocbase, const void *data,
     int type, int local, elf_lookup_fn lookup)
 {
-	Elf_Addr *where = (Elf_Addr *)NULL;;
+	Elf_Addr *where = (Elf_Addr *)NULL;
 	Elf_Addr addr;
 	Elf_Addr addend = (Elf_Addr)0;
 	Elf_Word rtype = (Elf_Word)0, symidx;

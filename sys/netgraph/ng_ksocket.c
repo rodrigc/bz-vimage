@@ -37,7 +37,7 @@
  *
  * Author: Archie Cobbs <archie@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_ksocket.c,v 1.65 2010/03/31 22:16:05 mav Exp $
+ * $FreeBSD: src/sys/netgraph/ng_ksocket.c,v 1.66 2010/05/06 20:58:23 fabient Exp $
  * $Whistle: ng_ksocket.c,v 1.1 1999/11/16 20:04:40 archie Exp $
  */
 
@@ -1272,7 +1272,7 @@ ng_ksocket_finish_accept(priv_p priv)
 	soupcall_set(so, SO_RCV, ng_ksocket_incoming, node);
 	SOCKBUF_UNLOCK(&so->so_rcv);
 	SOCKBUF_LOCK(&so->so_snd);
-	soupcall_set(so, SO_RCV, ng_ksocket_incoming, node);
+	soupcall_set(so, SO_SND, ng_ksocket_incoming, node);
 	SOCKBUF_UNLOCK(&so->so_snd);
 
 	/* Fill in the response data and send it or return it to the caller */

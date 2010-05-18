@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/nxge/if_nxge.c,v 1.7 2009/11/19 21:47:54 jhb Exp $
+ * $FreeBSD: src/sys/dev/nxge/if_nxge.c,v 1.8 2010/05/03 07:32:50 sobomax Exp $
  */
 
 #include <dev/nxge/if_nxge.h>
@@ -1190,7 +1190,7 @@ xge_interface_setup(device_t dev)
 	ifnetp->if_start    = xge_send;
 
 	/* TODO: Check and assign optimal value */
-	ifnetp->if_snd.ifq_maxlen = IFQ_MAXLEN;
+	ifnetp->if_snd.ifq_maxlen = ifqmaxlen;
 
 	ifnetp->if_capabilities = IFCAP_VLAN_HWTAGGING | IFCAP_VLAN_MTU |
 	    IFCAP_HWCSUM;
