@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.6 2010/05/16 19:43:48 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.7 2010/05/18 17:01:07 rpaulo Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -1707,6 +1707,8 @@ static int
 rge_probe(dev)
 	device_t dev;
 {
+	device_set_desc(dev, "RMI Gigabit Ethernet");
+
 	/* Always return 0 */
 	return 0;
 }

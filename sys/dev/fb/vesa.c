@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fb/vesa.c,v 1.35 2010/04/07 21:38:42 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fb/vesa.c,v 1.37 2010/05/18 22:30:55 jkim Exp $");
 
 #include "opt_vga.h"
 #include "opt_vesa.h"
@@ -240,10 +240,10 @@ vesa_bios_post(void)
 	/* Find the matching PCI video controller. */
 	dc = devclass_find("vgapci");
 	if (dc != NULL && devclass_get_devices(dc, &devs, &count) == 0) {
-		for (dev = NULL, i = 0; dev == NULL && i < count; devs++, i++)
-			if (device_get_flags(*devs) != 0 &&
-			    x86bios_match_device(0xc0000, *devs)) {
-				dev = *devs;
+		for (i = 0; i < count; i++)
+			if (device_get_flags(devs[i]) != 0 &&
+			    x86bios_match_device(0xc0000, devs[i])) {
+				dev = devs[i];
 				is_pci = 1;
 				break;
 			}
@@ -1443,6 +1443,7 @@ vesa_load_state(video_adapter_t *adp, void *p)
 	/* Try BIOS POST to restore a sane state. */
 	(void)vesa_bios_post();
 	(void)int10_set_mode(adp->va_initial_bios_mode);
+	(void)vesa_set_mode(adp, adp->va_mode);
 
 	return (vesa_bios_save_restore(STATE_LOAD, ((adp_state_t *)p)->regs,
 	    vesa_state_buf_size));

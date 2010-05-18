@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clsubs.c,v 1.4 2010/01/28 16:17:24 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clsubs.c,v 1.5 2010/05/18 05:18:21 rmacklem Exp $");
 
 /*
  * These functions support the macros and help fiddle mbuf chains for
@@ -188,11 +188,12 @@ ncl_getattrcache(struct vnode *vp, struct vattr *vaper)
 	struct nfsnode *np;
 	struct vattr *vap;
 	struct nfsmount *nmp;
-	int timeo;
+	int timeo, mustflush;
 	
 	np = VTONFS(vp);
 	vap = &np->n_vattr.na_vattr;
 	nmp = VFSTONFS(vp->v_mount);
+	mustflush = nfscl_mustflush(vp);	/* must be before mtx_lock() */
 #ifdef NFS_ACDEBUG
 	mtx_lock(&Giant);	/* ncl_printf() */
 #endif
@@ -228,9 +229,13 @@ ncl_getattrcache(struct vnode *vp, struct vattr *vaper)
 			   (time_second - np->n_attrstamp), timeo);
 #endif
 
-	if ((time_second - np->n_attrstamp) >= timeo) {
+	if ((time_second - np->n_attrstamp) >= timeo &&
+	    mustflush != 0) {
 		newnfsstats.attrcache_misses++;
 		mtx_unlock(&np->n_mtx);
+#ifdef NFS_ACDEBUG
+		mtx_unlock(&Giant);	/* ncl_printf() */
+#endif
 		return( ENOENT);
 	}
 	newnfsstats.attrcache_hits++;

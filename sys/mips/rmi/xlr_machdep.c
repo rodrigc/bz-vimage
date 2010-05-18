@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.7 2010/05/16 19:43:48 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.8 2010/05/18 04:02:34 rrs Exp $");
 
 #include "opt_ddb.h"
 
@@ -534,6 +534,8 @@ void platform_init_ap(int processor_id)
 
 	/* Setup interrupts for secondary CPUs here */
 	stat = mips_rd_status();
+	KASSERT((stat & MIPS_SR_INT_IE) == 0,
+	    ("Interrupts enabled in %s!", __func__));
 	stat |= MIPS_SR_COP_2_BIT | MIPS_SR_COP_0_BIT;
 	mips_wr_status(stat);
 
@@ -569,5 +571,12 @@ int platform_processor_id(void)
 int platform_num_processors(void)
 {
 	return fls(xlr_boot1_info.cpu_online_map);
+}
+
+struct cpu_group *
+platform_smp_topo()
+{
+	return (smp_topo_2level(CG_SHARE_L2, platform_num_processors() / 4,
+	    CG_SHARE_L1, 4, CG_FLAG_THREAD));
 }
 #endif

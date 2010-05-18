@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2010 Neelkanth Natu
+ * Copyright (c) 2010 RMI Technologies Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/mips/mpboot.S,v 1.6 2010/05/18 04:02:34 rrs Exp $
+ * $FreeBSD: src/sys/mips/rmi/mpwait.S,v 1.1 2010/05/18 04:08:58 rrs Exp $
  */
 
 #include <machine/asm.h>
@@ -36,49 +36,33 @@
 	.set	noat
 	.set	noreorder
 
-#ifdef TARGET_OCTEON
-#define CLEAR_STATUS \
-	mfc0    a0, COP_0_STATUS_REG    ;\
-	li      a2, (MIPS_SR_KX | MIPS_SR_SX | MIPS_SR_UX) ; \
-	or      a0, a0, a2	        ; \
-	li      a2, ~(MIPS_SR_INT_IE | MIPS_SR_EXL | SR_KSU_USER | MIPS_SR_BEV)   ; \
-	and     a0, a0, a2              ; \
-        mtc0    a0, COP_0_STATUS_REG    
-#else
-#define CLEAR_STATUS \
-	mtc0	zero, COP_0_STATUS_REG
-#endif
+/*
+ * On XLR the slave processors and threads will be executing boot
+ * loader code on startup. We need to make them run our code before
+ * blowing away boot loader memory.
+ */
+LEAF(mpwait)
+	PTR_LA  gp, _C_LABEL(_gp)
+	PTR_LA  t1, _C_LABEL(xlr_ap_release)
+	mfc0	t2, $15, 1
+	andi	t2, 0x1f
+	sll	t2, t2, 2
+	add	t1, t2
 
-GLOBAL(mpentry)
-	CLEAR_STATUS			/* disable interrupts */
-
-	mtc0	zero, COP_0_CAUSE_REG	/* clear soft interrupts */
-
-	li	t0, CFG_K0_CACHED	/* make sure kseg0 is cached */
-	mtc0	t0, MIPS_COP_0_CONFIG
-	COP0_SYNC
-
-	jal	platform_processor_id	/* get the processor number */
+1:	lw	t0, 0(t1)
+	bnez	t0, 2f
+	nop     /* We should not busy wait in core0 threads */
+	nop     /* on bootup, this will slow the cpu0 thread */
+	nop     /* down - TODO - wait with IPI based wakeup */
 	nop
-	move	s0, v0
-
-	/*
-	 * Initialize stack and call machine startup
-	 */
-	PTR_LA	sp, _C_LABEL(pcpu_space)
-	addiu	sp, (PAGE_SIZE * 2) - CALLFRAME_SIZ
-	sll	t0, s0, PAGE_SHIFT + 1
-	addu	sp, sp, t0
-
-	/* Zero out old ra and old fp for debugger */
-	sw      zero, CALLFRAME_SIZ - 4(sp)
-	sw      zero, CALLFRAME_SIZ - 8(sp)
-
-	PTR_LA	gp, _C_LABEL(_gp)
-
-	jal	platform_init_ap
-	move	a0, s0
-	jal	smp_init_secondary
-	move	a0, s0
-
-	PANIC("AP startup failed!")
+	nop
+	nop
+	nop
+	nop
+	j	1b
+	nop
+2:
+	PTR_LA  t1, _C_LABEL(mpentry)
+	jr	t1
+	nop
+END(mpwait)

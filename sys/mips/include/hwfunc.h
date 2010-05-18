@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/hwfunc.h,v 1.3 2010/02/09 06:24:43 neel Exp $
+ * $FreeBSD: src/sys/mips/include/hwfunc.h,v 1.4 2010/05/18 04:02:34 rrs Exp $
  */
 
 #ifndef _MACHINE_HWFUNC_H_
@@ -92,6 +92,12 @@ extern int platform_processor_id(void);
  * Return the number of processors available on this platform.
  */
 extern int platform_num_processors(void);
+
+/*
+ * Return the topology of processors on this platform
+ */
+struct cpu_group *platform_smp_topo(void);
+
 
 #endif	/* SMP */
 #endif /* !_MACHINE_HWFUNC_H_ */

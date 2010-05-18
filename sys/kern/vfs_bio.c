@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.577 2010/05/08 20:34:01 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.578 2010/05/18 16:40:29 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1353,9 +1353,7 @@ brelse(struct buf *bp)
 					(PAGE_SIZE - poffset) : resid;
 
 				KASSERT(presid >= 0, ("brelse: extra page"));
-				vm_page_lock_queues();
 				vm_page_set_invalid(m, poffset, presid);
-				vm_page_unlock_queues();
 				if (had_bogus)
 					printf("avoided corruption bug in bogus_page/brelse code\n");
 			}
