@@ -271,6 +271,12 @@ void vimage_log_recursion(struct vimage_subsys *,
 #endif
 
 #ifdef VIMAGE
+#include "opt_kdtrace.h"
+#include <sys/sdt.h>
+
+SDT_PROVIDER_DECLARE(vimage);
+SDT_PROBE_DECLARE(vimage, macros, curvimage, set);
+SDT_PROBE_DECLARE(vimage, macros, curvimage, restore);
 #define	curinstance(vse)						\
 	*((void **)((uintptr_t)curthread + (vse)->v_curvar))
 #define	_CURVIMAGE_SET_QUIET(vse, ident, arg)				\
@@ -278,12 +284,16 @@ void vimage_log_recursion(struct vimage_subsys *,
 	    "cur%s=%p %s=%p", (vse)->NAME, __FILE__, __LINE__, __func__,\
 	    (vse)->name, curinstance(vse), (vse)->name, (arg)));	\
 	struct vimage *saved_ ## ident = curinstance(vse);		\
-	curinstance(vse) = (void *)arg
+	curinstance(vse) = (void *)arg;					\
+	SDT_PROBE5(vimage, macros, curvimage, set,			\
+	    vse, __func__, __LINE__, saved_ ## ident, arg)
 #define	_CURVIMAGE_RESTORE(vse, ident)					\
 	VIMAGE_ASSERT(curinstance(vse) != NULL,				\
 	    ("CUR%s_RESTORE at %s:%d %s() cur%s=%p saved_%s=%p",	\
 	    (vse)->NAME, __FILE__, __LINE__, __func__, (vse)->name,	\
 	    curinstance(vse), (vse)->name, saved_ ## ident));		\
+	SDT_PROBE5(vimage, macros, curvimage, restore,			\
+	    vse, __func__, __LINE__, curinstance(vse), saved_ ## ident);\
 	curinstance(vse) = (void *)saved_ ## ident
 #ifdef VIMAGE_DEBUG
 #define	curinstance_lpush(vse)						\

@@ -162,10 +162,17 @@ SDT_PROVIDER_DEFINE(vimage);
  * certain optimization levels.
  */
 SDT_PROBE_DEFINE1(vimage, functions, vimage_alloc, entry, "int");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int", "struct vimage *");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int", "struct vimage *");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "int", "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int",
+    "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int",
+    "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "int",
+    "struct vimage *");
 SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy, return, "int");
+SDT_PROBE_DEFINE5(vimage, macros, curvimage, set, "struct vimage_subsys *",
+    "char *", "int", "struct vimage *", "struct vimage *");
+SDT_PROBE_DEFINE5(vimage, macros, curvimage, restore, "struct vimage_subsys *",
+    "char *", "int", "struct vimage *", "struct vimage *");
 
 static void *vimage_data_alloc(struct vimage_subsys *, size_t);
 static void vimage_data_free(struct vimage_subsys *, void *, size_t);
