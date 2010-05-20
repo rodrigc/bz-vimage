@@ -562,8 +562,10 @@ parse_vimage(elf_file_t ef)
 	 * Error just means there is no data set to relocate for this
 	 * virtualized subsystem.
 	 */
-	if (error)
+	if (error) {
+	    error = 0;
 	    continue;
+	}
 	count *= sizeof(void *);
 	/*
 	 * Allocate space for the elf_file_t list entry.
