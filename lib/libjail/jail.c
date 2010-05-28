@@ -160,13 +160,13 @@ jailparam_all(struct jailparam **jpp)
 {
 	struct jailparam *jp;
 	size_t mlen1, mlen2, buflen;
-	int njp, nlist;
+	int njp, ncount;
 	int mib1[CTL_MAXNAME], mib2[CTL_MAXNAME - 2];
 	char buf[MAXPATHLEN];
 
 	njp = 0;
-	nlist = 32;
-	jp = malloc(nlist * sizeof(*jp));
+	ncount = 32;
+	jp = malloc(ncount * sizeof(*jp));
 	if (jp == NULL) {
 		strerror_r(errno, jail_errmsg, JAIL_ERRMSGLEN);
 		return (-1);
@@ -203,9 +203,9 @@ jailparam_all(struct jailparam **jpp)
 		if (buf[buflen - 2] == '.')
 			buf[buflen - 2] = '\0';
 		/* Add the parameter to the list */
-		if (njp >= nlist) {
-			nlist *= 2;
-			jp = realloc(jp, nlist * sizeof(*jp));
+		if (njp >= ncount) {
+			ncount *= 2;
+			jp = realloc(jp, ncount * sizeof(*jp));
 			if (jp == NULL) {
 				jailparam_free(jp, njp);
 				return (-1);
@@ -513,9 +513,8 @@ TAILQ_HEAD(prisonlist, prison);
 
 static int
 _jail_get_copyopt(struct iovec *iovp, unsigned int iovcnt,
-    const char *name, void *dest, int len)
+    const char *name, void *dest, size_t len)
 {
-	struct iovec *p;
 	unsigned int i;
 
 	for (i = 0; i < (iovcnt - 1); i++) {
@@ -540,7 +539,7 @@ _jail_get_copyopt(struct iovec *iovp, unsigned int iovcnt,
 
 static int
 _jail_get_getopt(struct iovec *iovp, unsigned int iovcnt,
-    const char *name, void **buf, int *len)
+    const char *name, char **buf, int *len)
 {
 	unsigned int i;
 
@@ -553,7 +552,7 @@ _jail_get_getopt(struct iovec *iovp, unsigned int iovcnt,
 			if (len != NULL)
 				*len = iovp[i+1].iov_len;
 			if (buf != NULL)
-				*buf = iovp[i+1].iov_base;
+				*buf = (char *)iovp[i+1].iov_base;
 			return (0);
 		}
 		/* Skip pair. */
@@ -564,7 +563,7 @@ _jail_get_getopt(struct iovec *iovp, unsigned int iovcnt,
 
 static int
 _jail_get_setopt(struct iovec *iovp, unsigned int iovcnt,
-    const char *name, void *value, int len)
+    const char *name, void *value, size_t len)
 {
 	unsigned int i;
 
@@ -593,7 +592,7 @@ _jail_get_setopt(struct iovec *iovp, unsigned int iovcnt,
 
 static int
 _jail_get_setopt_part(struct iovec *iovp, unsigned int iovcnt,
-    const char *name, void *value, int len)
+    const char *name, void *value, size_t len)
 {
 	unsigned int i;
 
@@ -657,7 +656,7 @@ _jail_get_kvm_opterror(struct iovec *iovp, unsigned int iovcnt,
 	char *errmsg;
 
 	error = _jail_get_getopt(iovp, iovcnt, "errmsg",
-	    (void **)&errmsg, &len);
+	    &errmsg, &len);
 	if (error || errmsg == NULL || len <= 0)
 		return;
 
@@ -746,7 +745,8 @@ _jail_get_kvm_prison_find_child(kvm_t *kd, uintptr_t mypraddr,
 				cpr = NULL;
 				rpr = cpr;
 			} else {
-				if (descend = LIST_NEXT(cpr, pr_sibling) != NULL) {
+				if ((descend =
+				    (LIST_NEXT(cpr, pr_sibling) != NULL))) {
 					cpr = LIST_NEXT(cpr, pr_sibling);
 					if (_jail_get_kvm_prison_read(kd,
 					    (uintptr_t)cpr, &pr, size))
@@ -768,10 +768,10 @@ _jail_get_kvm_prison_find_child(kvm_t *kd, uintptr_t mypraddr,
          return (0);
 }
 
-static char *
+static const char *
 _jail_get_kvm_prison_name(kvm_t *kd, struct prison *pr1, struct prison *pr2)
 {
-	char *name;
+	const char *name;
 	struct prison pr;
 
 	/* Jails see themselves as "0" (if they see themselves at all). */
@@ -797,10 +797,11 @@ _jail_get_kvm_prison_name(kvm_t *kd, struct prison *pr1, struct prison *pr2)
 	return (name);
 }
 
-static char *
-_jail_get_kvm_prison_path(kvm_t *kd, struct prison *pr1, struct prison *pr2)
+static const char *
+_jail_get_kvm_prison_path(kvm_t *kd __unused, struct prison *pr1,
+    struct prison *pr2)
 {
-	char *path1, *path2;
+	const char *path1, *path2;
 	int len1;
 
 	path1 = pr1->pr_path;
@@ -854,7 +855,8 @@ again:
 				cpr = NULL;
 				rpr = cpr;
 			} else {
-				if (descend = LIST_NEXT(cpr, pr_sibling) != NULL) {
+				if ((descend =
+				    (LIST_NEXT(cpr, pr_sibling) != NULL))) {
 					cpr = LIST_NEXT(cpr, pr_sibling);
 					if (_jail_get_kvm_prison_read(kd,
 					    (uintptr_t)cpr, &pr, size))
@@ -891,7 +893,7 @@ _jail_get_kvm(struct iovec *iovp, unsigned int iovcnt, int flags,
 	uintptr_t praddr;
 	char *name, *p;
 	int error, jid, len, i;
-	uintptr_t procp, tdp, credp;
+	uintptr_t procp, credp;
 	lwpid_t dumptid;
 	pid_t pid;
 	struct proc proc;
@@ -912,38 +914,38 @@ _jail_get_kvm(struct iovec *iovp, unsigned int iovcnt, int flags,
 	char **pr_flag_names;
 	char **pr_flag_nonames;
 	char buf[256];
-	int fi;
-
+	size_t fi;
+	unsigned u;
 
 	static struct nlist nl[] = {
 #define	NLIST_ALLPRISON			0
-		{ .n_name = "_allprison" },
+		{ .n_name = __DECONST(char *, "_allprison") },
 #define NLIST_ALLPROC			1
-		{ .n_name = "allproc" },
+		{ .n_name = __DECONST(char *, "allproc") },
 #define NLIST_DUMPTID			2
-		{ .n_name = "dumptid" },
+		{ .n_name = __DECONST(char *, "dumptid") },
 #define NLIST_PROC0			3
-		{ .n_name = "proc0" },
+		{ .n_name = __DECONST(char *, "proc0") },
 #define NLIST_PR_FLAG_NAMES		4
-		{ .n_name = "pr_flag_names" },
+		{ .n_name = __DECONST(char *, "pr_flag_names") },
 #define NLIST_PR_FLAG_NAMES_SIZE	5
-		{ .n_name = "pr_flag_names_size" },
+		{ .n_name = __DECONST(char *, "pr_flag_names_size") },
 #define NLIST_PR_FLAG_NONAMES		6
-		{ .n_name = "pr_flag_nonames" },
+		{ .n_name = __DECONST(char *, "pr_flag_nonames") },
 #define NLIST_PR_FLAG_NONAMES_SIZE	7
-		{ .n_name = "pr_flag_nonames_size" },
+		{ .n_name = __DECONST(char *, "pr_flag_nonames_size") },
 #define NLIST_PR_FLAG_JAILSYS		8
-		{ .n_name = "pr_flag_jailsys" },
+		{ .n_name = __DECONST(char *, "pr_flag_jailsys") },
 #define NLIST_PR_FLAG_JAILSYS_SIZE	9
-		{ .n_name = "pr_flag_jailsys_size" },
+		{ .n_name = __DECONST(char *, "pr_flag_jailsys_size") },
 #define NLIST_PR_ALLOW_NAMES		10
-		{ .n_name = "pr_allow_names" },
+		{ .n_name = __DECONST(char *, "pr_allow_names") },
 #define NLIST_PR_ALLOW_NAMES_SIZE	11
-		{ .n_name = "pr_allow_names_size" },
+		{ .n_name = __DECONST(char *, "pr_allow_names_size") },
 #define NLIST_PR_ALLOW_NONAMES		12
-		{ .n_name = "pr_allow_nonames" },
+		{ .n_name = __DECONST(char *, "pr_allow_nonames") },
 #define NLIST_PR_ALLOW_NONAMES_SIZE	13
-		{ .n_name = "pr_allow_nonames_size" },
+		{ .n_name = __DECONST(char *, "pr_allow_nonames_size") },
 		{ .n_name = NULL },
 	};
 
@@ -1123,7 +1125,7 @@ _jail_get_kvm(struct iovec *iovp, unsigned int iovcnt, int flags,
 	} else if (error != ENOENT)
 		goto err;
 
-	error = _jail_get_getopt(iovp, iovcnt, "name", (void **)&name, &len);
+	error = _jail_get_getopt(iovp, iovcnt, "name", &name, &len);
 	if (error == 0) {
 		if (len == 0 || name[len - 1] != '\0') {
 			error = EINVAL;
@@ -1336,11 +1338,11 @@ found_prison:
 	}
 
 	for (fi = 0; fi < pr_flag_jailsys_size / sizeof(*pr_flag_jailsys); fi++) {
-		i = prp->pr_flags &
+		u = prp->pr_flags &
 		    (pr_flag_jailsys[fi].disable | pr_flag_jailsys[fi].new);
-		i = pr_flag_jailsys[fi].disable &&
-		    (i == pr_flag_jailsys[fi].disable) ? JAIL_SYS_DISABLE
-		    : (i == pr_flag_jailsys[fi].new) ? JAIL_SYS_NEW
+		u = pr_flag_jailsys[fi].disable &&
+		    (u == pr_flag_jailsys[fi].disable) ? JAIL_SYS_DISABLE
+		    : (u == pr_flag_jailsys[fi].new) ? JAIL_SYS_NEW
 		    : JAIL_SYS_INHERIT;
 		name = _jail_get_kvm_prison_read_string(kd,
 		    (uintptr_t)pr_flag_jailsys[fi].name, buf, sizeof(buf));
@@ -1578,12 +1580,13 @@ _jailparam_get(struct jailparam *jp, unsigned njp, int flags,
 				ai++;
 			}
 		}
-		if (usesyscall)
+		if (usesyscall) {
 			if (jail_get(jiov, ki, flags) < 0)
 				break;
-		else
+		} else {
 			if (_jail_get_kvm(jiov, ki, flags, nlistf, memf) < 0)
 				break;
+		}
 		for (ai = j = 0; j < njp; j++) {
 			if (jp[j].jp_elemlen &&
 			    !(jp[j].jp_flags & JP_RAWVALUE)) {
