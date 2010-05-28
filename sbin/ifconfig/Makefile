@@ -28,8 +28,13 @@ SRCS+=	ifgre.c			# GRE keys etc
 SRCS+=	ifgif.c			# GIF reversed header workaround
 
 SRCS+=	ifieee80211.c regdomain.c # SIOC[GS]IEEE80211 support
-DPADD+=	${LIBBSDXML} ${LIBJAIL} ${LIBSBUF}
-LDADD+=	-lbsdxml -ljail -lsbuf
+DPADD+=	${LIBBSDXML} ${LIBSBUF}
+LDADD+=	-lbsdxml -lsbuf
+.if !defined(RELEASE_CRUNCH) && !defined(RESCUE)
+CFLAGS+= -DJAIL
+DPADD+=	${LIBJAIL} ${LIBKVM}
+LDADD+=	-ljail -lkvm
+.endif
 
 SRCS+=	ifcarp.c		# SIOC[GS]VH support
 SRCS+=	ifgroup.c		# ...
