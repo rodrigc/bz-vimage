@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ofw/ofw_bus_subr.h,v 1.3 2009/06/14 00:05:38 marius Exp $
+ * $FreeBSD: src/sys/dev/ofw/ofw_bus_subr.h,v 1.4 2010/05/28 10:43:56 raj Exp $
  */
 
 #ifndef	_DEV_OFW_OFW_BUS_SUBR_H_
@@ -66,5 +66,9 @@ int	ofw_bus_lookup_imap(phandle_t, struct ofw_bus_iinfo *, void *, int,
 	    void *, int, void *, int, void *);
 int	ofw_bus_search_intrmap(void *, int, void *, int, void *, int, void *,
 	    void *, void *, int);
+
+/* Helper routine for checking compat prop */
+int ofw_bus_is_compatible(device_t, const char *);
+int ofw_bus_is_compatible_strict(device_t, const char *);
 
 #endif /* !_DEV_OFW_OFW_BUS_SUBR_H_ */

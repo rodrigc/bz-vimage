@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.389 2010/04/30 03:15:00 alfred Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.390 2010/05/23 18:32:02 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -1483,7 +1483,7 @@ kern_sigsuspend(struct thread *td, sigset_t mask)
 	 * thread. But sigsuspend should return only on signal
 	 * delivery.
 	 */
-	cpu_set_syscall_retval(td, EINTR);
+	(p->p_sysent->sv_set_syscall_retval)(td, EINTR);
 	for (has_sig = 0; !has_sig;) {
 		while (msleep(&p->p_sigacts, &p->p_mtx, PPAUSE|PCATCH, "pause",
 			0) == 0)

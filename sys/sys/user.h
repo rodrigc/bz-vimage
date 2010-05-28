@@ -29,7 +29,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)user.h	8.2 (Berkeley) 9/23/93
- * $FreeBSD: src/sys/sys/user.h,v 1.86 2010/04/24 12:49:52 kib Exp $
+ * $FreeBSD: src/sys/sys/user.h,v 1.87 2010/05/27 08:10:12 attilio Exp $
  */
 
 #ifndef _SYS_USER_H_
@@ -336,6 +336,7 @@ struct kinfo_file {
 
 #define	KVME_FLAG_COW		0x00000001
 #define	KVME_FLAG_NEEDS_COPY	0x00000002
+#define	KVME_FLAG_NOCOREDUMP	0x00000004
 
 #if defined(__amd64__)
 #define	KINFO_OVMENTRY_SIZE	1168

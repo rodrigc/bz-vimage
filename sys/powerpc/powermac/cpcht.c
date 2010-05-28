@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/cpcht.c,v 1.2 2010/05/16 15:18:25 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/cpcht.c,v 1.3 2010/05/19 01:37:47 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -622,7 +622,7 @@ struct openpic_cpcht_softc {
 static driver_t openpic_cpcht_driver = {
 	"htpic",
 	openpic_cpcht_methods,
-	sizeof(struct openpic_softc),
+	sizeof(struct openpic_cpcht_softc),
 };
 
 DRIVER_MODULE(openpic, unin, openpic_cpcht_driver, openpic_devclass, 0, 0);

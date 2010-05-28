@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)systm.h	8.7 (Berkeley) 3/29/95
- * $FreeBSD: src/sys/sys/systm.h,v 1.285 2010/03/03 13:29:39 ivoras Exp $
+ * $FreeBSD: src/sys/sys/systm.h,v 1.286 2010/05/24 11:40:49 mav Exp $
  */
 
 #ifndef _SYS_SYSTM_H_
@@ -240,6 +240,8 @@ void	hardclock_cpu(int usermode);
 void	softclock(void *);
 void	statclock(int usermode);
 void	profclock(int usermode, uintfptr_t pc);
+void	timer1clock(int usermode, uintfptr_t pc);
+void	timer2clock(int usermode, uintfptr_t pc);
 
 void	startprofclock(struct proc *);
 void	stopprofclock(struct proc *);

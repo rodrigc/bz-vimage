@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pci/pci.c,v 1.397 2010/05/16 15:18:25 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pci/pci.c,v 1.398 2010/05/22 03:19:30 mav Exp $");
 
 #include "opt_bus.h"
 
@@ -2988,6 +2988,8 @@ pci_resume(device_t dev)
 
 		/* Now the device is powered up, restore its config space. */
 		pci_cfg_restore(child, dinfo);
+		if (!device_is_attached(child))
+			pci_cfg_save(child, dinfo, 1);
 	}
 	free(devlist, M_TEMP);
 	return (bus_generic_resume(dev));

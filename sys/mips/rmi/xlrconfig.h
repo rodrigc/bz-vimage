@@ -25,7 +25,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
-  __FBSDID("$FreeBSD: src/sys/mips/rmi/xlrconfig.h,v 1.2 2010/05/16 19:43:48 rrs Exp $");
+  __FBSDID("$FreeBSD: src/sys/mips/rmi/xlrconfig.h,v 1.3 2010/05/21 05:34:19 jchandra Exp $");
  *
  * RMI_BSD */
 #ifndef XLRCONFIG_H
@@ -352,4 +352,9 @@ xlr_paddr_lw(uint64_t paddr)
 
 	return tmp;
 }
+
+/* for cpuid to hardware thread id mapping */
+extern uint32_t xlr_hw_thread_mask;
+extern int xlr_cpuid_to_hwtid[];
+extern int xlr_hwtid_to_cpuid[];
 #endif

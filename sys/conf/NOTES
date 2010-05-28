@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/NOTES,v 1.1583 2010/05/02 19:28:30 mav Exp $
+# $FreeBSD: src/sys/conf/NOTES,v 1.1584 2010/05/25 21:20:56 glebius Exp $
 #
 # NOTES -- Lines that can be cut/pasted into kernel and hints configs.
 #
@@ -2627,6 +2627,8 @@ device		umct
 device		umodem
 # USB mouse
 device		ums
+# eGalax USB touch screen
+device		uep
 # Diamond Rio 500 MP3 player
 device		urio
 #

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/uio_machdep.c,v 1.2 2010/04/16 23:48:28 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/uio_machdep.c,v 1.3 2010/05/26 22:38:45 gonzo Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -50,6 +50,8 @@ __FBSDID("$FreeBSD: src/sys/mips/mips/uio_machdep.c,v 1.2 2010/04/16 23:48:28 jm
 #include <vm/vm.h>
 #include <vm/vm_page.h>
 #include <vm/vm_param.h>
+
+#include <machine/cache.h>
 
 /*
  * Implement uiomove(9) from physical memory using a combination
@@ -91,8 +93,14 @@ uiomove_fromphys(vm_page_t ma[], vm_offset_t offset, int n, struct uio *uio)
 		m = ma[offset >> PAGE_SHIFT];
 		pa = VM_PAGE_TO_PHYS(m);
 		if (pa < MIPS_KSEG0_LARGEST_PHYS) {
-			cp = (char *)MIPS_PHYS_TO_KSEG0(pa);
 			sf = NULL;
+			cp = (char *)MIPS_PHYS_TO_KSEG0(pa) + page_offset;
+			/*
+			 * flush all mappings to this page, KSEG0 address first
+			 * in order to get it overwritten by correct data
+			 */
+			mips_dcache_wbinv_range((vm_offset_t)cp, cnt);
+			pmap_flush_pvcache(m);
 		} else {
 			sf = sf_buf_alloc(m, 0);
 			cp = (char *)sf_buf_kva(sf) + page_offset;
@@ -122,6 +130,8 @@ uiomove_fromphys(vm_page_t ma[], vm_offset_t offset, int n, struct uio *uio)
 		}
 		if (sf != NULL)
 			sf_buf_free(sf);
+		else
+			mips_dcache_wbinv_range((vm_offset_t)cp, cnt);
 		iov->iov_base = (char *)iov->iov_base + cnt;
 		iov->iov_len -= cnt;
 		uio->uio_resid -= cnt;

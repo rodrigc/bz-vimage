@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-all.c,v 1.320 2010/04/30 08:37:00 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-all.c,v 1.321 2010/05/21 13:29:28 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -432,7 +432,13 @@ ata_suspend(device_t dev)
     if (!dev || !(ch = device_get_softc(dev)))
 	return ENXIO;
 
-#ifndef ATA_CAM
+#ifdef ATA_CAM
+	mtx_lock(&ch->state_mtx);
+	xpt_freeze_simq(ch->sim, 1);
+	while (ch->state != ATA_IDLE)
+		msleep(ch, &ch->state_mtx, PRIBIO, "atasusp", hz/100);
+	mtx_unlock(&ch->state_mtx);
+#else
     /* wait for the channel to be IDLE or detached before suspending */
     while (ch->r_irq) {
 	mtx_lock(&ch->state_mtx);
@@ -452,16 +458,21 @@ ata_suspend(device_t dev)
 int
 ata_resume(device_t dev)
 {
+    struct ata_channel *ch;
     int error;
 
     /* check for valid device */
-    if (!dev || !device_get_softc(dev))
+    if (!dev || !(ch = device_get_softc(dev)))
 	return ENXIO;
 
+#ifdef ATA_CAM
+	mtx_lock(&ch->state_mtx);
+	error = ata_reinit(dev);
+	xpt_release_simq(ch->sim, TRUE);
+	mtx_unlock(&ch->state_mtx);
+#else
     /* reinit the devices, we dont know what mode/state they are in */
     error = ata_reinit(dev);
-
-#ifndef ATA_CAM
     /* kick off requests on the queue */
     ata_start(dev);
 #endif

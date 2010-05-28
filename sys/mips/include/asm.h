@@ -33,7 +33,7 @@
  *
  *	@(#)machAsmDefs.h	8.1 (Berkeley) 6/10/93
  *	JNPR: asm.h,v 1.10 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/asm.h,v 1.5 2010/04/17 01:17:31 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/asm.h,v 1.6 2010/05/25 05:45:16 neel Exp $
  */
 
 /*
@@ -256,10 +256,6 @@ _C_LABEL(x):
 #define	VECTOR_END(x)		\
 	EXPORT(x ## End);	\
 	END(x)
-
-#define	KSEG0TEXT_START
-#define	KSEG0TEXT_END
-#define	KSEG0TEXT	.text
 
 /*
  * Macros to panic and printf from assembly language.

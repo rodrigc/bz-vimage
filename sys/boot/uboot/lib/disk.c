@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/uboot/lib/disk.c,v 1.6 2010/02/25 15:29:41 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/uboot/lib/disk.c,v 1.7 2010/05/25 09:59:53 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -157,7 +157,7 @@ stor_init(void)
 	}
 
 	if (!found) {
-		printf("No storage devices\n");
+		debugf("No storage devices\n");
 		return (-1);
 	}
 

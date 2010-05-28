@@ -57,7 +57,7 @@
  * any improvements or extensions that they make and grant Carnegie the
  * rights to redistribute these changes.
  *
- * $FreeBSD: src/sys/vm/vm_page.h,v 1.167 2010/05/16 23:45:10 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_page.h,v 1.168 2010/05/24 14:26:57 alc Exp $
  */
 
 /*
@@ -194,8 +194,10 @@ extern struct vpglocks pa_lock[];
 #define	PA_UNLOCK(pa)	mtx_unlock(PA_LOCKPTR(pa))
 #define	PA_UNLOCK_COND(pa) 			\
 	do {		   			\
-		if (pa) 			\
-			PA_UNLOCK(pa);		\
+		if ((pa) != 0) {		\
+			PA_UNLOCK((pa));	\
+			(pa) = 0;		\
+		}				\
 	} while (0)
 
 #define	PA_LOCK_ASSERT(pa, a)	mtx_assert(PA_LOCKPTR(pa), (a))

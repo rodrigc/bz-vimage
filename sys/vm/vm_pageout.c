@@ -73,7 +73,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.322 2010/05/08 20:34:01 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.323 2010/05/24 14:26:57 alc Exp $");
 
 #include "opt_vm.h"
 #include <sys/param.h>
@@ -391,17 +391,14 @@ more:
 			break;
 		}
 		vm_page_lock(p);
-		vm_page_lock_queues();
 		vm_page_test_dirty(p);
 		if (p->dirty == 0 ||
 		    p->queue != PQ_INACTIVE ||
 		    p->hold_count != 0) {	/* may be undergoing I/O */
 			vm_page_unlock(p);
-			vm_page_unlock_queues();
 			ib = 0;
 			break;
 		}
-		vm_page_unlock_queues();
 		vm_page_unlock(p);
 		mc[--page_base] = p;
 		++pageout_count;
@@ -424,16 +421,13 @@ more:
 			break;
 		}
 		vm_page_lock(p);
-		vm_page_lock_queues();
 		vm_page_test_dirty(p);
 		if (p->dirty == 0 ||
 		    p->queue != PQ_INACTIVE ||
 		    p->hold_count != 0) {	/* may be undergoing I/O */
-			vm_page_unlock_queues();
 			vm_page_unlock(p);
 			break;
 		}
-		vm_page_unlock_queues();
 		vm_page_unlock(p);
 		mc[page_base + pageout_count] = p;
 		++pageout_count;

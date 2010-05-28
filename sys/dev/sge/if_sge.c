@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/sge/if_sge.c,v 1.14 2010/05/10 17:35:17 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/sge/if_sge.c,v 1.15 2010/05/24 17:12:44 yongari Exp $");
 
 /*
  * SiS 190/191 PCI Ethernet NIC driver.
@@ -1588,7 +1588,8 @@ sge_start_locked(struct ifnet *ifp)
 		if (m_head == NULL)
 			break;
 		if (sge_encap(sc, &m_head)) {
-			IFQ_DRV_PREPEND(&ifp->if_snd, m_head);
+			if (m_head != NULL)
+				IFQ_DRV_PREPEND(&ifp->if_snd, m_head);
 			ifp->if_drv_flags |= IFF_DRV_OACTIVE;
 			break;
 		}

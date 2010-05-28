@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/elf_machdep.c,v 1.30 2009/10/03 11:57:21 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/elf_machdep.c,v 1.31 2010/05/23 18:32:02 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -47,6 +47,7 @@ __FBSDID("$FreeBSD: src/sys/sparc64/sparc64/elf_machdep.c,v 1.30 2009/10/03 11:5
 #include <sys/exec.h>
 #include <sys/imgact.h>
 #include <sys/linker.h>
+#include <sys/proc.h>
 #include <sys/sysent.h>
 #include <sys/imgact_elf.h>
 #include <sys/syscall.h>
@@ -88,7 +89,10 @@ static struct sysentvec elf64_freebsd_sysvec = {
 	.sv_setregs	= exec_setregs,
 	.sv_fixlimit	= NULL,
 	.sv_maxssiz	= NULL,
-	.sv_flags	= SV_ABI_FREEBSD | SV_LP64
+	.sv_flags	= SV_ABI_FREEBSD | SV_LP64,
+	.sv_set_syscall_retval = cpu_set_syscall_retval,
+	.sv_fetch_syscall_args = cpu_fetch_syscall_args,
+	.sv_syscallnames = syscallnames,
 };
 
 static Elf64_Brandinfo freebsd_brand_info = {

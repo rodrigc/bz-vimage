@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options,v 1.703 2010/05/13 20:48:39 thompsa Exp $
+# $FreeBSD: src/sys/conf/options,v 1.704 2010/05/28 10:35:44 raj Exp $
 #
 #        On the handling of kernel options
 #
@@ -848,3 +848,7 @@ SND_PCM_64		opt_snd.h
 SND_OLDSTEREO		opt_snd.h
 
 X86BIOS
+
+# Flattened device tree options
+FDT		opt_platform.h
+FDT_DTB_STATIC	opt_platform.h

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)rtsock.c	8.7 (Berkeley) 10/12/95
- * $FreeBSD: src/sys/net/rtsock.c,v 1.187 2010/04/25 16:42:47 kib Exp $
+ * $FreeBSD: src/sys/net/rtsock.c,v 1.188 2010/05/25 20:42:35 qingli Exp $
  */
 #include "opt_compat.h"
 #include "opt_sctp.h"
@@ -55,6 +55,7 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 #include <net/if_llatbl.h>
+#include <net/if_types.h>
 #include <net/netisr.h>
 #include <net/raw_cb.h>
 #include <net/route.h>
@@ -673,12 +674,22 @@ route_output(struct mbuf *m, struct socket *so)
 		 * another search to retrieve the prefix route of
 		 * the local end point of the PPP link.
 		 */
-		if ((rtm->rtm_flags & RTF_ANNOUNCE) &&
-		    (rt->rt_ifp->if_flags & IFF_POINTOPOINT)) {
+		if (rtm->rtm_flags & RTF_ANNOUNCE) {
 			struct sockaddr laddr;
-			rt_maskedcopy(rt->rt_ifa->ifa_addr,
-				      &laddr,
-				      rt->rt_ifa->ifa_netmask);
+
+			if (rt->rt_ifp != NULL && 
+			    rt->rt_ifp->if_type == IFT_PROPVIRTUAL) {
+				struct ifaddr *ifa;
+
+				ifa = ifa_ifwithnet(info.rti_info[RTAX_DST], 1);
+				if (ifa != NULL)
+					rt_maskedcopy(ifa->ifa_addr,
+						      &laddr,
+						      ifa->ifa_netmask);
+			} else
+				rt_maskedcopy(rt->rt_ifa->ifa_addr,
+					      &laddr,
+					      rt->rt_ifa->ifa_netmask);
 			/* 
 			 * refactor rt and no lock operation necessary
 			 */

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)resourcevar.h	8.4 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/resourcevar.h,v 1.56 2010/05/04 05:55:37 kib Exp $
+ * $FreeBSD: src/sys/sys/resourcevar.h,v 1.57 2010/05/24 10:23:49 kib Exp $
  */
 
 #ifndef	_SYS_RESOURCEVAR_H_
@@ -131,7 +131,7 @@ void	 rucollect(struct rusage *ru, struct rusage *ru2);
 void	 rufetch(struct proc *p, struct rusage *ru);
 void	 rufetchcalc(struct proc *p, struct rusage *ru, struct timeval *up,
 	    struct timeval *sp);
-void	 ruxagg_locked(struct rusage_ext *rux, struct thread *td);
+void	 ruxagg(struct proc *p, struct thread *td);
 int	 suswintr(void *base, int word);
 struct uidinfo
 	*uifind(uid_t uid);

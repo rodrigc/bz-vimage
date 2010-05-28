@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_exec.c,v 1.346 2010/05/06 18:58:32 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_exec.c,v 1.347 2010/05/23 18:32:02 kib Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -871,6 +871,10 @@ exec_fail_dealloc:
 	free(imgp->freepath, M_TEMP);
 
 	if (error == 0) {
+		PROC_LOCK(p);
+		td->td_dbgflags |= TDB_EXEC;
+		PROC_UNLOCK(p);
+
 		/*
 		 * Stop the process here if its stop event mask has
 		 * the S_EXEC bit set.

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/mca.h,v 1.3 2010/03/16 16:01:19 jhb Exp $
+ * $FreeBSD: src/sys/amd64/include/mca.h,v 1.4 2010/05/24 15:45:05 jhb Exp $
  */
 
 #ifndef __MACHINE_MCA_H__
@@ -46,6 +46,7 @@ struct mca_record {
 
 #ifdef _KERNEL
 
+void	cmc_intr(void);
 void	mca_init(void);
 int	mca_intr(void);
 

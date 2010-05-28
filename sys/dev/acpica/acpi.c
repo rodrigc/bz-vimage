@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.277 2010/04/02 23:04:31 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.278 2010/05/23 07:53:22 mav Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -145,7 +145,6 @@ static void	acpi_probe_children(device_t bus);
 static void	acpi_probe_order(ACPI_HANDLE handle, int *order);
 static ACPI_STATUS acpi_probe_child(ACPI_HANDLE handle, UINT32 level,
 		    void *context, void **status);
-static BOOLEAN	acpi_MatchHid(ACPI_HANDLE h, const char *hid);
 static void	acpi_sleep_enable(void *arg);
 static ACPI_STATUS acpi_sleep_disable(struct acpi_softc *sc);
 static ACPI_STATUS acpi_EnterSleepState(struct acpi_softc *sc, int state);
@@ -1944,7 +1943,7 @@ acpi_BatteryIsPresent(device_t dev)
 /*
  * Match a HID string against a handle
  */
-static BOOLEAN
+BOOLEAN
 acpi_MatchHid(ACPI_HANDLE h, const char *hid) 
 {
     ACPI_DEVICE_INFO	*devinfo;

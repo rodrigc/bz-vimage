@@ -140,7 +140,7 @@
 #include "opt_vm.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.123 2010/05/16 23:45:10 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.125 2010/05/26 18:00:44 alc Exp $");
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kernel.h>
@@ -3589,12 +3589,14 @@ pmap_enter_object(pmap_t pmap, vm_offset_t start, vm_offset_t end,
 
 	psize = atop(end - start);
 	m = m_start;
+	vm_page_lock_queues();
 	PMAP_LOCK(pmap);
 	while (m != NULL && (diff = m->pindex - m_start->pindex) < psize) {
 		pmap_enter_locked(pmap, start + ptoa(diff), m, prot &
 		    (VM_PROT_READ | VM_PROT_EXECUTE), FALSE, M_NOWAIT);
 		m = TAILQ_NEXT(m, listq);
 	}
+	vm_page_unlock_queues();
  	PMAP_UNLOCK(pmap);
 }
 
@@ -4475,6 +4477,8 @@ boolean_t
 pmap_is_modified(vm_page_t m)
 {
 
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("pmap_is_modified: page %p is not managed", m));
 	if (m->md.pvh_attrs & PVF_MOD)
 		return (TRUE);
 	
@@ -4489,8 +4493,23 @@ void
 pmap_clear_modify(vm_page_t m)
 {
 
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("pmap_clear_modify: page %p is not managed", m));
+	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	KASSERT((m->oflags & VPO_BUSY) == 0,
+	    ("pmap_clear_modify: page %p is busy", m));
+
+	/*
+	 * If the page is not PG_WRITEABLE, then no mappings can be modified.
+	 * If the object containing the page is locked and the page is not
+	 * VPO_BUSY, then PG_WRITEABLE cannot be concurrently set.
+	 */
+	if ((m->flags & PG_WRITEABLE) == 0)
+		return;
+	vm_page_lock_queues();
 	if (m->md.pvh_attrs & PVF_MOD)
 		pmap_clearbit(m, PVF_MOD);
+	vm_page_unlock_queues();
 }
 
 
@@ -4504,8 +4523,9 @@ boolean_t
 pmap_is_referenced(vm_page_t m)
 {
 
-	return ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0 &&
-	    (m->md.pvh_attrs & PVF_REF) != 0);
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("pmap_is_referenced: page %p is not managed", m));
+	return ((m->md.pvh_attrs & PVF_REF) != 0);
 }
 
 /*
@@ -4517,8 +4537,12 @@ void
 pmap_clear_reference(vm_page_t m)
 {
 
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("pmap_clear_reference: page %p is not managed", m));
+	vm_page_lock_queues();
 	if (m->md.pvh_attrs & PVF_REF) 
 		pmap_clearbit(m, PVF_REF);
+	vm_page_unlock_queues();
 }
 
 
@@ -4551,7 +4575,7 @@ pmap_remove_write(vm_page_t m)
  * perform the pmap work for mincore
  */
 int
-pmap_mincore(pmap_t pmap, vm_offset_t addr)
+pmap_mincore(pmap_t pmap, vm_offset_t addr, vm_paddr_t *locked_pa)
 {
 	printf("pmap_mincore()\n");
 	

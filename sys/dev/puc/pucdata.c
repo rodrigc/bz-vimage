@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/puc/pucdata.c,v 1.74 2009/12/07 20:05:02 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/puc/pucdata.c,v 1.75 2010/05/20 13:16:42 jhb Exp $");
 
 /*
  * PCI "universal" communications card driver configuration data (used to
@@ -659,6 +659,18 @@ const struct puc_cfg puc_pci_devices[] = {
 	    "Oxford Semiconductor OX16PCI958 UARTs",
 	    DEFAULT_RCLK * 10,
 	    PUC_PORT_8S, 0x18, 0, 8,
+	},
+
+	/*
+	 * Perle boards use Oxford Semiconductor chips, but they store the
+	 * Oxford Semiconductor device ID as a subvendor device ID and use
+	 * their own device IDs.
+	 */
+
+	{   0x155f, 0x0331, 0xffff, 0,
+	    "Perle Speed4 LE",
+	    DEFAULT_RCLK * 8,
+	    PUC_PORT_4S, 0x10, 0, 8,
 	},
 
 	{   0x14d2, 0x8010, 0xffff, 0,

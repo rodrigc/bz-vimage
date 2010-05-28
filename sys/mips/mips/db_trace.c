@@ -6,7 +6,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/db_trace.c,v 1.7 2010/05/05 04:37:45 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/db_trace.c,v 1.8 2010/05/21 17:17:56 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -432,8 +432,8 @@ void
 db_show_mdpcpu(struct pcpu *pc)
 {
 
-	db_printf("ipis	    = 0x%x\n", pc->pc_pending_ipis);
+	db_printf("ipis         = 0x%x\n", pc->pc_pending_ipis);
 	db_printf("next ASID    = %d\n", pc->pc_next_asid);
-	db_printf("GENID	    = %d\n", pc->pc_asid_generation);
+	db_printf("GENID        = %d\n", pc->pc_asid_generation);
 	return;
 }

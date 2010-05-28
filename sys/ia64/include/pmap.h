@@ -39,7 +39,7 @@
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: i386 pmap.h,v 1.54 1997/11/20 19:30:35 bde Exp
- * $FreeBSD: src/sys/ia64/include/pmap.h,v 1.33 2010/04/30 00:46:43 kmacy Exp $
+ * $FreeBSD: src/sys/ia64/include/pmap.h,v 1.34 2010/05/19 00:23:10 marcel Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -75,7 +75,7 @@ struct md_page {
 struct pmap {
 	struct mtx		pm_mtx;
 	TAILQ_HEAD(,pv_entry)	pm_pvlist;	/* list of mappings in pmap */
-	u_int32_t		pm_rid[5];	/* base RID for pmap */
+	uint32_t		pm_rid[5];	/* base RID for pmap */
 	struct pmap_statistics	pm_stats;	/* pmap statistics */
 	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int			pm_retries;

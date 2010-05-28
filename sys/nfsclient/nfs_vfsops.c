@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.233 2010/02/16 20:00:21 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.234 2010/05/27 03:15:04 cperciva Exp $");
 
 
 #include "opt_bootp.h"
@@ -1069,6 +1069,11 @@ nfs_mount(struct mount *mp)
 	}
 	if (args.hostname == NULL) {
 		vfs_mount_error(mp, "Invalid hostname");
+		error = EINVAL;
+		goto out;
+	}
+	if (args.fhsize < 0 || args.fhsize > NFSX_V3FHMAX) {
+		vfs_mount_error(mp, "Bad file handle");
 		error = EINVAL;
 		goto out;
 	}

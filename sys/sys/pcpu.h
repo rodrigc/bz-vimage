@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/pcpu.h,v 1.37 2010/03/30 19:41:38 jhb Exp $
+ * $FreeBSD: src/sys/sys/pcpu.h,v 1.38 2010/05/24 14:26:57 alc Exp $
  */
 
 #ifndef _SYS_PCPU_H_
@@ -143,6 +143,7 @@ struct pcpu {
 	long		pc_cp_time[CPUSTATES];	/* statclock ticks */
 	struct device	*pc_device;
 	void		*pc_netisr;		/* netisr SWI cookie */
+	int		pc_dnweight;		/* vm_page_dontneed() */
 
 	/*
 	 * Stuff for read mostly lock

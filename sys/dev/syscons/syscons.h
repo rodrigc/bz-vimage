@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/syscons/syscons.h,v 1.98 2010/02/24 20:13:34 jkim Exp $
+ * $FreeBSD: src/sys/dev/syscons/syscons.h,v 1.99 2010/05/22 07:35:17 jkim Exp $
  */
 
 #ifndef _DEV_SYSCONS_SYSCONS_H_
@@ -230,6 +230,7 @@ typedef struct sc_softc {
 	char        	switch_in_progress;
 	char        	write_in_progress;
 	char        	blink_in_progress;
+	char		suspend_in_progress;
 	struct mtx	video_mtx;
 
 	long		scrn_time_stamp;

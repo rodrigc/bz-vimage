@@ -30,7 +30,7 @@
 #include "opt_hwpmc_hooks.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.292 2010/05/04 06:06:01 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.293 2010/05/24 10:23:49 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -430,8 +430,8 @@ thread_exit(void)
 		PMC_SWITCH_CONTEXT(td, PMC_FN_CSW_OUT);
 #endif
 	PROC_UNLOCK(p);
+	ruxagg(p, td);
 	thread_lock(td);
-	ruxagg_locked(&p->p_rux, td);
 	PROC_SUNLOCK(p);
 	td->td_state = TDS_INACTIVE;
 #ifdef WITNESS

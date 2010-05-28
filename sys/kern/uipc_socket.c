@@ -101,7 +101,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.347 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.348 2010/05/27 15:27:31 rwatson Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -686,8 +686,11 @@ soclose(struct socket *so)
 	if (so->so_state & SS_ISCONNECTED) {
 		if ((so->so_state & SS_ISDISCONNECTING) == 0) {
 			error = sodisconnect(so);
-			if (error)
+			if (error) {
+				if (error == ENOTCONN)
+					error = 0;
 				goto drop;
+			}
 		}
 		if (so->so_options & SO_LINGER) {
 			if ((so->so_state & SS_ISDISCONNECTING) &&

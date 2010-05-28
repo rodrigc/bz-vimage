@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.263 2010/03/14 18:59:11 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.264 2010/05/25 20:42:35 qingli Exp $");
 
 #include "opt_ddb.h"
 #include "opt_ipsec.h"
@@ -627,7 +627,7 @@ in_pcbladdr(struct inpcb *inp, struct in_addr *faddr, struct in_addr *laddr,
 
 		ia = ifatoia(ifa_ifwithdstaddr((struct sockaddr *)sin));
 		if (ia == NULL)
-			ia = ifatoia(ifa_ifwithnet((struct sockaddr *)sin));
+			ia = ifatoia(ifa_ifwithnet((struct sockaddr *)sin, 0));
 		if (ia == NULL) {
 			error = ENETUNREACH;
 			goto done;
@@ -744,7 +744,7 @@ in_pcbladdr(struct inpcb *inp, struct in_addr *faddr, struct in_addr *laddr,
 
 		ia = ifatoia(ifa_ifwithdstaddr(sintosa(&sain)));
 		if (ia == NULL)
-			ia = ifatoia(ifa_ifwithnet(sintosa(&sain)));
+			ia = ifatoia(ifa_ifwithnet(sintosa(&sain), 0));
 		if (ia == NULL)
 			ia = ifatoia(ifa_ifwithaddr(sintosa(&sain)));
 

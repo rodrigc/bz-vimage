@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/uboot/lib/glue.c,v 1.11 2009/12/18 21:12:37 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/uboot/lib/glue.c,v 1.12 2010/05/25 10:15:30 raj Exp $");
 
 #include <stand.h>
 #include "api_public.h"
@@ -574,7 +574,7 @@ ub_env_enum(const char *last)
 	 * internally, which handles such case
 	 */
 	env = NULL;
-	if (syscall(API_ENV_ENUM, NULL, (uint32_t)last, (uint32_t)&env) != 0)
+	if (!syscall(API_ENV_ENUM, NULL, (uint32_t)last, (uint32_t)&env))
 		return (NULL);
 
 	if (env == NULL)

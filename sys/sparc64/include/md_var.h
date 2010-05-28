@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: FreeBSD: src/sys/i386/include/md_var.h,v 1.40 2001/07/12
- * $FreeBSD: src/sys/sparc64/include/md_var.h,v 1.19 2010/02/20 23:24:19 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/md_var.h,v 1.20 2010/05/20 12:46:19 marius Exp $
  */
 
 #ifndef	_MACHINE_MD_VAR_H_
@@ -66,13 +66,10 @@ extern	cpu_block_zero_t *cpu_block_zero;
  * Given that the Sun disk label only uses 16-bit fields for cylinders,
  * heads and sectors we might need to adjust the geometry of large IDE
  * disks.
- * We have to have a knowledge that a device_t is a struct device * here
- * to avoid including too many things from this file.
  */
 struct disk;
-struct device;
-void sparc64_ad_firmware_geom_adjust(struct device *dev, struct disk *disk);
-#define	ad_firmware_geom_adjust(dev, dsk)				\
-	sparc64_ad_firmware_geom_adjust(dev, dsk)
+void sparc64_ata_disk_firmware_geom_adjust(struct disk *disk);
+#define	ata_disk_firmware_geom_adjust(disk)				\
+	sparc64_ata_disk_firmware_geom_adjust(disk)
 
 #endif /* !_MACHINE_MD_VAR_H_ */

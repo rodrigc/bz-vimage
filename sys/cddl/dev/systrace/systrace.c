@@ -20,7 +20,7 @@
  *
  * Portions Copyright 2006-2008 John Birrell jb@freebsd.org
  *
- * $FreeBSD: src/sys/cddl/dev/systrace/systrace.c,v 1.2 2008/11/05 19:39:11 rodrigc Exp $
+ * $FreeBSD: src/sys/cddl/dev/systrace/systrace.c,v 1.3 2010/05/23 18:32:02 kib Exp $
  *
  */
 
@@ -77,7 +77,6 @@ extern struct sysent linux_sysent[];
  */
 #include <sys/syscall.h>
 #include <kern/systrace_args.c>
-extern const char	*syscallnames[];
 #define	DEVNAME		"dtrace/systrace"
 #define	PROVNAME	"syscall"
 #define	MAXSYSCALL	SYS_MAXSYSCALL

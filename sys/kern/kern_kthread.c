@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_kthread.c,v 1.54 2010/02/19 15:10:05 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_kthread.c,v 1.55 2010/05/21 17:14:36 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -418,7 +418,7 @@ kthread_suspend_check()
 int
 kproc_kthread_add(void (*func)(void *), void *arg,
             struct proc **procptr, struct thread **tdptr,
-            int flags, int pages, char * procname, const char *fmt, ...) 
+            int flags, int pages, const char *procname, const char *fmt, ...) 
 {
 	int error;
 	va_list ap;

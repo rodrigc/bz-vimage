@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.160 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.161 2010/05/25 20:42:35 qingli Exp $");
 
 #include "opt_carp.h"
 #include "opt_mpath.h"
@@ -1379,8 +1379,9 @@ in_lltable_rtcheck(struct ifnet *ifp, u_int flags, const struct sockaddr *l3addr
 
 	/* XXX rtalloc1 should take a const param */
 	rt = rtalloc1(__DECONST(struct sockaddr *, l3addr), 0, 0);
-	if (rt == NULL || (rt->rt_flags & RTF_GATEWAY) || 
-	    ((rt->rt_ifp != ifp) && !(flags & LLE_PUB))) {
+	if (rt == NULL || (!(flags & LLE_PUB) &&
+			   ((rt->rt_flags & RTF_GATEWAY) || 
+			    (rt->rt_ifp != ifp)))) {
 #ifdef DIAGNOSTIC
 		log(LOG_INFO, "IPv4 address: \"%s\" is not on the network\n",
 		    inet_ntoa(((const struct sockaddr_in *)l3addr)->sin_addr));

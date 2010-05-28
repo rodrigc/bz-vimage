@@ -54,7 +54,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ofw/openfirm.h,v 1.20 2010/05/16 22:01:43 nwhitehorn Exp $
+ * $FreeBSD: src/sys/dev/ofw/openfirm.h,v 1.21 2010/05/28 10:43:56 raj Exp $
  */
 
 #ifndef _DEV_OPENFIRM_H_
@@ -83,7 +83,7 @@ MALLOC_DECLARE(M_OFWPROP);
  */
 
 boolean_t	OF_install(char *name, int prio);
-void		OF_init(void *cookie);
+int		OF_init(void *cookie);
 
 /*
  * Known Open Firmware interface names

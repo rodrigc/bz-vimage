@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.18 2010/05/14 21:11:58 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.19 2010/05/21 17:17:56 jhb Exp $");
 
 #include "opt_ddb.h"
 
@@ -332,7 +332,7 @@ show_pcpu(struct pcpu *pc)
 	struct thread *td;
 
 	db_printf("cpuid        = %d\n", pc->pc_cpuid);
-	db_printf("dynamic pcpu	= %p\n", (void *)pc->pc_dynamic);
+	db_printf("dynamic pcpu = %p\n", (void *)pc->pc_dynamic);
 	db_printf("curthread    = ");
 	td = pc->pc_curthread;
 	if (td != NULL)
@@ -351,12 +351,11 @@ show_pcpu(struct pcpu *pc)
 	db_printf("idlethread   = ");
 	td = pc->pc_idlethread;
 	if (td != NULL)
-		db_printf("%p: pid %d \"%s\"\n", td, td->td_proc->p_pid,
-		    td->td_name);
+		db_printf("%p: tid %d \"%s\"\n", td, td->td_tid, td->td_name);
 	else
 		db_printf("none\n");
 	db_show_mdpcpu(pc);
-		
+
 #ifdef VIMAGE
 	db_printf("curvnet      = %p\n", pc->pc_curthread->td_vnet);
 #endif

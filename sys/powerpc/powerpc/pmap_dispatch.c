@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/pmap_dispatch.c,v 1.21 2010/04/24 17:32:52 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/pmap_dispatch.c,v 1.22 2010/05/24 14:26:57 alc Exp $");
 
 /*
  * Dispatch MI pmap calls to the appropriate MMU implementation
@@ -360,11 +360,11 @@ pmap_zero_page_idle(vm_page_t m)
 }
 
 int
-pmap_mincore(pmap_t pmap, vm_offset_t addr)
+pmap_mincore(pmap_t pmap, vm_offset_t addr, vm_paddr_t *locked_pa)
 {
 
 	CTR3(KTR_PMAP, "%s(%p, %#x)", __func__, pmap, addr);
-	return (MMU_MINCORE(mmu_obj, pmap, addr));
+	return (MMU_MINCORE(mmu_obj, pmap, addr, locked_pa));
 }
 
 void

@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	from: vector.s, 386BSD 0.1 unknown origin
- * $FreeBSD: src/sys/i386/i386/apic_vector.s,v 1.115 2010/03/29 19:13:34 jhb Exp $
+ * $FreeBSD: src/sys/i386/i386/apic_vector.s,v 1.116 2010/05/24 15:45:05 jhb Exp $
  */
 
 /*
@@ -107,6 +107,19 @@ IDTVEC(timerint)
 	pushl	%esp
 	call	lapic_handle_timer
 	add	$4, %esp
+	MEXITCOUNT
+	jmp	doreti
+
+/*
+ * Local APIC CMCI handler.
+ */
+	.text
+	SUPERALIGN_TEXT
+IDTVEC(cmcint)
+	PUSH_FRAME
+	SET_KERNEL_SREGS
+	FAKE_MCOUNT(TF_EIP(%esp))
+	call	lapic_handle_cmc
 	MEXITCOUNT
 	jmp	doreti
 

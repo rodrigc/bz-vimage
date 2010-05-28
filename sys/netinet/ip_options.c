@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_options.c,v 1.22 2010/02/18 22:26:01 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_options.c,v 1.23 2010/05/25 20:42:35 qingli Exp $");
 
 #include "opt_ipstealth.h"
 
@@ -228,7 +228,7 @@ dropit:
 #define	INA	struct in_ifaddr *
 #define	SA	struct sockaddr *
 			    if ((ia = (INA)ifa_ifwithdstaddr((SA)&ipaddr)) == NULL)
-				ia = (INA)ifa_ifwithnet((SA)&ipaddr);
+				    ia = (INA)ifa_ifwithnet((SA)&ipaddr, 0);
 			} else
 /* XXX MRT 0 for routing */
 				ia = ip_rtaddr(ipaddr.sin_addr, M_GETFIB(m));

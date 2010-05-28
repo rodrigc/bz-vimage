@@ -39,7 +39,7 @@
  *	JNPR: trap.c,v 1.13.2.2 2007/08/29 10:03:49 girish
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/trap.c,v 1.12 2010/04/17 09:42:07 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/trap.c,v 1.13 2010/05/23 18:32:02 kib Exp $");
 
 #include "opt_ddb.h"
 #include "opt_global.h"
@@ -261,7 +261,6 @@ SYSCTL_INT(_vm, OID_AUTO, allow_unaligned_acc, CTLFLAG_RW,
 
 static int emulate_unaligned_access(struct trapframe *frame);
 
-extern char *syscallnames[];
 extern void fswintrberr(void); /* XXX */
 
 /*

@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.429 2010/05/02 01:25:03 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.430 2010/05/26 18:00:44 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1726,7 +1726,6 @@ vm_map_pmap_enter(vm_map_t map, vm_offset_t addr, vm_prot_t prot,
 	vm_offset_t start;
 	vm_page_t p, p_start;
 	vm_pindex_t psize, tmpidx;
-	boolean_t are_queues_locked;
 
 	if ((prot & (VM_PROT_READ | VM_PROT_EXECUTE)) == 0 || object == NULL)
 		return;
@@ -1748,7 +1747,6 @@ vm_map_pmap_enter(vm_map_t map, vm_offset_t addr, vm_prot_t prot,
 		psize = object->size - pindex;
 	}
 
-	are_queues_locked = FALSE;
 	start = 0;
 	p_start = NULL;
 
@@ -1782,25 +1780,14 @@ vm_map_pmap_enter(vm_map_t map, vm_offset_t addr, vm_prot_t prot,
 				p_start = p;
 			}
 		} else if (p_start != NULL) {
-			if (!are_queues_locked) {
-				are_queues_locked = TRUE;
-				vm_page_lock_queues();
-			}
 			pmap_enter_object(map->pmap, start, addr +
 			    ptoa(tmpidx), p_start, prot);
 			p_start = NULL;
 		}
 	}
-	if (p_start != NULL) {
-		if (!are_queues_locked) {
-			are_queues_locked = TRUE;
-			vm_page_lock_queues();
-		}
+	if (p_start != NULL)
 		pmap_enter_object(map->pmap, start, addr + ptoa(psize),
 		    p_start, prot);
-	}
-	if (are_queues_locked)
-		vm_page_unlock_queues();
 unlock_return:
 	VM_OBJECT_UNLOCK(object);
 }

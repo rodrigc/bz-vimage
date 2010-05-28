@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)specialreg.h	7.1 (Berkeley) 5/9/91
- * $FreeBSD: src/sys/i386/include/specialreg.h,v 1.60 2010/05/05 21:07:47 kib Exp $
+ * $FreeBSD: src/sys/i386/include/specialreg.h,v 1.61 2010/05/24 15:45:05 jhb Exp $
  */
 
 #ifndef _MACHINE_SPECIALREG_H_
@@ -454,7 +454,7 @@
 #define	MC_STATUS_VAL		0x8000000000000000
 #define	MC_MISC_RA_LSB		0x000000000000003f	/* If MCG_CAP_SER_P */
 #define	MC_MISC_ADDRESS_MODE	0x00000000000001c0	/* If MCG_CAP_SER_P */
-#define	MC_CTL2_THRESHOLD	0x0000000000003fff
+#define	MC_CTL2_THRESHOLD	0x0000000000007fff
 #define	MC_CTL2_CMCI_EN		0x0000000040000000
 
 /*

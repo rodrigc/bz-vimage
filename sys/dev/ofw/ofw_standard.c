@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_standard.c,v 1.8 2010/05/16 22:01:43 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_standard.c,v 1.9 2010/05/28 10:43:56 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -70,7 +70,7 @@ __FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_standard.c,v 1.8 2010/05/16 22:01:43 nwh
 
 #include "ofw_if.h"
 
-static void ofw_std_init(ofw_t ofw, void *openfirm);
+static int ofw_std_init(ofw_t ofw, void *openfirm);
 static int ofw_std_test(ofw_t ofw, const char *name);
 static int ofw_std_interpret(ofw_t ofw, const char *cmd, int nreturns,
     unsigned long *returns);
@@ -150,11 +150,12 @@ static int (*openfirmware)(void *);
 
 /* Initializer */
 
-static void
+static int
 ofw_std_init(ofw_t ofw, void *openfirm)
 {
 
 	openfirmware = (int (*)(void *))openfirm;
+	return (0);
 }
 
 /*

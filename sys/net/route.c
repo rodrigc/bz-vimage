@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)route.c	8.3.1.1 (Berkeley) 2/23/95
- * $FreeBSD: src/sys/net/route.c,v 1.174 2010/04/29 11:52:42 bz Exp $
+ * $FreeBSD: src/sys/net/route.c,v 1.175 2010/05/25 20:42:35 qingli Exp $
  */
 /************************************************************************
  * Note: In this file a 'fib' is a "forwarding information base"	*
@@ -519,7 +519,7 @@ rtredirect_fib(struct sockaddr *dst,
 	}
 
 	/* verify the gateway is directly reachable */
-	if ((ifa = ifa_ifwithnet(gateway)) == NULL) {
+	if ((ifa = ifa_ifwithnet(gateway, 0)) == NULL) {
 		error = ENETUNREACH;
 		goto out;
 	}
@@ -686,7 +686,7 @@ ifa_ifwithroute_fib(int flags, struct sockaddr *dst, struct sockaddr *gateway,
 		ifa = ifa_ifwithdstaddr(gateway);
 	}
 	if (ifa == NULL)
-		ifa = ifa_ifwithnet(gateway);
+		ifa = ifa_ifwithnet(gateway, 0);
 	if (ifa == NULL) {
 		struct rtentry *rt = rtalloc1_fib(gateway, 0, RTF_RNH_LOCKED, fibnum);
 		if (rt == NULL)
@@ -797,7 +797,7 @@ rt_getifa_fib(struct rt_addrinfo *info, u_int fibnum)
 	 */
 	if (info->rti_ifp == NULL && ifpaddr != NULL &&
 	    ifpaddr->sa_family == AF_LINK &&
-	    (ifa = ifa_ifwithnet(ifpaddr)) != NULL) {
+	    (ifa = ifa_ifwithnet(ifpaddr, 0)) != NULL) {
 		info->rti_ifp = ifa->ifa_ifp;
 		ifa_free(ifa);
 	}

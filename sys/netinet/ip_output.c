@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.325 2010/03/12 22:58:52 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.326 2010/05/25 20:42:35 qingli Exp $");
 
 #include "opt_ipfw.h"
 #include "opt_ipsec.h"
@@ -244,7 +244,7 @@ again:
 		isbroadcast = 1;
 	} else if (flags & IP_ROUTETOIF) {
 		if ((ia = ifatoia(ifa_ifwithdstaddr(sintosa(dst)))) == NULL &&
-		    (ia = ifatoia(ifa_ifwithnet(sintosa(dst)))) == NULL) {
+		    (ia = ifatoia(ifa_ifwithnet(sintosa(dst), 0))) == NULL) {
 			IPSTAT_INC(ips_noroute);
 			error = ENETUNREACH;
 			goto bad;

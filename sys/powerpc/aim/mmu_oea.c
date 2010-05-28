@@ -91,7 +91,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.138 2010/05/16 23:45:10 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.140 2010/05/26 18:00:44 alc Exp $");
 
 /*
  * Manages physical address maps.
@@ -1197,12 +1197,14 @@ moea_enter_object(mmu_t mmu, pmap_t pm, vm_offset_t start, vm_offset_t end,
 
 	psize = atop(end - start);
 	m = m_start;
+	vm_page_lock_queues();
 	PMAP_LOCK(pm);
 	while (m != NULL && (diff = m->pindex - m_start->pindex) < psize) {
 		moea_enter_locked(pm, start + ptoa(diff), m, prot &
 		    (VM_PROT_READ | VM_PROT_EXECUTE), FALSE);
 		m = TAILQ_NEXT(m, listq);
 	}
+	vm_page_unlock_queues();
 	PMAP_UNLOCK(pm);
 }
 
@@ -1282,8 +1284,8 @@ boolean_t
 moea_is_referenced(mmu_t mmu, vm_page_t m)
 {
 
-	if ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) != 0)
-		return (FALSE);
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("moea_is_referenced: page %p is not managed", m));
 	return (moea_query_bit(m, PTE_REF));
 }
 
@@ -1291,9 +1293,18 @@ boolean_t
 moea_is_modified(mmu_t mmu, vm_page_t m)
 {
 
-	if ((m->flags & (PG_FICTITIOUS |PG_UNMANAGED)) != 0)
-		return (FALSE);
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("moea_is_modified: page %p is not managed", m));
 
+	/*
+	 * If the page is not VPO_BUSY, then PG_WRITEABLE cannot be
+	 * concurrently set while the object is locked.  Thus, if PG_WRITEABLE
+	 * is clear, no PTEs can have PTE_CHG set.
+	 */
+	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	if ((m->oflags & VPO_BUSY) == 0 &&
+	    (m->flags & PG_WRITEABLE) == 0)
+		return (FALSE);
 	return (moea_query_bit(m, PTE_CHG));
 }
 
@@ -1301,18 +1312,33 @@ void
 moea_clear_reference(mmu_t mmu, vm_page_t m)
 {
 
-	if ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) != 0)
-		return;
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("moea_clear_reference: page %p is not managed", m));
+	vm_page_lock_queues();
 	moea_clear_bit(m, PTE_REF, NULL);
+	vm_page_unlock_queues();
 }
 
 void
 moea_clear_modify(mmu_t mmu, vm_page_t m)
 {
 
-	if ((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) != 0)
+	KASSERT((m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0,
+	    ("moea_clear_modify: page %p is not managed", m));
+	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	KASSERT((m->oflags & VPO_BUSY) == 0,
+	    ("moea_clear_modify: page %p is busy", m));
+
+	/*
+	 * If the page is not PG_WRITEABLE, then no PTEs can have PTE_CHG
+	 * set.  If the object containing the page is locked and the page is
+	 * not VPO_BUSY, then PG_WRITEABLE cannot be concurrently set.
+	 */
+	if ((m->flags & PG_WRITEABLE) == 0)
 		return;
+	vm_page_lock_queues();
 	moea_clear_bit(m, PTE_CHG, NULL);
+	vm_page_unlock_queues();
 }
 
 /*
@@ -2240,6 +2266,7 @@ moea_query_bit(vm_page_t m, int ptebit)
 	if (moea_attr_fetch(m) & ptebit)
 		return (TRUE);
 
+	vm_page_lock_queues();
 	LIST_FOREACH(pvo, vm_page_to_pvoh(m), pvo_vlink) {
 		MOEA_PVO_CHECK(pvo);	/* sanity check */
 
@@ -2250,6 +2277,7 @@ moea_query_bit(vm_page_t m, int ptebit)
 		if (pvo->pvo_pte.pte.pte_lo & ptebit) {
 			moea_attr_save(m, ptebit);
 			MOEA_PVO_CHECK(pvo);	/* sanity check */
+			vm_page_unlock_queues();
 			return (TRUE);
 		}
 	}
@@ -2275,11 +2303,13 @@ moea_query_bit(vm_page_t m, int ptebit)
 			if (pvo->pvo_pte.pte.pte_lo & ptebit) {
 				moea_attr_save(m, ptebit);
 				MOEA_PVO_CHECK(pvo);	/* sanity check */
+				vm_page_unlock_queues();
 				return (TRUE);
 			}
 		}
 	}
 
+	vm_page_unlock_queues();
 	return (FALSE);
 }
 

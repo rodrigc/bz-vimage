@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.299 2010/05/05 16:05:51 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.300 2010/05/27 08:10:12 attilio Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -1577,6 +1577,8 @@ sysctl_kern_proc_ovmmap(SYSCTL_HANDLER_ARGS)
 			kve->kve_flags |= KVME_FLAG_COW;
 		if (entry->eflags & MAP_ENTRY_NEEDS_COPY)
 			kve->kve_flags |= KVME_FLAG_NEEDS_COPY;
+		if (entry->eflags & MAP_ENTRY_NOCOREDUMP)
+			kve->kve_flags |= KVME_FLAG_NOCOREDUMP;
 
 		last_timestamp = map->timestamp;
 		vm_map_unlock_read(map);
@@ -1752,6 +1754,8 @@ sysctl_kern_proc_vmmap(SYSCTL_HANDLER_ARGS)
 			kve->kve_flags |= KVME_FLAG_COW;
 		if (entry->eflags & MAP_ENTRY_NEEDS_COPY)
 			kve->kve_flags |= KVME_FLAG_NEEDS_COPY;
+		if (entry->eflags & MAP_ENTRY_NOCOREDUMP)
+			kve->kve_flags |= KVME_FLAG_NOCOREDUMP;
 
 		last_timestamp = map->timestamp;
 		vm_map_unlock_read(map);

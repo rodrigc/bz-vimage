@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.383 2010/05/03 07:32:50 sobomax Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.384 2010/05/25 20:42:35 qingli Exp $
  */
 
 #include "opt_compat.h"
@@ -1623,7 +1623,7 @@ done:
  * is most specific found.
  */
 struct ifaddr *
-ifa_ifwithnet(struct sockaddr *addr)
+ifa_ifwithnet(struct sockaddr *addr, int ignore_ptp)
 {
 	struct ifnet *ifp;
 	struct ifaddr *ifa;
@@ -1655,7 +1655,8 @@ ifa_ifwithnet(struct sockaddr *addr)
 
 			if (ifa->ifa_addr->sa_family != af)
 next:				continue;
-			if (af == AF_INET && ifp->if_flags & IFF_POINTOPOINT) {
+			if (af == AF_INET && 
+			    ifp->if_flags & IFF_POINTOPOINT && !ignore_ptp) {
 				/*
 				 * This is a bit broken as it doesn't
 				 * take into account that the remote end may

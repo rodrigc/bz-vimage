@@ -28,7 +28,7 @@
  * Platform (FreeBSD) dependent common attachment code for Qlogic adapters.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_freebsd.c,v 1.161 2010/05/16 06:40:05 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_freebsd.c,v 1.165 2010/05/26 22:49:42 mjacob Exp $");
 #include <dev/isp/isp_freebsd.h>
 #include <sys/unistd.h>
 #include <sys/kthread.h>
@@ -2609,7 +2609,14 @@ isp_handle_platform_notify_24xx(ispsoftc_t *isp, in_fcentry_24xx_t *inot)
 			msg = "PRLO";
 			break;
 		case PLOGI:
-			msg = "PLOGI";
+		case PRLI:
+			/*
+			 * Treat PRLI the same as PLOGI and make a database entry for it.
+			 */
+			if (inot->in_status_subcode == PLOGI)
+				msg = "PLOGI";
+			else
+				msg = "PRLI";
 			if (ISP_FW_NEWER_THAN(isp, 4, 0, 25)) {
 				ptr = (uint8_t *)inot;  /* point to unswizzled entry! */
 				wwn =	(((uint64_t) ptr[IN24XX_PLOGI_WWPN_OFF])   << 56) |
@@ -2624,9 +2631,6 @@ isp_handle_platform_notify_24xx(ispsoftc_t *isp, in_fcentry_24xx_t *inot)
 				wwn = INI_NONE;
 			}
 			isp_add_wwn_entry(isp, chan, wwn, nphdl, portid);
-			break;
-		case PRLI:
-			msg = "PRLI";
 			break;
 		case PDISC:
 			msg = "PDISC";
@@ -3889,19 +3893,14 @@ isp_make_here(ispsoftc_t *isp, int chan, int tgt)
 	}
 
 	/*
-	 * Allocate a CCB, create a wildcard path for this bus/target and schedule a rescan.
+	 * Allocate a CCB, create a wildcard path for this target and schedule a rescan.
 	 */
 	ccb = xpt_alloc_ccb_nowait();
 	if (ccb == NULL) {
 		isp_prt(isp, ISP_LOGWARN, "Chan %d unable to alloc CCB for rescan", chan);
 		return;
 	}
-	/*
-	 * xpt_rescan only honors wildcard in the target field. 
-	 * Scan the whole bus instead of target, which will then
-	 * force a scan of all luns.
-	 */
-	if (xpt_create_path(&ccb->ccb_h.path, xpt_periph, cam_sim_path(fc->sim), CAM_TARGET_WILDCARD, CAM_LUN_WILDCARD) != CAM_REQ_CMP) {
+	if (xpt_create_path(&ccb->ccb_h.path, xpt_periph, cam_sim_path(fc->sim), tgt, CAM_LUN_WILDCARD) != CAM_REQ_CMP) {
 		isp_prt(isp, ISP_LOGWARN, "unable to create path for rescan");
 		xpt_free_ccb(ccb);
 		return;
@@ -4417,7 +4416,10 @@ isp_action(struct cam_sim *sim, union ccb *ccb)
 			ccb->ccb_h.status = CAM_REQ_INVALID;
 			break;
 		}
-		xpt_done(ccb);
+		/*
+		 * This is not a queued CCB, so the caller expects it to be
+		 * complete when control is returned.
+		 */
 		break;
 	}
 #define	IS_CURRENT_SETTINGS(c)	(c->type == CTS_TYPE_CURRENT_SETTINGS)

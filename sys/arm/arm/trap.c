@@ -82,7 +82,7 @@
 #include "opt_ktrace.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/trap.c,v 1.41 2009/11/27 20:24:11 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/trap.c,v 1.42 2010/05/23 18:32:02 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -130,7 +130,6 @@ void undefinedinstruction(trapframe_t *);
 #include <machine/machdep.h>
  
 extern char fusubailout[];
-extern char *syscallnames[];
 
 #ifdef DEBUG
 int last_fault_code;	/* For the benefit of pmap_fault_fixup() */

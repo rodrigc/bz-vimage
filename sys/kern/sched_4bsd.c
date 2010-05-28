@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.136 2010/01/24 18:16:38 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.137 2010/05/21 17:15:56 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_sched.h"
@@ -1462,9 +1462,8 @@ sched_bind(struct thread *td, int cpu)
 {
 	struct td_sched *ts;
 
-	THREAD_LOCK_ASSERT(td, MA_OWNED);
-	KASSERT(TD_IS_RUNNING(td),
-	    ("sched_bind: cannot bind non-running thread"));
+	THREAD_LOCK_ASSERT(td, MA_OWNED|MA_NOTRECURSED);
+	KASSERT(td == curthread, ("sched_bind: can only bind curthread"));
 
 	ts = td->td_sched;
 
@@ -1482,6 +1481,7 @@ void
 sched_unbind(struct thread* td)
 {
 	THREAD_LOCK_ASSERT(td, MA_OWNED);
+	KASSERT(td == curthread, ("sched_unbind: can only bind curthread"));
 	td->td_flags &= ~TDF_BOUND;
 }
 

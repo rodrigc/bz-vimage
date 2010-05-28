@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.372 2010/04/29 10:04:00 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.373 2010/05/19 09:32:11 avg Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -124,10 +124,16 @@ static struct buf_ops ffs_ops = {
 #endif
 };
 
+/*
+ * Note that userquota and groupquota options are not currently used
+ * by UFS/FFS code and generally mount(8) does not pass those options
+ * from userland, but they can be passed by loader(8) via
+ * vfs.root.mountfrom.options.
+ */
 static const char *ffs_opts[] = { "acls", "async", "noatime", "noclusterr",
-    "noclusterw", "noexec", "export", "force", "from", "multilabel", 
-    "nfsv4acls", "snapshot", "nosuid", "suiddir", "nosymfollow", "sync",
-    "union", NULL };
+    "noclusterw", "noexec", "export", "force", "from", "groupquota",
+    "multilabel", "nfsv4acls", "snapshot", "nosuid", "suiddir", "nosymfollow",
+    "sync", "union", "userquota", NULL };
 
 static int
 ffs_mount(struct mount *mp)
@@ -156,6 +162,9 @@ ffs_mount(struct mount *mp)
 		    sizeof(struct ufs2_dinode), NULL, NULL, NULL, NULL,
 		    UMA_ALIGN_PTR, 0);
 	}
+
+	vfs_deleteopt(mp->mnt_optnew, "groupquota");
+	vfs_deleteopt(mp->mnt_optnew, "userquota");
 
 	fspec = vfs_getopts(mp->mnt_optnew, "from", &error);
 	if (error)

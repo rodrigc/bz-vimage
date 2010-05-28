@@ -47,7 +47,7 @@
  *
  *	from: @(#)locore.s	8.5 (Berkeley) 1/4/94
  *	JNPR: swtch.S,v 1.6.2.1 2007/09/10 10:36:50 girish
- * $FreeBSD: src/sys/mips/mips/swtch.S,v 1.9 2010/04/19 07:34:26 jmallett Exp $
+ * $FreeBSD: src/sys/mips/mips/swtch.S,v 1.10 2010/05/25 05:45:16 neel Exp $
  */
 
 /*
@@ -216,9 +216,6 @@ LEAF(savectx)
 	move	v0, zero
 END(savectx)
 
-
-KSEG0TEXT_START;
-
 NON_LEAF(mips_cpu_throw, CALLFRAME_SIZ, ra)
 	mfc0	t0, COP_0_STATUS_REG		# t0 = saved status register
 	nop
@@ -376,7 +373,6 @@ sw2:
 	j	ra
 	nop
 END(cpu_switch)
-KSEG0TEXT_END;
 
 /*----------------------------------------------------------------------------
  *

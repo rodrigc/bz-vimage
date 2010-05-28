@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ptrace.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/sys/sys/ptrace.h,v 1.31 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/sys/ptrace.h,v 1.32 2010/05/23 18:32:02 kib Exp $
  */
 
 #ifndef	_SYS_PTRACE_H_
@@ -99,6 +99,9 @@ struct ptrace_lwpinfo {
 	int	pl_flags;	/* LWP flags. */
 #define	PL_FLAG_SA	0x01	/* M:N thread */
 #define	PL_FLAG_BOUND	0x02	/* M:N bound thread */
+#define	PL_FLAG_SCE	0x04	/* syscall enter point */
+#define	PL_FLAG_SCX	0x08	/* syscall leave point */
+#define	PL_FLAG_EXEC	0x10	/* exec(2) succeeded */
 	sigset_t	pl_sigmask;	/* LWP signal mask */
 	sigset_t	pl_siglist;	/* LWP pending signal */
 };

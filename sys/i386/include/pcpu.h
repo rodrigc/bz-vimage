@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/include/pcpu.h,v 1.56 2009/09/04 07:29:24 julian Exp $
+ * $FreeBSD: src/sys/i386/include/pcpu.h,v 1.57 2010/05/24 15:45:05 jhb Exp $
  */
 
 #ifndef _MACHINE_PCPU_H_
@@ -76,6 +76,7 @@ struct shadow_time_info {
 	u_int   pc_acpi_id;		/* ACPI CPU id */		\
 	u_int	pc_apic_id;						\
 	int	pc_private_tss;		/* Flag indicating private tss*/\
+	u_int	pc_cmci_mask;		/* MCx banks for CMCI */	\
         u_int     pc_cr3;		/* track cr3 for R1/R3*/	\
         u_int     pc_pdir;                                              \
         u_int     pc_lazypmap;                                          \
@@ -102,7 +103,8 @@ struct shadow_time_info {
 	int	pc_currentldt;						\
 	u_int   pc_acpi_id;		/* ACPI CPU id */		\
 	u_int	pc_apic_id;						\
-	int	pc_private_tss		/* Flag indicating private tss */
+	int	pc_private_tss;		/* Flag indicating private tss*/\
+	u_int	pc_cmci_mask		/* MCx banks for CMCI */	\
 
 #endif
 

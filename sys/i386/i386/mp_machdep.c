@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.304 2010/03/10 19:50:52 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.305 2010/05/24 11:40:49 mav Exp $");
 
 #include "opt_apic.h"
 #include "opt_cpu.h"
@@ -1279,9 +1279,6 @@ ipi_bitmap_handler(struct trapframe frame)
 
 	if (ipi_bitmap & (1 << IPI_STATCLOCK))
 		statclockintr(&frame); 
-
-	if (ipi_bitmap & (1 << IPI_PROFCLOCK))
-		profclockintr(&frame);
 }
 
 /*

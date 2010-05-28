@@ -3,7 +3,7 @@
  * Garrett Wollman, September 1994.
  * This file is in the public domain.
  *
- * $FreeBSD: src/sys/amd64/include/clock.h,v 1.63 2009/05/03 17:47:21 mav Exp $
+ * $FreeBSD: src/sys/amd64/include/clock.h,v 1.64 2010/05/24 11:40:49 mav Exp $
  */
 
 #ifndef _MACHINE_CLOCK_H_
@@ -27,7 +27,6 @@ struct trapframe;
 
 int	hardclockintr(struct trapframe *frame);
 int	statclockintr(struct trapframe *frame);
-int	profclockintr(struct trapframe *frame);
 
 /*
  * Driver to clock driver interface.

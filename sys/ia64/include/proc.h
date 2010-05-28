@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/proc.h,v 1.18 2010/04/27 09:48:43 kib Exp $
+ * $FreeBSD: src/sys/ia64/include/proc.h,v 1.20 2010/05/24 17:24:14 kib Exp $
  */
 
 #ifndef _MACHINE_PROC_H_
@@ -40,5 +40,16 @@ struct mdproc {
 
 #define	KINFO_PROC_SIZE 1088
 #define	KINFO_PROC32_SIZE 768
+
+#ifdef _KERNEL
+struct syscall_args {
+	u_int code;
+	struct sysent *callp;
+	register_t *args;
+	register_t args32[8];
+	int narg;
+};
+#define	HAVE_SYSCALL_ARGS_DEF 1
+#endif
 
 #endif /* !_MACHINE_PROC_H_ */

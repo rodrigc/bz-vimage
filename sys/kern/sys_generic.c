@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sys_generic.c,v 1.179 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sys_generic.c,v 1.180 2010/05/21 10:36:29 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_ktrace.h"
@@ -996,7 +996,7 @@ done:
 static int select_flags[3] = {
     POLLRDNORM | POLLHUP | POLLERR,
     POLLWRNORM | POLLHUP | POLLERR,
-    POLLRDBAND | POLLHUP | POLLERR
+    POLLRDBAND | POLLERR
 };
 
 /*

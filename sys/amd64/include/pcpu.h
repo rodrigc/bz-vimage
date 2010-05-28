@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/pcpu.h,v 1.54 2009/05/06 17:48:39 dfr Exp $
+ * $FreeBSD: src/sys/amd64/include/pcpu.h,v 1.55 2010/05/24 15:45:05 jhb Exp $
  */
 
 #ifndef _MACHINE_PCPU_H_
@@ -75,7 +75,8 @@
 	/* Pointer to the CPU LDT descriptor */				\
 	struct system_segment_descriptor *pc_ldt;			\
 	/* Pointer to the CPU TSS descriptor */				\
-	struct system_segment_descriptor *pc_tss			\
+	struct system_segment_descriptor *pc_tss;			\
+	u_int	pc_cmci_mask		/* MCx banks for CMCI */	\
 	PCPU_XEN_FIELDS
 
 #ifdef _KERNEL

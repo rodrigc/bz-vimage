@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.116 2010/04/02 23:04:31 jkim Exp $
+ * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.117 2010/05/23 07:53:22 mav Exp $
  */
 
 #ifndef _ACPIVAR_H_
@@ -342,6 +342,7 @@ int		acpi_bus_alloc_gas(device_t dev, int *type, int *rid,
 		    u_int flags);
 void		acpi_walk_subtables(void *first, void *end,
 		    acpi_subtable_handler *handler, void *arg);
+BOOLEAN		acpi_MatchHid(ACPI_HANDLE h, const char *hid);
 
 struct acpi_parse_resource_set {
     void	(*set_init)(device_t dev, void *arg, void **context);

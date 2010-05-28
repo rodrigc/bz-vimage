@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_main.c,v 1.110 2010/05/05 22:29:54 np Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_main.c,v 1.111 2010/05/20 18:22:45 np Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1979,7 +1979,6 @@ cxgb_set_lro(struct port_info *p, int enabled)
 	struct adapter *adp = p->adapter;
 	struct sge_qset *q;
 
-	PORT_LOCK_ASSERT_OWNED(p);
 	for (i = 0; i < p->nqsets; i++) {
 		q = &adp->sge.qs[p->first_qset + i];
 		q->lro.enabled = (enabled != 0);

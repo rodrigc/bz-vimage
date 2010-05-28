@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.i386,v 1.639 2010/04/02 13:23:49 fabient Exp $
+# $FreeBSD: src/sys/conf/files.i386,v 1.640 2010/05/23 17:45:01 mav Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -272,7 +272,7 @@ i386/i386/io.c			optional io
 i386/i386/io_apic.c		optional apic
 i386/i386/k6_mem.c		optional mem
 i386/i386/legacy.c		optional native
-i386/i386/local_apic.c		optional apic
+x86/x86/local_apic.c		optional apic
 i386/i386/locore.s		optional native	no-obj
 i386/xen/locore.s		optional xen	no-obj
 i386/i386/longrun.c		optional cpu_enable_longrun

@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.amd64,v 1.155 2010/04/02 13:23:49 fabient Exp $
+# $FreeBSD: src/sys/conf/files.amd64,v 1.156 2010/05/23 17:45:01 mav Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -107,7 +107,7 @@ amd64/amd64/intr_machdep.c	standard
 amd64/amd64/io.c		optional	io
 amd64/amd64/io_apic.c		standard
 amd64/amd64/legacy.c		standard
-amd64/amd64/local_apic.c	standard
+x86/x86/local_apic.c		standard
 amd64/amd64/locore.S		standard	no-obj
 amd64/amd64/machdep.c		standard
 amd64/amd64/mca.c		standard

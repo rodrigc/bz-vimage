@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.652 2010/05/12 17:30:46 brueffer Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.653 2010/05/26 15:36:29 kib Exp $
 
 .include <bsd.own.mk>
 
@@ -476,9 +476,7 @@ _nxge=		nxge
 _wpi=		wpi
 _wpifw=		wpifw
 .if ${MK_CRYPT} != "no" || defined(ALL_MODULES)
-.if exists(${.CURDIR}/../crypto/via)
 _padlock=	padlock
-.endif
 .endif
 _s3=		s3
 _twa=		twa
@@ -555,9 +553,7 @@ _nxge=		nxge
 _opensolaris=	opensolaris
 .endif
 .if ${MK_CRYPT} != "no" || defined(ALL_MODULES)
-.if exists(${.CURDIR}/../crypto/via)
 _padlock=	padlock
-.endif
 .endif
 _pccard=	pccard
 _rdma=		rdma	

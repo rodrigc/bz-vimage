@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.45 2010/05/02 12:07:47 mav Exp $
+ * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.46 2010/05/26 22:49:42 mjacob Exp $
  */
 
 #ifndef _CAM_CAM_CCB_H
@@ -184,6 +184,11 @@ typedef enum {
 				/*
 				 * Set SIM specific knob values.
 				 */
+
+	XPT_SCAN_TGT		= 0x1E | XPT_FC_QUEUED | XPT_FC_USER_CCB
+				       | XPT_FC_XPT_ONLY,
+				/* Scan Target */
+
 /* HBA engine commands 0x20->0x2F */
 	XPT_ENG_INQ		= 0x20 | XPT_FC_XPT_ONLY,
 				/* HBA engine feature inquiry */

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/Makefile,v 1.40 2009/11/23 16:00:16 rnoland Exp $
+# $FreeBSD: src/sys/boot/Makefile,v 1.41 2010/05/25 15:32:07 raj Exp $
 
 .include <bsd.own.mk>
 
@@ -24,6 +24,10 @@ SUBDIR+=		uboot
 
 .if ${MACHINE_ARCH} == "amd64" || ${MACHINE} == "i386"
 SUBDIR+=		zfs
+.endif
+
+.if ${MK_FDT} != "no"
+SUBDIR+=		fdt
 .endif
 
 # Pick the machine-dependent subdir based on the target architecture.

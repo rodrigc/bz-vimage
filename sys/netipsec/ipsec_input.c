@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/ipsec_input.c,v 1.30 2009/08/01 19:26:27 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/netipsec/ipsec_input.c,v 1.31 2010/05/24 16:27:47 bz Exp $	*/
 /*	$OpenBSD: ipsec_input.c,v 1.63 2003/02/20 18:35:43 deraadt Exp $	*/
 /*-
  * The authors of this code are John Ioannidis (ji@tla.org),
@@ -489,7 +489,7 @@ ipsec4_common_input_cb(struct mbuf *m, struct secasvar *sav,
 	/*
 	 * Re-dispatch via software interrupt.
 	 */
-	if ((error = netisr_queue_src(NETISR_IP, (uintptr_t)sav, m))) {
+	if ((error = netisr_queue_src(NETISR_IP, (uintptr_t)sav->spi, m))) {
 		IPSEC_ISTAT(sproto, V_espstat.esps_qfull, V_ahstat.ahs_qfull,
 			    V_ipcompstat.ipcomps_qfull);
 
