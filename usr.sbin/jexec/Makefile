@@ -2,7 +2,7 @@
 
 PROG=	jexec
 MAN=	jexec.8
-DPADD=	${LIBJAIL} ${LIBUTIL}
-LDADD=	-ljail -lutil
+DPADD=	${LIBJAIL} ${LIBKVM} ${LIBUTIL}
+LDADD=	-ljail -lkvm -lutil
 
 .include <bsd.prog.mk>
