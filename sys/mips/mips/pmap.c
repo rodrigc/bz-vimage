@@ -66,7 +66,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/pmap.c,v 1.54 2010/05/28 05:34:43 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/pmap.c,v 1.55 2010/05/28 12:05:56 jchandra Exp $");
 
 #include "opt_ddb.h"
 #include "opt_msgbuf.h"
@@ -885,8 +885,12 @@ _pmap_unwire_pte_hold(pmap_t pmap, vm_page_t m)
 	/*
 	 * If the page is finally unwired, simply free it.
 	 */
-	pmap_release_pte_page(m);
 	atomic_subtract_int(&cnt.v_wire_count, 1);
+	PMAP_UNLOCK(pmap);
+	vm_page_unlock_queues();
+	pmap_release_pte_page(m);
+	vm_page_lock_queues();
+	PMAP_LOCK(pmap);
 	return (1);
 }
 
@@ -1007,9 +1011,14 @@ pmap_alloc_pte_page(pmap_t pmap, unsigned int index, int wait, vm_offset_t *vap)
 	paddr = MIPS_KSEG0_TO_PHYS(va);
 	m = PHYS_TO_VM_PAGE(paddr);
 	
+	if (!locked)
+		vm_page_lock_queues();
 	m->pindex = index;
 	m->valid = VM_PAGE_BITS_ALL;
 	m->wire_count = 1;
+	if (!locked)
+		vm_page_unlock_queues();
+
 	atomic_add_int(&cnt.v_wire_count, 1);
 	*vap = (vm_offset_t)va;
 	return (m);
