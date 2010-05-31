@@ -237,6 +237,45 @@ SYSINIT(vnet_init_done, SI_SUB_VNET_DONE, SI_ORDER_FIRST, vnet_init_done, NULL);
 /*
  * Virtual network stack specific ddb(4) commands.
  */
+
+static void
+db_show_vnet_print_vnet(struct vnet *vnet)
+{
+
+	db_printf("vnet            = %p\n", vnet);
+	db_printf(" vnet_data_mem  = %p\n", vnet->v.v_data_mem);
+	db_printf(" vnet_data_base = 0x%jx\n",
+	    (uintmax_t)vnet->v.v_data_base);
+	db_printf(" vnet_ifcnt     = %u\n", vnet->vnet_ifcnt);
+	db_printf(" vnet_sockcnt   = %u\n", vnet->vnet_sockcnt);
+	db_printf("\n");
+}
+
+DB_SHOW_COMMAND(vnet, db_show_vnet)
+{
+	struct vnet *vnet;
+	db_expr_t value;
+
+	if (have_addr) {
+		vnet = (struct vnet *)addr;
+	} else {
+		value = 0;
+		do {
+			if (db_get_variable_s("$db_vnet", &value) &&
+			    value != 0)
+				break;
+			if (db_get_variable_s("$curvnet", &value) &&
+			    value != 0)
+				break;
+			db_printf("usage: show vnet <struct vnet *>\n");
+			return;
+		} while (0);
+		vnet = (struct vnet *)value;
+	}
+
+	db_show_vnet_print_vnet(vnet);
+}
+
 DB_SHOW_ALL_COMMAND(vnets, db_show_all_vnets)
 {
 	VNET_ITERATOR_DECL(v);
@@ -244,13 +283,7 @@ DB_SHOW_ALL_COMMAND(vnets, db_show_all_vnets)
 	VNET_FOREACH(v) {
 		struct vnet *vnet = (struct vnet *)v;
 
-		db_printf("vnet            = %p\n", v);
-		db_printf(" vnet_data_mem  = %p\n", v->v_data_mem);
-		db_printf(" vnet_data_base = 0x%jx\n",
-		    (uintmax_t)v->v_data_base);
-		db_printf(" vnet_ifcnt     = %u\n", vnet->vnet_ifcnt);
-		db_printf(" vnet_sockcnt   = %u\n", vnet->vnet_sockcnt);
-		db_printf("\n");
+		db_show_vnet_print_vnet(vnet);
 		if (db_pager_quit)
 			break;
 	}
