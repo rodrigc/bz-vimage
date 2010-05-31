@@ -200,6 +200,7 @@ db_addr_t	db_disasm(db_addr_t loc, boolean_t altfmt);
 void		db_error(const char *s);
 int		db_expression(db_expr_t *valuep);
 int		db_get_variable(db_expr_t *valuep);
+int		db_get_variable_s(const char *varname, db_expr_t *valuep);
 void		db_iprintf(const char *,...) __printflike(1, 2);
 struct proc	*db_lookup_proc(db_expr_t addr);
 struct thread	*db_lookup_thread(db_expr_t addr, boolean_t check_pid);

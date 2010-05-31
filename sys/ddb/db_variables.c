@@ -109,7 +109,7 @@ db_vimage_variable_unregister(struct vimage_subsys *vse)
 }
 
 static struct db_variable *
-db_find_variable_vimage(char *varname)
+db_find_variable_vimage(const char *varname)
 {
 	struct db_vimage_variable *vvp;
 
@@ -139,7 +139,7 @@ db_find_variable(struct db_variable **varp)
 		vp = db_find_variable_vimage(db_tok_string);
 		if (vp != NULL) {
 			*varp = vp;
-			 return (1);
+			return (1);
 		}
 #endif
 		for (vp = db_regs; vp < db_eregs; vp++) {
@@ -153,12 +153,55 @@ db_find_variable(struct db_variable **varp)
 	return (0);
 }
 
+static int
+db_find_variable_s(const char *varname, struct db_variable **varp)
+{
+	struct db_variable *vp;
+
+	/* Skip any initial '$' if passed in. */
+	if (varname[0] == '$')
+		varname++;
+
+	for (vp = db_vars; vp < db_evars; vp++) {
+		if (!strcmp(varname, vp->name)) {
+			*varp = vp;
+			return (1);
+		}
+	}
+#ifdef VIMAGE
+	vp = db_find_variable_vimage(varname);
+	if (vp != NULL) {
+		*varp = vp;
+		return (1);
+	}
+#endif
+	for (vp = db_regs; vp < db_eregs; vp++) {
+		if (!strcmp(varname, vp->name)) {
+			*varp = vp;
+			return (1);
+		}
+	}
+	db_error("Unknown variable\n");
+	return (0);
+}
+
 int
 db_get_variable(db_expr_t *valuep)
 {
 	struct db_variable *vp;
 
 	if (!db_find_variable(&vp))
+		return (0);
+
+	return (db_read_variable(vp, valuep));
+}
+
+int
+db_get_variable_s(const char *varname, db_expr_t *valuep)
+{
+	struct db_variable *vp;
+
+	if (!db_find_variable_s(varname, &vp))
 		return (0);
 
 	return (db_read_variable(vp, valuep));
