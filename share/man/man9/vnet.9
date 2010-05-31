@@ -219,6 +219,13 @@ One can still use static initialization or storage class specifiers, e.g.
 or
 .Dl Li static VNET_DEFINE(SLIST_HEAD(, bar), bars);
 .Pp
+Static initialization is not possible when the virtualized variable
+would need to be referenced, e.g. with
+.Dq TAILQ_HEAD_INITIALIZER() .
+In that case a
+.Fn VNET_SYSINIT
+based initialization function must be used.
+.Pp
 External variables have to be declared using the
 .Fn VNET_DECLARE
 macro.
@@ -242,10 +249,11 @@ Do not confuse this with the convention used by
 .Pp
 The
 .Fn VNET_NAME
-macro is usally only used in
-.Xr sysctl 9
-definitions to pass the address, that is the offset within the memory
-region of the virtual instance.
+macro returns the offset within the memory  region of the virtual network
+stack instance.
+It is usually only used with
+.Fn SYSCTL_VNET_*
+macros.
 .\" ------------------------------------------------------------
 .Ss "Virtual Instance Selection"
 .\"
@@ -275,7 +283,7 @@ an
 .Pp
 .\"
 In addition the currently active instance is cached in
-.Dl "curthread->td_vnet"
+.Dq "curthread->td_vnet"
 which is usually only accessed through the
 .Dv curvnet
 macro.
@@ -293,7 +301,7 @@ with
 .Cd "options VNET_DEBUG"
 and should thus only be used in well known cases, where recursion is
 unavoidable.
-Both macros will save the previous state on the stack and it can be restored
+Both macros will save the previous state on the stack and it must be restored
 with the
 .Fn CURVNET_RESTORE
 macro.
@@ -340,8 +348,9 @@ For those cases the
 .Fn VNET_ITERATOR_DECL
 and
 .Fn VNET_FOREACH
-macros are provided, which define the variable for the loop to traverse the
-internal lists of all virtual network stack instances.
+macros are provided.
+While the former macro defines the variable that iterates over the loop,
+the latter loops over all of the virtual network stack instances.
 See
 .Sx "Locking"
 for how to savely traverse the list of all virtual instances.
@@ -374,14 +383,14 @@ e.g. by the
 macro, read locks are provided.
 Macros are used to abstract from the actual type of the locks.
 If a caller may sleep while traversing the list, it must use the
-sleepable lock macros.
-.Pp
-.Bd -literal -compact -offset indent
 .Fn VNET_LIST_RLOCK
+and
 .Fn VNET_LIST_RUNLOCK
+macros.
+Otherwise, the caller can use
 .Fn VNET_LIST_RLOCK_NOSLEEP
-.Fn VNET_LIST_RUNLOCK_NOSLEEP
-.Ed
+and
+.Fn VNET_LIST_RUNLOCK_NOSLEEP .
 .\" ------------------------------------------------------------
 .Ss "Startup and Teardown Functions"
 .\"
@@ -391,8 +400,8 @@ functions
 and
 .Fn vnet_destroy
 are provided and called from the jail framework.
-They will then run the publicly provided methods to handle network
-stack startup and teardown.
+They run the publicly provided methods to handle network stack
+startup and teardown.
 .Pp
 For public control, the system startup interface has been enhanced
 to not only handle a system boot but to also handle a virtual
@@ -427,18 +436,17 @@ stack instances.
 .Pp
 For the first case one can just use the normal
 .Xr EVENTHANDLER 9
-functions, while for the second case two macros are provided.
-.Pp
-.Dl Fn VNET_GLOBAL_EVENTHANDLER_REGISTER name func arg priority
+functions, while for the second case the
+.Fn VNET_GLOBAL_EVENTHANDLER_REGISTER
 and
-.Dl Fn VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG tag name func arg priority
-.Pp
-differ in that
+.Fn VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG
+macros are provided.
+These differ in that
 .Fn VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG
 takes an extra first argument that will carry the
 .Fa "tag"
 upon return.
-Eventhandlers registered with either of those will not run
+Eventhandlers registered with either of these will not run
 .Fa func
 directly but
 .Fa func
@@ -454,34 +462,16 @@ A
 .Xr sysctl 9
 can be virtualized by using one of the
 .Fn SYSCTL_VNET_*
-macros:
-.Pp
-.Bd -literal -compact -offset indent
-.Fo SYSCTL_VNET_INT
-.Fa parent nbr name access ptr val descr
-.Fc
-.Fo SYSCTL_VNET_PROC
-.Fa parent nbr name access ptr arg handler fmt descr
-.Fc
-.Fo SYSCTL_VNET_STRING
-.Fa parent nbr name access arg len descr
-.Fc
-.Fo SYSCTL_VNET_STRUCT
-.Fa parent nbr name access ptr type descr
-.Fc
-.Fo SYSCTL_VNET_UINT
-.Fa parent nbr name access ptr val descr
-.Fc
-.Ed
+macros.
 .Pp
 They take the same arguments as the standard
 .Xr sysctl 9
 functions, with the only difference, that the
 .Fa ptr
 argument has to be passed as
-.Dl Li &VNET_NAME(foo)
+.Ql &VNET_NAME(foo)
 instead of
-.Dl Li &foo
+.Ql &foo
 so that the variable can be selected from the correct memory
 region of the virtual network stack instance of the caller.
 .Pp

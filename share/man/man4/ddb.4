@@ -529,9 +529,9 @@ Show all variables currently known to
 .Pp
 .It Ic show Cm all ifnets
 Show all interfaces of the system.
-In case the kernel is
+If the kernel is compiled with
 .Tn VIMAGE
-enabled, the output is grouped by
+support, the output is grouped by
 .Xr vnet 9 .
 Information on an individual ifnet can be gathered using the
 .Ic show Cm ifnet Ar addr
@@ -539,9 +539,9 @@ command.
 .Pp
 .It Ic show Cm all lltables
 Show all link-layer tables of the system.
-In case the kernel is
+If the kernel is compiled with
 .Tn VIMAGE
-enabled, the output is grouped by
+support, the output is grouped by
 .Xr vnet 9 .
 Information on all entries of a table can be shown using the
 .Ic show Cm lltable Ar addr
@@ -567,7 +567,7 @@ Output is similar to
 but also includes the address of the TTY structure.
 .\"
 .Pp
-.It Ic show Cm all vimage_subsys
+.It Ic show Cm all vsubsys
 Show a list of all virtualized subsystems known to the
 virtualization framework.
 .\"
@@ -686,7 +686,7 @@ Those functions are machine dependent.
 .Pp
 .It Ic show Cm ifnet Ar addr
 Show partial information on the
-.Xr 9 ifnet
+.Xr ifnet 9
 interface
 .Vt struct ifnet
 present at
@@ -1114,11 +1114,24 @@ Currently, it is not possible to use this command when
 is compiled in the kernel.
 .\"
 .Pp
-.It Ic show Cm vnets
+.It Ic show Cm all vnets
 List
 .Xr vnet 9
 .Vt struct vnet
 information.
+.\"
+.Pp
+.It Ic show Cm vnet Op Ar addr
+Show
+.Xr vnet 9
+.Vt struct vnet
+information for either the given
+.Op Ar addr ,
+or for
+.Ar $db_vnet
+or
+.Ar $curvnet
+if set.
 .\"
 .Pp
 .It Ic show Cm vnode Op Ar addr
@@ -1295,11 +1308,22 @@ can take values from 0 to 31.
 In addition a dynamic list of variables will be available if the kernel
 is compiled with option
 .Tn VIMAGE .
-This will always be a pair of variables based on the the virtualize
-subsystem name:
-.Dq Li db_<name>
-and
-.Dq Li cur<name> .
+This list will contain a pair of variables for each virtualized subsystem:
+.Bl -tag -offset indent -width "db_<name>" -compact
+.It Li cur<name>
+is a read-only variable reporting the current virtual instance, which
+would be used for subsystem
+.Ql name
+global variable expansion, if
+.Ql db_<name>
+was not set.
+.It Li db_<name>
+is the preferred, updatable variable used for subsystem
+.Ql name
+global variable expansion.
+If set by the user, it is checked to be a valid virtual instance for the
+named subsystem.
+.El
 Use the
 .Dq Ic show Cm all db_vars
 command to list all of them.
