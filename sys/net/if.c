@@ -408,14 +408,18 @@ if_grow(void)
  * common structure will also be allocated if an allocation routine is
  * registered for the passed type.
  */
-struct ifnet *
-if_alloc(u_char type)
+static struct ifnet *
+if_alloc_internal(u_char type)
 {
 	struct ifnet *ifp;
 	u_short idx;
 
 	ifp = malloc(sizeof(struct ifnet), M_IFNET, M_WAITOK|M_ZERO);
 	IFNET_WLOCK();
+
+#ifdef VIMAGE
+	ifp->if_vnet = ifp->if_home_vnet = curvnet;
+#endif
 	if (ifindex_alloc_locked(&idx) != 0) {
 		IFNET_WUNLOCK();
 		free(ifp, M_IFNET);
@@ -451,6 +455,39 @@ if_alloc(u_char type)
 	refcount_init(&ifp->if_refcount, 1);	/* Index reference. */
 	ifnet_setbyindex(ifp->if_index, ifp);
 	return (ifp);
+}
+
+/*
+ * if_alloc() force interfaces into the default (base system) vnet
+ * conetxt and should be used for physical interfaces.
+ */
+struct ifnet *
+if_alloc(u_char type)
+{
+	struct ifnet *ifp;
+
+#ifdef VIMAGE
+	CURVNET_SET(vnet0);
+#endif
+	ifp = if_alloc_internal(type);
+#ifdef VIMAGE
+	CURVNET_RESTORE();
+#endif
+
+	return (ifp);
+}
+
+/*
+ * if_alloc_curvnet() asserts that there is a preset VNET context.
+ * This should be used from if_clone consumers or ng context, where
+ * we want interfaces to appear in the context of the ifioctl socket, etc.
+ * rather than the base system.
+ */
+struct ifnet *
+if_alloc_curvnet(u_char type)
+{
+
+	return (if_alloc_internal(type));
 }
 
 /*
@@ -580,7 +617,9 @@ void
 if_attach(struct ifnet *ifp)
 {
 
+	CURVNET_SET(ifp->if_vnet);
 	if_attach_internal(ifp, 0);
+	CURVNET_RESTORE();
 }
 
 static void
@@ -594,12 +633,6 @@ if_attach_internal(struct ifnet *ifp, int vmove)
 	if (ifp->if_index == 0 || ifp != ifnet_byindex(ifp->if_index))
 		panic ("%s: BUG: if_attach called without if_alloc'd input()\n",
 		    ifp->if_xname);
-
-#ifdef VIMAGE
-	ifp->if_vnet = curvnet;
-	if (ifp->if_home_vnet == NULL)
-		ifp->if_home_vnet = curvnet;
-#endif
 
 	if_addgroup(ifp, IFG_ALL);
 

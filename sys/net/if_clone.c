@@ -35,6 +35,7 @@
 #include <sys/limits.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
+#include <sys/jail.h>
 #include <sys/kernel.h>
 #include <sys/systm.h>
 #include <sys/types.h>
@@ -135,6 +136,7 @@ int
 if_clone_create(char *name, size_t len, caddr_t params)
 {
 	struct if_clone *ifc;
+	int error;
 
 	/* Try to find an applicable cloner for this request */
 	IF_CLONERS_LOCK();
@@ -158,7 +160,10 @@ if_clone_create(char *name, size_t len, caddr_t params)
 	if (ifc == NULL)
 		return (EINVAL);
 
-	return (if_clone_createif(ifc, name, len, params));
+	CURVNET_SET(TD_TO_VNET(curthread));
+	error = if_clone_createif(ifc, name, len, params);
+	CURVNET_RESTORE();
+	return (error);
 }
 
 /*
@@ -527,8 +532,8 @@ ifc_simple_attach(struct if_clone *ifc)
 		snprintf(name, IFNAMSIZ, "%s%d", ifc->ifc_name, unit);
 		err = if_clone_createif(ifc, name, IFNAMSIZ, NULL);
 		KASSERT(err == 0,
-		    ("%s: failed to create required interface %s",
-		    __func__, name));
+		    ("%s: failed to create required interface %s: %d",
+		    __func__, name, err));
 	}
 }
 

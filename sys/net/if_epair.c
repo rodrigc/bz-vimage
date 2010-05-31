@@ -750,7 +750,7 @@ epair_clone_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 	/* Allocate memory for both [ab] interfaces */
 	sca = malloc(sizeof(struct epair_softc), M_EPAIR, M_WAITOK | M_ZERO);
 	EPAIR_REFCOUNT_INIT(&sca->refcount, 1);
-	sca->ifp = if_alloc(IFT_ETHER);
+	sca->ifp = if_alloc_curvnet(IFT_ETHER);
 	if (sca->ifp == NULL) {
 		free(sca, M_EPAIR);
 		ifc_free_unit(ifc, unit);
@@ -759,7 +759,7 @@ epair_clone_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 
 	scb = malloc(sizeof(struct epair_softc), M_EPAIR, M_WAITOK | M_ZERO);
 	EPAIR_REFCOUNT_INIT(&scb->refcount, 1);
-	scb->ifp = if_alloc(IFT_ETHER);
+	scb->ifp = if_alloc_curvnet(IFT_ETHER);
 	if (scb->ifp == NULL) {
 		free(scb, M_EPAIR);
 		if_free(sca->ifp);

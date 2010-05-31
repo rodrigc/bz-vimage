@@ -133,7 +133,7 @@ lo_clone_create(struct if_clone *ifc, int unit, caddr_t params)
 {
 	struct ifnet *ifp;
 
-	ifp = if_alloc(IFT_LOOP);
+	ifp = if_alloc_curvnet(IFT_LOOP);
 	if (ifp == NULL)
 		return (ENOSPC);
 

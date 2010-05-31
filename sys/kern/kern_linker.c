@@ -1034,12 +1034,6 @@ kern_kldload(struct thread *td, const char *file, int *fileid)
 		return (error);
 
 	/*
-	 * It is possible that kldloaded module will attach a new ifnet,
-	 * so vnet context must be set when this ocurs.
-	 */
-	CURVNET_SET(TD_TO_VNET(td));
-
-	/*
 	 * If file does not contain a qualified name or any dot in it
 	 * (kldname.ko, or kldname.ver.ko) treat it as an interface
 	 * name.
@@ -1066,7 +1060,6 @@ kern_kldload(struct thread *td, const char *file, int *fileid)
 		*fileid = lf->id;
 unlock:
 	KLD_UNLOCK();
-	CURVNET_RESTORE();
 	return (error);
 }
 

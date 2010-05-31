@@ -837,6 +837,7 @@ int	if_delgroup(struct ifnet *, const char *);
 int	if_addmulti(struct ifnet *, struct sockaddr *, struct ifmultiaddr **);
 int	if_allmulti(struct ifnet *, int);
 struct	ifnet* if_alloc(u_char);
+struct	ifnet* if_alloc_curvnet(u_char);
 void	if_attach(struct ifnet *);
 void	if_dead(struct ifnet *);
 int	if_delmulti(struct ifnet *, struct sockaddr *);
