@@ -1020,7 +1020,7 @@ DB_SHOW_VIMAGE_COMMAND(subsys, db_show_vimage_subsys)
 }
 
 
-DB_SHOW_ALL_COMMAND(vimage_subsys, db_show_all_vimage_subsys)
+DB_SHOW_ALL_COMMAND(vsubsys, db_show_all_vsubsys)
 {
 	struct vimage_subsys *vse;
 
