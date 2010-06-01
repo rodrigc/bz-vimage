@@ -1311,19 +1311,32 @@ is compiled with option
 This list will contain a pair of variables for each virtualized subsystem:
 .Bl -tag -offset indent -width "db_<name>" -compact
 .It Li cur<name>
-is a read-only variable reporting the current virtual instance, which
-would be used for subsystem
+is a read-only variable reporting the current active virtual instance
+for subsystem
 .Ql name
-global variable expansion, if
-.Ql db_<name>
-was not set.
+for the current thread.
 .It Li db_<name>
-is the preferred, updatable variable used for subsystem
-.Ql name
-global variable expansion.
-If set by the user, it is checked to be a valid virtual instance for the
-named subsystem.
+is the writeable variable, which can be set to a valid virtual instance
+for subsystem
+.Ql name .
 .El
+If an expression references a symbol from a virtualized subsystem,
+DDB will use the virtual instance set in
+.Ql db_<name>
+to resolve the reference.
+If
+.Ql db_<name>
+is not set,
+then DDB will use the virtual instance set in
+.Ql cur<name> .
+If
+.Ql db_<name>
+is not set and the current thread does not have an active virtual instance
+of the subsystem,
+then DDB will print a
+.Dq Symbol not found
+error message.
+.Pp
 Use the
 .Dq Ic show Cm all db_vars
 command to list all of them.
@@ -1338,8 +1351,8 @@ Special rules in
 are:
 .Bl -tag -width ".No Identifiers"
 .It Identifiers
-The name of a symbol is translated to the value of the symbol, which
-is the address of the corresponding object.
+The name of a symbol is translated to the value of the symbol,
+which is the address of the corresponding object.
 .Ql \&.
 and
 .Ql \&:
