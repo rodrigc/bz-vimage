@@ -332,7 +332,7 @@ int	dflag;		/* show i/f dropped packets */
 int	gflag;		/* show group (multicast) routing or stats */
 int	hflag;		/* show counters in human readable format */
 int	iflag;		/* show interfaces */
-int	jid;		/* sleect virtual network stack by jail ID */
+int	jid;		/* select virtual network stack by jail ID */
 int	Lflag;		/* show size of listen queues */
 int	mflag;		/* show memory stats */
 int	noutputs = 0;	/* how much outputs before we exit */
