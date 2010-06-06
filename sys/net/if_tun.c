@@ -135,7 +135,7 @@ static void	tunstart(struct ifnet *);
 static int	tun_clone_create(struct if_clone *, int, caddr_t);
 static void	tun_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(tun, 0);
+IFC_SIMPLE_DECLARE(tun, 0, IFT_PPP);
 
 static d_open_t		tunopen;
 static d_close_t	tunclose;

@@ -167,8 +167,7 @@ STAILQ_HEAD(eid_list, epair_ifp_drain);
 static MALLOC_DEFINE(M_EPAIR, EPAIRNAME,
     "Pair of virtual cross-over connected Ethernet-like interfaces");
 
-static struct if_clone epair_cloner = IFC_CLONE_INITIALIZER(
-    EPAIRNAME, NULL, IF_MAXUNIT,
+IFC_DECLARE(epair, 0, IFT_ETHER, IF_MAXUNIT,
     NULL, epair_clone_match, epair_clone_create, epair_clone_destroy);
 
 /*

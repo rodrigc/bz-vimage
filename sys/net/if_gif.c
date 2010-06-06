@@ -106,7 +106,7 @@ static void	gif_start(struct ifnet *);
 static int	gif_clone_create(struct if_clone *, int, caddr_t);
 static void	gif_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(gif, 0);
+IFC_SIMPLE_DECLARE(gif, 0, IFT_GIF);
 
 static int gifmodevent(module_t, int, void *);
 

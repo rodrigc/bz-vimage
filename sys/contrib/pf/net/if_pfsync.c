@@ -186,7 +186,7 @@ extern int ifqmaxlen;
 #endif
 
 #ifdef __FreeBSD__
-IFC_SIMPLE_DECLARE(pfsync, 1);
+IFC_SIMPLE_DECLARE(pfsync, 1, IFT_PFSYNC);
 #else
 struct if_clone	pfsync_cloner =
     IF_CLONE_INITIALIZER("pfsync", pfsync_clone_create, pfsync_clone_destroy);
@@ -2323,7 +2323,7 @@ static moduledata_t pfsync_mod = {
 
 #define PFSYNC_MODVER 1
 
-DECLARE_MODULE(pfsync, pfsync_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY);
+DECLARE_MODULE(pfsync, pfsync_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_THIRD);
 MODULE_VERSION(pfsync, PFSYNC_MODVER);
 MODULE_DEPEND(pflog, pf, PF_MODVER, PF_MODVER, PF_MODVER);
 #endif /* __FreeBSD__ */

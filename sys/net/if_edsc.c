@@ -89,7 +89,7 @@ static		MALLOC_DEFINE(M_EDSC, "edsc", "Ethernet discard interface");
  * the outset.  It's also the minimum number of units allowed.
  * We don't want any units created as soon as the driver is loaded.
  */
-IFC_SIMPLE_DECLARE(edsc, 0);
+IFC_SIMPLE_DECLARE(edsc, 0, IFT_ETHER);
 
 /*
  * Create an interface instance.

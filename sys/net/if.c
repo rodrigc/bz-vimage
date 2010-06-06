@@ -343,7 +343,7 @@ vnet_if_init(const void *unused __unused)
 	if_grow();				/* create initial table */
 	vnet_if_clone_init();
 }
-VNET_SYSINIT(vnet_if_init, SI_SUB_INIT_IF, SI_ORDER_FIRST, vnet_if_init,
+VNET_SYSINIT(vnet_if_init, SI_SUB_INIT_IF, SI_ORDER_THIRD, vnet_if_init,
     NULL);
 
 /* ARGSUSED*/
@@ -1008,6 +1008,7 @@ if_vmove(struct ifnet *ifp, struct vnet *new_vnet)
 	ifnet_setbyindex_locked(ifp->if_index, ifp);
 	IFNET_WUNLOCK();
 
+	ifp->if_vnet = curvnet;
 	if_attach_internal(ifp, 1);
 
 	CURVNET_RESTORE();

@@ -74,7 +74,7 @@ static void	disc_clone_destroy(struct ifnet *);
 
 static MALLOC_DEFINE(M_DISC, DISCNAME, "Discard interface");
 
-IFC_SIMPLE_DECLARE(disc, 0);
+IFC_SIMPLE_DECLARE(disc, 0, IFT_LOOP);
 
 static int
 disc_clone_create(struct if_clone *ifc, int unit, caddr_t params)

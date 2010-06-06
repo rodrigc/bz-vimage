@@ -115,7 +115,7 @@ static struct lagg_port *lagg_link_active(struct lagg_softc *,
 	    struct lagg_port *);
 static const void *lagg_gethdr(struct mbuf *, u_int, u_int, void *);
 
-IFC_SIMPLE_DECLARE(lagg, 0);
+IFC_SIMPLE_DECLARE(lagg, 0, IFT_ETHER);
 
 /* Simple round robin */
 static int	lagg_rr_attach(struct lagg_softc *);

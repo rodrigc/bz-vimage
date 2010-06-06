@@ -90,7 +90,7 @@ static int	enc_output(struct ifnet *ifp, struct mbuf *m,
 static int	enc_clone_create(struct if_clone *, int, caddr_t);
 static void	enc_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(enc, 1);
+IFC_SIMPLE_DECLARE(enc, 1, IFT_ENC);
 
 /*
  * Sysctls.
@@ -135,7 +135,7 @@ enc_clone_create(struct if_clone *ifc, int unit, caddr_t params)
 	struct enc_softc *sc;
 
 	sc = malloc(sizeof(*sc), M_DEVBUF, M_WAITOK|M_ZERO);
-	ifp = sc->sc_ifp = if_alloc(IFT_ENC);
+	ifp = sc->sc_ifp = if_alloc_curvnet(IFT_ENC);
 	if (ifp == NULL) {
 		free(sc, M_DEVBUF);
 		return (ENOSPC);
@@ -182,7 +182,7 @@ static moduledata_t enc_mod = {
 	0
 };
 
-DECLARE_MODULE(enc, enc_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY);
+DECLARE_MODULE(enc, enc_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_THIRD);
 
 static int
 enc_output(struct ifnet *ifp, struct mbuf *m, struct sockaddr *dst,

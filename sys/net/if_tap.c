@@ -99,8 +99,8 @@ static void		tap_clone_destroy(struct ifnet *);
 static int		vmnet_clone_create(struct if_clone *, int, caddr_t);
 static void		vmnet_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(tap, 0);
-IFC_SIMPLE_DECLARE(vmnet, 0);
+IFC_SIMPLE_DECLARE(tap, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE(vmnet, 0, IFT_ETHER);
 
 /* character device */
 static d_open_t		tapopen;

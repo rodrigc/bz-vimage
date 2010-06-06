@@ -203,8 +203,8 @@ static	int vlan_clone_destroy(struct if_clone *, struct ifnet *);
 static	void vlan_ifdetach(void *arg, struct ifnet *ifp);
 static  void vlan_iflladdr(void *arg, struct ifnet *ifp);
 
-static	struct if_clone vlan_cloner = IFC_CLONE_INITIALIZER(VLANNAME, NULL,
-    IF_MAXUNIT, NULL, vlan_clone_match, vlan_clone_create, vlan_clone_destroy);
+IFC_DECLARE(vlan, 0, IFT_ETHER, IF_MAXUNIT,
+    NULL, vlan_clone_match, vlan_clone_create, vlan_clone_destroy);
 
 #ifndef VLAN_ARRAY
 #define HASH(n, m)	((((n) >> 8) ^ ((n) >> 4) ^ (n)) & (m))

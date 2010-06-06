@@ -105,7 +105,7 @@ static int	gre_ioctl(struct ifnet *, u_long, caddr_t);
 static int	gre_output(struct ifnet *, struct mbuf *, struct sockaddr *,
 		    struct route *ro);
 
-IFC_SIMPLE_DECLARE(gre, 0);
+IFC_SIMPLE_DECLARE(gre, 0, IFT_TUNNEL);
 
 static int gre_compute_route(struct gre_softc *sc);
 

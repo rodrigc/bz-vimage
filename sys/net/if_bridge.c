@@ -474,7 +474,7 @@ const int bridge_control_table_size =
 
 LIST_HEAD(, bridge_softc) bridge_list;
 
-IFC_SIMPLE_DECLARE(bridge, 0);
+IFC_SIMPLE_DECLARE(bridge, 0, IFT_ETHER);
 
 static int
 bridge_modevent(module_t mod, int type, void *data)

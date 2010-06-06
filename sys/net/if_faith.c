@@ -100,7 +100,7 @@ static MALLOC_DEFINE(M_FAITH, FAITHNAME, "Firewall Assisted Tunnel Interface");
 static int	faith_clone_create(struct if_clone *, int, caddr_t);
 static void	faith_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(faith, 0);
+IFC_SIMPLE_DECLARE(faith, 0, IFT_FAITH);
 
 #define	FAITHMTU	1500
 

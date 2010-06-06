@@ -188,7 +188,7 @@ static int stf_ioctl(struct ifnet *, u_long, caddr_t);
 static int stf_clone_match(struct if_clone *, const char *);
 static int stf_clone_create(struct if_clone *, char *, size_t, caddr_t);
 static int stf_clone_destroy(struct if_clone *, struct ifnet *);
-struct if_clone stf_cloner = IFC_CLONE_INITIALIZER(STFNAME, NULL, 0,
+IFC_DECLARE(stf, 0, IFT_STF, 0,
     NULL, stf_clone_match, stf_clone_create, stf_clone_destroy);
 
 static int

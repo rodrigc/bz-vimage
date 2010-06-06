@@ -226,7 +226,7 @@ static void	carp_multicast6_cleanup(struct carp_softc *);
 
 static LIST_HEAD(, carp_softc) carpif_list;
 static struct mtx carp_mtx;
-IFC_SIMPLE_DECLARE(carp, 0);
+IFC_SIMPLE_DECLARE(carp, 0, IFT_ETHER);
 
 static eventhandler_tag if_detach_event_tag;
 

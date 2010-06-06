@@ -35,12 +35,9 @@
 
 #ifdef _KERNEL
 
-#define IFC_CLONE_INITIALIZER(name, data, maxunit,			\
-    attach, match, create, destroy)					\
-    { { 0 }, name, maxunit, NULL, 0, data, attach, match, create, destroy }
-
 /*
- * Structure describing a `cloning' interface.
+ * Structures describing a `cloning' interface and per (virtual) network stack
+ * instance data.
  *
  * List of locks
  * (c)		const until freeing
@@ -51,12 +48,6 @@
 struct if_clone {
 	LIST_ENTRY(if_clone) ifc_list;	/* (e) On list of cloners */
 	const char *ifc_name;		/* (c) Name of device, e.g. `gif' */
-	int ifc_maxunit;		/* (c) Maximum unit number */
-	unsigned char *ifc_units;	/* (i) Bitmap to handle units. */
-					/*     Considered private, access */
-					/*     via ifc_(alloc|free)_unit(). */
-	int ifc_bmlen;			/* (c) Bitmap length. */
-	void *ifc_data;			/* (*) Data for ifc_* functions. */
 
 	/* (c) Driver specific cloning functions.  Called with no locks held. */
 	void	(*ifc_attach)(struct if_clone *);
@@ -64,9 +55,27 @@ struct if_clone {
 	int	(*ifc_create)(struct if_clone *, char *, size_t, caddr_t);
 	int	(*ifc_destroy)(struct if_clone *, struct ifnet *);
 
-	long ifc_refcnt;		/* (i) Refrence count. */
-	struct mtx ifc_mtx;		/* Muted to protect members. */
-	LIST_HEAD(, ifnet) ifc_iflist;	/* (i) List of cloned interfaces */
+	/* (c) In case of "simple" implementation. */
+	int	(*ifcs_create)(struct if_clone *, int, caddr_t);
+	void	(*ifcs_destroy)(struct ifnet *);
+
+	void *ifc_data;			/* (*) Data for ifc_* functions. */
+	int ifc_maxunit;		/* (c) Maximum unit number */
+	int ifc_bmlen;			/* (c) Bitmap length. */
+	uint8_t ifc_if_type;		/* (c) interface type (IFT_*). */
+};
+
+struct if_clone_instance {
+	LIST_ENTRY(if_clone_instance) ifci_list; /* (i) On list of cloners */
+	struct mtx ifci_mtx;		/* Muted to protect members. */
+	struct if_clone *ifci_ifcp;	/* (c) Backpointer. */
+	unsigned char *ifci_units;	/* (i) Bitmap to handle units. */
+					/*     Considered private, access */
+					/*     via ifc_(alloc|free)_unit(). */
+	LIST_HEAD(, ifnet) ifci_iflist;	/* (i) List of cloned interfaces */
+	long ifci_refcnt;		/* (i) Refrence count. */
+	int ifci_minifs;		/* (i) minimum number of interfaces */
+					/*     in case of "simple" impl. */
 };
 
 void	if_clone_init(void);
@@ -83,28 +92,57 @@ int	ifc_name2unit(const char *name, int *unit);
 int	ifc_alloc_unit(struct if_clone *, int *);
 void	ifc_free_unit(struct if_clone *, int);
 
-/*
- * The ifc_simple functions, structures, and macros implement basic
- * cloning as in 5.[012].
- */
-
-struct ifc_simple_data {
-	int ifcs_minifs;		/* minimum number of interfaces */
-
-	int	(*ifcs_create)(struct if_clone *, int, caddr_t);
-	void	(*ifcs_destroy)(struct ifnet *);
-};
-
 /* interface clone event */
 typedef void (*if_clone_event_handler_t)(void *, struct if_clone *);
 EVENTHANDLER_DECLARE(if_clone_event, if_clone_event_handler_t);
 
-#define IFC_SIMPLE_DECLARE(name, minifs)				\
-struct ifc_simple_data name##_cloner_data =				\
-    {minifs, name##_clone_create, name##_clone_destroy};		\
-struct if_clone name##_cloner =						\
-    IFC_CLONE_INITIALIZER(#name, &name##_cloner_data, IF_MAXUNIT,	\
-    ifc_simple_attach, ifc_simple_match, ifc_simple_create, ifc_simple_destroy)
+#define IFC_CLONE_INITIALIZER(name, data, maxunit,			\
+    attach, match, create, destroy, screate, sdestroy, iftype)		\
+    {									\
+	.ifc_list	= { NULL },					\
+	.ifc_name	= name,						\
+	.ifc_attach	= attach,					\
+	.ifc_match	= match,					\
+	.ifc_create	= create,					\
+	.ifc_destroy	= destroy,					\
+	.ifcs_create	= screate,					\
+	.ifcs_destroy	= sdestroy,					\
+	.ifc_data	= data,						\
+	.ifc_maxunit	= maxunit,					\
+	.ifc_if_type	= iftype,					\
+    }
+
+#define IFC_SIMPLE_DECLARE(name, minifs, iftype)			\
+static VNET_DEFINE(struct if_clone_instance, name##_cloner_instance) =	\
+    {									\
+	.ifci_minifs = minifs,						\
+    };									\
+static struct if_clone name##_cloner =					\
+    IFC_CLONE_INITIALIZER(						\
+	#name,								\
+	&VNET_NAME(name##_cloner_instance),				\
+	IF_MAXUNIT,							\
+	ifc_simple_attach,						\
+	ifc_simple_match,						\
+	ifc_simple_create,						\
+	ifc_simple_destroy,						\
+	name##_clone_create,						\
+	name##_clone_destroy,						\
+	iftype)
+
+#define IFC_DECLARE(name, minifs, iftype, maxunit,			\
+    attach, match, create, destroy)					\
+static VNET_DEFINE(struct if_clone_instance, name##_cloner_instance) =	\
+    {									\
+	.ifci_minifs = minifs,						\
+    };									\
+static struct if_clone name##_cloner =					\
+    IFC_CLONE_INITIALIZER(						\
+	#name,								\
+	&VNET_NAME(name##_cloner_instance),				\
+	maxunit,							\
+	attach, match, create, destroy,	NULL, NULL,			\
+	iftype)
 
 void	ifc_simple_attach(struct if_clone *);
 int	ifc_simple_match(struct if_clone *, const char *);

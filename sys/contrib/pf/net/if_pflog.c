@@ -128,7 +128,7 @@ int	pflog_clone_destroy(struct ifnet *);
 
 LIST_HEAD(, pflog_softc)	pflogif_list;
 #ifdef __FreeBSD__
-IFC_SIMPLE_DECLARE(pflog, 1);    
+IFC_SIMPLE_DECLARE(pflog, 1, IFT_PFLOG);
 #else
 struct if_clone	pflog_cloner =
     IF_CLONE_INITIALIZER("pflog", pflog_clone_create, pflog_clone_destroy);
@@ -430,7 +430,7 @@ static moduledata_t pflog_mod = { "pflog", pflog_modevent, 0 };
 
 #define PFLOG_MODVER 1
 
-DECLARE_MODULE(pflog, pflog_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY);
+DECLARE_MODULE(pflog, pflog_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_THIRD);
 MODULE_VERSION(pflog, PFLOG_MODVER);
 MODULE_DEPEND(pflog, pf, PF_MODVER, PF_MODVER, PF_MODVER);
 #endif /* __FreeBSD__ */

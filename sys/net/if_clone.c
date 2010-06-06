@@ -30,6 +30,8 @@
  * $FreeBSD: src/sys/net/if_clone.c,v 1.20 2010/04/11 18:47:38 bz Exp $
  */
 
+#include "opt_ddb.h"
+
 #include <sys/param.h>
 #include <sys/malloc.h>
 #include <sys/limits.h>
@@ -40,6 +42,7 @@
 #include <sys/systm.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/sx.h>
 
 #include <net/if.h>
 #include <net/if_clone.h>
@@ -52,16 +55,37 @@
 #include <net/route.h>
 #include <net/vnet.h>
 
-static void	if_clone_free(struct if_clone *ifc);
+#ifdef DDB
+#include <ddb/ddb.h>
+#endif
+
+static void	if_clone_free(struct if_clone_instance *ifci);
 static int	if_clone_createif(struct if_clone *ifc, char *name, size_t len,
 		    caddr_t params);
 
 static struct mtx	if_cloners_mtx;
-static VNET_DEFINE(int, if_cloners_count);
-VNET_DEFINE(LIST_HEAD(, if_clone), if_cloners);
-
-#define	V_if_cloners_count	VNET(if_cloners_count)
+static struct sx	if_cloners_master_sx;
+static int		if_cloners_count;
+static LIST_HEAD(, if_clone)	if_cloners_master;
+static VNET_DEFINE(LIST_HEAD(, if_clone_instance), if_cloners);
 #define	V_if_cloners		VNET(if_cloners)
+
+static void
+v_ifci_assert(void)
+{
+
+	VNET_ASSERT(curvnet != NULL, ("%s: curvnet not set", __func__));
+}
+#define	V_IFCI(ifc)							\
+	(v_ifci_assert(), (struct if_clone_instance *)			\
+	    (curvnet->v.v_data_base + (uintptr_t)ifc->ifc_data))
+
+#define	IF_CLONERS_MASTER_INIT()	\
+    sx_init(&if_cloners_master_sx, "if_cloners_master_sx")
+#define	IF_CLONERS_MASTER_WLOCK()	sx_xlock(&if_cloners_master_sx)
+#define	IF_CLONERS_MASTER_WUNLOCK()	sx_xunlock(&if_cloners_master_sx)
+#define	IF_CLONERS_MASTER_RLOCK()	sx_slock(&if_cloners_master_sx)
+#define	IF_CLONERS_MASTER_RUNLOCK()	sx_sunlock(&if_cloners_master_sx)
 
 #define IF_CLONERS_LOCK_INIT()		\
     mtx_init(&if_cloners_mtx, "if_cloners lock", NULL, MTX_DEF)
@@ -69,48 +93,48 @@ VNET_DEFINE(LIST_HEAD(, if_clone), if_cloners);
 #define IF_CLONERS_LOCK()		mtx_lock(&if_cloners_mtx)
 #define IF_CLONERS_UNLOCK()		mtx_unlock(&if_cloners_mtx)
 
-#define IF_CLONE_LOCK_INIT(ifc)		\
-    mtx_init(&(ifc)->ifc_mtx, "if_clone lock", NULL, MTX_DEF)
-#define IF_CLONE_LOCK_DESTROY(ifc)	mtx_destroy(&(ifc)->ifc_mtx)
-#define IF_CLONE_LOCK_ASSERT(ifc)	mtx_assert(&(ifc)->ifc_mtx, MA_OWNED)
-#define IF_CLONE_LOCK(ifc)		mtx_lock(&(ifc)->ifc_mtx)
-#define IF_CLONE_UNLOCK(ifc)		mtx_unlock(&(ifc)->ifc_mtx)
+#define IF_CLONE_LOCK_INIT(ifci)		\
+    mtx_init(&(ifci)->ifci_mtx, "if_clone_instance lock", NULL, MTX_DEF)
+#define IF_CLONE_LOCK_DESTROY(ifc)	mtx_destroy(&(ifci)->ifci_mtx)
+#define IF_CLONE_LOCK_ASSERT(ifc)	mtx_assert(&(ifci)->ifci_mtx, MA_OWNED)
+#define IF_CLONE_LOCK(ifc)		mtx_lock(&(ifci)->ifci_mtx)
+#define IF_CLONE_UNLOCK(ifc)		mtx_unlock(&(ifci)->ifci_mtx)
 
-#define IF_CLONE_ADDREF(ifc)						\
+#define IF_CLONE_ADDREF(ifci)						\
 	do {								\
-		IF_CLONE_LOCK(ifc);					\
-		IF_CLONE_ADDREF_LOCKED(ifc);				\
-		IF_CLONE_UNLOCK(ifc);					\
+		IF_CLONE_LOCK(ifci);					\
+		IF_CLONE_ADDREF_LOCKED(ifci);				\
+		IF_CLONE_UNLOCK(ifci);					\
 	} while (0)
-#define IF_CLONE_ADDREF_LOCKED(ifc)					\
+#define IF_CLONE_ADDREF_LOCKED(ifci)					\
 	do {								\
-		IF_CLONE_LOCK_ASSERT(ifc);				\
-		KASSERT((ifc)->ifc_refcnt >= 0,				\
-		    ("negative refcnt %ld", (ifc)->ifc_refcnt));	\
-		(ifc)->ifc_refcnt++;					\
+		IF_CLONE_LOCK_ASSERT(ifci);				\
+		KASSERT((ifci)->ifci_refcnt >= 0,			\
+		    ("negative refcnt %ld", (ifci)->ifci_refcnt));	\
+		(ifci)->ifci_refcnt++;					\
 	} while (0)
-#define IF_CLONE_REMREF(ifc)						\
+#define IF_CLONE_REMREF(ifci)						\
 	do {								\
-		IF_CLONE_LOCK(ifc);					\
-		IF_CLONE_REMREF_LOCKED(ifc);				\
+		IF_CLONE_LOCK(ifci);					\
+		IF_CLONE_REMREF_LOCKED(ifci);				\
 	} while (0)
-#define IF_CLONE_REMREF_LOCKED(ifc)					\
+#define IF_CLONE_REMREF_LOCKED(ifci)					\
 	do {								\
-		IF_CLONE_LOCK_ASSERT(ifc);				\
-		KASSERT((ifc)->ifc_refcnt > 0,				\
-		    ("bogus refcnt %ld", (ifc)->ifc_refcnt));		\
-		if (--(ifc)->ifc_refcnt == 0) {				\
-			IF_CLONE_UNLOCK(ifc);				\
-			if_clone_free(ifc);				\
+		IF_CLONE_LOCK_ASSERT(ifci);				\
+		KASSERT((ifci)->ifci_refcnt > 0,			\
+		    ("bogus refcnt %ld", (ifci)->ifci_refcnt));		\
+		if (--(ifci)->ifci_refcnt == 0) {			\
+			IF_CLONE_UNLOCK(ifci);				\
+			if_clone_free(ifci);				\
 		} else {						\
 			/* silently free the lock */			\
-			IF_CLONE_UNLOCK(ifc);				\
+			IF_CLONE_UNLOCK(ifci);				\
 		}							\
 	} while (0)
 
-#define IFC_IFLIST_INSERT(_ifc, _ifp)					\
-	LIST_INSERT_HEAD(&_ifc->ifc_iflist, _ifp, if_clones)
-#define IFC_IFLIST_REMOVE(_ifc, _ifp)					\
+#define IFC_IFLIST_INSERT(_ifci, _ifp)					\
+	LIST_INSERT_HEAD(&_ifci->ifci_iflist, _ifp, if_clones)
+#define IFC_IFLIST_REMOVE(_ifci, _ifp)					\
 	LIST_REMOVE(_ifp, if_clones)
 
 static MALLOC_DEFINE(M_CLONE, "clone", "interface cloning framework");
@@ -126,7 +150,9 @@ void
 if_clone_init(void)
 {
 
+	IF_CLONERS_MASTER_INIT();
 	IF_CLONERS_LOCK_INIT();
+	LIST_INIT(&if_cloners_master);
 }
 
 /*
@@ -139,30 +165,17 @@ if_clone_create(char *name, size_t len, caddr_t params)
 	int error;
 
 	/* Try to find an applicable cloner for this request */
-	IF_CLONERS_LOCK();
-	LIST_FOREACH(ifc, &V_if_cloners, ifc_list) {
-		if (ifc->ifc_match(ifc, name)) {
+	IF_CLONERS_MASTER_RLOCK();
+	LIST_FOREACH(ifc, &if_cloners_master, ifc_list) {
+		if (ifc->ifc_match(ifc, name))
 			break;
-		}
 	}
-#ifdef VIMAGE
-	if (ifc == NULL && !IS_DEFAULT_VNET(curvnet)) {
-		CURVNET_SET_QUIET(vnet0);
-		LIST_FOREACH(ifc, &V_if_cloners, ifc_list) {
-			if (ifc->ifc_match(ifc, name))
-				break;
-		}
-		CURVNET_RESTORE();
-	}
-#endif
-	IF_CLONERS_UNLOCK();
+	IF_CLONERS_MASTER_RUNLOCK();
 
 	if (ifc == NULL)
 		return (EINVAL);
 
-	CURVNET_SET(TD_TO_VNET(curthread));
 	error = if_clone_createif(ifc, name, len, params);
-	CURVNET_RESTORE();
 	return (error);
 }
 
@@ -174,6 +187,7 @@ if_clone_createif(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 {
 	int err;
 	struct ifnet *ifp;
+	struct if_clone_instance *ifci;
 
 	if (ifunit(name) != NULL)
 		return (EEXIST);
@@ -187,9 +201,10 @@ if_clone_createif(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 
 		if_addgroup(ifp, ifc->ifc_name);
 
-		IF_CLONE_LOCK(ifc);
-		IFC_IFLIST_INSERT(ifc, ifp);
-		IF_CLONE_UNLOCK(ifc);
+		ifci = V_IFCI(ifc);
+		IF_CLONE_LOCK(ifci);
+		IFC_IFLIST_INSERT(ifci, ifp);
+		IF_CLONE_UNLOCK(ifci);
 	}
 
 	return (err);
@@ -210,23 +225,13 @@ if_clone_destroy(const char *name)
 		return (ENXIO);
 
 	/* Find the cloner for this interface */
-	IF_CLONERS_LOCK();
-	LIST_FOREACH(ifc, &V_if_cloners, ifc_list) {
+	IF_CLONERS_MASTER_RLOCK();
+	LIST_FOREACH(ifc, &if_cloners_master, ifc_list) {
 		if (strcmp(ifc->ifc_name, ifp->if_dname) == 0) {
 			break;
 		}
 	}
-#ifdef VIMAGE
-	if (ifc == NULL && !IS_DEFAULT_VNET(curvnet)) {
-		CURVNET_SET_QUIET(vnet0);
-		LIST_FOREACH(ifc, &V_if_cloners, ifc_list) {
-			if (ifc->ifc_match(ifc, name))
-				break;
-		}
-		CURVNET_RESTORE();
-	}
-#endif
-	IF_CLONERS_UNLOCK();
+	IF_CLONERS_MASTER_RUNLOCK();
 	if (ifc == NULL) {
 		if_rele(ifp);
 		return (EINVAL);
@@ -245,6 +250,7 @@ if_clone_destroyif(struct if_clone *ifc, struct ifnet *ifp)
 {
 	int err;
 	struct ifnet *ifcifp;
+	struct if_clone_instance *ifci;
 
 	if (ifc->ifc_destroy == NULL)
 		return(EOPNOTSUPP);
@@ -256,14 +262,15 @@ if_clone_destroyif(struct if_clone *ifc, struct ifnet *ifp)
 	 */
 	CURVNET_SET_QUIET(ifp->if_vnet);
 
-	IF_CLONE_LOCK(ifc);
-	LIST_FOREACH(ifcifp, &ifc->ifc_iflist, if_clones) {
+	ifci = V_IFCI(ifc);
+	IF_CLONE_LOCK(ifci);
+	LIST_FOREACH(ifcifp, &ifci->ifci_iflist, if_clones) {
 		if (ifcifp == ifp) {
-			IFC_IFLIST_REMOVE(ifc, ifp);
+			IFC_IFLIST_REMOVE(ifci, ifp);
 			break;
 		}
 	}
-	IF_CLONE_UNLOCK(ifc);
+	IF_CLONE_UNLOCK(ifci);
 	if (ifcifp == NULL) {
 		CURVNET_RESTORE();
 		return (ENXIO);		/* ifp is not on the list. */
@@ -276,9 +283,9 @@ if_clone_destroyif(struct if_clone *ifc, struct ifnet *ifp)
 	if (err != 0) {
 		if_addgroup(ifp, ifc->ifc_name);
 
-		IF_CLONE_LOCK(ifc);
-		IFC_IFLIST_INSERT(ifc, ifp);
-		IF_CLONE_UNLOCK(ifc);
+		IF_CLONE_LOCK(ifci);
+		IFC_IFLIST_INSERT(ifci, ifp);
+		IF_CLONE_UNLOCK(ifci);
 	}
 	CURVNET_RESTORE();
 	return (err);
@@ -286,11 +293,20 @@ if_clone_destroyif(struct if_clone *ifc, struct ifnet *ifp)
 
 /*
  * Register a network interface cloner.
+ * For historic reason is called *attach() but should really be *register().
  */
-void
-if_clone_attach(struct if_clone *ifc)
+static void
+_if_clone_attach(struct if_clone *ifc)
 {
+	struct if_clone_instance *ifci;
 	int len, maxclone;
+
+	/*
+	 * As we are properly registering each instance here, curvnet must be
+	 * set. V_IFCI() will do the assertion for us.
+	 */
+	ifci = V_IFCI(ifc);
+	ifci->ifci_ifcp = ifc;
 
 	/*
 	 * Compute bitmap size and allocate it.
@@ -299,60 +315,140 @@ if_clone_attach(struct if_clone *ifc)
 	len = maxclone >> 3;
 	if ((len << 3) < maxclone)
 		len++;
-	ifc->ifc_units = malloc(len, M_CLONE, M_WAITOK | M_ZERO);
+	ifci->ifci_units = malloc(len, M_CLONE, M_WAITOK | M_ZERO);
 	ifc->ifc_bmlen = len;
-	IF_CLONE_LOCK_INIT(ifc);
-	IF_CLONE_ADDREF(ifc);
+	IF_CLONE_LOCK_INIT(ifci);
+	IF_CLONE_ADDREF(ifci);
+	LIST_INIT(&ifci->ifci_iflist);
 
 	IF_CLONERS_LOCK();
-	LIST_INSERT_HEAD(&V_if_cloners, ifc, ifc_list);
-	V_if_cloners_count++;
+	LIST_INSERT_HEAD(&V_if_cloners, ifci, ifci_list);
 	IF_CLONERS_UNLOCK();
-
-	LIST_INIT(&ifc->ifc_iflist);
 
 	if (ifc->ifc_attach != NULL)
 		(*ifc->ifc_attach)(ifc);
 	EVENTHANDLER_INVOKE(if_clone_event, ifc);
 }
 
+static void
+vnet_if_clone_attach(const void *unused __unused)
+{
+	struct if_clone *ifc;
+
+	if (IS_DEFAULT_VNET(curvnet))
+		return;
+
+	IF_CLONERS_MASTER_WLOCK();
+	LIST_FOREACH(ifc, &if_cloners_master, ifc_list) {
+		_if_clone_attach(ifc);
+	}
+	IF_CLONERS_MASTER_WUNLOCK();
+}
+VNET_SYSINIT(vnet_if_clone_attach, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
+    vnet_if_clone_attach, NULL);
+
+void
+if_clone_attach(struct if_clone *ifc)
+{
+	VNET_ITERATOR_DECL(vnet_iter);
+
+	/*
+	 * As we are only registering our master copy here curvnet should not
+	 * be set.  It is upon boot unfortunately from vimage_alloc(), so we
+	 * cannot assert this.
+	 */
+
+	IF_CLONERS_MASTER_WLOCK();
+	LIST_INSERT_HEAD(&if_cloners_master, ifc, ifc_list);
+	if_cloners_count++;
+
+	VNET_LIST_RLOCK();
+	VNET_FOREACH(vnet_iter) {
+		CURVNET_SET_QUIET(vnet_iter);
+		_if_clone_attach(ifc);
+		CURVNET_RESTORE();
+	}
+	VNET_LIST_RUNLOCK();
+	IF_CLONERS_MASTER_WUNLOCK();
+}
+
+
 /*
  * Unregister a network interface cloner.
  */
-void
-if_clone_detach(struct if_clone *ifc)
+static void
+_if_clone_detach(struct if_clone *ifc)
 {
-	struct ifc_simple_data *ifcs = ifc->ifc_data;
+	struct if_clone_instance *ifci;
 
-	IF_CLONERS_LOCK();
-	LIST_REMOVE(ifc, ifc_list);
-	V_if_cloners_count--;
-	IF_CLONERS_UNLOCK();
-
+	/*
+	 * As we are properly unregistering each instance here,
+	 * curvnet must be set. V_IFCI() will do the assertion for us.
+	 */
+	ifci = V_IFCI(ifc);
 	/* Allow all simples to be destroyed */
 	if (ifc->ifc_attach == ifc_simple_attach)
-		ifcs->ifcs_minifs = 0;
+		ifci->ifci_minifs = 0;
 
 	/* destroy all interfaces for this cloner */
-	while (!LIST_EMPTY(&ifc->ifc_iflist))
-		if_clone_destroyif(ifc, LIST_FIRST(&ifc->ifc_iflist));
+	while (!LIST_EMPTY(&ifci->ifci_iflist))
+		if_clone_destroyif(ifc, LIST_FIRST(&ifci->ifci_iflist));
 	
-	IF_CLONE_REMREF(ifc);
+	IF_CLONE_REMREF(ifci);
 }
 
 static void
-if_clone_free(struct if_clone *ifc)
+vnet_if_clone_detach(const void *unused __unused)
 {
+	struct if_clone *ifc;
+
+	if (IS_DEFAULT_VNET(curvnet))
+		return;
+
+	IF_CLONERS_MASTER_WLOCK();
+	LIST_FOREACH(ifc, &if_cloners_master, ifc_list) {
+		_if_clone_detach(ifc);
+	}
+	IF_CLONERS_MASTER_WUNLOCK();
+}
+VNET_SYSUNINIT(vnet_if_clone_detach, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
+    vnet_if_clone_detach, NULL);
+
+void
+if_clone_detach(struct if_clone *ifc)
+{
+	VNET_ITERATOR_DECL(vnet_iter);
+
+	IF_CLONERS_MASTER_WLOCK();
+	LIST_REMOVE(ifc, ifc_list);
+	if_cloners_count--;
+
+	VNET_LIST_RLOCK();
+	VNET_FOREACH(vnet_iter) {
+		CURVNET_SET_QUIET(vnet_iter);
+		_if_clone_detach(ifc);
+		CURVNET_RESTORE();
+	}
+	VNET_LIST_RUNLOCK();
+	IF_CLONERS_MASTER_WUNLOCK();
+}
+
+static void
+if_clone_free(struct if_clone_instance *ifci)
+{
+	struct if_clone *ifc;
+
+	ifc = ifci->ifci_ifcp;
 	for (int bytoff = 0; bytoff < ifc->ifc_bmlen; bytoff++) {
-		KASSERT(ifc->ifc_units[bytoff] == 0x00,
-		    ("ifc_units[%d] is not empty", bytoff));
+		KASSERT(ifci->ifci_units[bytoff] == 0x00,
+		    ("ifci_units[%d] is not empty", bytoff));
 	}
 
-	KASSERT(LIST_EMPTY(&ifc->ifc_iflist),
-	    ("%s: ifc_iflist not empty", __func__));
+	KASSERT(LIST_EMPTY(&ifci->ifci_iflist),
+	    ("%s: ifci_iflist not empty", __func__));
 
-	IF_CLONE_LOCK_DESTROY(ifc);
-	free(ifc->ifc_units, M_CLONE);
+	IF_CLONE_LOCK_DESTROY(ifci);
+	free(ifci->ifci_units, M_CLONE);
 }
 
 /*
@@ -368,7 +464,7 @@ if_clone_list(struct if_clonereq *ifcr)
 	if (ifcr->ifcr_count < 0)
 		return (EINVAL);
 
-	IF_CLONERS_LOCK();
+	IF_CLONERS_MASTER_RLOCK();
 	/*
 	 * Set our internal output buffer size.  We could end up not
 	 * reporting a cloner that is added between the unlock and lock
@@ -377,30 +473,29 @@ if_clone_list(struct if_clonereq *ifcr)
 	 * could be because that would let arbitrary users cause us to
 	 * allocate abritrary amounts of kernel memory.
 	 */
-	buf_count = (V_if_cloners_count < ifcr->ifcr_count) ?
-	    V_if_cloners_count : ifcr->ifcr_count;
-	IF_CLONERS_UNLOCK();
+	buf_count = (if_cloners_count < ifcr->ifcr_count) ?
+	    if_cloners_count : ifcr->ifcr_count;
+	IF_CLONERS_MASTER_RUNLOCK();
 
 	outbuf = malloc(IFNAMSIZ*buf_count, M_CLONE, M_WAITOK | M_ZERO);
 
-	IF_CLONERS_LOCK();
-
-	ifcr->ifcr_total = V_if_cloners_count;
+	IF_CLONERS_MASTER_RLOCK();
+	ifcr->ifcr_total = if_cloners_count;
 	if ((dst = ifcr->ifcr_buffer) == NULL) {
 		/* Just asking how many there are. */
 		goto done;
 	}
-	count = (V_if_cloners_count < buf_count) ?
-	    V_if_cloners_count : buf_count;
+	count = (if_cloners_count < buf_count) ?
+	    if_cloners_count : buf_count;
 
-	for (ifc = LIST_FIRST(&V_if_cloners), buf = outbuf;
+	for (ifc = LIST_FIRST(&if_cloners_master), buf = outbuf;
 	    ifc != NULL && count != 0;
 	    ifc = LIST_NEXT(ifc, ifc_list), count--, buf += IFNAMSIZ) {
 		strlcpy(buf, ifc->ifc_name, IFNAMSIZ);
 	}
 
 done:
-	IF_CLONERS_UNLOCK();
+	IF_CLONERS_MASTER_RUNLOCK();
 	if (err == 0)
 		err = copyout(outbuf, dst, buf_count*IFNAMSIZ);
 	if (outbuf != NULL)
@@ -446,10 +541,12 @@ ifc_name2unit(const char *name, int *unit)
 int
 ifc_alloc_unit(struct if_clone *ifc, int *unit)
 {
+	struct if_clone_instance *ifci;
 	int wildcard, bytoff, bitoff;
 	int err = 0;
 
-	IF_CLONE_LOCK(ifc);
+	ifci = V_IFCI(ifc);
+	IF_CLONE_LOCK(ifci);
 
 	bytoff = bitoff = 0;
 	wildcard = (*unit < 0);
@@ -458,13 +555,13 @@ ifc_alloc_unit(struct if_clone *ifc, int *unit)
 	 */
 	if (wildcard) {
 		while ((bytoff < ifc->ifc_bmlen)
-		    && (ifc->ifc_units[bytoff] == 0xff))
+		    && (ifci->ifci_units[bytoff] == 0xff))
 			bytoff++;
 		if (bytoff >= ifc->ifc_bmlen) {
 			err = ENOSPC;
 			goto done;
 		}
-		while ((ifc->ifc_units[bytoff] & (1 << bitoff)) != 0)
+		while ((ifci->ifci_units[bytoff] & (1 << bitoff)) != 0)
 			bitoff++;
 		*unit = (bytoff << 3) + bitoff;
 	}
@@ -479,28 +576,28 @@ ifc_alloc_unit(struct if_clone *ifc, int *unit)
 		bitoff = *unit - (bytoff << 3);
 	}
 
-	if((ifc->ifc_units[bytoff] & (1 << bitoff)) != 0) {
+	if((ifci->ifci_units[bytoff] & (1 << bitoff)) != 0) {
 		err = EEXIST;
 		goto done;
 	}
 	/*
 	 * Allocate the unit in the bitmap.
 	 */
-	KASSERT((ifc->ifc_units[bytoff] & (1 << bitoff)) == 0,
+	KASSERT((ifci->ifci_units[bytoff] & (1 << bitoff)) == 0,
 	    ("%s: bit is already set", __func__));
-	ifc->ifc_units[bytoff] |= (1 << bitoff);
-	IF_CLONE_ADDREF_LOCKED(ifc);
+	ifci->ifci_units[bytoff] |= (1 << bitoff);
+	IF_CLONE_ADDREF_LOCKED(ifci);
 
 done:
-	IF_CLONE_UNLOCK(ifc);
+	IF_CLONE_UNLOCK(ifci);
 	return (err);
 }
 
 void
 ifc_free_unit(struct if_clone *ifc, int unit)
 {
+	struct if_clone_instance *ifci;
 	int bytoff, bitoff;
-
 
 	/*
 	 * Compute offset in the bitmap and deallocate the unit.
@@ -508,11 +605,12 @@ ifc_free_unit(struct if_clone *ifc, int unit)
 	bytoff = unit >> 3;
 	bitoff = unit - (bytoff << 3);
 
-	IF_CLONE_LOCK(ifc);
-	KASSERT((ifc->ifc_units[bytoff] & (1 << bitoff)) != 0,
+	ifci = V_IFCI(ifc);
+	IF_CLONE_LOCK(ifci);
+	KASSERT((ifci->ifci_units[bytoff] & (1 << bitoff)) != 0,
 	    ("%s: bit is already cleared", __func__));
-	ifc->ifc_units[bytoff] &= ~(1 << bitoff);
-	IF_CLONE_REMREF_LOCKED(ifc);	/* releases lock */
+	ifci->ifci_units[bytoff] &= ~(1 << bitoff);
+	IF_CLONE_REMREF_LOCKED(ifci);	/* releases lock */
 }
 
 void
@@ -521,14 +619,15 @@ ifc_simple_attach(struct if_clone *ifc)
 	int err;
 	int unit;
 	char name[IFNAMSIZ];
-	struct ifc_simple_data *ifcs = ifc->ifc_data;
+	struct if_clone_instance *ifci;
 
-	KASSERT(ifcs->ifcs_minifs - 1 <= ifc->ifc_maxunit,
+	ifci = V_IFCI(ifc);
+	KASSERT(ifci->ifci_minifs - 1 <= ifc->ifc_maxunit,
 	    ("%s: %s requested more units than allowed (%d > %d)",
-	    __func__, ifc->ifc_name, ifcs->ifcs_minifs,
+	    __func__, ifc->ifc_name, ifci->ifci_minifs,
 	    ifc->ifc_maxunit + 1));
 
-	for (unit = 0; unit < ifcs->ifcs_minifs; unit++) {
+	for (unit = 0; unit < ifci->ifci_minifs; unit++) {
 		snprintf(name, IFNAMSIZ, "%s%d", ifc->ifc_name, unit);
 		err = if_clone_createif(ifc, name, IFNAMSIZ, NULL);
 		KASSERT(err == 0,
@@ -561,11 +660,11 @@ ifc_simple_match(struct if_clone *ifc, const char *name)
 int
 ifc_simple_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 {
+	struct if_clone_instance *ifci;
 	char *dp;
 	int wildcard;
 	int unit;
 	int err;
-	struct ifc_simple_data *ifcs = ifc->ifc_data;
 
 	err = ifc_name2unit(name, &unit);
 	if (err != 0)
@@ -577,8 +676,9 @@ ifc_simple_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 	if (err != 0)
 		return (err);
 
-	err = ifcs->ifcs_create(ifc, unit, params);
+	err = ifc->ifcs_create(ifc, unit, params);
 	if (err != 0) {
+		ifci = V_IFCI(ifc);
 		ifc_free_unit(ifc, unit);
 		return (err);
 	}
@@ -605,16 +705,109 @@ int
 ifc_simple_destroy(struct if_clone *ifc, struct ifnet *ifp)
 {
 	int unit;
-	struct ifc_simple_data *ifcs = ifc->ifc_data;
+	struct if_clone_instance *ifci;
 
+	ifci = V_IFCI(ifc);
 	unit = ifp->if_dunit;
 
-	if (unit < ifcs->ifcs_minifs) 
+	if (unit < ifci->ifci_minifs) 
 		return (EINVAL);
 
-	ifcs->ifcs_destroy(ifp);
+	ifc->ifcs_destroy(ifp);
 
 	ifc_free_unit(ifc, unit);
 
 	return (0);
 }
+
+#ifdef DDB
+static void
+db_ifci_print(struct if_clone_instance *ifci)
+{
+
+	db_printf(" ifci=%p\n", ifci);
+	db_printf("  ifci_list=%p\n", &ifci->ifci_list);
+	db_printf("  ifci_mtx=%p\n", &ifci->ifci_mtx);
+	db_printf("  ifci_ifcp=%p\n", ifci->ifci_ifcp);
+	db_printf("  ifci_units=%p\n", ifci->ifci_units);
+	db_printf("  ifci_iflist=%p\n", &ifci->ifci_iflist);
+	db_printf("  ifci_refcnt=%ld\n", ifci->ifci_refcnt);
+	db_printf("  ifci_minifs=%d\n", ifci->ifci_minifs);
+}
+
+DB_SHOW_COMMAND(ifci, db_show_ifci)
+{
+
+	if (!have_addr || addr == 0) {
+		db_printf("usage: show ifci <struct if_clone_instance *>\n");
+		return;
+	}
+	db_ifci_print((struct if_clone_instance *)addr);
+}
+
+DB_SHOW_ALL_COMMAND(ifci, db_show_all_ifci)
+{
+	VNET_ITERATOR_DECL(vnet_iter);
+	struct if_clone_instance *ifci;
+
+	VNET_FOREACH(vnet_iter) {
+		CURVNET_SET_QUIET(vnet_iter);
+#ifdef VIMAGE
+		db_printf("vnet=%p:\n", curvnet);
+#endif
+		LIST_FOREACH(ifci, &V_if_cloners, ifci_list) {
+			db_ifci_print(ifci);
+			if (db_pager_quit) 
+				break;
+		}
+		CURVNET_RESTORE();
+		db_printf("\n");
+		if (db_pager_quit) 
+			break;
+	}
+}
+
+static void
+db_ifc_print(struct if_clone *ifc)
+{
+
+	db_printf(" ifc=%p\n", ifc);
+	db_printf("  ifc_list=%p\n", &ifc->ifc_list);
+	db_printf("  ifc_name=%s\n", ifc->ifc_name);
+
+	db_printf("  (*ifc_attach)=%p\n", ifc->ifc_attach);
+	db_printf("  (*ifc_match)=%p\n", ifc->ifc_match);
+	db_printf("  (*ifc_create)=%p\n", ifc->ifc_create);
+	db_printf("  (*ifc_destroy)=%p\n", ifc->ifc_destroy);
+
+	db_printf("  (*ifcs_create)=%p\n", ifc->ifcs_create);
+	db_printf("  (*ifcs_destroy)=%p\n", ifc->ifcs_destroy);
+
+	db_printf("  ifc_data=%p\n", ifc->ifc_data);
+	db_printf("  ifc_maxunit=%d\n", ifc->ifc_maxunit);
+	db_printf("  ifc_bmlen=%d\n", ifc->ifc_bmlen);
+	db_printf("  ifc_if_type=%u\n", ifc->ifc_if_type);
+}
+
+DB_SHOW_COMMAND(ifc, db_show_ifc)
+{
+
+	if (!have_addr || addr == 0) {
+		db_printf("usage: show if_cloner <struct if_clone *>\n");
+		return;
+	}
+	db_ifc_print((struct if_clone *)addr);
+}
+
+DB_SHOW_ALL_COMMAND(ifc, db_show_all_ifc)
+{
+	struct if_clone *ifc;
+
+	db_printf("if_cloners_master:\n");
+	LIST_FOREACH(ifc, &if_cloners_master, ifc_list) {
+		db_ifc_print(ifc);
+		if (db_pager_quit)
+			return;
+	}
+}
+#endif
