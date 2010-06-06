@@ -168,7 +168,9 @@ static int
 vnet_data_init(struct vimage_subsys *vse)
 {
 	struct vimage_data_free *df;
+#if 0
 	size_t modextra;
+#endif
 
 	/* Already initialized? */
 	if (!TAILQ_EMPTY(&vse->v_data_free_list))
@@ -179,6 +181,7 @@ vnet_data_init(struct vimage_subsys *vse)
 	df->vnd_len = VNET_MODMIN;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);
 
+#if 0
 	modextra = vse->v_size - VNET_BYTES;
 	if (modextra < sizeof(*df))
 		return (0);
@@ -187,6 +190,7 @@ vnet_data_init(struct vimage_subsys *vse)
 	df->vnd_start = vse->v_stop;
 	df->vnd_len = modextra;
 	TAILQ_INSERT_HEAD(&vse->v_data_free_list, df, vnd_link);
+#endif
 
 	return (0);
 }
