@@ -144,6 +144,7 @@ vnet_destroy(struct vnet *vnet)
  * name, size, possible external space, .. are not easily unified
  * across all subsystems.  Use the programming interface VIMAGE defines.
  */
+
 /*
  * Number of bytes of data in the 'set_vnet' linker set, and hence the total
  * size of all kernel virtualized global variables including modspace[]

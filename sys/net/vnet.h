@@ -102,7 +102,7 @@ struct vnet {
 /*
  * Cache of the network stack for the base system. We can always use this
  * to compare any vnet to, no matter whether we can get to an ucred and the
- * prison or not.  It is espcially used by DEFAULT_VNET() checks.
+ * prison or not.  It is especially used by DEFAULT_VNET() checks.
  */
 extern struct vnet *vnet0;
 
@@ -111,14 +111,14 @@ extern struct vnet *vnet0;
  * the kernel jail framework.
  */
 struct vnet *vnet_alloc(void);
-void vnet_destroy(struct vnet *vnet);
+void	vnet_destroy(struct vnet *vnet);
 
 /*
  * The current virtual network stack.
  * XXX May we wish to move this to struct pcpu in the future and adjust the
  * VIMAGE framework?
  */
-#define	curvnet	curthread->td_vnet
+#define	curvnet			curthread->td_vnet
 
 #define	IS_DEFAULT_VNET(arg)	((arg) == vnet0)
 

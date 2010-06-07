@@ -80,7 +80,7 @@ __FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.106 2009/07/14 22:48:30 rwatson 
 /*
  * Rather than adding more and more fields to struct elf_file for
  * unnamed and possibly 3rd party virtualized subsystems, we allocate
- * an entry when needed. add it to the list and use the back pointer
+ * an entry when needed.  Add it to the list and use the back pointer
  * to the set name and handler functions to address the right subsystem.
  */
 struct elf_file_ventry {
@@ -558,6 +558,7 @@ parse_vimage(elf_file_t ef)
     LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
 	error = link_elf_lookup_set(&ef->lf, vse->setname_s,
 	    (void ***)&start, (void ***)&stop, &count);
+
 	/*
 	 * Error just means there is no data set to relocate for this
 	 * virtualized subsystem.
@@ -567,6 +568,7 @@ parse_vimage(elf_file_t ef)
 	    continue;
 	}
 	count *= sizeof(void *);
+
 	/*
 	 * Allocate space for the elf_file_t list entry.
 	 */
@@ -577,6 +579,7 @@ parse_vimage(elf_file_t ef)
 	}
 	efe->start = start;
 	efe->stop = stop;
+
 	/*
 	 * Allocate space in the virtualized subsystem area.  Copy in our
 	 * initialization from the data section and then initialize all

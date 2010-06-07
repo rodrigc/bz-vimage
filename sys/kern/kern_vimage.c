@@ -79,7 +79,6 @@ __FBSDID("$FreeBSD$");
  * - General interaction kernel debugger (ddb) functions.
  */
 
-
 MALLOC_DEFINE(M_VIMAGE, "vimage", "VIMAGE resource accounting");
 MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
 
@@ -113,6 +112,7 @@ struct rwlock		vimage_subsys_rwlock;
  * and the other not, so that the list can be stablized and walked in a variety
  * of contexts.  Both must be acquired exclusively to modify the list, but a
  * read lock of either lock is sufficient to walk the list.
+ *
  * For the moment the same locks are shared between all virtualized subsystems
  * to traverse their instances.  We really only need to aquire the write locks
  * on startup or teardown of an instance which is a very rare event. Should
@@ -132,7 +132,6 @@ struct sx		vimage_list_sxlock;
 	rw_wunlock(&vimage_list_rwlock);					\
 	sx_xunlock(&vimage_list_sxlock);					\
 } while (0)
-
 
 /*
  * Virtual subsystem instance data allocator (module space) lock to protect the
@@ -156,6 +155,7 @@ static struct sx	vimage_sysinit_sxlock;
  * DTrace support.
  */
 SDT_PROVIDER_DEFINE(vimage);
+
 /*
  * Defines for the instance allocation and free framework.  Those were needed
  * as the FBT provider missed function exists for some reason if compiled at
@@ -186,7 +186,6 @@ static void vimage_data_free_notsupp(struct vimage_subsys * __unused,
 static void vimage_data_copy_notsupp(struct vimage_subsys * __unused,
     void * __unused, size_t __unused);
 
-
 /*
  * Boot time intialization of the VIMAGE framework.
  */
@@ -194,15 +193,12 @@ static void
 vimage_init_prelink(void *arg)
 {
 
+	LIST_INIT(&vimage_subsys_head);
 	rw_init(&vimage_subsys_rwlock, "vimage_subsys_rwlock");
 	sx_init(&vimage_subsys_sxlock, "vimage_subsys_sxlock");
-	LIST_INIT(&vimage_subsys_head);
-
 	rw_init(&vimage_list_rwlock, "vimage_list_rwlock");
 	sx_init(&vimage_list_sxlock, "vimage_list_sxlock");
-
 	sx_init(&vimage_subsys_data_sxlock, "vimage subsys data alloc lock");
-
 	sx_init(&vimage_sysinit_sxlock, "vimage_sysinit_sxlock");
 }
 SYSINIT(vimage_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_FIRST,
@@ -243,6 +239,7 @@ vimage_subsys_register(struct vimage_subsys *vse)
 		    "\"set_\": %s\n", __func__, vse, vse->setname);
 		return (EINVAL);
 	}
+
 	/* The short name is needed for link_elf.c. */
 	if (vse->setname_s == NULL)
 		vse->setname_s = vse->setname + 4;	/* Skip "set_". */
@@ -285,7 +282,6 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	db_vimage_variable_register(vse);
 #endif
 	
-	VIMAGE_SUBSYS_LIST_WLOCK();
 	/*
 	 * Ensure a subsytem with the setname has not yet been registered.
 	 * We do not check for the vse pointer as that would still allow
@@ -293,6 +289,7 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	 * The reason we pick the setname is that this is the unique name
 	 * needed for and used by the linker.
 	 */
+	VIMAGE_SUBSYS_LIST_WLOCK();
 	if (vimage_subsys_get(vse->setname) != NULL) {
 		VIMAGE_SUBSYS_LIST_WUNLOCK();
 		printf("%s: vse=%p duplicate registration for %s\n",
@@ -472,7 +469,6 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
 	SDT_PROBE1(vimage, functions, vimage_destroy, return, __LINE__);
 }
 
-
 /*
  * When a module is loaded and requires storage for a virtualized global
  * variable, allocate space from the modspace free list.  This interface
@@ -521,6 +517,7 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 	size = roundup2(size, sizeof(void *));
 	start = (uintptr_t)start_arg;
 	end = start + size;
+
 	/*
 	 * Free a region of space and merge it with as many neighbors as
 	 * possible.  Keeping the list sorted simplifies this operation.
@@ -529,6 +526,7 @@ vimage_data_free(struct vimage_subsys *vse, void *start_arg, size_t size)
 	TAILQ_FOREACH(df, &vse->v_data_free_list, vnd_link) {
 		if (df->vnd_start > end)
 			break;
+
 		/*
 		 * If we expand at the end of an entry we may have to merge
 		 * it with the one following it as well.
@@ -610,7 +608,6 @@ vimage_data_copy_notsupp(struct vimage_subsys *vse __unused,
 {
 
 }
-
 
 /*
  * Support for special SYSINIT handlers registered via VIMAGE_SYSINIT()
@@ -710,6 +707,7 @@ vimage_deregister_sysinit(void *arg)
 
 	vs = arg;
 	vse = vs->v_subsys;
+
 	/*
 	 * Remove the constructor from the global list of subsystem
 	 * constructors.
@@ -758,6 +756,7 @@ vimage_deregister_sysuninit(void *arg)
 	 */
 	VIMAGE_SYSINIT_WLOCK();
 	vimage_sysinit_iterator(vse, vs);
+
 	/*
 	 * Remove the destructor from the global list of subsystem destructors.
 	 */
@@ -767,8 +766,7 @@ vimage_deregister_sysuninit(void *arg)
 
 /*
  * EVENTHANDLER(9) extensions.
- */
-/*
+ *
  * Invoke the eventhandler function originally registered with the possibly
  * registered argument for all virtualized subsystem instances.
  *

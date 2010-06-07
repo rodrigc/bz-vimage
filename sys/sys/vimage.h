@@ -65,6 +65,7 @@ struct vimage_data_free {
 #include <sys/kernel.h>
 
 struct vimage_subsys;
+
 struct vimage_sysinit {
 	enum sysinit_sub_id		subsystem;
 	enum sysinit_elem_order		order;
