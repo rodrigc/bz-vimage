@@ -72,7 +72,7 @@ _kvm_vnet_selectpid(kvm_t *kd, pid_t pid)
 		{ .n_name = "___start_" VNET_SETNAME },
 #define	NLIST_STOP_VNET		1
 		{ .n_name = "___stop_" VNET_SETNAME },
-#define	NLIST_VNET_DATA		3
+#define	NLIST_VNET_DATA		2
 		{ .n_name = "vnet_data" },
 #define	NLIST_ALLPROC		3
 		{ .n_name = "allproc" },
