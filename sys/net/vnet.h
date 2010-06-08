@@ -144,8 +144,7 @@ DECLARE_LINKER_SET(set_vnet);
 /*
  * Virtualized global variable accessor macros.
  */
-#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR(((struct vimage *)		\
-				    (vnet))->v_data_base, n)
+#define	VNET_VNET_PTR(vnet, n)	_VNET_PTR((vnet)->v.v_data_base, n)
 #define	VNET_VNET(vnet, n)	(*VNET_VNET_PTR((vnet), n))
 
 #define	VNET_PTR(n)		VNET_VNET_PTR(curvnet, n)

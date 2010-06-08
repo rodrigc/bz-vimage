@@ -126,13 +126,11 @@ vnet_alloc(void)
 void
 vnet_destroy(struct vnet *vnet)
 {
-	struct vimage *v;
 
 	KASSERT(vnet->vnet_sockcnt == 0,
-	    ("%s: vnet still has sockets", __func__));
-	v = (struct vimage *)vnet;
+	    ("%s: vnet %p still has sockets", __func__, vnet));
 
-	vimage_destroy(&vnet_data, v);
+	vimage_destroy(&vnet_data, &vnet->v);
 }
 
 /*
