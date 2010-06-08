@@ -57,6 +57,7 @@
 
 #ifdef DDB
 #include <ddb/ddb.h>
+#include <ddb/db_sym.h>
 #endif
 
 static void	if_clone_free(struct if_clone_instance *ifci);
@@ -770,18 +771,29 @@ DB_SHOW_ALL_COMMAND(ifci, db_show_all_ifci)
 static void
 db_ifc_print(struct if_clone *ifc)
 {
+	const char *fname;
+	c_db_sym_t sym;
+	db_expr_t offset;
 
 	db_printf(" ifc=%p\n", ifc);
 	db_printf("  ifc_list=%p\n", &ifc->ifc_list);
 	db_printf("  ifc_name=%s\n", ifc->ifc_name);
 
-	db_printf("  (*ifc_attach)=%p\n", ifc->ifc_attach);
-	db_printf("  (*ifc_match)=%p\n", ifc->ifc_match);
-	db_printf("  (*ifc_create)=%p\n", ifc->ifc_create);
-	db_printf("  (*ifc_destroy)=%p\n", ifc->ifc_destroy);
+#define	LSYM(_func)							\
+	fname = NULL;							\
+	sym = db_search_symbol((vm_offset_t)(ifc->_func), DB_STGY_PROC,	\
+	    &offset);							\
+	db_symbol_values(sym, &fname, NULL);				\
+	db_printf("  (*" #_func ")=%p (%s)\n", ifc->_func,		\
+	    (fname != NULL) ? fname : "");
+	LSYM(ifc_attach);
+	LSYM(ifc_match);
+	LSYM(ifc_create);
+	LSYM(ifc_destroy);
 
-	db_printf("  (*ifcs_create)=%p\n", ifc->ifcs_create);
-	db_printf("  (*ifcs_destroy)=%p\n", ifc->ifcs_destroy);
+	LSYM(ifcs_create);
+	LSYM(ifcs_destroy);
+#undef LSYM
 
 	db_printf("  ifc_data=%p\n", ifc->ifc_data);
 	db_printf("  ifc_maxunit=%d\n", ifc->ifc_maxunit);
