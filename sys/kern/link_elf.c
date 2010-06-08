@@ -542,8 +542,6 @@ parse_dpcpu(elf_file_t ef)
 }
 
 #ifdef VIMAGE
-extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
-
 static int
 parse_vimage(elf_file_t ef)
 { 

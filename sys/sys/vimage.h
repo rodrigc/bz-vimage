@@ -192,6 +192,8 @@ struct vimage_subsys {
 };
 
 #ifdef VIMAGE
+extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
+
 int vimage_subsys_register(struct vimage_subsys *);
 int vimage_subsys_deregister(struct vimage_subsys *);
 

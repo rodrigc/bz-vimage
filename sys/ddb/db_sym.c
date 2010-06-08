@@ -274,9 +274,6 @@ db_value_of_name_pcpu(name, valuep)
 	return (TRUE);
 }
 
-#ifdef VIMAGE
-extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
-#endif
 boolean_t
 db_value_of_name_vimage(name, valuep)
 	const char	*name;
