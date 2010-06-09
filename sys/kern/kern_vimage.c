@@ -340,34 +340,38 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	return (0);
 }
 
+/*
+ * Disconnect the virtualized subsystem.  If the subsystem is not registered
+ * ENOENT is returned.  If the subsystem cannot be disconnected EBUSY is
+ * returned and any other unloads, e.g. for modules implementation the
+ * virtualized subsystem, must fail as well.  Upon success 0 is returned.
+ */
 int
 vimage_subsys_deregister(struct vimage_subsys *vse)
 {
 	struct vimage_subsys *vse2;
+	int error;
 
+	error = ENOENT;
 	VIMAGE_SUBSYS_LIST_WLOCK();
 	LIST_FOREACH(vse2, &vimage_subsys_head, vimage_subsys_le) {
 		if (vse == vse2) {
-			LIST_REMOVE(vse, vimage_subsys_le);
-			vimage_subsys_free(vse);
+			u_int old;
+
+			old = atomic_fetchadd_int(&vse->refcnt, 0);
+			if (old == 1) {
+				LIST_REMOVE(vse, vimage_subsys_le);
+				vimage_subsys_free(vse);
+				error = 0;
+			} else {
+				error = EBUSY;
+			}
 			break;
 		}
 	}
 	VIMAGE_SUBSYS_LIST_WUNLOCK();
 
-	/*
-	 * If the refcnt is zero the last reference  was given up and
-	 * and due to locking the list entry has savely gone as well and
-	 * things have been freed already.
-	 * If someone still holds a refcnt return an error that the vse
-	 * must not go away.
-	 * XXX-BZ no idea how to handle EBUSY but there is no `shutdown'
-	 * yet either, so time will tell..
-	 */
-	if (vse->refcnt == 0)
-		return (0);
-
-	return (EBUSY);
+	return (error);
 }
 
 /*
