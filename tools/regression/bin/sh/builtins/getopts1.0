@@ -1,0 +1,12 @@
+# $FreeBSD: src/tools/regression/bin/sh/builtins/getopts1.0,v 1.1 2008/03/22 14:07:49 stefanf Exp $
+set -- -abc
+getopts "ab:" OPTION
+echo ${OPTION}
+
+set -- -ab
+getopts "ab:" OPTION
+echo ${OPTION}
+
+shift 1
+getopts "ab:" OPTION
+echo ${OPTION}

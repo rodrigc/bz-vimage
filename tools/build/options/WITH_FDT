@@ -1,0 +1,3 @@
+.\" $FreeBSD: src/tools/build/options/WITH_FDT,v 1.1 2010/05/25 15:12:21 raj Exp $
+Set to build Flattened Device Tree support as part of the base system. This
+includes the device tree compiler (dtc) and libfdt support library.

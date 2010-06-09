@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# $FreeBSD: src/etc/rc.d/swap1,v 1.13 2009/03/11 12:55:12 guido Exp $
+#
+
+# PROVIDE: localswap
+# REQUIRE: disks
+# KEYWORD: nojail shutdown
+
+. /etc/rc.subr
+
+name="swap1"
+start_cmd='swapon -aq'
+stop_cmd=':'
+
+load_rc_config swap
+run_rc_command "$1"

@@ -1,0 +1,32 @@
+# $FreeBSD: src/lib/csu/i386-elf/Makefile,v 1.23 2010/03/20 22:58:54 jilles Exp $
+
+.PATH: ${.CURDIR}/../common
+
+SRCS=		crti.S crtn.S
+FILES=		${SRCS:N*.h:R:S/$/.o/g} gcrt1.o crt1.o Scrt1.o
+FILESOWN=	${LIBOWN}
+FILESGRP=	${LIBGRP}
+FILESMODE=	${LIBMODE}
+FILESDIR=	${LIBDIR}
+CFLAGS+=	-I${.CURDIR}/../common \
+		-I${.CURDIR}/../../libc/include
+CLEANFILES=	${FILES} crt1_c.o crt1_s.o gcrt1_c.o Scrt1_c.o
+
+gcrt1_c.o: crt1_c.c
+	${CC} ${CFLAGS} -DGCRT -c -o gcrt1_c.o ${.CURDIR}/crt1_c.c
+
+gcrt1.o: gcrt1_c.o crt1_s.o
+	${LD} ${LDFLAGS} -o gcrt1.o -r crt1_s.o gcrt1_c.o
+
+crt1.o:	crt1_c.o crt1_s.o
+	${LD} ${LDFLAGS} -o crt1.o -r crt1_s.o crt1_c.o
+	objcopy --localize-symbol _start1 crt1.o
+
+Scrt1_c.o:	crt1_c.c
+	${CC} ${CFLAGS} -fPIC -DPIC -c -o Scrt1_c.o ${.CURDIR}/crt1_c.c
+
+Scrt1.o: Scrt1_c.o crt1_s.o
+	${LD} ${LDFLAGS} -o Scrt1.o -r crt1_s.o Scrt1_c.o
+	objcopy --localize-symbol _start1 Scrt1.o
+
+.include <bsd.prog.mk>

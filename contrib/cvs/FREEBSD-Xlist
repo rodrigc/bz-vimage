@@ -1,0 +1,22 @@
+$FreeBSD: src/contrib/cvs/FREEBSD-Xlist,v 1.2 2008/01/13 05:50:33 obrien Exp $
+*/*.com
+*/*.dep
+*/*.dsp
+*/*.mak
+*/.cvsignore
+.cvsignore
+README.VMS
+build.com
+cvs.spec*
+cvsnt.*
+doc/*.info*
+doc/*.pdf
+doc/*.ps
+doc/texinfo.tex
+emx
+lib/getdate.c
+os2
+vms
+windows-NT
+ylwrap
+zlib

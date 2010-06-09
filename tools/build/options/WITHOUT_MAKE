@@ -1,0 +1,4 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_MAKE,v 1.1 2008/09/21 22:02:26 sam Exp $
+Set to not install
+.Xr make 1
+and related support files.

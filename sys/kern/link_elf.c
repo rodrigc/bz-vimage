@@ -592,8 +592,7 @@ parse_vimage(elf_file_t ef)
 	memcpy((void *)efe->base, (void *)efe->start, count);
 	(*vse->v_data_copy)(vse, (void *)efe->base, count);
 	/* Save vse so we can call free on the right subsystem. */
-	refcount_acquire(&vse->refcnt);
-	efe->vse = vse;
+	efe->vse = vimage_subsys_hold(vse);
 	LIST_INSERT_HEAD(&ef->ventry_head, efe, efe_le);
     }
     VIMAGE_SUBSYS_LIST_RUNLOCK();
@@ -1072,23 +1071,19 @@ link_elf_unload_file(linker_file_t file)
     elf_file_t ef = (elf_file_t) file;
 #ifdef VIMAGE
     struct elf_file_ventry *efe, *nefe;
-    int refcnt;
 #endif
 
     if (ef->pcpu_base) {
         dpcpu_free((void *)ef->pcpu_base, ef->pcpu_stop - ef->pcpu_start);
     }
 #ifdef VIMAGE
-    VIMAGE_SUBSYS_LIST_RLOCK();
     LIST_FOREACH_SAFE(efe, &ef->ventry_head, efe_le, nefe) {
 	LIST_REMOVE(efe, efe_le);
 	(*efe->vse->v_data_free)(efe->vse, (void *)efe->base,
 	    efe->stop - efe->start);
-	refcnt = refcount_release(&efe->vse->refcnt);
-	KASSERT(refcnt > 1, ("%s: refcnt on vse <= 1: %p", __func__, efe->vse));
+	vimage_subsys_free(efe->vse);
 	free(efe, M_LINKER);
     }
-    VIMAGE_SUBSYS_LIST_RUNLOCK();
 #endif
 #ifdef GDB
     if (ef->gdb.l_ld) {

@@ -174,6 +174,8 @@ struct vimage_subsys {
 	TAILQ_HEAD(, vimage_data_free)	v_data_free_list;
 
 	int				(*v_data_init )(struct vimage_subsys *);
+	void				(*v_data_destroy)(
+					    struct vimage_subsys *);
 	void *				(*v_data_alloc)(struct vimage_subsys *,
 					    size_t);
 	void				(*v_data_free )(struct vimage_subsys *,
@@ -192,7 +194,11 @@ struct vimage_subsys {
 };
 
 #ifdef VIMAGE
+/* Only exposed for linker and ddb. */
 extern LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
+
+struct vimage_subsys *vimage_subsys_hold(struct vimage_subsys *);
+void vimage_subsys_free(struct vimage_subsys *);
 
 int vimage_subsys_register(struct vimage_subsys *);
 int vimage_subsys_deregister(struct vimage_subsys *);

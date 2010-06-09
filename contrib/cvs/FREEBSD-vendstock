@@ -1,0 +1,11 @@
+$FreeBSD: src/contrib/cvs/FREEBSD-vendstock,v 1.1 2008/04/24 18:23:13 obrien Exp $
+src/buffer.c
+src/commit.c
+src/filesubr.c
+src/import.c
+src/login.c
+src/mkmodules.c
+src/patch.c
+src/rcscmds.c
+src/recurse.c
+contrib/sccs2rcs.in

@@ -1,0 +1,5 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_LIBPTHREAD,v 1.4 2009/02/20 11:09:55 mtm Exp $
+Set to not build the
+.Nm libpthread
+providing library,
+.Nm libthr .

@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# $FreeBSD: src/etc/rc.d/mrouted,v 1.11 2007/12/08 07:20:22 dougb Exp $
+#
+
+# PROVIDE: mrouted
+# REQUIRE: netif routing cleanvar
+# KEYWORD: nojail
+
+. /etc/rc.subr
+
+name="mrouted"
+rcvar=`set_rcvar`
+command="/usr/local/sbin/${name}"
+pidfile="/var/run/${name}.pid"
+required_files="/etc/${name}.conf"
+extra_commands="reload"
+
+load_rc_config $name
+run_rc_command "$1"

@@ -1,0 +1,4 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_NTP,v 1.1 2008/09/21 22:02:26 sam Exp $
+Set to not build
+.Xr ntpd 8
+and related programs.

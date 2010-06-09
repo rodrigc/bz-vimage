@@ -1,0 +1,11 @@
+# $FreeBSD: src/tools/regression/bin/sh/execution/func2.0,v 1.1 2009/08/28 22:41:25 jilles Exp $
+
+f() { }
+f
+hash -v f >/dev/null
+f() { { }; }
+f
+hash -v f >/dev/null
+f() { { } }
+f
+hash -v f >/dev/null

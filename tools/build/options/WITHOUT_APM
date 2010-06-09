@@ -1,0 +1,5 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_APM,v 1.1 2008/09/21 22:02:26 sam Exp $
+Set to not build
+.Xr apm 8 ,
+.Xr apmd 8
+and related programs.

@@ -1,0 +1,3 @@
+.\" $FreeBSD: src/tools/build/options/WITH_BIND_IDN,v 1.1 2009/06/01 21:58:59 dougb Exp $
+Set to enable IDN support for dig, host, and nslookup.
+This requires ports/dns/idnkit to be installed in /usr/local.

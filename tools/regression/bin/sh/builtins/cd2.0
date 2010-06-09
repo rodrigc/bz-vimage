@@ -1,0 +1,15 @@
+# $FreeBSD: src/tools/regression/bin/sh/builtins/cd2.0,v 1.1 2009/11/21 14:54:35 stefanf Exp $
+set -e
+
+T=$(mktemp -d ${TMPDIR:-/tmp}/sh-test.XXXXXX)
+cd $T
+D=$T
+for i in 0 1 2 3 4 5 6 7 8 9; do
+	for j in 0 1 2 3 4 5 6 7 8 9; do
+		mkdir veryverylongdirectoryname
+		cd veryverylongdirectoryname
+		D=$D/veryverylongdirectoryname
+	done
+done
+[ $(pwd | wc -c) -eq $((${#D} + 1)) ] # +\n
+rm -rf ${T}

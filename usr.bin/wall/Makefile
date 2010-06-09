@@ -1,0 +1,9 @@
+#	@(#)Makefile	8.1 (Berkeley) 6/6/93
+# $FreeBSD: src/usr.bin/wall/Makefile,v 1.4 2010/01/13 18:09:54 ed Exp $
+
+PROG=	wall
+SRCS=	ttymsg.c wall.c
+BINGRP=	tty
+BINMODE=2555
+
+.include <bsd.prog.mk>

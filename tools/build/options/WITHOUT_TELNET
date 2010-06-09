@@ -1,0 +1,4 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_TELNET,v 1.1 2008/09/21 22:02:26 sam Exp $
+Set to not build
+.Xr telnet 8
+and related programs.

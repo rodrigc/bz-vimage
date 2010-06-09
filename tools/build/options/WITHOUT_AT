@@ -1,0 +1,4 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_AT,v 1.1 2008/09/21 22:02:26 sam Exp $
+Set to not build
+.Xr at 1
+and related utilities.

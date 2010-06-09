@@ -1,0 +1,2 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_GSSAPI,v 1.1 2007/12/12 16:39:31 ru Exp $
+Set to not build libgssapi.

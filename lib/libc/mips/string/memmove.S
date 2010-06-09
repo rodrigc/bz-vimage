@@ -1,0 +1,7 @@
+/*	$NetBSD: memmove.S,v 1.1 2005/12/20 19:28:50 christos Exp $	*/
+
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/libc/mips/string/memmove.S,v 1.1 2008/04/26 12:08:01 imp Exp $");
+
+#define MEMMOVE
+#include "bcopy.S"

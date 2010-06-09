@@ -1,0 +1,6 @@
+# $FreeBSD: src/crypto/openssh/FREEBSD-vendor,v 1.3 2009/08/13 06:07:38 des Exp $
+Project:	Portable OpenSSH
+ProjectURL:	http://www.openssh.com/portable.html
+Version:	5.2p1
+License:	BSD
+Maintainer:	des

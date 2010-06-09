@@ -86,7 +86,7 @@ MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
  * List of all registered virtualized subsystems.
  * We do not really export it but link_elf.c and ddb know about our guts.
  */
-LIST_HEAD(vimage_subsys_list_head, vimage_subsys) vimage_subsys_head;
+struct vimage_subsys_list_head vimage_subsys_head;
 
 /*
  * The vimage subsystem list has two read-write locks, one sleepable and
@@ -174,11 +174,15 @@ SDT_PROBE_DEFINE5(vimage, macros, curvimage, set, "struct vimage_subsys *",
 SDT_PROBE_DEFINE5(vimage, macros, curvimage, restore, "struct vimage_subsys *",
     "char *", "int", "struct vimage *", "struct vimage *");
 
+static struct vimage_subsys *vimage_subsys_get_locked(const char *);
+
+static void vimage_data_destroy(struct vimage_subsys *);
 static void *vimage_data_alloc(struct vimage_subsys *, size_t);
 static void vimage_data_free(struct vimage_subsys *, void *, size_t);
 static void vimage_data_copy(struct vimage_subsys *, void *, size_t);
 
 static int vimage_data_init_notsupp(struct vimage_subsys * __unused);
+static void vimage_data_destroy_notsupp(struct vimage_subsys * __unused);
 static void *vimage_data_alloc_notsupp(struct vimage_subsys * __unused,
     size_t __unused);
 static void vimage_data_free_notsupp(struct vimage_subsys * __unused,
@@ -205,11 +209,35 @@ SYSINIT(vimage_init_prelink, SI_SUB_VIMAGE_PRELINK, SI_ORDER_FIRST,
     vimage_init_prelink, NULL);
 
 /*
+ * Wrapper functions around the reference count.
+ */
+struct vimage_subsys *
+vimage_subsys_hold(struct vimage_subsys *vse)
+{
+
+	refcount_acquire(&vse->refcnt);
+	return (vse);
+}
+
+void
+vimage_subsys_free(struct vimage_subsys *vse)
+{
+
+	if (refcount_release(&vse->refcnt)) {
+#ifdef DDB
+		db_vimage_variable_unregister(vse);
+#endif
+		(*vse->v_data_destroy)(vse);
+	}
+}
+
+/*
  * Boot or load time registration of virtualized subsystems.
  */
 int
 vimage_subsys_register(struct vimage_subsys *vse)
 {
+	struct vimage_subsys *vse2;
 	int error;
 
 	KASSERT(vse != NULL, ("%s: vse is NULL", __func__));
@@ -246,12 +274,15 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	if (vse->v_data_init == NULL) {
 		/* Disabling dynamic data region/module support. */
 		vse->v_data_init = vimage_data_init_notsupp;
+		vse->v_data_destroy = vimage_data_destroy_notsupp;
 		vse->v_data_alloc = vimage_data_alloc_notsupp;
 		vse->v_data_free = vimage_data_free_notsupp;
 		vse->v_data_copy = vimage_data_copy_notsupp;
 		printf("%s: dynamic data region/module support disabled "
 		    "for vse=%p %s\n", __func__, vse, vse->setname);
 	}
+	if (vse->v_data_destroy == NULL)
+		vse->v_data_destroy = vimage_data_destroy;
 	if (vse->v_data_alloc == NULL)
 		vse->v_data_alloc = vimage_data_alloc;
 	if (vse->v_data_free == NULL)
@@ -290,8 +321,14 @@ vimage_subsys_register(struct vimage_subsys *vse)
 	 * needed for and used by the linker.
 	 */
 	VIMAGE_SUBSYS_LIST_WLOCK();
-	if (vimage_subsys_get(vse->setname) != NULL) {
+	vse2 = vimage_subsys_get_locked(vse->setname);
+	if (vse2 != NULL) {
+		vimage_subsys_free(vse2);
 		VIMAGE_SUBSYS_LIST_WUNLOCK();
+#ifdef DDB
+		db_vimage_variable_unregister(vse);
+#endif
+		(*vse->v_data_destroy)(vse);
 		printf("%s: vse=%p duplicate registration for %s\n",
 		    __func__, vse, vse->setname);
 		return (EEXIST);
@@ -307,34 +344,30 @@ int
 vimage_subsys_deregister(struct vimage_subsys *vse)
 {
 	struct vimage_subsys *vse2;
-	int error;
 
-	error = ENOENT;
 	VIMAGE_SUBSYS_LIST_WLOCK();
 	LIST_FOREACH(vse2, &vimage_subsys_head, vimage_subsys_le) {
 		if (vse == vse2) {
-			/* Assert that no instance is running anymore? */
-
-			if (refcount_release(&vse->refcnt) == 1) {
-#ifdef DDB
-				db_vimage_variable_unregister(vse);
-#endif
-				LIST_REMOVE(vse, vimage_subsys_le);
-				error = 0;
-			} else {
-				/*
-				 * We cannot allow vse to possibly go away
-				 * if it is coming from a module.
-				 * XXX-BZ catch22?
-				 */
-				error = EBUSY;
-			}
+			LIST_REMOVE(vse, vimage_subsys_le);
+			vimage_subsys_free(vse);
 			break;
 		}
 	}
 	VIMAGE_SUBSYS_LIST_WUNLOCK();
 
-	return (error);
+	/*
+	 * If the refcnt is zero the last reference  was given up and
+	 * and due to locking the list entry has savely gone as well and
+	 * things have been freed already.
+	 * If someone still holds a refcnt return an error that the vse
+	 * must not go away.
+	 * XXX-BZ no idea how to handle EBUSY but there is no `shutdown'
+	 * yet either, so time will tell..
+	 */
+	if (vse->refcnt == 0)
+		return (0);
+
+	return (EBUSY);
 }
 
 /*
@@ -344,17 +377,32 @@ vimage_subsys_deregister(struct vimage_subsys *vse)
  * Caller has to read lock and hold the lock for a save reference to the
  * vimage_subsyst entry.
  */
+static struct vimage_subsys *
+vimage_subsys_get_locked(const char *setname)
+{
+	struct vimage_subsys *vse;
+
+	/* XXX Cannot assert either or possibly non-exclusive lock. */
+	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
+		if (!strcmp(setname, vse->setname)) {
+			vimage_subsys_hold(vse);
+			return (vse);
+		}
+	}
+
+	return (NULL);
+}
+
 struct vimage_subsys *
 vimage_subsys_get(const char *setname)
 {
 	struct vimage_subsys *vse;
 
-	LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
-		if (!strcmp(setname, vse->setname))
-			return (vse);
-	}
+	VIMAGE_SUBSYS_LIST_RLOCK();
+	vse = vimage_subsys_get_locked(setname);
+	VIMAGE_SUBSYS_LIST_RUNLOCK();
 
-	return (NULL);
+	return (vse);
 }
 
 /*
@@ -414,6 +462,16 @@ vimage_alloc(struct vimage_subsys *vse)
 	struct vimage *v;
 
 	SDT_PROBE1(vimage, functions, vimage_alloc, entry, __LINE__);
+
+	/*
+	 * Check that the subsystem is registered.  If so, lend the referece
+	 * to the newly allocated vimage.  This will avoid instance creation
+	 * after the subsystem has been unregistered.
+	 */
+	v = NULL;
+	if (vimage_subsys_get(vse->setname) == NULL)
+		goto err;
+
 	v = malloc(vse->v_instance_size, M_VIMAGE, M_WAITOK | M_ZERO);
 	SDT_PROBE2(vimage, functions, vimage_alloc, alloc, __LINE__, v);
 
@@ -440,6 +498,7 @@ vimage_alloc(struct vimage_subsys *vse)
 	LIST_INSERT_HEAD(&vse->v_instance_head, v, v_le);
 	VIMAGE_LIST_WUNLOCK();
 
+err:
 	SDT_PROBE2(vimage, functions, vimage_alloc, return, __LINE__, v);
 	return (v);
 }
@@ -466,7 +525,28 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
 	 */
 	free(v->v_data_mem, M_VIMAGE_DATA);
 	free(v, M_VIMAGE);
+
+	/*
+	 * Release the reference borrowed from the vimage subsystem.
+	 */
+	vimage_subsys_free(vse);
 	SDT_PROBE1(vimage, functions, vimage_destroy, return, __LINE__);
+}
+
+/*
+ * Destroy the modspace free list.
+ */
+static void
+vimage_data_destroy(struct vimage_subsys *vse)
+{
+	struct vimage_data_free *df, *tdf;
+
+	sx_xlock(&vimage_subsys_data_sxlock);
+	TAILQ_FOREACH_SAFE(df, &vse->v_data_free_list, vnd_link, tdf) {
+		TAILQ_REMOVE(&vse->v_data_free_list, df, vnd_link);
+		free(df, M_VIMAGE_DATA);
+	}
+	sx_xunlock(&vimage_subsys_data_sxlock);
 }
 
 /*
@@ -585,6 +665,12 @@ vimage_data_init_notsupp(struct vimage_subsys *vse __unused)
 {
 
 	return (0);
+}
+
+static void
+vimage_data_destroy_notsupp(struct vimage_subsys *vse __unused)
+{
+
 }
 
 static void *

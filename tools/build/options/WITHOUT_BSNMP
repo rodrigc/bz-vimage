@@ -1,0 +1,4 @@
+.\" $FreeBSD: src/tools/build/options/WITHOUT_BSNMP,v 1.1 2008/09/23 16:15:42 sam Exp $
+Set to not build or install
+.Xr bsnmpd 1
+and related libraries and data files.
