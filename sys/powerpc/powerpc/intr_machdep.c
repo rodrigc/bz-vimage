@@ -57,7 +57,7 @@
  *	from: @(#)isa.c	7.2 (Berkeley) 5/13/91
  *	form: src/sys/i386/isa/intr_machdep.c,v 1.57 2001/07/20
  *
- * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.26 2009/04/24 03:51:11 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.27 2010/06/05 16:21:55 nwhitehorn Exp $
  */
 
 #include "opt_platform.h"
@@ -164,6 +164,7 @@ intr_lookup(u_int irq)
 	i->trig = INTR_TRIGGER_CONFORM;
 	i->pol = INTR_POLARITY_CONFORM;
 	i->irq = irq;
+	i->pic = NULL;
 	i->vector = -1;
 
 	mtx_lock(&intr_table_lock);
@@ -325,6 +326,11 @@ powerpc_setup_intr(const char *name, u_int irq, driver_filter_t filter,
 
 	if (!cold) {
 		error = powerpc_map_irq(i);
+
+		if (!error && (i->trig != INTR_TRIGGER_CONFORM ||
+		    i->pol != INTR_POLARITY_CONFORM))
+			PIC_CONFIG(i->pic, i->intline, i->trig, i->pol);
+
 		if (!error && enable)
 			PIC_ENABLE(i->pic, i->intline, i->vector);
 	}
@@ -350,7 +356,7 @@ powerpc_config_intr(int irq, enum intr_trigger trig, enum intr_polarity pol)
 	i->trig = trig;
 	i->pol = pol;
 
-	if (!cold)
+	if (!cold && i->pic != NULL)
 		PIC_CONFIG(i->pic, i->intline, trig, pol);
 
 	return (0);

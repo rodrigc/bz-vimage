@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_sem.c,v 1.40 2010/03/28 13:13:22 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_sem.c,v 1.41 2010/06/02 09:59:05 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_posix.h"
@@ -976,6 +976,8 @@ ksem_module_destroy(void)
 	sx_destroy(&ksem_dict_lock);
 	mtx_destroy(&ksem_count_lock);
 	mtx_destroy(&sem_lock);
+	p31b_unsetcfg(CTL_P1003_1B_SEM_VALUE_MAX);
+	p31b_unsetcfg(CTL_P1003_1B_SEM_NSEMS_MAX);
 }
 
 static int

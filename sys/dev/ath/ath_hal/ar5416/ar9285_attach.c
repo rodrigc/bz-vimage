@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar9285_attach.c,v 1.4 2010/04/09 13:58:54 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar9285_attach.c,v 1.5 2010/06/01 15:33:10 rpaulo Exp $
  */
 #include "opt_ah.h"
 
@@ -315,6 +315,16 @@ ar9285WriteIni(struct ath_hal *ah, const struct ieee80211_channel *chan)
 	}
 	regWrites = ath_hal_ini_write(ah, &AH5212(ah)->ah_ini_common,
 	    1, regWrites);
+
+      	OS_REG_SET_BIT(ah, AR_DIAG_SW, (AR_DIAG_RX_DIS | AR_DIAG_RX_ABORT));
+
+	if (AR_SREV_MERLIN_10_OR_LATER(ah)) {
+		uint32_t val;
+		val = OS_REG_READ(ah, AR_PCU_MISC_MODE2) &
+			(~AR_PCU_MISC_MODE2_HWWAR1);
+		OS_REG_WRITE(ah, AR_PCU_MISC_MODE2, val);
+		OS_REG_WRITE(ah, 0x9800 + (651 << 2), 0x11);
+	}
 
 }
 

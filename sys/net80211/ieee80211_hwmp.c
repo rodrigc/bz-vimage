@@ -28,7 +28,7 @@
  */ 
 #include <sys/cdefs.h>
 #ifdef __FreeBSD__
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_hwmp.c,v 1.10 2009/10/29 12:19:10 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_hwmp.c,v 1.11 2010/06/01 14:13:59 rpaulo Exp $");
 #endif
 
 /*
@@ -707,6 +707,9 @@ hwmp_recv_preq(struct ieee80211vap *vap, struct ieee80211_node *ni,
 	rtorig = ieee80211_mesh_rt_find(vap, preq->preq_origaddr);
 	if (rtorig == NULL)
 		rtorig = ieee80211_mesh_rt_add(vap, preq->preq_origaddr);
+	if (rtorig == NULL)
+		/* XXX stat */
+		return;
 	hrorig = IEEE80211_MESH_ROUTE_PRIV(rtorig, struct ieee80211_hwmp_route);
 	/*
 	 * Sequence number validation.

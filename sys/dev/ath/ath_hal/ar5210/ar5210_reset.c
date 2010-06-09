@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_reset.c,v 1.4 2010/01/12 17:59:58 gavin Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_reset.c,v 1.5 2010/05/29 16:11:51 rpaulo Exp $
  */
 #include "opt_ah.h"
 
@@ -526,9 +526,10 @@ ar5210PerCalibrationN(struct ath_hal *ah,
 	/* AGC calibration (this was added to make the NF threshold check work) */
 	OS_REG_WRITE(ah, AR_PHY_AGCCTL,
 		 OS_REG_READ(ah, AR_PHY_AGCCTL) | AR_PHY_AGC_CAL);
-	if (!ath_hal_wait(ah, AR_PHY_AGCCTL, AR_PHY_AGC_CAL, 0))
+	if (!ath_hal_wait(ah, AR_PHY_AGCCTL, AR_PHY_AGC_CAL, 0)) {
 		HALDEBUG(ah, HAL_DEBUG_ANY, "%s: AGC calibration timeout\n",
 		    __func__);
+	}
 
 	/* Rewrite our AGC values we stored off earlier (return AGC to normal operation) */
 	OS_REG_WRITE(ah, 0x9858, reg9858);

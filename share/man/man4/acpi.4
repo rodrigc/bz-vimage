@@ -23,9 +23,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/acpi.4,v 1.64 2010/03/09 19:19:07 jkim Exp $
+.\" $FreeBSD: src/share/man/man4/acpi.4,v 1.65 2010/06/02 08:43:18 mav Exp $
 .\"
-.Dd March 9, 2010
+.Dd June 2, 2010
 .Dt ACPI 4
 .Os
 .Sh NAME
@@ -599,10 +599,8 @@ The
 .Nm
 CPU idle power management drive conflicts with the local APIC (LAPIC)
 timer.
-Disable APIC mode with
-.Va hint.apic.0.disabled
+Disable the local APIC timer with
+.Va hint.apic.0.clock=0
 or do not use the
-.Li C2
-and
 .Li C3
-states if APIC mode is enabled.
+and deeper states if the local APIC timer is enabled.

@@ -35,7 +35,7 @@ __KERNEL_RCSID(0, "$NetBSD$");
 #endif
 #ifdef	__FreeBSD__
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_library.c,v 1.21 2010/03/26 20:22:18 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_library.c,v 1.22 2010/06/02 23:31:27 mjacob Exp $");
 #include <dev/isp/isp_freebsd.h>
 #endif
 #ifdef	__OpenBSD__
@@ -1338,7 +1338,7 @@ isp_put_vp_ctrl_info(ispsoftc_t *isp, vp_ctrl_info_t *src, vp_ctrl_info_t *dst)
 		ISP_IOXPUT_16(isp, src->vp_ctrl_idmap[i], &dst->vp_ctrl_idmap[i]);
 	}
 	for (i = 0; i < ASIZE(src->vp_ctrl_reserved); i++) {
-		ISP_IOXPUT_8(isp, src->vp_ctrl_idmap[i], &dst->vp_ctrl_idmap[i]);
+		ISP_IOXPUT_8(isp, src->vp_ctrl_reserved[i], &dst->vp_ctrl_reserved[i]);
 	}
 }
 

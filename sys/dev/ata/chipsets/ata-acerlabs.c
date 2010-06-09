@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.13 2010/04/14 15:29:32 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.14 2010/06/05 08:44:40 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -133,6 +133,7 @@ ata_ali_chipinit(device_t dev)
 				bus_release_resource(dev, SYS_RES_IOPORT,
 				    PCIR_BAR(i), res->bars[i]);
 			free(res, M_TEMP);
+			return ENXIO;
 		}
 	}
 	ctlr->chipset_data = res;

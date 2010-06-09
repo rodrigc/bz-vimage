@@ -31,7 +31,7 @@
 /* $KAME: sctp_input.c,v 1.27 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_input.c,v 1.91 2010/05/11 17:02:29 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_input.c,v 1.94 2010/06/06 19:24:32 rrs Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
@@ -3069,7 +3069,7 @@ process_chunk_drop(struct sctp_tcb *stcb, struct sctp_chunk_desc *desc,
     struct sctp_nets *net, uint8_t flg)
 {
 	switch (desc->chunk_type) {
-		case SCTP_DATA:
+	case SCTP_DATA:
 		/* find the tsn to resend (possibly */
 		{
 			uint32_t tsn;
@@ -4536,7 +4536,8 @@ process_control_chunks:
 				if ((stcb) && (stcb->asoc.total_output_queue_size)) {
 					;
 				} else {
-					if (locked_tcb) {
+					if (locked_tcb != stcb) {
+						/* Very unlikely */
 						SCTP_TCB_UNLOCK(locked_tcb);
 					}
 					*offset = length;
@@ -4863,6 +4864,10 @@ process_control_chunks:
 			} else {
 				if (inp->sctp_flags & SCTP_PCB_FLAGS_SOCKET_GONE) {
 					/* We are not interested anymore */
+			abend:
+					if (stcb) {
+						SCTP_TCB_UNLOCK(stcb);
+					}
 					*offset = length;
 					return (NULL);
 				}
@@ -4910,6 +4915,11 @@ process_control_chunks:
 
 				if (linp) {
 					SCTP_ASOC_CREATE_LOCK(linp);
+					if ((inp->sctp_flags & SCTP_PCB_FLAGS_SOCKET_GONE) ||
+					    (inp->sctp_flags & SCTP_PCB_FLAGS_SOCKET_ALLGONE)) {
+						SCTP_ASOC_CREATE_UNLOCK(linp);
+						goto abend;
+					}
 				}
 				if (netp) {
 					ret_buf =
@@ -5410,15 +5420,24 @@ sctp_process_ecn_marked_b(struct sctp_tcb *stcb, struct sctp_nets *net,
 }
 
 #ifdef INVARIANTS
-static void
-sctp_validate_no_locks(struct sctp_inpcb *inp)
+#ifdef __GNUC__
+__attribute__((noinline))
+#endif
+	void
+	     sctp_validate_no_locks(struct sctp_inpcb *inp)
 {
-	struct sctp_tcb *stcb;
+	struct sctp_tcb *lstcb;
 
-	LIST_FOREACH(stcb, &inp->sctp_asoc_list, sctp_tcblist) {
-		if (mtx_owned(&stcb->tcb_mtx)) {
+	LIST_FOREACH(lstcb, &inp->sctp_asoc_list, sctp_tcblist) {
+		if (mtx_owned(&lstcb->tcb_mtx)) {
 			panic("Own lock on stcb at return from input");
 		}
+	}
+	if (mtx_owned(&inp->inp_create_mtx)) {
+		panic("Own create lock on inp");
+	}
+	if (mtx_owned(&inp->inp_mtx)) {
+		panic("Own inp lock on inp");
 	}
 }
 

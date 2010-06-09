@@ -57,7 +57,7 @@
  * any improvements or extensions that they make and grant Carnegie the
  * rights to redistribute these changes.
  *
- * $FreeBSD: src/sys/vm/vm_page.h,v 1.168 2010/05/24 14:26:57 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_page.h,v 1.169 2010/05/29 17:10:45 alc Exp $
  */
 
 /*
@@ -219,8 +219,8 @@ extern struct vpglocks pa_lock[];
  *	 pte mappings, nor can they be removed from their objects via 
  *	 the object, and such pages are also not on any PQ queue.
  *
- * PG_WRITEABLE is set exclusively by pmap_enter().  When it does so, the page
- * must be VPO_BUSY.
+ * PG_WRITEABLE is set exclusively on managed pages by pmap_enter().  When it
+ * does so, the page must be VPO_BUSY.
  */
 #define	PG_CACHED	0x0001		/* page is cached */
 #define	PG_FREE		0x0002		/* page is free */

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/mountver/g_mountver.c,v 1.2 2010/01/25 16:10:22 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/mountver/g_mountver.c,v 1.3 2010/06/05 08:00:52 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -343,7 +343,8 @@ g_mountver_destroy(struct g_geom *gp, boolean_t force)
 	} else {
 		G_MOUNTVER_DEBUG(0, "Device %s removed.", gp->name);
 	}
-	g_orphan_provider(pp, ENXIO);
+	if (pp != NULL)
+		g_orphan_provider(pp, ENXIO);
 	g_mountver_discard_queued(gp);
 	g_free(sc->sc_provider_name);
 	g_free(gp->softc);

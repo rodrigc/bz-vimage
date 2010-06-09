@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_acl.c,v 1.67 2009/12/03 13:29:24 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_acl.c,v 1.68 2010/06/03 13:45:27 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -92,7 +92,7 @@ acl_copy_acl_into_oldacl(const struct acl *source, struct oldacl *dest)
 {
 	int i;
 
-	if (source->acl_cnt < 0 || source->acl_cnt > OLDACL_MAX_ENTRIES)
+	if (source->acl_cnt > OLDACL_MAX_ENTRIES)
 		return (EINVAL);
 
 	bzero(dest, sizeof(*dest));

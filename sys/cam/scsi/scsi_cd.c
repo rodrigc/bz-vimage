@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_cd.c,v 1.120 2010/04/15 09:22:14 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_cd.c,v 1.121 2010/06/04 13:55:55 avg Exp $");
 
 #include "opt_cd.h"
 
@@ -2528,7 +2528,7 @@ cdioctl(struct disk *dp, u_long cmd, void *addr, int flag, struct thread *td)
 
 			error = cdgetmode(periph, &params, AUDIO_PAGE);
 			if (error) {
-				free(&params.mode_buf, M_SCSICD);
+				free(params.mode_buf, M_SCSICD);
 				cam_periph_unlock(periph);
 				break;
 			}

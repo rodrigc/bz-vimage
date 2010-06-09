@@ -4,7 +4,7 @@
 # Author: Jordan K Hubbard
 # Date:   22 June 2001
 #
-# $FreeBSD: src/release/ia64/mkisoimages.sh,v 1.12 2008/04/08 02:57:59 marcel Exp $
+# $FreeBSD: src/release/ia64/mkisoimages.sh,v 1.13 2010/05/28 17:50:35 marcel Exp $
 #
 # This script is used by release/Makefile to build the (optional) ISO images
 # for a FreeBSD release.  It is considered architecture dependent since each
@@ -67,7 +67,7 @@ EFIPART=efipart.sys
 # To create a bootable CD under EFI, the boot image should be an EFI
 # system partition.
 if [ $bootable = yes ]; then
-    EFISZ=40960
+    EFISZ=65536
     MNT=/mnt
     dd if=/dev/zero of=$BASE/$EFIPART count=$EFISZ
     md=`mdconfig -a -t vnode -f $BASE/$EFIPART`

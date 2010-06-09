@@ -15,13 +15,15 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.h,v 1.2 2010/01/29 10:10:14 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.h,v 1.3 2010/06/01 15:33:10 rpaulo Exp $
  */
 #ifndef _AH_EEPROM_V4K_H_
 #define _AH_EEPROM_V4K_H_
 
 #include "ah_eeprom.h"
 #include "ah_eeprom_v14.h"
+
+#define	AR9285_RDEXT_DEFAULT	0x1F
 
 #undef owl_eep_start_loc
 #ifdef __LINUX_ARM_ARCH__ /* AP71 */
@@ -150,6 +152,6 @@ typedef struct {
 	uint16_t	ee_numCtls;
 	RD_EDGES_POWER	ee_rdEdgesPower[NUM_EDGES*AR5416_4K_NUM_CTLS];
 	/* XXX these are dynamically calculated for use by shared code */
-	int8_t		ee_antennaGainMax[2];
+	int8_t		ee_antennaGainMax;
 } HAL_EEPROM_v4k;
 #endif /* _AH_EEPROM_V4K_H_ */

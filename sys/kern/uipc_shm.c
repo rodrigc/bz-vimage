@@ -53,7 +53,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_shm.c,v 1.11 2010/03/28 13:13:22 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_shm.c,v 1.12 2010/06/02 15:46:37 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -304,9 +304,7 @@ shm_dotruncate(struct shmfd *shmfd, off_t length)
 			 */
 			base = roundup2(base, DEV_BSIZE);
 
-			vm_page_lock_queues();
 			vm_page_clear_dirty(m, base, PAGE_SIZE - base);
-			vm_page_unlock_queues();
 		} else if ((length & PAGE_MASK) &&
 		    __predict_false(object->cache != NULL)) {
 			vm_page_cache_free(object, OFF_TO_IDX(length),

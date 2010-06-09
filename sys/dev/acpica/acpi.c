@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.278 2010/05/23 07:53:22 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.279 2010/06/08 21:27:05 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -2346,7 +2346,7 @@ acpi_ReqSleepState(struct acpi_softc *sc, int state)
 	clone->notify_status = APM_EV_NONE;
 	if ((clone->flags & ACPI_EVF_DEVD) == 0) {
 	    selwakeuppri(&clone->sel_read, PZERO);
-	    KNOTE_UNLOCKED(&clone->sel_read.si_note, 0);
+	    KNOTE_LOCKED(&clone->sel_read.si_note, 0);
 	}
     }
 

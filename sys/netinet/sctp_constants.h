@@ -31,7 +31,7 @@
 /* $KAME: sctp_constants.h,v 1.17 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.51 2010/05/16 17:03:56 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.53 2010/06/06 20:34:17 rrs Exp $");
 
 #ifndef __sctp_constants_h__
 #define __sctp_constants_h__
@@ -894,7 +894,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.51 2010/05/16 17:03:56 
 /* third argument */
 #define SCTP_CALLED_DIRECTLY_NOCMPSET     0
 #define SCTP_CALLED_AFTER_CMPSET_OFCLOSE  1
-
+#define SCTP_CALLED_FROM_INPKILL_TIMER    2
 /* second argument */
 #define SCTP_FREE_SHOULD_USE_ABORT          1
 #define SCTP_FREE_SHOULD_USE_GRACEFUL_CLOSE 0

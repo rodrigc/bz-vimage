@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/label/g_label.c,v 1.26 2009/11/28 11:57:43 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/label/g_label.c,v 1.27 2010/05/31 09:10:39 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -203,10 +203,8 @@ g_label_destroy(struct g_geom *gp, boolean_t force)
 			    pp->acr, pp->acw, pp->ace);
 			return (EBUSY);
 		}
-	} else {
-		G_LABEL_DEBUG(1, "Label %s removed.",
-		    LIST_FIRST(&gp->provider)->name);
-	}
+	} else if (pp != NULL)
+		G_LABEL_DEBUG(1, "Label %s removed.", pp->name);
 	g_slice_spoiled(LIST_FIRST(&gp->consumer));
 	return (0);
 }

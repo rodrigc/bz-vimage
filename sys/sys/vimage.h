@@ -349,6 +349,10 @@ SDT_PROBE_DECLARE(vimage, macros, curvimage, restore);
 	    v_access)							\
 	SYSCTL_INT(parent, nbr, name, (v_access)|(access), ptr, val,	\
 	    descr)
+#define	VIMAGE_SYSCTL_OPAQUE(parent, nbr, name, access, ptr, len, fmt,	\
+	    descr, v_access)						\
+	SYSCTL_OPAQUE(parent, nbr, name, (v_access)|(access), ptr, len,	\
+	    fmt, descr)
 #define	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler,\
 	    fmt, descr, v_access)					\
 	SYSCTL_PROC(parent, nbr, name, (v_access)|(access), ptr, arg,	\
@@ -381,6 +385,9 @@ SDT_PROBE_DECLARE(vimage, macros, curvimage, restore);
 #define	VIMAGE_SYSCTL_INT(parent, nbr, name, access, ptr, val, descr,	\
 	    v_access)							\
 	SYSCTL_INT(parent, nbr, name, access, ptr, val, descr)
+#define	VIMAGE_SYSCTL_OPAQUE(parent, nbr, name, access, ptr, len, fmt,	\
+	    descr, v_access)						\
+	SYSCTL_OPAQUE(parent, nbr, name, access, ptr, len, fmt, descr)
 #define	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler,\
 	    fmt, descr, v_access)					\
 	SYSCTL_PROC(parent, nbr, name, access, ptr, arg, handler, fmt,	\

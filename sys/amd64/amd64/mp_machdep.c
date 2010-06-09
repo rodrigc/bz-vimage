@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/mp_machdep.c,v 1.313 2010/05/24 11:40:49 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/mp_machdep.c,v 1.314 2010/06/05 15:59:59 kib Exp $");
 
 #include "opt_cpu.h"
 #include "opt_kstack_pages.h"
@@ -1247,7 +1247,7 @@ cpususpend_handler(void)
 
 	rf = intr_disable();
 	cr3 = rcr3();
-	stopfpu = &stopxpcbs[cpu]->xpcb_pcb.pcb_save;
+	stopfpu = stopxpcbs[cpu]->xpcb_pcb.pcb_save;
 	if (savectx2(stopxpcbs[cpu])) {
 		fpugetregs(curthread, stopfpu);
 		wbinvd();

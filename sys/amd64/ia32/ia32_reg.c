@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/ia32/ia32_reg.c,v 1.6 2010/01/24 12:13:38 trasz Exp $
+ * $FreeBSD: src/sys/amd64/ia32/ia32_reg.c,v 1.7 2010/06/05 15:59:59 kib Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_reg.c,v 1.6 2010/01/24 12:13:38 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_reg.c,v 1.7 2010/06/05 15:59:59 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -147,7 +147,7 @@ fill_fpregs32(struct thread *td, struct fpreg32 *regs)
 {
 	struct save87 *sv_87 = (struct save87 *)regs;
 	struct env87 *penv_87 = &sv_87->sv_env;
-	struct savefpu *sv_fpu = &td->td_pcb->pcb_save;
+	struct savefpu *sv_fpu = &td->td_pcb->pcb_user_save;
 	struct envxmm *penv_xmm = &sv_fpu->sv_env;
 	int i;
 
@@ -182,7 +182,7 @@ set_fpregs32(struct thread *td, struct fpreg32 *regs)
 {
 	struct save87 *sv_87 = (struct save87 *)regs;
 	struct env87 *penv_87 = &sv_87->sv_env;
-	struct savefpu *sv_fpu = &td->td_pcb->pcb_save;
+	struct savefpu *sv_fpu = &td->td_pcb->pcb_user_save;
 	struct envxmm *penv_xmm = &sv_fpu->sv_env;
 	int i;
 

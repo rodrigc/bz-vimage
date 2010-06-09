@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_scan_sta.c,v 1.30 2010/04/14 18:29:40 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_scan_sta.c,v 1.31 2010/06/01 14:17:08 rpaulo Exp $");
 
 /*
  * IEEE 802.11 station scanning support.
@@ -1013,7 +1013,7 @@ match_bss(struct ieee80211vap *vap,
 		 */
 		if (se->se_capinfo & (IEEE80211_CAPINFO_IBSS|IEEE80211_CAPINFO_ESS))
 			fail |= MATCH_CAPINFO;
-		else if (se->se_meshid == NULL)
+		else if (&se->se_meshid == NULL)
 			fail |= MATCH_MESH_NOID;
 		else if (ms->ms_idlen != 0 &&
 		    match_id(se->se_meshid, ms->ms_id, ms->ms_idlen))

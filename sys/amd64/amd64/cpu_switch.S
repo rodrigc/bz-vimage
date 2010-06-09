@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.169 2009/07/09 09:34:11 kib Exp $
+ * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.170 2010/06/05 15:59:59 kib Exp $
  */
 
 #include <machine/asmacros.h>
@@ -116,7 +116,7 @@ done_store_dr:
 	/* have we used fp, and need a save? */
 	cmpq	%rdi,PCPU(FPCURTHREAD)
 	jne	1f
-	addq	$PCB_SAVEFPU,%r8
+	movq	PCB_SAVEFPU(%r8),%r8
 	clts
 	fxsave	(%r8)
 	smsw	%ax
@@ -341,7 +341,7 @@ ENTRY(savectx)
 	je	1f
 
 	movq	TD_PCB(%rax),%rdi
-	leaq	PCB_SAVEFPU(%rdi),%rdi
+	movq	PCB_SAVEFPU(%rdi),%rdi
 	clts
 	fxsave	(%rdi)
 	smsw	%ax
@@ -349,7 +349,7 @@ ENTRY(savectx)
 	lmsw	%ax
 
 	movq	$PCB_SAVEFPU_SIZE,%rdx	/* arg 3 */
-	leaq	PCB_SAVEFPU(%rcx),%rsi	/* arg 2 */
+	movq	PCB_SAVEFPU(%rcx),%rsi	/* arg 2 */
 	/* arg 1 (%rdi) already loaded */
 	call	bcopy
 1:

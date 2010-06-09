@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/random/nehemiah.c,v 1.5 2009/05/25 22:50:11 markm Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/random/nehemiah.c,v 1.6 2010/06/05 16:00:53 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -34,6 +34,8 @@ __FBSDID("$FreeBSD: src/sys/dev/random/nehemiah.c,v 1.5 2009/05/25 22:50:11 mark
 #include <sys/mutex.h>
 #include <sys/selinfo.h>
 #include <sys/systm.h>
+
+#include <machine/pcb.h>
 
 #include <dev/random/randomdev.h>
 
@@ -81,6 +83,8 @@ static uint8_t in[RANDOM_BLOCK_SIZE+7]	__aligned(16);
 static uint8_t out[RANDOM_BLOCK_SIZE+7]	__aligned(16);
 
 static union VIA_ACE_CW acw		__aligned(16);
+
+static struct fpu_kern_ctx fpu_ctx_save;
 
 static struct mtx random_nehemiah_mtx;
 
@@ -142,11 +146,16 @@ random_nehemiah_deinit(void)
 static int
 random_nehemiah_read(void *buf, int c)
 {
-	int i;
+	int i, error;
 	size_t count, ret;
 	uint8_t *p;
 
 	mtx_lock(&random_nehemiah_mtx);
+	error = fpu_kern_enter(curthread, &fpu_ctx_save, FPU_KERN_NORMAL);
+	if (error != 0) {
+		mtx_unlock(&random_nehemiah_mtx);
+		return (0);
+	}
 
 	/* Get a random AES key */
 	count = 0;
@@ -187,6 +196,7 @@ random_nehemiah_read(void *buf, int c)
 	c = MIN(RANDOM_BLOCK_SIZE, c);
 	memcpy(buf, out, (size_t)c);
 
+	fpu_kern_leave(curthread, &fpu_ctx_save);
 	mtx_unlock(&random_nehemiah_mtx);
 	return (c);
 }

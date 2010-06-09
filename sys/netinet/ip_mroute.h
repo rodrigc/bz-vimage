@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ip_mroute.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/netinet/ip_mroute.h,v 1.36 2009/06/21 10:29:31 rdivacky Exp $
+ * $FreeBSD: src/sys/netinet/ip_mroute.h,v 1.37 2010/06/02 15:44:43 zec Exp $
  */
 
 #ifndef _NETINET_IP_MROUTE_H_
@@ -222,7 +222,7 @@ struct mrtstat {
 };
 
 #ifdef _KERNEL
-#define	MRTSTAT_ADD(name, val)	mrtstat.name += (val)
+#define	MRTSTAT_ADD(name, val)	V_mrtstat.name += (val)
 #define	MRTSTAT_INC(name)	MRTSTAT_ADD(name, 1)
 #endif
 

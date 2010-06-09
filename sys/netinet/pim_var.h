@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netinet/pim_var.h,v 1.4 2009/04/12 14:06:26 rwatson Exp $
+ * $FreeBSD: src/sys/netinet/pim_var.h,v 1.5 2010/06/02 15:44:43 zec Exp $
  */
 
 #ifndef _NETINET_PIM_VAR_H_
@@ -60,7 +60,7 @@ struct pimstat {
 };
 
 #ifdef _KERNEL
-#define	PIMSTAT_ADD(name, val)	pimstat.name += (val)
+#define	PIMSTAT_ADD(name, val)	V_pimstat.name += (val)
 #define	PIMSTAT_INC(name)	PIMSTAT_ADD(name, 1)
 #endif
 

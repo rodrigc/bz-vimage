@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-lowlevel.c,v 1.86 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-lowlevel.c,v 1.87 2010/06/06 14:09:48 nwhitehorn Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -141,6 +141,14 @@ ata_begin_transaction(struct ata_request *request)
 	    goto begin_finished;
 	}
 
+	/* start DMA engine if necessary */
+	if ((ch->flags & ATA_DMA_BEFORE_CMD) &&
+	   ch->dma.start && ch->dma.start(request)) {
+	    device_printf(request->parent, "error starting DMA\n");
+	    request->result = EIO;
+	    goto begin_finished;
+	}
+
 	/* issue command */
 	if (ch->hw.command(request)) {
 	    device_printf(request->parent, "error issuing %s command\n",
@@ -150,7 +158,8 @@ ata_begin_transaction(struct ata_request *request)
 	}
 
 	/* start DMA engine */
-	if (ch->dma.start && ch->dma.start(request)) {
+	if (!(ch->flags & ATA_DMA_BEFORE_CMD) &&
+	   ch->dma.start && ch->dma.start(request)) {
 	    device_printf(request->parent, "error starting DMA\n");
 	    request->result = EIO;
 	    goto begin_finished;

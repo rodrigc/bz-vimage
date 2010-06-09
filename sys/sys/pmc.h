@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/pmc.h,v 1.28 2010/04/02 13:23:49 fabient Exp $
+ * $FreeBSD: src/sys/sys/pmc.h,v 1.29 2010/06/05 23:05:08 fabient Exp $
  */
 
 #ifndef _SYS_PMC_H_
@@ -680,7 +680,7 @@ struct pmc {
 	enum pmc_event	pm_event;	/* event being measured */
 	uint32_t	pm_flags;	/* additional flags PMC_F_... */
 	struct pmc_owner *pm_owner;	/* owner thread state */
-	uint32_t	pm_runcount;	/* #cpus currently on */
+	int		pm_runcount;	/* #cpus currently on */
 	enum pmc_state	pm_state;	/* current PMC state */
 
 	/*

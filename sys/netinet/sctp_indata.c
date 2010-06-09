@@ -31,7 +31,7 @@
 /* $KAME: sctp_indata.c,v 1.36 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_indata.c,v 1.81 2010/05/12 18:00:15 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_indata.c,v 1.84 2010/06/08 03:39:31 rrs Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
@@ -289,10 +289,18 @@ sctp_build_ctl_cchunk(struct sctp_inpcb *inp,
 static void
 sctp_mark_non_revokable(struct sctp_association *asoc, uint32_t tsn)
 {
-	uint32_t gap, i;
+	uint32_t gap, i, cumackp1;
 	int fnd = 0;
 
 	if (SCTP_BASE_SYSCTL(sctp_do_drain) == 0) {
+		return;
+	}
+	cumackp1 = asoc->cumulative_tsn + 1;
+	if (compare_with_wrap(cumackp1, tsn, MAX_TSN)) {
+		/*
+		 * this tsn is behind the cum ack and thus we don't need to
+		 * worry about it being moved from one to the other.
+		 */
 		return;
 	}
 	SCTP_CALC_TSN_TO_GAP(gap, tsn, asoc->mapping_array_base_tsn);
@@ -2245,16 +2253,21 @@ sctp_slide_mapping_arrays(struct sctp_tcb *stcb)
 	/*
 	 * Now we also need to check the mapping array in a couple of ways.
 	 * 1) Did we move the cum-ack point?
+	 * 
+	 * When you first glance at this you might think that all entries that
+	 * make up the postion of the cum-ack would be in the nr-mapping
+	 * array only.. i.e. things up to the cum-ack are always
+	 * deliverable. Thats true with one exception, when its a fragmented
+	 * message we may not deliver the data until some threshold (or all
+	 * of it) is in place. So we must OR the nr_mapping_array and
+	 * mapping_array to get a true picture of the cum-ack.
 	 */
 	struct sctp_association *asoc;
 	int at;
+	uint8_t val;
 	int slide_from, slide_end, lgap, distance;
-
-	/* EY nr_mapping array variables */
-	/* int nr_at; */
-	/* int nr_last_all_ones = 0; */
-	/* int nr_slide_from, nr_slide_end, nr_lgap, nr_distance; */
 	uint32_t old_cumack, old_base, old_highest, highest_tsn;
+	int type;
 
 	asoc = &stcb->asoc;
 	at = 0;
@@ -2266,13 +2279,23 @@ sctp_slide_mapping_arrays(struct sctp_tcb *stcb)
 	 * We could probably improve this a small bit by calculating the
 	 * offset of the current cum-ack as the starting point.
 	 */
+	if (SCTP_BASE_SYSCTL(sctp_nr_sack_on_off) &&
+	    stcb->asoc.peer_supports_nr_sack) {
+		type = SCTP_NR_SELECTIVE_ACK;
+	} else {
+		type = SCTP_SELECTIVE_ACK;
+	}
 	at = 0;
 	for (slide_from = 0; slide_from < stcb->asoc.mapping_array_size; slide_from++) {
-		if (asoc->nr_mapping_array[slide_from] == 0xff) {
+		if (type == SCTP_NR_SELECTIVE_ACK)
+			val = asoc->nr_mapping_array[slide_from];
+		else
+			val = asoc->nr_mapping_array[slide_from] | asoc->mapping_array[slide_from];
+		if (val == 0xff) {
 			at += 8;
 		} else {
 			/* there is a 0 bit */
-			at += sctp_map_lookup_tab[asoc->nr_mapping_array[slide_from]];
+			at += sctp_map_lookup_tab[val];
 			break;
 		}
 	}
@@ -3849,7 +3872,8 @@ sctp_window_probe_recovery(struct sctp_tcb *stcb,
 	sctp_total_flight_decrease(stcb, tp1);
 	/* Now mark for resend */
 	tp1->sent = SCTP_DATAGRAM_RESEND;
-	asoc->sent_queue_retran_cnt++;
+	sctp_ucount_incr(asoc->sent_queue_retran_cnt);
+
 	if (SCTP_BASE_SYSCTL(sctp_logging_level) & SCTP_FLIGHT_LOGGING_ENABLE) {
 		sctp_misc_ints(SCTP_FLIGHT_LOG_DOWN_WP,
 		    tp1->whoTo->flight_size,
@@ -4262,7 +4286,7 @@ again:
 					sctp_flight_size_increase(tp1);
 					sctp_total_flight_increase(stcb, tp1);
 				} else if (tp1->sent == SCTP_DATAGRAM_RESEND) {
-					asoc->sent_queue_retran_cnt++;
+					sctp_ucount_incr(asoc->sent_queue_retran_cnt);
 				}
 			}
 		}
@@ -5263,7 +5287,7 @@ again:
 					sctp_flight_size_increase(tp1);
 					sctp_total_flight_increase(stcb, tp1);
 				} else if (tp1->sent == SCTP_DATAGRAM_RESEND) {
-					asoc->sent_queue_retran_cnt++;
+					sctp_ucount_incr(asoc->sent_queue_retran_cnt);
 				}
 			}
 		}

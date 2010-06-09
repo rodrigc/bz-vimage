@@ -98,7 +98,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.406 2010/05/26 18:00:44 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.409 2010/06/03 10:11:45 kib Exp $");
 
 #include "opt_vm.h"
 
@@ -170,6 +170,7 @@ TUNABLE_INT("vm.boot_pages", &boot_pages);
 SYSCTL_INT(_vm, OID_AUTO, boot_pages, CTLFLAG_RD, &boot_pages, 0,
 	"number of pages allocated for bootstrapping the VM system");
 
+static void vm_page_clear_dirty_mask(vm_page_t m, int pagebits);
 static void vm_page_queue_remove(int queue, vm_page_t m);
 static void vm_page_enqueue(int queue, vm_page_t m);
 
@@ -485,6 +486,14 @@ vm_page_flag_set(vm_page_t m, unsigned short bits)
 {
 
 	mtx_assert(&vm_page_queue_mtx, MA_OWNED);
+	/*
+	 * For a managed page, the PG_WRITEABLE flag can be set only if
+	 * the page is VPO_BUSY.  Currently this flag is only set by
+	 * pmap_enter().
+	 */
+	KASSERT((bits & PG_WRITEABLE) == 0 ||
+	    (m->flags & (PG_UNMANAGED | PG_FICTITIOUS)) != 0 ||
+	    (m->oflags & VPO_BUSY) != 0, ("PG_WRITEABLE and !VPO_BUSY"));
 	m->flags |= bits;
 } 
 
@@ -2073,6 +2082,28 @@ vm_page_set_valid(vm_page_t m, int base, int size)
 }
 
 /*
+ * Clear the given bits from the specified page's dirty field.
+ */
+static __inline void
+vm_page_clear_dirty_mask(vm_page_t m, int pagebits)
+{
+
+	/*
+	 * If the object is locked and the page is neither VPO_BUSY nor
+	 * PG_WRITEABLE, then the page's dirty field cannot possibly be
+	 * modified by a concurrent pmap operation. 
+	 */
+	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	if ((m->oflags & VPO_BUSY) == 0 && (m->flags & PG_WRITEABLE) == 0)
+		m->dirty &= ~pagebits;
+	else {
+		vm_page_lock_queues();
+		m->dirty &= ~pagebits;
+		vm_page_unlock_queues();
+	}
+}
+
+/*
  *	vm_page_set_validclean:
  *
  *	Sets portions of a page valid and clean.  The arguments are expected
@@ -2087,9 +2118,8 @@ vm_page_set_valid(vm_page_t m, int base, int size)
 void
 vm_page_set_validclean(vm_page_t m, int base, int size)
 {
-	int pagebits;
-	int frag;
-	int endoff;
+	u_long oldvalid;
+	int endoff, frag, pagebits;
 
 	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
 	if (size == 0)	/* handle degenerate case */
@@ -2126,6 +2156,7 @@ vm_page_set_validclean(vm_page_t m, int base, int size)
 	 * clear dirty bits for DEV_BSIZE chunks that are fully within
 	 * the range.
 	 */
+	oldvalid = m->valid;
 	pagebits = vm_page_bits(base, size);
 	m->valid |= pagebits;
 #if 0	/* NOT YET */
@@ -2138,21 +2169,35 @@ vm_page_set_validclean(vm_page_t m, int base, int size)
 	}
 	pagebits = vm_page_bits(base, size & (DEV_BSIZE - 1));
 #endif
-	m->dirty &= ~pagebits;
 	if (base == 0 && size == PAGE_SIZE) {
-		pmap_clear_modify(m);
+		/*
+		 * The page can only be modified within the pmap if it is
+		 * mapped, and it can only be mapped if it was previously
+		 * fully valid.
+		 */
+		if (oldvalid == VM_PAGE_BITS_ALL)
+			/*
+			 * Perform the pmap_clear_modify() first.  Otherwise,
+			 * a concurrent pmap operation, such as
+			 * pmap_protect(), could clear a modification in the
+			 * pmap and set the dirty field on the page before
+			 * pmap_clear_modify() had begun and after the dirty
+			 * field was cleared here.
+			 */
+			pmap_clear_modify(m);
+		m->dirty = 0;
 		m->oflags &= ~VPO_NOSYNC;
-	}
+	} else if (oldvalid != VM_PAGE_BITS_ALL)
+		m->dirty &= ~pagebits;
+	else
+		vm_page_clear_dirty_mask(m, pagebits);
 }
 
 void
 vm_page_clear_dirty(vm_page_t m, int base, int size)
 {
 
-	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
-	if ((m->flags & PG_WRITEABLE) != 0)
-		mtx_assert(&vm_page_queue_mtx, MA_OWNED);
-	m->dirty &= ~vm_page_bits(base, size);
+	vm_page_clear_dirty_mask(m, vm_page_bits(base, size));
 }
 
 /*

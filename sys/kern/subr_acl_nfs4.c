@@ -32,7 +32,7 @@
 
 #ifdef _KERNEL
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_acl_nfs4.c,v 1.5 2010/01/04 12:39:42 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_acl_nfs4.c,v 1.6 2010/06/03 13:41:55 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -342,7 +342,6 @@ acl_nfs4_sync_acl_from_mode(struct acl *aclp, mode_t mode, int file_owner_id)
 	const int WRITE = 02;
 	const int EXEC = 01;
 
-	KASSERT(aclp->acl_cnt >= 0, ("aclp->acl_cnt >= 0"));
 	KASSERT(aclp->acl_cnt <= ACL_MAX_ENTRIES,
 	    ("aclp->acl_cnt <= ACL_MAX_ENTRIES"));
 

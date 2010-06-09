@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416phy.h,v 1.3 2010/02/08 20:12:01 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416phy.h,v 1.4 2010/06/01 15:33:10 rpaulo Exp $
  */
 #ifndef _DEV_ATH_AR5416PHY_H_
 #define _DEV_ATH_AR5416PHY_H_
@@ -110,6 +110,9 @@
 #define AR_PHY_HALFGI_DSC_EXP_S 0
 
 #define AR_PHY_HEAVY_CLIP_ENABLE    0x99E0
+
+#define AR_PHY_HEAVY_CLIP_FACTOR_RIFS	0x99ec
+#define AR_PHY_RIFS_INIT_DELAY		0x03ff0000
 
 #define AR_PHY_M_SLEEP      0x99f0      /* sleep control registers */
 #define AR_PHY_REFCLKDLY    0x99f4

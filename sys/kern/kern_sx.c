@@ -41,7 +41,7 @@
 #include "opt_no_adaptive_sx.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_sx.c,v 1.72 2009/12/12 21:31:07 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_sx.c,v 1.73 2010/06/08 16:17:47 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/ktr.h>
@@ -511,7 +511,7 @@ _sx_xlock_hard(struct sx *sx, uintptr_t tid, int opts, const char *file,
 		 * running or the state of the lock changes.
 		 */
 		x = sx->sx_lock;
-		if ((sx->lock_object.lo_flags & SX_NOADAPTIVE) != 0) {
+		if ((sx->lock_object.lo_flags & SX_NOADAPTIVE) == 0) {
 			if ((x & SX_LOCK_SHARED) == 0) {
 				x = SX_OWNER(x);
 				owner = (struct thread *)x;

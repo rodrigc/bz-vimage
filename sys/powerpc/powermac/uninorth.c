@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.25 2010/05/16 15:18:25 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.26 2010/06/06 14:29:06 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -114,6 +114,8 @@ static device_method_t unin_chip_methods[] = {
 	DEVMETHOD(bus_activate_resource, unin_chip_activate_resource),
 	DEVMETHOD(bus_deactivate_resource, unin_chip_deactivate_resource),
 	DEVMETHOD(bus_get_resource_list, unin_chip_get_resource_list),
+
+	DEVMETHOD(bus_child_pnpinfo_str, ofw_bus_gen_child_pnpinfo_str),
 
         /* ofw_bus interface */
 	DEVMETHOD(ofw_bus_get_devinfo,	unin_chip_get_devinfo),

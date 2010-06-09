@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_wakeup.c,v 1.28 2009/11/04 22:39:18 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_wakeup.c,v 1.29 2010/06/05 15:59:59 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -245,7 +245,7 @@ acpi_sleep_machdep(struct acpi_softc *sc, int state)
 	cr3 = rcr3();
 	load_cr3(KPML4phys);
 
-	stopfpu = &stopxpcbs[0]->xpcb_pcb.pcb_save;
+	stopfpu = stopxpcbs[0]->xpcb_pcb.pcb_save;
 	if (acpi_savecpu(stopxpcbs[0])) {
 		fpugetregs(curthread, stopfpu);
 

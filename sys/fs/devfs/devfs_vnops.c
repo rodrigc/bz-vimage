@@ -31,7 +31,7 @@
  *	@(#)kernfs_vnops.c	8.15 (Berkeley) 5/21/95
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vnops.c 1.43
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_vnops.c,v 1.182 2009/12/19 18:42:12 ed Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_vnops.c,v 1.183 2010/06/01 18:57:21 jh Exp $
  */
 
 /*
@@ -457,6 +457,13 @@ devfs_close(struct vop_close_args *ap)
 	struct cdev *dev = vp->v_rdev;
 	struct cdevsw *dsw;
 	int vp_locked, error;
+
+	/*
+	 * XXX: Don't call d_close() if we were called because of
+	 * XXX: insmntque1() failure.
+	 */
+	if (vp->v_data == NULL)
+		return (0);
 
 	/*
 	 * Hack: a tty device that is a controlling terminal

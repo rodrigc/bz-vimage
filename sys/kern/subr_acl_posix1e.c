@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_acl_posix1e.c,v 1.57 2009/12/26 11:36:10 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_acl_posix1e.c,v 1.58 2010/06/03 13:43:58 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -558,7 +558,7 @@ acl_posix1e_check(struct acl *acl)
 	 */
 	num_acl_user_obj = num_acl_user = num_acl_group_obj = num_acl_group =
 	    num_acl_mask = num_acl_other = 0;
-	if (acl->acl_cnt > ACL_MAX_ENTRIES || acl->acl_cnt < 0)
+	if (acl->acl_cnt > ACL_MAX_ENTRIES)
 		return (EINVAL);
 	for (i = 0; i < acl->acl_cnt; i++) {
 		/*

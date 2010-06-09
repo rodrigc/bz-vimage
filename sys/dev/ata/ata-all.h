@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ata/ata-all.h,v 1.153 2010/03/31 07:20:10 mav Exp $
+ * $FreeBSD: src/sys/dev/ata/ata-all.h,v 1.154 2010/06/06 14:09:48 nwhitehorn Exp $
  */
 
 #include "opt_ata.h"
@@ -564,6 +564,7 @@ struct ata_channel {
 #define         ATA_CHECKS_CABLE	0x20
 #define         ATA_NO_ATAPI_DMA	0x40
 #define         ATA_SATA		0x80
+#define         ATA_DMA_BEFORE_CMD	0x100
 
     int				pm_level;	/* power management level */
     int                         devices;        /* what is present */

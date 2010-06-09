@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/zfs/Makefile,v 1.23 2010/05/23 18:43:06 pjd Exp $
+# $FreeBSD: src/sys/modules/zfs/Makefile,v 1.24 2010/06/03 09:29:54 pjd Exp $
 
 KMOD=	zfs
 
@@ -17,7 +17,6 @@ SRCS+=	u8_textprep.c
 
 .PATH:	${.CURDIR}/../../cddl/compat/opensolaris/kern
 SRCS+=	opensolaris_acl.c
-SRCS+=	opensolaris_kmem.c
 SRCS+=	opensolaris_kobj.c
 SRCS+=	opensolaris_kstat.c
 SRCS+=	opensolaris_lookup.c

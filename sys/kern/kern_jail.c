@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.134 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.135 2010/06/04 14:38:24 cperciva Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -3950,7 +3950,7 @@ sysctl_jail_list(SYSCTL_HANDLER_ARGS)
 	int ip4s = 0;
 #endif
 #ifdef INET6
-	struct in_addr *ip6 = NULL;
+	struct in6_addr *ip6 = NULL;
 	int ip6s = 0;
 #endif
 	int descend, error;

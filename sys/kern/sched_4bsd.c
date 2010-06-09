@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.137 2010/05/21 17:15:56 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.138 2010/06/03 16:02:11 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_sched.h"
@@ -1523,6 +1523,7 @@ sched_pctcpu(struct thread *td)
 {
 	struct td_sched *ts;
 
+	THREAD_LOCK_ASSERT(td, MA_OWNED);
 	ts = td->td_sched;
 	return (ts->ts_pctcpu);
 }

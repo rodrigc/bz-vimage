@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fdc/fdc_acpi.c,v 1.14 2009/12/14 22:28:32 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fdc/fdc_acpi.c,v 1.15 2010/05/30 03:45:41 jkim Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -96,6 +96,7 @@ fdc_acpi_attach(device_t dev)
 {
 	struct fdc_data *sc;
 	ACPI_BUFFER buf;
+	ACPI_OBJECT *obj;
 	device_t bus;
 	int error;
 
@@ -131,7 +132,8 @@ fdc_acpi_attach(device_t dev)
 	}
 
 	/* Add fd child devices as specified. */
-	error = fdc_acpi_probe_children(bus, dev, buf.Pointer);
+	obj = buf.Pointer;
+	error = fdc_acpi_probe_children(bus, dev, obj->Buffer.Pointer);
 
 out:
 	if (buf.Pointer)

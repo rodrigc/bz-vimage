@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/sys/boot/zfs/zfs.c,v 1.6 2010/02/18 22:23:30 pjd Exp $
+ *	$FreeBSD: src/sys/boot/zfs/zfs.c,v 1.7 2010/05/31 09:06:03 avg Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/zfs/zfs.c,v 1.6 2010/02/18 22:23:30 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/zfs/zfs.c,v 1.7 2010/05/31 09:06:03 avg Exp $");
 
 /*
  *	Stand-alone file reading package.
@@ -265,6 +265,8 @@ zfs_readdir(struct open_file *f, struct dirent *d)
 
 		rc = dnode_read(spa, &fp->f_dnode,
 				fp->f_seekp, &mze, sizeof(mze));
+		if (rc)
+			return (rc);
 		fp->f_seekp += sizeof(mze);
 
 		if (!mze.mze_name[0])

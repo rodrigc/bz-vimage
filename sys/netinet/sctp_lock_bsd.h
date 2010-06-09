@@ -69,7 +69,7 @@
  * the SCTP_BASE_INFO() list's we will do a SCTP_INP_INFO_WLOCK().
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_lock_bsd.h,v 1.15 2010/05/16 17:03:56 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_lock_bsd.h,v 1.16 2010/06/06 20:34:17 rrs Exp $");
 
 
 extern struct sctp_foo_stuff sctp_logoff[];
@@ -184,6 +184,13 @@ extern int sctp_logoff_stuff;
 
 #define SCTP_INP_LOCK_DESTROY(_inp) \
 	mtx_destroy(&(_inp)->inp_mtx)
+
+#define SCTP_INP_LOCK_CONTENDED(_inp) ((_inp)->inp_mtx.mtx_lock & MTX_CONTESTED)
+
+#define SCTP_INP_READ_CONTENDED(_inp) ((_inp)->inp_rdata_mtx.mtx_lock & MTX_CONTESTED)
+
+#define SCTP_ASOC_CREATE_LOCK_CONTENDED(_inp) ((_inp)->inp_create_mtx.mtx_lock & MTX_CONTESTED)
+
 
 #define SCTP_ASOC_CREATE_LOCK_DESTROY(_inp) \
 	mtx_destroy(&(_inp)->inp_create_mtx)

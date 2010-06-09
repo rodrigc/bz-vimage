@@ -31,7 +31,7 @@
 /* $KAME: sctp_pcb.h,v 1.21 2005/07/16 01:18:47 suz Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_pcb.h,v 1.45 2010/05/16 17:03:56 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_pcb.h,v 1.46 2010/06/05 21:20:28 rrs Exp $");
 
 #ifndef __sctp_pcb_h__
 #define __sctp_pcb_h__
@@ -620,6 +620,12 @@ sctp_initiate_iterator(inp_func inpf,
     end_func ef,
     struct sctp_inpcb *,
     uint8_t co_off);
+
+#ifdef INVARIANTS
+void
+     sctp_validate_no_locks(struct sctp_inpcb *inp);
+
+#endif
 
 #endif				/* _KERNEL */
 #endif				/* !__sctp_pcb_h__ */

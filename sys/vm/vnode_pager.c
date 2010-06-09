@@ -51,7 +51,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vnode_pager.c,v 1.263 2010/05/26 18:00:44 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vnode_pager.c,v 1.264 2010/06/02 15:46:37 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -429,9 +429,7 @@ vnode_pager_setsize(vp, nsize)
 			 * bits.  This would prevent bogus_page
 			 * replacement from working properly.
 			 */
-			vm_page_lock_queues();
 			vm_page_clear_dirty(m, base, PAGE_SIZE - base);
-			vm_page_unlock_queues();
 		} else if ((nsize & PAGE_MASK) &&
 		    __predict_false(object->cache != NULL)) {
 			vm_page_cache_free(object, OFF_TO_IDX(nsize),

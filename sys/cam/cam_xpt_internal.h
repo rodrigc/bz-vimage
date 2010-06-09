@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cam/cam_xpt_internal.h,v 1.7 2010/02/22 19:17:17 mav Exp $
+ * $FreeBSD: src/sys/cam/cam_xpt_internal.h,v 1.8 2010/06/08 16:17:25 mjacob Exp $
  */
 
 #ifndef _CAM_CAM_XPT_INTERNAL_H
@@ -135,6 +135,8 @@ struct cam_et {
 	u_int32_t	refcount;
 	u_int		generation;
 	struct		timeval last_reset;
+	u_int		rpl_size;
+	struct scsi_report_luns_data *luns;
 };
 
 /*

@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net/vnet.h,v 1.31 2010/04/14 23:06:07 julian Exp $
+ * $FreeBSD: src/sys/net/vnet.h,v 1.32 2010/06/02 15:29:21 zec Exp $
  */
 
 /*-
@@ -246,6 +246,10 @@ do {									\
 #define	SYSCTL_VNET_INT(parent, nbr, name, access, ptr, val, descr)	\
 	VIMAGE_SYSCTL_INT(parent, nbr, name, access, ptr, val, descr,	\
 	    CTLFLAG_VNET)
+#define	SYSCTL_VNET_OPAQUE(parent, nbr, name, access, ptr, len, fmt,    \
+	    descr)							\
+	VIMAGE_SYSCTL_OPAQUE(parent, nbr, name, access, ptr, len, fmt,	\
+	    descr, CTLFLAG_VNET)
 #define	SYSCTL_VNET_PROC(parent, nbr, name, access, ptr, arg, handler,	\
 	    fmt, descr)							\
 	VIMAGE_SYSCTL_PROC(parent, nbr, name, access, ptr, arg,	handler,\

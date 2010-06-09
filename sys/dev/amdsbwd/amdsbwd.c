@@ -43,7 +43,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/amdsbwd/amdsbwd.c,v 1.1 2009/11/30 11:44:03 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/amdsbwd/amdsbwd.c,v 1.2 2010/05/31 09:07:23 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -230,10 +230,10 @@ amdsbwd_event(void *arg, unsigned int cmd, int *error)
 	cmd &= WD_INTERVAL;
 	if (cmd < WD_TO_1SEC)
 		cmd = 0;
-	timeout = ((uint64_t)1 << (cmd - WD_TO_1MS)) / sc->ms_per_tick;
-	if (timeout > sc->max_ticks)
-		timeout = sc->max_ticks;
 	if (cmd) {
+		timeout = ((uint64_t)1 << (cmd - WD_TO_1MS)) / sc->ms_per_tick;
+		if (timeout > sc->max_ticks)
+			timeout = sc->max_ticks;
 		if (timeout != sc->timeout) {
 			amdsbwd_tmr_set(sc, timeout);
 			if (!sc->active)

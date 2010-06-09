@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_bus.c,v 1.240 2010/04/20 20:39:42 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_bus.c,v 1.241 2010/06/07 18:47:53 mav Exp $");
 
 #include "opt_bus.h"
 
@@ -1166,6 +1166,9 @@ devclass_delete_driver(devclass_t busclass, driver_t *driver)
 				if ((error = device_detach(dev)) != 0)
 					return (error);
 				device_set_driver(dev, NULL);
+				BUS_PROBE_NOMATCH(dev->parent, dev);
+				devnomatch(dev);
+				dev->flags |= DF_DONENOMATCH;
 			}
 		}
 	}
@@ -2660,6 +2663,7 @@ device_attach(device_t dev)
 	}
 	device_sysctl_update(dev);
 	dev->state = DS_ATTACHED;
+	dev->flags &= ~DF_DONENOMATCH;
 	devadded(dev);
 	return (0);
 }

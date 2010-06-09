@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mvs/mvs.c,v 1.3 2010/05/21 17:26:16 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mvs/mvs.c,v 1.4 2010/06/05 08:21:18 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -1727,6 +1727,7 @@ mvs_issue_read_log(device_t dev)
 	ataio = &ccb->ataio;
 	ataio->data_ptr = malloc(512, M_MVS, M_NOWAIT);
 	if (ataio->data_ptr == NULL) {
+		xpt_free_ccb(ccb);
 		device_printf(dev, "Unable allocate memory for READ LOG command");
 		return; /* XXX */
 	}

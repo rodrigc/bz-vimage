@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.783 2010/05/12 21:24:46 zml Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.784 2010/06/03 10:20:08 kib Exp $");
 
 #include "opt_ddb.h"
 
@@ -3793,9 +3793,10 @@ vop_rename_pre(void *ap)
 	ASSERT_VI_UNLOCKED(a->a_fdvp, "VOP_RENAME");
 
 	/* Check the source (from). */
-	if (a->a_tdvp != a->a_fdvp && a->a_tvp != a->a_fdvp)
+	if (a->a_tdvp->v_vnlock != a->a_fdvp->v_vnlock &&
+	    (a->a_tvp == NULL || a->a_tvp->v_vnlock != a->a_fdvp->v_vnlock))
 		ASSERT_VOP_UNLOCKED(a->a_fdvp, "vop_rename: fdvp locked");
-	if (a->a_tvp != a->a_fvp)
+	if (a->a_tvp == NULL || a->a_tvp->v_vnlock != a->a_fvp->v_vnlock)
 		ASSERT_VOP_UNLOCKED(a->a_fvp, "vop_rename: fvp locked");
 
 	/* Check the target. */

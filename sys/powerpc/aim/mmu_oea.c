@@ -91,7 +91,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.140 2010/05/26 18:00:44 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.142 2010/06/05 18:24:41 nwhitehorn Exp $");
 
 /*
  * Manages physical address maps.
@@ -1140,7 +1140,8 @@ moea_enter_locked(pmap_t pmap, vm_offset_t va, vm_page_t m, vm_prot_t prot,
 
 	if (prot & VM_PROT_WRITE) {
 		pte_lo |= PTE_BW;
-		if (pmap_bootstrapped)
+		if (pmap_bootstrapped &&
+		    (m->flags & (PG_FICTITIOUS | PG_UNMANAGED)) == 0)
 			vm_page_flag_set(m, PG_WRITEABLE);
 	} else
 		pte_lo |= PTE_BR;
@@ -1785,7 +1786,7 @@ moea_remove_all(mmu_t mmu, vm_page_t m)
 		PMAP_UNLOCK(pmap);
 	}
 	if ((m->flags & PG_WRITEABLE) && moea_is_modified(mmu, m)) {
-		moea_attr_clear(m, LPTE_CHG);
+		moea_attr_clear(m, PTE_CHG);
 		vm_page_dirty(m);
 	}
 	vm_page_flag_clear(m, PG_WRITEABLE);
