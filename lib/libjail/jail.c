@@ -923,33 +923,33 @@ _jail_get_kvm(struct iovec *iovp, unsigned int iovcnt, int flags,
 
 	static struct nlist nl[] = {
 #define	NLIST_ALLPRISON			0
-		{ .n_name = __DECONST(char *, "_allprison") },
+		{ .n_name = "_allprison" },
 #define NLIST_ALLPROC			1
-		{ .n_name = __DECONST(char *, "allproc") },
+		{ .n_name = "allproc" },
 #define NLIST_DUMPTID			2
-		{ .n_name = __DECONST(char *, "dumptid") },
+		{ .n_name = "dumptid" },
 #define NLIST_PROC0			3
-		{ .n_name = __DECONST(char *, "proc0") },
+		{ .n_name = "proc0" },
 #define NLIST_PR_FLAG_NAMES		4
-		{ .n_name = __DECONST(char *, "pr_flag_names") },
+		{ .n_name = "pr_flag_names" },
 #define NLIST_PR_FLAG_NAMES_SIZE	5
-		{ .n_name = __DECONST(char *, "pr_flag_names_size") },
+		{ .n_name = "pr_flag_names_size" },
 #define NLIST_PR_FLAG_NONAMES		6
-		{ .n_name = __DECONST(char *, "pr_flag_nonames") },
+		{ .n_name = "pr_flag_nonames" },
 #define NLIST_PR_FLAG_NONAMES_SIZE	7
-		{ .n_name = __DECONST(char *, "pr_flag_nonames_size") },
+		{ .n_name = "pr_flag_nonames_size" },
 #define NLIST_PR_FLAG_JAILSYS		8
-		{ .n_name = __DECONST(char *, "pr_flag_jailsys") },
+		{ .n_name = "pr_flag_jailsys" },
 #define NLIST_PR_FLAG_JAILSYS_SIZE	9
-		{ .n_name = __DECONST(char *, "pr_flag_jailsys_size") },
+		{ .n_name = "pr_flag_jailsys_size" },
 #define NLIST_PR_ALLOW_NAMES		10
-		{ .n_name = __DECONST(char *, "pr_allow_names") },
+		{ .n_name = "pr_allow_names" },
 #define NLIST_PR_ALLOW_NAMES_SIZE	11
-		{ .n_name = __DECONST(char *, "pr_allow_names_size") },
+		{ .n_name = "pr_allow_names_size" },
 #define NLIST_PR_ALLOW_NONAMES		12
-		{ .n_name = __DECONST(char *, "pr_allow_nonames") },
+		{ .n_name = "pr_allow_nonames" },
 #define NLIST_PR_ALLOW_NONAMES_SIZE	13
-		{ .n_name = __DECONST(char *, "pr_allow_nonames_size") },
+		{ .n_name = "pr_allow_nonames_size" },
 		{ .n_name = NULL },
 	};
 
