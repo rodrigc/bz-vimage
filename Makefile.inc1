@@ -733,6 +733,10 @@ INSTALLKERNEL= ${_kernel}
 # Builds all kernels defined by BUILDKERNELS.
 #
 buildkernel:
+	${_+_}cd ${.CURDIR}; \
+	    ${MAKE} -f Makefile.inc1 ${.MAKEFLAGS} WITH_CTF=yes _buildkernel
+
+_buildkernel:
 .if empty(BUILDKERNELS)
 	@echo "ERROR: Missing kernel configuration file(s) (${KERNCONF})."; \
 	false
@@ -812,7 +816,11 @@ buildkernel:
 #
 # Install the kernel defined by INSTALLKERNEL
 #
-installkernel installkernel.debug \
+installkernel:
+	${_+_}cd ${.CURDIR}; \
+	    ${MAKE} -f Makefile.inc1 ${.MAKEFLAGS} WITH_CTF=yes _installkernel
+
+_installkernel installkernel.debug \
 reinstallkernel reinstallkernel.debug: installcheck
 .if empty(INSTALLKERNEL)
 	@echo "ERROR: No kernel \"${KERNCONF}\" to install."; \
@@ -823,7 +831,7 @@ reinstallkernel reinstallkernel.debug: installcheck
 	@echo "--------------------------------------------------------------"
 	cd ${KRNLOBJDIR}/${INSTALLKERNEL}; \
 	    ${CROSSENV} PATH=${TMPPATH} \
-	    ${MAKE} KERNEL=${INSTKERNNAME} ${.TARGET:S/kernel//}
+	    ${MAKE} KERNEL=${INSTKERNNAME} ${.TARGET:S/kernel//:S/^_//}
 
 #
 # doxygen

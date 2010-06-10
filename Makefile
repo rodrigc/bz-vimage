@@ -79,11 +79,13 @@
 # For more information, see the build(7) manual page.
 #
 TGTS=	all all-man buildenv buildenvvars buildkernel buildworld \
+	_buildkernel \
 	check-old check-old-dirs check-old-files check-old-libs \
 	checkdpadd clean cleandepend cleandir \
 	delete-old delete-old-dirs delete-old-files delete-old-libs \
 	depend distribute distributeworld distrib-dirs distribution doxygen \
 	everything hierarchy install installcheck installkernel \
+	_installkernel \
 	installkernel.debug reinstallkernel reinstallkernel.debug \
 	installworld kernel-toolchain libraries lint maninstall \
 	obj objlink regress rerelease showconfig tags toolchain update \
@@ -99,7 +101,9 @@ TGTS+=	${BITGTS}
 .ORDER: buildworld installworld
 .ORDER: buildworld distributeworld
 .ORDER: buildworld buildkernel
+.ORDER: buildworld _buildkernel
 .ORDER: buildkernel installkernel
+.ORDER: buildkernel _installkernel
 .ORDER: buildkernel installkernel.debug
 .ORDER: buildkernel reinstallkernel
 .ORDER: buildkernel reinstallkernel.debug
