@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/18/93
-# $FreeBSD: src/share/man/man4/Makefile,v 1.479 2010/05/25 21:20:56 glebius Exp $
+# $FreeBSD: src/share/man/man4/Makefile,v 1.480 2010/06/09 12:25:57 ae Exp $
 
 MAN=	aac.4 \
 	acpi.4 \
@@ -274,6 +274,7 @@ MAN=	aac.4 \
 	ng_nat.4 \
 	ng_netflow.4 \
 	ng_one2many.4 \
+	ng_patch.4 \
 	ng_ppp.4 \
 	ng_pppoe.4 \
 	ng_pptpgre.4 \

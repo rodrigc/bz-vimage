@@ -25,7 +25,7 @@
  *
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vfsops.c 1.36
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.61 2010/05/06 19:22:50 kib Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.62 2010/06/09 15:29:12 jh Exp $
  */
 
 #include <sys/param.h>
@@ -195,6 +195,26 @@ devfs_newdirent(char *name, int namelen)
 	mac_devfs_init(de);
 #endif
 	return (de);
+}
+
+struct devfs_dirent *
+devfs_parent_dirent(struct devfs_dirent *de)
+{
+
+	if (de->de_dirent->d_type != DT_DIR)
+		return (de->de_dir);
+
+	if (de->de_flags & (DE_DOT | DE_DOTDOT))
+		return (NULL);
+
+	de = TAILQ_FIRST(&de->de_dlist);	/* "." */
+	if (de == NULL)
+		return (NULL);
+	de = TAILQ_NEXT(de, de_list);		/* ".." */
+	if (de == NULL)
+		return (NULL);
+
+	return (de->de_dir);
 }
 
 struct devfs_dirent *

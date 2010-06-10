@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/Makefile,v 1.247 2010/05/10 06:59:50 mm Exp $
+# $FreeBSD: src/lib/Makefile,v 1.248 2010/06/09 19:57:20 rdivacky Exp $
 
 .include <bsd.own.mk>
 
@@ -108,7 +108,8 @@ SUBDIR=	${SUBDIR_ORDERED} \
 	libwrap \
 	liby \
 	libz \
-	${_bind}
+	${_bind} \
+	${_clang}
 
 .if exists(${.CURDIR}/csu/${MACHINE_ARCH}-elf)
 _csu=csu/${MACHINE_ARCH}-elf
@@ -135,6 +136,10 @@ _libsdp=	libsdp
 
 .if ${MK_BSNMP} != "no"
 _libbsnmp=	libbsnmp
+.endif
+
+.if ${MK_CLANG} != "no"
+_clang=		clang
 .endif
 
 .if ${MK_GPIB} != "no"

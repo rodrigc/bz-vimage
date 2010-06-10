@@ -33,7 +33,7 @@
  *	@(#)kernfs.h	8.6 (Berkeley) 3/29/95
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs.h 1.14
  *
- * $FreeBSD: src/sys/fs/devfs/devfs.h,v 1.32 2009/05/11 15:33:26 attilio Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs.h,v 1.33 2010/06/09 15:29:12 jh Exp $
  */
 
 #ifndef _FS_DEVFS_DEVFS_H_
@@ -180,6 +180,7 @@ void devfs_populate (struct devfs_mount *dm);
 void devfs_cleanup (struct devfs_mount *dm);
 void devfs_unmount_final(struct devfs_mount *mp);
 struct devfs_dirent *devfs_newdirent (char *name, int namelen);
+struct devfs_dirent *devfs_parent_dirent(struct devfs_dirent *de);
 struct devfs_dirent *devfs_vmkdir (struct devfs_mount *, char *name, int namelen, struct devfs_dirent *dotdot, u_int inode);
 struct devfs_dirent *devfs_find (struct devfs_dirent *dd, const char *name, int namelen);
 

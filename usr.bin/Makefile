@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	8.3 (Berkeley) 1/7/94
-# $FreeBSD: src/usr.bin/Makefile,v 1.334 2010/05/19 23:56:26 jkim Exp $
+# $FreeBSD: src/usr.bin/Makefile,v 1.335 2010/06/09 19:57:20 rdivacky Exp $
 
 .include <bsd.own.mk>
 
@@ -35,6 +35,7 @@ SUBDIR=	alias \
 	${_chkey} \
 	chpass \
 	cksum \
+	${_clang} \
 	cmp \
 	col \
 	${_colcrt} \
@@ -277,6 +278,10 @@ _cpio=		cpio
 
 .if ${MK_CALENDAR} != "no"
 _calendar=	calendar
+.endif
+
+.if ${MK_CLANG} != "no"
+_clang=		clang
 .endif
 
 .if ${MK_HESIOD} != "no"

@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.own.mk,v 1.86 2010/05/26 09:23:51 raj Exp $
+# $FreeBSD: src/share/mk/bsd.own.mk,v 1.87 2010/06/09 19:57:20 rdivacky Exp $
 #
 # The include file <bsd.own.mk> set common variables for owner,
 # group, mode, and directories. Defaults are in brackets.
@@ -288,6 +288,18 @@ _no_fdt= FDT
 .endif
 
 #
+# Default behaviour of MK_CLANG depends on the architecture.
+#
+.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386" || \
+    ${MACHINE_ARCH} == "powerpc"
+_clang_yes=CLANG
+_clang_no=
+.else
+_clang_yes=
+_clang_no=CLANG
+.endif
+
+#
 # MK_* options which default to "yes".
 #
 .for var in \
@@ -314,6 +326,7 @@ _no_fdt= FDT
     BZIP2 \
     CALENDAR \
     CDDL \
+    ${_clang_yes} \
     CPP \
     CRYPT \
     CTM \
@@ -417,6 +430,7 @@ MK_${var}:=	yes
     BIND_LIBS \
     BIND_SIGCHASE \
     BIND_XML \
+    ${_clang_no} \
     ${_no_fdt} \
     HESIOD \
     IDEA
@@ -497,6 +511,7 @@ MK_GROFF:=	no
 .endif
 
 .if ${MK_TOOLCHAIN} == "no"
+MK_CLANG:=	no
 MK_GDB:=	no
 .endif
 

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/calendar/locale.c,v 1.4 2010/06/05 11:41:46 edwin Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/calendar/locale.c,v 1.5 2010/06/09 10:36:25 edwin Exp $");
 
 #include <ctype.h>
 #include <err.h>
@@ -76,7 +76,7 @@ setnnames(void)
 	int i, l;
 	struct tm tm;
 
-	memset(&tm, sizeof(struct tm), 0);
+	memset(&tm, '\0', sizeof(struct tm));
 	for (i = 0; i < 7; i++) {
 		tm.tm_wday = i;
 		strftime(buf, sizeof(buf), "%a", &tm);
@@ -104,7 +104,7 @@ setnnames(void)
 		fndays[i].len = strlen(buf);
 	}
 
-	memset(&tm, sizeof(struct tm), 0);
+	memset(&tm, '\0', sizeof(struct tm));
 	for (i = 0; i < 12; i++) {
 		tm.tm_mon = i;
 		strftime(buf, sizeof(buf), "%b", &tm);

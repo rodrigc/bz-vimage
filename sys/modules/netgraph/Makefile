@@ -1,5 +1,5 @@
 # $Whistle: Makefile,v 1.5 1999/01/24 06:48:37 archie Exp $
-# $FreeBSD: src/sys/modules/netgraph/Makefile,v 1.54 2009/06/23 06:11:04 zec Exp $
+# $FreeBSD: src/sys/modules/netgraph/Makefile,v 1.55 2010/06/09 12:25:57 ae Exp $
 
 .include <bsd.own.mk>
 
@@ -35,6 +35,7 @@ SUBDIR=	async \
 	netflow \
 	netgraph \
 	one2many \
+	patch \
 	pipe \
 	ppp \
 	pppoe \

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.267 2010/06/03 16:02:11 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.269 2010/06/10 11:48:14 ivoras Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -2661,9 +2661,11 @@ sysctl_kern_sched_topology_spec_internal(struct sbuf *sb, struct cpu_group *cg,
 	sbuf_printf(sb, "%*s <flags>", indent, "");
 	if (cg->cg_flags != 0) {
 		if ((cg->cg_flags & CG_FLAG_HTT) != 0)
-			sbuf_printf(sb, "<flag name=\"HTT\">HTT group</flag>\n");
+			sbuf_printf(sb, "<flag name=\"HTT\">HTT group</flag>");
+		if ((cg->cg_flags & CG_FLAG_THREAD) != 0)
+			sbuf_printf(sb, "<flag name=\"THREAD\">THREAD group</flag>");
 		if ((cg->cg_flags & CG_FLAG_SMT) != 0)
-			sbuf_printf(sb, "<flag name=\"THREAD\">SMT group</flag>\n");
+			sbuf_printf(sb, "<flag name=\"SMT\">SMT group</flag>");
 	}
 	sbuf_printf(sb, "</flags>\n");
 

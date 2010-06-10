@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/mtree/BSD.include.dist,v 1.136 2010/05/12 19:59:32 obrien Exp $
+# $FreeBSD: src/etc/mtree/BSD.include.dist,v 1.137 2010/06/09 19:57:20 rdivacky Exp $
 #
 # Please see the file src/etc/mtree/README before making changes to this file.
 #
@@ -81,6 +81,10 @@
         ata
         ..
         scsi
+        ..
+    ..
+    clang
+        2.0
         ..
     ..
     crypto
