@@ -33,6 +33,7 @@ __FBSDID("$FreeBSD: src/lib/libkvm/kvm_vnet.c,v 1.4 2010/02/27 21:58:55 rwatson 
 #define	_WANT_PRISON
 #define	_WANT_UCRED
 #define	_WANT_VNET
+#define	_WANT_VIMAGE
 
 #include <sys/_lock.h>
 #include <sys/_mutex.h>
@@ -193,6 +194,12 @@ _kvm_vnet_selectpid(kvm_t *kd, pid_t pid)
 	kd->vnet_current = (uintptr_t)prison.pr_vnet;
 	kd->vnet_base = vnet.v.v_data_base;
 	return (0);
+#undef	NLIST_START_VNET
+#undef	NLIST_STOP_VNET
+#undef	NLIST_VNET_DATA
+#undef	NLIST_ALLPROC
+#undef	NLIST_DUMPTID
+#undef	NLIST_PROC0
 }
 
 TAILQ_HEAD(prisonlist, prison);
@@ -211,8 +218,10 @@ _kvm_vnet_selectjid(kvm_t *kd, int jid)
 		{ .n_name = "___start_" VNET_SETNAME },
 #define	NLIST_STOP_VNET		1
 		{ .n_name = "___stop_" VNET_SETNAME },
-#define	NLIST_VNET_DATA		3
+#define	NLIST_VNET_DATA		2
 		{ .n_name = "vnet_data" },
+#define	NLIST_ALLPROC		3
+		{ .n_name = "allproc" },
 #define	NLIST_ALLPRISON		4
 		{ .n_name = "allprison" },
 		{ .n_name = NULL },
@@ -277,6 +286,10 @@ _kvm_vnet_selectjid(kvm_t *kd, int jid)
 	kd->vnet_current = (uintptr_t)pr.pr_vnet;
 	kd->vnet_base = vnet.v.v_data_base;
 	return (0);
+#undef	NLIST_START_VNET
+#undef	NLIST_STOP_VNET
+#undef	NLIST_VNET_DATA
+#undef	NLIST_ALLPRISON
 }
 
 /*
