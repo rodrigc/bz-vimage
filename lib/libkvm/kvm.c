@@ -43,6 +43,7 @@ static char sccsid[] = "@(#)kvm.c	8.2 (Berkeley) 2/13/94";
 #include <sys/param.h>
 
 #define	_WANT_VNET
+#define	_WANT_VIMAGE
 
 #include <sys/user.h>
 #include <sys/proc.h>
@@ -315,6 +316,7 @@ kvm_fdnlist_prefix(kvm_t *kd, struct nlist *nl, int missing, const char *prefix,
 {
 	struct nlist *n, *np, *p;
 	char *cp, *ce;
+	const char *ccp;
 	size_t len;
 	int unresolved;
 
@@ -384,8 +386,8 @@ kvm_fdnlist_prefix(kvm_t *kd, struct nlist *nl, int missing, const char *prefix,
 			if (p->n_type != N_UNDF)
 				continue;
 			/* Skip expanded name and compare to orig. one. */
-			cp = np->n_name + strlen(np->n_name) + 1;
-			if (strcmp(cp, p->n_name))
+			ccp = np->n_name + strlen(np->n_name) + 1;
+			if (strcmp(ccp, p->n_name))
 				continue;
 			/* Update nlist with new, translated results. */
 			p->n_type = np->n_type;
