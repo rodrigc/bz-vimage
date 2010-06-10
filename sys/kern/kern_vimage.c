@@ -55,6 +55,7 @@ __FBSDID("$FreeBSD$");
 
 #ifdef DDB
 #include <ddb/ddb.h>
+#include <ddb/db_lex.h>
 #include <ddb/db_sym.h>
 #include <ddb/db_variables.h>
 #endif
@@ -938,7 +939,9 @@ vimage_log_recursion(struct vimage_subsys *vse,
 
 	vimage_print_recursion(vse, vr, 0);
 #ifdef KDB
+#if 0
 	kdb_backtrace();
+#endif
 #endif
 }
 #endif
@@ -947,33 +950,87 @@ vimage_log_recursion(struct vimage_subsys *vse,
 /*
  * Interactive kernel debugger (ddb) commands.
  */
+static struct vimage_subsys *
+db_get_vse(db_expr_t addr, boolean_t have_addr, db_expr_t count, char *modif)
+{
+	struct vimage_subsys *vse;
+	int t;
+
+	/*
+	 * Parse like the standard syntax (ignoring count).
+	 * command [/modifier] [addr] [,count]
+	 */
+	t = db_read_token();
+	if (t == tSLASH) {
+		t = db_read_token();
+		if (t != tIDENT) {
+			db_flush_lex();
+			return (NULL);
+		}
+	} else {
+		db_unread_token(t);
+		modif[0] = '\0';
+	}
+	t = db_read_token();
+	if (t == tIDENT) {
+		if (db_value_of_name(db_tok_string, &addr) ||
+		    db_value_of_name_pcpu(db_tok_string, &addr) ||
+		    db_value_of_name_vimage(db_tok_string, &addr)) {
+			have_addr = 1;
+		} else {
+			addr = (db_expr_t)db_tok_string;
+		}
+	} else if (t == tNUMBER) {
+		addr = (db_expr_t)db_tok_number;
+		have_addr = 1;
+	} else {
+		db_flush_lex();
+		return (NULL);
+	}
+	db_skip_to_eol();
+	vse = NULL;
+	if (!have_addr) {
+		/* Try to lookup the subsystem by name internally. */
+		LIST_FOREACH(vse, &vimage_subsys_head, vimage_subsys_le) {
+			if (!strcmp(vse->name, (const char *)addr))
+				break;
+		}
+	} else {
+		vse = (struct vimage_subsys *)addr;
+	}
+
+	return (vse);
+}
+
 #ifdef VIMAGE_DEBUG
-DB_SHOW_VIMAGE_COMMAND(recursions, db_show_vimage_recursions)
+DB_SHOW_VIMAGE_COMMAND_FLAGS(recursions, db_show_vimage_recursions, CS_OWN)
 {
 	struct vimage_subsys *vse;
 	struct vimage_recursion *vr;
 
-	if (!have_addr) {
+	vse = db_get_vse(addr, have_addr, count, modif);
+	if (vse == NULL) {
 		db_printf("usage: show vimage recursions "
-		    "<struct vimage_subsys *>\n");
+		    "<struct vimage_subsys *>|subsysname\n");
 		return;
 	}
-	vse = (struct vimage_subsys *)addr;
 
 	SLIST_FOREACH(vr, &vse->v_recursions, vr_le)
 		vimage_print_recursion(vse, vr, 1);
 }
 #endif
 
-DB_SHOW_VIMAGE_COMMAND(vars, db_show_vimage_vars)
+DB_SHOW_VIMAGE_COMMAND_FLAGS(vars, db_show_vimage_vars, CS_OWN)
 {
+	struct vimage_subsys *vse;
 
-	if (!have_addr) {
+	vse = db_get_vse(addr, have_addr, count, modif);
+	if (vse == NULL) {
 		db_printf("usage: show vimage vars "
-		    "<struct vimage_subsys *>\n");
+		    "<struct vimage_subsys *>|subsysname\n");
 		return;
 	}
-	db_lookup_vimage_set_variables((struct vimage_subsys *)addr);
+	db_lookup_vimage_set_variables(vse);
 }
 
 static void
@@ -998,17 +1055,17 @@ db_show_vimage_print_vs(struct vimage_sysinit *vs)
 	    vs->func, (funcname != NULL) ? funcname : "", vs->arg);
 }
 
-DB_SHOW_VIMAGE_COMMAND(sysinit, db_show_vimage_sysinit)
+DB_SHOW_VIMAGE_COMMAND_FLAGS(sysinit, db_show_vimage_sysinit, CS_OWN)
 {
 	struct vimage_subsys *vse;
 	struct vimage_sysinit *vs;
 
-	if (!have_addr) {
+	vse = db_get_vse(addr, have_addr, count, modif);
+	if (vse == NULL) {
 		db_printf("usage: show vimage sysinit "
-		    "<struct vimage_subsys *>\n");
+		    "<struct vimage_subsys *>|subsysname\n");
 		return;
 	}
-	vse = (struct vimage_subsys *)addr;
 
 	db_printf("%s_SYSINIT vs Name(Ptr)\n", vse->NAME);
 	db_printf("  Subsystem  Order\n");
@@ -1020,17 +1077,17 @@ DB_SHOW_VIMAGE_COMMAND(sysinit, db_show_vimage_sysinit)
 	}
 }
 
-DB_SHOW_VIMAGE_COMMAND(sysuninit, db_show_vimage_sysuninit)
+DB_SHOW_VIMAGE_COMMAND_FLAGS(sysuninit, db_show_vimage_sysuninit, CS_OWN)
 {
 	struct vimage_subsys *vse;
 	struct vimage_sysinit *vs;
 
-	if (!have_addr) {
+	vse = db_get_vse(addr, have_addr, count, modif);
+	if (vse == NULL) {
 		db_printf("usage: show vimage sysuninit "
-		    "<struct vimage_subsys *>\n");
+		    "<struct vimage_subsys *>|subsysname\n");
 		return;
 	}
-	vse = (struct vimage_subsys *)addr;
 
 	db_printf("%s_SYSUNINIT vs Name(Ptr)\n", vse->NAME);
 	db_printf("  Subsystem  Order\n");
@@ -1096,15 +1153,18 @@ db_show_vimage_print_subsys(struct vimage_subsys *vse)
 #undef	V_FPTR
 }
 
-DB_SHOW_VIMAGE_COMMAND(subsys, db_show_vimage_subsys)
+DB_SHOW_VIMAGE_COMMAND_FLAGS(subsys, db_show_vimage_subsys, CS_OWN)
 {
+	struct vimage_subsys *vse;
 
-	if (!have_addr) {
-		db_printf("usage: show vimage sysinit "
-		    "<struct vimage_subsys *>\n");
+	vse = db_get_vse(addr, have_addr, count, modif);
+	if (vse == NULL) {
+		db_printf("usage: show vimage subsys "
+		    "<struct vimage_subsys *>|subsysname\n");
 		return;
 	}
-	db_show_vimage_print_subsys((struct vimage_subsys *)addr);
+
+	db_show_vimage_print_subsys(vse);
 }
 
 
