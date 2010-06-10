@@ -57,6 +57,12 @@ __FBSDID("$FreeBSD: src/sys/net/vnet.c,v 1.16 2010/05/14 21:11:58 bz Exp $");
 #include <net/vnet.h>
 
 /*
+ * Import the VIMAGE module data free list malloc accounting type for
+ * vnet_data_init().
+ */
+MALLOC_DECLARE(M_VIMAGE_DATA);
+
+/*
  * This file includes the virtual network stack (VNET) specific implementations
  * for the generic VIMAGE kernel virtualization framework.  This includes:
  * - struct vimage_subsys vnet_data, the definitions of the vnet subsystem,

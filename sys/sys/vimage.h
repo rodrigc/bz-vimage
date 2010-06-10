@@ -38,14 +38,7 @@
 #include <sys/queue.h>
 #include <sys/lock.h>
 #include <sys/rwlock.h>
-#include <sys/malloc.h>
 #include <sys/sx.h>
-
-/*
- * Export the VIMAGE module data free list malloc accounting type as all
- * subsystems will have to handle v_data_init themselves.
- */
-MALLOC_DECLARE(M_VIMAGE_DATA);
 
 /*
  * List of free chunks of memory that can be used by the linker to put the
@@ -414,8 +407,6 @@ SDT_PROBE_DECLARE(vimage, macros, curvimage, restore);
 /*
  * EVENTHANDLER(9) extensions.
  */
-#include <sys/eventhandler.h>
-
 void	vimage_global_eventhandler_iterator_func(void *, ...);
 
 /*
