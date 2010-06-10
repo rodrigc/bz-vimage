@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ipcs/ipc.c,v 1.1 2007/12/25 00:52:24 edwin Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ipcs/ipc.c,v 1.2 2010/06/10 14:19:51 bz Exp $");
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -128,7 +128,7 @@ sysctlgatherstruct(void *addr, size_t size, struct scgs_vector *vecarr)
 void
 kget(int idx, void *addr, size_t size)
 {
-	char *symn;			/* symbol name */
+	const char *symn;		/* symbol name */
 	size_t tsiz;
 	int rv;
 	unsigned long kaddr;
