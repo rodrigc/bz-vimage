@@ -3637,7 +3637,7 @@ ixgbe_setup_receive_ring(struct rx_ring *rxr)
 			goto skip_head;
 
 		/* First the header */
-		rxbuf->m_head = m_gethdr(M_WAITOK, MT_DATA);
+		rxbuf->m_head = m_gethdr(M_DONTWAIT, MT_DATA);
 		if (rxbuf->m_head == NULL) {
 			error = ENOBUFS;
 			goto fail;
@@ -3659,7 +3659,7 @@ ixgbe_setup_receive_ring(struct rx_ring *rxr)
 
 skip_head:
 		/* Now the payload cluster */
-		rxbuf->m_pack = m_getjcl(M_WAITOK, MT_DATA,
+		rxbuf->m_pack = m_getjcl(M_DONTWAIT, MT_DATA,
 		    M_PKTHDR, adapter->rx_mbuf_sz);
 		if (rxbuf->m_pack == NULL) {
 			error = ENOBUFS;
