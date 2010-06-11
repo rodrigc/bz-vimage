@@ -3549,7 +3549,7 @@ DB_SHOW_COMMAND_FLAGS(ifnet, db_show_ifnet, CS_OWN)
 
 	ifp = db_get_ifp(addr, have_addr, count, modif);
 	if (ifp == NULL) {
-		db_printf("usage: show ifnet <struct ifnet *>\n");
+		db_printf("usage: show ifnet <struct ifnet *>|if_xname\n");
 		return;
 	}
 
