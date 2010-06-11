@@ -65,6 +65,9 @@
 
 #ifdef DDB
 #include <ddb/ddb.h>
+#include <ddb/db_lex.h>
+#include <ddb/db_sym.h>
+#include <ddb/db_variables.h>
 #endif
 
 #include <net/if.h>
@@ -3455,15 +3458,102 @@ if_show_ifnet(struct ifnet *ifp)
 #undef IF_DB_PRINTF
 }
 
-DB_SHOW_COMMAND(ifnet, db_show_ifnet)
+static struct ifnet *
+db_get_ifp(db_expr_t addr, boolean_t have_addr, db_expr_t count, char *modif)
 {
+	struct ifnet *ifp;
+#ifdef VIMAGE
+	struct vnet *vnet;
+	db_expr_t value;
+#endif
+	u_short idx;
+	int t;
 
+	/*
+	 * Parse like the standard syntax (ignoring count).
+	 * command [/modifier] [addr] [,count]
+	 */
+	t = db_read_token();
+	if (t == tSLASH) {
+		t = db_read_token();
+		if (t != tIDENT) {
+			db_flush_lex();
+			return (NULL);
+		}
+	} else {
+		db_unread_token(t);
+		modif[0] = '\0';
+	}
+	t = db_read_token();
+	if (t == tIDENT) {
+		if (db_value_of_name(db_tok_string, &addr) ||
+		    db_value_of_name_pcpu(db_tok_string, &addr) ||
+		    db_value_of_name_vimage(db_tok_string, &addr)) {
+			have_addr = 1;
+		} else {
+			addr = (db_expr_t)db_tok_string;
+		}
+	} else if (t == tNUMBER) {
+		addr = (db_expr_t)db_tok_number;
+		have_addr = 1;
+	} else {
+		db_flush_lex();
+		return (NULL);
+	}
+	db_skip_to_eol();
+	ifp = NULL;
 	if (!have_addr) {
+		/* Try to lookup the interface by name (on the right vnet). */
+#ifdef VIMAGE
+		value = 0;
+		do {
+			if (db_get_variable_s("$db_vnet", &value) &&
+			    value != 0)
+				break;
+			if (db_get_variable_s("$curvnet", &value) &&
+			    value != 0)
+				break;
+			/*
+			 * We could iterate over all vnets but in that case
+			 * people should use show all ifnets.
+			 * XXX-BZ would do that if I could return all vnet|ifp.
+			 * For now do not fail but use vnet0.
+			 */
+			db_printf("Neither $db_vnet nor $curvnet set. "
+			    "Using vnet0.\n");
+			value = (db_expr_t)vnet0;
+		} while (0);
+		vnet = (struct vnet *)value;
+#endif
+		CURVNET_SET_QUIET(vnet);
+		for (idx = 1; idx <= V_if_index; idx++) {
+			ifp = V_ifindex_table[idx].ife_ifnet;
+			if (ifp == NULL)
+				continue;
+			if (!strcmp(ifp->if_xname, (const char *)addr))
+				goto found;
+		}
+		ifp = NULL;
+found:
+		CURVNET_RESTORE();
+	} else {
+		ifp = (struct ifnet *)addr;
+	}
+
+	return (ifp);
+}
+
+DB_SHOW_COMMAND_FLAGS(ifnet, db_show_ifnet, CS_OWN)
+{
+	struct ifnet *ifp;
+
+	ifp = db_get_ifp(addr, have_addr, count, modif);
+	if (ifp == NULL) {
 		db_printf("usage: show ifnet <struct ifnet *>\n");
 		return;
 	}
 
-	if_show_ifnet((struct ifnet *)addr);
+	if_show_ifnet(ifp);
 }
 
 DB_SHOW_ALL_COMMAND(ifnets, db_show_all_ifnets)
