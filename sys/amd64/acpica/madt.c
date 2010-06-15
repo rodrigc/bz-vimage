@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/acpica/madt.c,v 1.29 2009/09/23 15:42:35 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/acpica/madt.c,v 1.30 2010/06/11 18:46:34 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -557,9 +557,7 @@ madt_set_ids(void *dummy)
 
 	if (madt == NULL)
 		return;
-	for (i = 0; i < MAXCPU; i++) {
-		if (CPU_ABSENT(i))
-			continue;
+	CPU_FOREACH(i) {
 		pc = pcpu_find(i);
 		KASSERT(pc != NULL, ("no pcpu data for CPU %u", i));
 		la = &lapics[pc->pc_apic_id];

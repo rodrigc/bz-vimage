@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/i386/intr_machdep.c,v 1.43 2009/10/16 12:00:59 kib Exp $
+ * $FreeBSD: src/sys/i386/i386/intr_machdep.c,v 1.44 2010/06/14 07:38:53 mav Exp $
  */
 
 /*
@@ -502,7 +502,7 @@ intr_shuffle_irqs(void *arg __unused)
 			 */
 			if (isrc->is_event->ie_cpu != NOCPU)
 				(void)isrc->is_pic->pic_assign_cpu(isrc,
-				    isrc->is_event->ie_cpu);
+				    cpu_apic_ids[isrc->is_event->ie_cpu]);
 			else if (isrc->is_pic->pic_assign_cpu(isrc,
 				cpu_apic_ids[current_cpu]) == 0)
 				(void)intr_next_cpu();

@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.5 2010/03/06 21:22:28 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.6 2010/06/11 18:46:34 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -188,10 +188,7 @@ epair_dpcpu_init(void)
 	struct eid_list *s;
 	u_int cpuid;
 
-	for (cpuid = 0; cpuid <= mp_maxid; cpuid++) {
-		if (CPU_ABSENT(cpuid))
-			continue;
-
+	CPU_FOREACH(cpuid) {
 		epair_dpcpu = DPCPU_ID_PTR(cpuid, epair_dpcpu);
 
 		/* Initialize per-cpu lock. */
@@ -216,10 +213,7 @@ epair_dpcpu_detach(void)
 	struct epair_dpcpu *epair_dpcpu;
 	u_int cpuid;
 
-	for (cpuid = 0; cpuid <= mp_maxid; cpuid++) {
-		if (CPU_ABSENT(cpuid))
-			continue;
-
+	CPU_FOREACH(cpuid) {
 		epair_dpcpu = DPCPU_ID_PTR(cpuid, epair_dpcpu);
 
 		/* Destroy per-cpu lock. */
@@ -329,10 +323,7 @@ epair_remove_ifp_from_draining(struct ifnet *ifp)
 	struct epair_ifp_drain *elm, *tvar;
 	u_int cpuid;
 
-	for (cpuid = 0; cpuid <= mp_maxid; cpuid++) {
-		if (CPU_ABSENT(cpuid))
-			continue;
-
+	CPU_FOREACH(cpuid) {
 		epair_dpcpu = DPCPU_ID_PTR(cpuid, epair_dpcpu);
 		EPAIR_LOCK(epair_dpcpu);
 		STAILQ_FOREACH_SAFE(elm, &epair_dpcpu->epair_ifp_drain_list,

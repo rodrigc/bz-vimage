@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libmemstat/memstat_internal.h,v 1.6 2005/08/01 13:18:21 rwatson Exp $
+ * $FreeBSD: src/lib/libmemstat/memstat_internal.h,v 1.7 2010/06/15 19:28:37 sbruno Exp $
  */
 
 #ifndef _MEMSTAT_INTERNAL_H_
@@ -65,6 +65,7 @@ struct memory_type {
 	uint64_t	 mt_count;	/* Number of current allocations. */
 	uint64_t	 mt_free;	/* Number of cached free items. */
 	uint64_t	 mt_failures;	/* Number of allocation failures. */
+	uint64_t	 mt_sleeps;	/* Number of allocation sleeps. */
 
 	/*
 	 * Caller-owned memory.

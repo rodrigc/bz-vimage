@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.147 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.148 2010/06/11 20:56:40 randi Exp $
 
 .if ${MACHINE_ARCH} != "ia64"
 _wizard=	wizard.c
@@ -14,13 +14,13 @@ SRCS=	anonFTP.c cdrom.c command.c config.c devices.c dhcp.c \
 	system.c tcpip.c termcap.c ttys.c ufs.c usb.c user.c \
 	variable.c ${_wizard} keymap.h countries.h
 
-CFLAGS+= -DUSE_GZIP=1
+CFLAGS+= -DUSE_GZIP=1 -fno-strict-aliasing
 .if ${MACHINE} == "pc98"
 CFLAGS+= -DPC98
 .endif
 CFLAGS+= -I${.CURDIR}/../../gnu/lib/libdialog -I.
 
-WARNS?=	1
+WARNS?=  2	
 
 DPADD=	${LIBDIALOG} ${LIBNCURSES} ${LIBUTIL} ${LIBDISK} ${LIBFTPIO}
 LDADD=	-ldialog -lncurses -lutil -ldisk -lftpio

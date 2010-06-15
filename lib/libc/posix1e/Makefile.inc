@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libc/posix1e/Makefile.inc,v 1.24 2010/01/02 20:27:14 ed Exp $
+# $FreeBSD: src/lib/libc/posix1e/Makefile.inc,v 1.25 2010/06/14 02:26:13 kientzle Exp $
 
 .PATH: ${.CURDIR}/posix1e
 
@@ -20,6 +20,7 @@ SRCS+=	acl_branding.c			\
 	acl_from_text.c			\
 	acl_from_text_nfs4.c		\
 	acl_get.c			\
+	acl_id_to_name.c		\
 	acl_init.c			\
 	acl_perm.c			\
 	acl_set.c			\

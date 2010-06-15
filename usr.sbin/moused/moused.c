@@ -45,7 +45,7 @@
  **/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/moused/moused.c,v 1.84 2008/05/15 15:05:02 philip Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/moused/moused.c,v 1.85 2010/06/15 19:19:04 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/consio.h>
@@ -1090,7 +1090,8 @@ moused(void)
 	    FD_SET(rodent.mremcfd, &fds);
 
 	c = select(FD_SETSIZE, &fds, NULL, NULL,
-		   (rodent.flags & Emulate3Button) ? &timeout : NULL);
+		   ((rodent.flags & Emulate3Button) &&
+		    S_DELAYED(mouse_button_state)) ? &timeout : NULL);
 	if (c < 0) {                    /* error */
 	    logwarn("failed to read from mouse");
 	    continue;

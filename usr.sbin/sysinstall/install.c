@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.381 2009/11/10 10:34:44 des Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.384 2010/06/13 23:37:16 marcel Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -357,7 +357,6 @@ installFixitUSB(dialogMenuItem *self)
 int
 installFixitCDROM(dialogMenuItem *self)
 {
-    struct stat sb;
     int need_eject;
 
     if (!RunningAsInit)
@@ -629,8 +628,11 @@ installExpress(dialogMenuItem *self)
 int
 installStandard(dialogMenuItem *self)
 {
-    int i, tries = 0;
+    int i;
+#ifdef WITH_SLICES
+    int tries = 0;
     Device **devs;
+#endif
 
     variable_set2(SYSTEM_STATE, "standard", 0);
     dialog_clear_norefresh();
@@ -875,7 +877,9 @@ installConfigure(void)
 int
 installFixupBase(dialogMenuItem *self)
 {
+#if defined(__i386__) || defined(__amd64__)
     FILE *fp;
+#endif
 #ifdef __ia64__
     const char *efi_mntpt;
 #endif
@@ -1187,9 +1191,7 @@ installFilesystems(dialogMenuItem *self)
 	    }
 #if defined(__ia64__)
 	    else if (c1->type == efi && c1->private_data) {
-		char bootdir[FILENAME_MAX];
 		PartInfo *pi = (PartInfo *)c1->private_data;
-		char *p;
 
 		sprintf(dname, "%s/dev/%s", RunningAsInit ? "/mnt" : "",
 		    c1->name);

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.218 2010/05/16 19:43:48 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.219 2010/06/11 18:46:34 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -395,9 +395,10 @@ smp_rendezvous_cpus(cpumask_t map,
 		return;
 	}
 
-	for (i = 0; i <= mp_maxid; i++)
-		if (((1 << i) & map) != 0 && !CPU_ABSENT(i))
+	CPU_FOREACH(i) {
+		if (((1 << i) & map) != 0)
 			ncpus++;
+	}
 	if (ncpus == 0)
 		panic("ncpus is 0 with map=0x%x", map);
 

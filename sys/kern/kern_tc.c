@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_tc.c,v 1.183 2009/04/11 22:01:40 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_tc.c,v 1.184 2010/06/15 19:28:44 jkim Exp $");
 
 #include "opt_ntp.h"
 
@@ -90,7 +90,7 @@ static struct timecounter *timecounters = &dummy_timecounter;
 time_t time_second = 1;
 time_t time_uptime = 1;
 
-static struct bintime boottimebin;
+struct bintime boottimebin;
 struct timeval boottime;
 static int sysctl_kern_boottime(SYSCTL_HANDLER_ARGS);
 SYSCTL_PROC(_kern, KERN_BOOTTIME, boottime, CTLTYPE_STRUCT|CTLFLAG_RD,

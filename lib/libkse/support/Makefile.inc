@@ -1,9 +1,9 @@
-# $FreeBSD: src/lib/libkse/support/Makefile.inc,v 1.9 2007/10/09 13:42:25 obrien Exp $
+# $FreeBSD: src/lib/libkse/support/Makefile.inc,v 1.10 2010/06/13 01:27:29 imp Exp $
 
 .PATH: ${.CURDIR}/support ${.CURDIR}/../libc/gen ${.CURDIR}/../libc/string
-.PATH: ${.CURDIR}/../libc/${MACHINE_ARCH}/sys
+.PATH: ${.CURDIR}/../libc/${MACHINE_CPUARCH}/sys
 
-CFLAGS+= -I${.CURDIR}/../libc/${MACHINE_ARCH}
+CFLAGS+= -I${.CURDIR}/../libc/${MACHINE_CPUARCH}
 
 SYSCALLS= clock_gettime \
 	kse_create \

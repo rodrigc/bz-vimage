@@ -18,7 +18,7 @@
  *
  * CDDL HEADER END
  *
- * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.2 2008/11/05 19:39:11 rodrigc Exp $
+ * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.3 2010/06/11 18:46:34 jhb Exp $
  *
  */
 
@@ -30,8 +30,8 @@ dtrace_ap_start(void *dummy)
 	mutex_enter(&cpu_lock);
 
 	/* Setup the rest of the CPUs. */
-	for (i = 1; i <= mp_maxid; i++) {
-		if (pcpu_find(i) == NULL)
+	CPU_FOREACH(i) {
+		if (i == 0)
 			continue;
 
 		(void) dtrace_cpu_setup(CPU_CONFIG, i);

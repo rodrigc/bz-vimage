@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.138 2010/06/03 16:02:11 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_4bsd.c,v 1.139 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_sched.h"
@@ -1190,9 +1190,7 @@ sched_pickcpu(struct thread *td)
 		best = td->td_lastcpu;
 	else
 		best = NOCPU;
-	for (cpu = 0; cpu <= mp_maxid; cpu++) {
-		if (CPU_ABSENT(cpu))
-			continue;
+	CPU_FOREACH(cpu) {
 		if (!THREAD_CAN_SCHED(td, cpu))
 			continue;
 	
@@ -1627,9 +1625,7 @@ sched_affinity(struct thread *td)
 	 */
 	ts = td->td_sched;
 	ts->ts_flags &= ~TSF_AFFINITY;
-	for (cpu = 0; cpu <= mp_maxid; cpu++) {
-		if (CPU_ABSENT(cpu))
-			continue;
+	CPU_FOREACH(cpu) {
 		if (!THREAD_CAN_SCHED(td, cpu)) {
 			ts->ts_flags |= TSF_AFFINITY;
 			break;

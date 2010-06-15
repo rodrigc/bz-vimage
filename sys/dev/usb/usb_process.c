@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_process.c,v 1.14 2009/11/26 00:43:17 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_process.c,v 1.15 2010/06/11 19:27:21 avg Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -221,7 +221,7 @@ usb_proc_create(struct usb_process *up, struct mtx *p_mtx,
 	cv_init(&up->up_drain, "usbdrain");
 
 	if (USB_THREAD_CREATE(&usb_process, up,
-	    &up->up_ptr, pmesg)) {
+	    &up->up_ptr, "%s", pmesg)) {
 		DPRINTFN(0, "Unable to create USB process.");
 		up->up_ptr = NULL;
 		goto error;

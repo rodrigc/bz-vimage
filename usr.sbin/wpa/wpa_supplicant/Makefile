@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/wpa/wpa_supplicant/Makefile,v 1.17 2009/03/02 02:28:22 sam Exp $
+# $FreeBSD: src/usr.sbin/wpa/wpa_supplicant/Makefile,v 1.18 2010/06/14 15:38:30 rpaulo Exp $
 
 .include "${.CURDIR}/../Makefile.inc"
 
@@ -9,7 +9,7 @@
 
 PROG=	wpa_supplicant
 SRCS=	aes.c aes_wrap.c blacklist.c common.c config.c ctrl_iface.c \
-	ctrl_iface_unix.c drivers.c eloop.c events.c l2_packet.c main.c \
+	ctrl_iface_unix.c drivers.c eloop.c events.c l2_packet_freebsd.c main.c\
 	md5.c preauth.c pmksa_cache.c rc4.c scan.c scan_helpers.c sha1.c \
 	wpa.c wpa_common.c wpa_debug.c wpa_ie.c wpa_supplicant.c \
 	wpabuf.c wpas_glue.c \

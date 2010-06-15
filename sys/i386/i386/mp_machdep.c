@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.305 2010/05/24 11:40:49 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.306 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_apic.h"
 #include "opt_cpu.h"
@@ -1573,9 +1573,7 @@ mp_ipi_intrcnt(void *dummy)
 	char buf[64];
 	int i;
 
-	for (i = 0; i < mp_maxid; i++) {
-		if (CPU_ABSENT(i))
-			continue;
+	CPU_FOREACH(i) {
 		snprintf(buf, sizeof(buf), "cpu%d: invltlb", i);
 		intrcnt_add(buf, &ipi_invltlb_counts[i]);
 		snprintf(buf, sizeof(buf), "cpu%d: invlrng", i);

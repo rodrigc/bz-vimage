@@ -14,7 +14,7 @@
  *
  * Ported to run under 386BSD by Julian Elischer (julian@tfs.com) Sept 1992
  *
- * $FreeBSD: src/sys/cam/scsi/scsi_all.h,v 1.34 2010/06/08 17:44:49 mjacob Exp $
+ * $FreeBSD: src/sys/cam/scsi/scsi_all.h,v 1.35 2010/06/14 22:02:18 ken Exp $
  */
 
 /*
@@ -902,6 +902,7 @@ struct scsi_target_group
 struct scsi_target_port_descriptor {
 	uint8_t	reserved[2];
 	uint8_t	relative_target_port_identifier[2];
+	uint8_t desc_list[];
 };
 
 struct scsi_target_port_group_descriptor {
@@ -928,12 +929,12 @@ struct scsi_target_port_group_descriptor {
 	uint8_t status;
 	uint8_t vendor_specific;
 	uint8_t	target_port_count;
-	struct scsi_target_port_descriptor descriptors[1];
+	struct scsi_target_port_descriptor descriptors[];
 };
 
 struct scsi_target_group_data {
 	uint8_t length[4];	/* length of returned data, in bytes */
-	struct scsi_target_port_group_descriptor groups[1];
+	struct scsi_target_port_group_descriptor groups[];
 };
 
 struct scsi_target_group_data_extended {
@@ -941,7 +942,7 @@ struct scsi_target_group_data_extended {
 	uint8_t format_type;	/* STG_PDF_LENGTH or RPL_PDF_EXTENDED */
 	uint8_t	implicit_transition_time;
 	uint8_t reserved[2];
-	struct scsi_target_port_group_descriptor groups[1];
+	struct scsi_target_port_group_descriptor groups[];
 };
 
 

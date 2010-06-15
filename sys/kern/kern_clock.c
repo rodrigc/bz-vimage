@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.215 2010/05/24 11:40:49 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.216 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_kdb.h"
 #include "opt_device_polling.h"
@@ -318,9 +318,7 @@ read_cpu_time(long *cp_time)
 
 	/* Sum up global cp_time[]. */
 	bzero(cp_time, sizeof(long) * CPUSTATES);
-	for (i = 0; i <= mp_maxid; i++) {
-		if (CPU_ABSENT(i))
-			continue;
+	CPU_FOREACH(i) {
 		pc = pcpu_find(i);
 		for (j = 0; j < CPUSTATES; j++)
 			cp_time[j] += pc->pc_cp_time[j];

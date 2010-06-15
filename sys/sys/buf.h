@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)buf.h	8.9 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/sys/buf.h,v 1.212 2010/04/24 07:05:35 jeff Exp $
+ * $FreeBSD: src/sys/sys/buf.h,v 1.213 2010/06/11 17:03:26 mdf Exp $
  */
 
 #ifndef _SYS_BUF_H_
@@ -247,6 +247,7 @@ struct buf {
 #define	BV_SCANNED	0x00000001	/* VOP_FSYNC funcs mark written bufs */
 #define	BV_BKGRDINPROG	0x00000002	/* Background write in progress */
 #define	BV_BKGRDWAIT	0x00000004	/* Background write waiting */
+#define	BV_INFREECNT	0x80000000	/* buf is counted in numfreebufs */
 
 #ifdef _KERNEL
 /*

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/bus.h,v 1.92 2009/12/09 21:52:53 jhb Exp $
+ * $FreeBSD: src/sys/sys/bus.h,v 1.93 2010/06/12 13:20:38 kib Exp $
  */
 
 #ifndef _SYS_BUS_H_
@@ -85,8 +85,11 @@ struct u_device {
  * included in case devctl_notify isn't sufficiently general.
  */
 boolean_t devctl_process_running(void);
+void devctl_notify_f(const char *__system, const char *__subsystem,
+    const char *__type, const char *__data, int __flags);
 void devctl_notify(const char *__system, const char *__subsystem,
     const char *__type, const char *__data);
+void devctl_queue_data_f(char *__data, int __flags);
 void devctl_queue_data(char *__data);
 
 /**

@@ -31,7 +31,7 @@
 /* $KAME: sctp_usrreq.c,v 1.48 2005/03/07 23:26:08 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_usrreq.c,v 1.76 2010/06/06 02:32:20 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_usrreq.c,v 1.77 2010/06/11 03:54:00 rrs Exp $");
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
 #include <netinet/sctp_pcb.h>
@@ -401,6 +401,9 @@ sctp_ctlinput(cmd, sa, vip)
 				SCTP_INP_WLOCK(inp);
 				SCTP_INP_DECR_REF(inp);
 				SCTP_INP_WUNLOCK(inp);
+			}
+			if (stcb) {
+				SCTP_TCB_UNLOCK(stcb);
 			}
 		}
 	}

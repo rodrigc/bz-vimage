@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/kern/bus_if.m,v 1.38 2009/10/15 14:54:35 jhb Exp $
+# $FreeBSD: src/sys/kern/bus_if.m,v 1.39 2010/06/14 07:10:37 mav Exp $
 #
 
 #include <sys/bus.h>
@@ -46,6 +46,15 @@ CODE {
 	    u_long count, u_int flags)
 	{
 	    return (0);
+	}
+
+	static int
+	null_remap_intr(device_t bus, device_t dev, u_int irq)
+	{
+
+		if (dev != NULL)
+			return (BUS_REMAP_INTR(dev, NULL, irq));
+		return (ENXIO);
 	}
 };
 
@@ -600,3 +609,16 @@ METHOD void hint_device_unit {
 METHOD void new_pass {
 	device_t	_dev;
 } DEFAULT bus_generic_new_pass;
+
+/**
+ * @brief Notify a bus that specified child's IRQ should be remapped.
+ *
+ * @param _dev		the bus device
+ * @param _child	the child device
+ * @param _irq		the irq number
+ */
+METHOD int remap_intr {
+	device_t	_dev;
+	device_t	_child;
+	u_int		_irq;
+} DEFAULT null_remap_intr;

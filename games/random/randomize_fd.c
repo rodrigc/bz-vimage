@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/games/random/randomize_fd.c,v 1.7 2008/08/11 23:24:42 ache Exp $");
+__FBSDID("$FreeBSD: src/games/random/randomize_fd.c,v 1.8 2010/06/14 13:03:25 uqs Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -104,7 +104,7 @@ randomize_fd(int fd, int type, int unique, double denom)
 
 	rand_root = rand_tail = NULL;
 	bufc = i = 0;
-	bufleft = eof = fndstr = numnode = ret = 0;
+	bufleft = eof = fndstr = numnode = 0;
 
 	if (type == RANDOM_TYPE_UNSET)
 		type = RANDOM_TYPE_LINES;

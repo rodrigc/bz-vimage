@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.48 2010/02/25 14:13:39 attilio Exp $
+ * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.49 2010/06/14 07:38:53 mav Exp $
  */
 
 /*
@@ -529,7 +529,7 @@ intr_shuffle_irqs(void *arg __unused)
 			 */
 			if (isrc->is_event->ie_cpu != NOCPU)
 				(void)isrc->is_pic->pic_assign_cpu(isrc,
-				    isrc->is_event->ie_cpu);
+				    cpu_apic_ids[isrc->is_event->ie_cpu]);
 			else if (isrc->is_pic->pic_assign_cpu(isrc,
 				cpu_apic_ids[current_cpu]) == 0)
 				(void)intr_next_cpu();

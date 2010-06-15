@@ -1,12 +1,13 @@
 #	$NetBSD: Makefile,v 1.34 2005/05/28 12:02:53 lukem Exp $
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/libedit/Makefile,v 1.33 2010/01/02 09:58:07 ed Exp $
+# $FreeBSD: src/lib/libedit/Makefile,v 1.34 2010/06/13 17:04:42 jilles Exp $
 
 LIB=	edit
 SHLIB_MAJOR=	7
 SHLIBDIR?= /lib
 
-OSRCS=	chared.c common.c el.c emacs.c fcns.c help.c hist.c key.c map.c \
+OSRCS=	chared.c common.c el.c emacs.c fcns.c filecomplete.c help.c \
+	hist.c key.c map.c \
 	parse.c prompt.c read.c refresh.c search.c sig.c term.c tty.c vi.c
 
 DPADD=	${LIBNCURSES}

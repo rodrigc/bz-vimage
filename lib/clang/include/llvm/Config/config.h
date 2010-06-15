@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/clang/include/llvm/Config/config.h,v 1.2 2010/06/10 12:15:09 ed Exp $ */
+/* $FreeBSD: src/lib/clang/include/llvm/Config/config.h,v 1.3 2010/06/13 12:39:22 ed Exp $ */
 /* include/llvm/Config/config.h.  Generated from config.h.in by configure.  */
 /* include/llvm/Config/config.h.in.  Generated from autoconf/configure.ac by autoheader.  */
 
@@ -270,7 +270,7 @@
 #define HAVE_OPENDIR 1
 
 /* Define to 1 if you have the `posix_spawn' function. */
-#define HAVE_POSIX_SPAWN 1
+/* #undef HAVE_POSIX_SPAWN */
 
 /* Define to 1 if you have the `powf' function. */
 #define HAVE_POWF 1

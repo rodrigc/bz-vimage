@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_cpu.c,v 1.85 2010/02/11 08:50:21 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_cpu.c,v 1.87 2010/06/15 19:14:39 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -445,9 +445,7 @@ acpi_pcpu_get_id(uint32_t idx, uint32_t *acpi_id, uint32_t *cpu_id)
 
     KASSERT(acpi_id != NULL, ("Null acpi_id"));
     KASSERT(cpu_id != NULL, ("Null cpu_id"));
-    for (i = 0; i <= mp_maxid; i++) {
-	if (CPU_ABSENT(i))
-	    continue;
+    CPU_FOREACH(i) {
 	pcpu_data = pcpu_find(i);
 	KASSERT(pcpu_data != NULL, ("no pcpu data for %d", i));
 	if (idx-- == 0) {
@@ -1009,6 +1007,8 @@ acpi_cpu_notify(ACPI_HANDLE h, UINT32 notify, void *context)
 	if (isc->cpu_cx_count > cpu_cx_count)
 	    cpu_cx_count = isc->cpu_cx_count;
     }
+    if (sc->cpu_cx_lowest < cpu_cx_lowest)
+	acpi_cpu_set_cx_lowest(sc, min(cpu_cx_lowest, sc->cpu_cx_count - 1));
     ACPI_SERIAL_END(cpu);
 }
 
@@ -1204,7 +1204,7 @@ acpi_cpu_global_cx_lowest_sysctl(SYSCTL_HANDLER_ARGS)
     ACPI_SERIAL_BEGIN(cpu);
     for (i = 0; i < cpu_ndevices; i++) {
 	sc = device_get_softc(cpu_devices[i]);
-	acpi_cpu_set_cx_lowest(sc, val);
+	acpi_cpu_set_cx_lowest(sc, min(val, sc->cpu_cx_count - 1));
     }
     ACPI_SERIAL_END(cpu);
 

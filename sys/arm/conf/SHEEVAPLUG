@@ -1,7 +1,7 @@
 #
 # Custom kernel for Marvell SheevaPlug devices.
 #
-# $FreeBSD: src/sys/arm/conf/SHEEVAPLUG,v 1.2 2010/04/22 21:31:34 thompsa Exp $
+# $FreeBSD: src/sys/arm/conf/SHEEVAPLUG,v 1.3 2010/06/13 13:28:53 raj Exp $
 #
 
 ident		SHEEVAPLUG
@@ -69,3 +69,7 @@ device		scbus
 device		pass
 device		da
 
+# Flattened Device Tree
+options 	FDT
+options		FDT_DTB_STATIC
+makeoptions	FDT_DTS_FILE=sheevaplug.dts

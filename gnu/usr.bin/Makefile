@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.103 2010/05/19 23:56:26 jkim Exp $
+# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.104 2010/06/13 13:02:43 raj Exp $
 
 .include <bsd.own.mk>
 
@@ -8,6 +8,7 @@ SUBDIR= ${_binutils} \
 	dialog \
 	diff \
 	diff3 \
+	${_dtc} \
 	${_gdb} \
 	${_gperf} \
 	${_grep} \
@@ -29,6 +30,10 @@ _groff=		groff
 
 .if ${MK_CVS} != "no"
 _cvs=		cvs
+.endif
+
+.if ${MK_FDT}	!= "no"
+_dtc=		dtc
 .endif
 
 .if ${MK_GNU_GREP} != "no"

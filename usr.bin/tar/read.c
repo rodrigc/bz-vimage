@@ -24,7 +24,7 @@
  */
 
 #include "bsdtar_platform.h"
-__FBSDID("$FreeBSD: src/usr.bin/tar/read.c,v 1.48 2010/02/07 02:00:26 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/tar/read.c,v 1.49 2010/06/14 02:56:45 kientzle Exp $");
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -103,6 +103,7 @@ progress_func(void *cookie)
 	struct archive *a = progress_data->archive;
 	struct archive_entry *entry = progress_data->entry;
 	uint64_t comp, uncomp;
+	int compression;
 
 	if (!need_report())
 		return;
@@ -112,9 +113,13 @@ progress_func(void *cookie)
 	if (a != NULL) {
 		comp = archive_position_compressed(a);
 		uncomp = archive_position_uncompressed(a);
+		if (comp > uncomp)
+			compression = 0;
+		else
+			compression = (int)((uncomp - comp) * 100 / uncomp);
 		fprintf(stderr,
 		    "In: %s bytes, compression %d%%;",
-		    tar_i64toa(comp), (int)((uncomp - comp) * 100 / uncomp));
+		    tar_i64toa(comp), compression);
 		fprintf(stderr, "  Out: %d files, %s bytes\n",
 		    archive_file_count(a), tar_i64toa(uncomp));
 	}

@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/vm_machdep.c,v 1.269 2010/06/05 15:59:59 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/vm_machdep.c,v 1.270 2010/06/15 09:19:33 kib Exp $");
 
 #include "opt_isa.h"
 #include "opt_cpu.h"
@@ -265,8 +265,10 @@ cpu_thread_exit(struct thread *td)
 {
 	struct pcb *pcb;
 
+	critical_enter();
 	if (td == PCPU_GET(fpcurthread))
 		fpudrop();
+	critical_exit();
 
 	pcb = td->td_pcb;
 

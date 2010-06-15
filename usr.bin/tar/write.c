@@ -24,7 +24,7 @@
  */
 
 #include "bsdtar_platform.h"
-__FBSDID("$FreeBSD: src/usr.bin/tar/write.c,v 1.95 2010/04/11 01:32:30 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/tar/write.c,v 1.96 2010/06/14 02:56:45 kientzle Exp $");
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -965,15 +965,21 @@ report_write(struct bsdtar *bsdtar, struct archive *a,
     struct archive_entry *entry, int64_t progress)
 {
 	uint64_t comp, uncomp;
+	int compression;
+
 	if (bsdtar->verbose)
 		fprintf(stderr, "\n");
 	comp = archive_position_compressed(a);
 	uncomp = archive_position_uncompressed(a);
 	fprintf(stderr, "In: %d files, %s bytes;",
 	    archive_file_count(a), tar_i64toa(uncomp));
+	if (comp > uncomp)
+		compression = 0;
+	else
+		compression = (int)((uncomp - comp) * 100 / uncomp);
 	fprintf(stderr,
 	    " Out: %s bytes, compression %d%%\n",
-	    tar_i64toa(comp), (int)((uncomp - comp) * 100 / uncomp));
+	    tar_i64toa(comp), compression);
 	/* Can't have two calls to tar_i64toa() pending, so split the output. */
 	safe_fprintf(stderr, "Current: %s (%s",
 	    archive_entry_pathname(entry),

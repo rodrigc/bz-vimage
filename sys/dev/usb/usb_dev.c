@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_dev.c,v 1.38 2010/05/12 22:28:40 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_dev.c,v 1.39 2010/06/11 19:27:21 avg Exp $ */
 /*-
  * Copyright (c) 2006-2008 Hans Petter Selasky. All rights reserved.
  *
@@ -1733,7 +1733,7 @@ usb_fifo_attach(struct usb_device *udev, void *priv_sc,
 
 		/* Now, create the device itself */
 		f_sc->dev = make_dev(&usb_devsw, 0, uid, gid, mode,
-		    devname);
+		    "%s", devname);
 		/* XXX setting si_drv1 and creating the device is not atomic! */
 		f_sc->dev->si_drv1 = pd;
 	}

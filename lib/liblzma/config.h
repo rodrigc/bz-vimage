@@ -1,4 +1,4 @@
-// $FreeBSD: src/lib/liblzma/config.h,v 1.1 2010/05/10 06:59:50 mm Exp $
+// $FreeBSD: src/lib/liblzma/config.h,v 1.2 2010/06/11 22:29:49 delphij Exp $
 #define ASSUME_RAM 128
 #define HAVE_CHECK_CRC32 1
 #define HAVE_CHECK_CRC64 1
@@ -84,6 +84,12 @@
 # define __EXTENSIONS__ 1
 #endif
 #define VERSION "4.999.9beta"
+#if defined(__FreeBSD__)
+#include <machine/endian.h>
+#if _BYTE_ORDER == _BIG_ENDIAN
+# define WORDS_BIGENDIAN 1
+#endif
+#else
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -92,4 +98,5 @@
 # ifndef WORDS_BIGENDIAN
 /* #  undef WORDS_BIGENDIAN */
 # endif
+#endif
 #endif

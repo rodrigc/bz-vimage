@@ -15,7 +15,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/gnu/lib/libdialog/TESTS/menu3.c,v 1.10 2003/05/03 21:31:08 obrien Exp $");
+__FBSDID("$FreeBSD: src/gnu/lib/libdialog/TESTS/menu3.c,v 1.11 2010/06/15 10:01:49 ae Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +44,7 @@ maybe(dialogMenuItem *self)
 static char *insurance[] = {
     "1,000,000",	"Mondo insurance policy", "Off",
     "5,000,000",	"Mega insurance policy", "Off",
-    "10,000,000",	"Friend!  Most Favored customer!"
+    "10,000,000",	"Friend!  Most Favored customer!", "On"
 };
 
 static void

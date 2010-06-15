@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libmemstat/memstat.c,v 1.7 2005/08/01 19:07:39 rwatson Exp $
+ * $FreeBSD: src/lib/libmemstat/memstat.c,v 1.8 2010/06/15 19:28:37 sbruno Exp $
  */
 
 #include <sys/param.h>
@@ -188,6 +188,7 @@ _memstat_mt_reset_stats(struct memory_type *mtp)
 	mtp->mt_count = 0;
 	mtp->mt_free = 0;
 	mtp->mt_failures = 0;
+	mtp->mt_sleeps = 0;
 
 	mtp->mt_zonefree = 0;
 	mtp->mt_kegfree = 0;
@@ -302,6 +303,13 @@ memstat_get_failures(const struct memory_type *mtp)
 {
 
 	return (mtp->mt_failures);
+}
+
+uint64_t
+memstat_get_sleeps(const struct memory_type *mtp)
+{
+
+	return (mtp->mt_sleeps);
 }
 
 void *

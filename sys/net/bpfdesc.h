@@ -33,7 +33,7 @@
  *
  *      @(#)bpfdesc.h	8.1 (Berkeley) 6/10/93
  *
- * $FreeBSD: src/sys/net/bpfdesc.h,v 1.42 2010/04/25 16:43:41 kib Exp $
+ * $FreeBSD: src/sys/net/bpfdesc.h,v 1.43 2010/06/15 19:28:44 jkim Exp $
  */
 
 #ifndef _NET_BPFDESC_H_
@@ -81,6 +81,7 @@ struct bpf_d {
 	u_char		bd_immediate;	/* true to return on packet arrival */
 	int		bd_hdrcmplt;	/* false to fill in src lladdr automatically */
 	int		bd_direction;	/* select packet direction */
+	int		bd_tstamp;	/* select time stamping function */
 	int		bd_feedback;	/* true to feed back sent packets */
 	int		bd_async;	/* non-zero if packet reception should generate signal */
 	int		bd_sig;		/* signal to send upon packet reception */

@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/pmc.h,v 1.29 2010/06/05 23:05:08 fabient Exp $
+ * $FreeBSD: src/sys/sys/pmc.h,v 1.30 2010/06/15 09:12:31 fabient Exp $
  */
 
 #ifndef _SYS_PMC_H_
@@ -110,10 +110,10 @@ enum pmc_cputype {
 	__PMC_CLASS(P6)		/* Intel Pentium Pro counters */	\
 	__PMC_CLASS(P4)		/* Intel Pentium-IV counters */		\
 	__PMC_CLASS(IAF)	/* Intel Core2/Atom, fixed function */	\
-	__PMC_CLASS(IAP)	/* Intel Core...Atom, programmable */   \
-	__PMC_CLASS(UCF)	/* Intel Uncore programmable */		\
-	__PMC_CLASS(UCP)	/* Intel Uncore fixed function */	\
-	__PMC_CLASS(XSCALE)	/* Intel XScale counters */ \
+	__PMC_CLASS(IAP)	/* Intel Core...Atom, programmable */	\
+	__PMC_CLASS(UCF)	/* Intel Uncore fixed function */	\
+	__PMC_CLASS(UCP)	/* Intel Uncore programmable */		\
+	__PMC_CLASS(XSCALE)	/* Intel XScale counters */		\
 	__PMC_CLASS(MIPS24K)    /* MIPS 24K */
 
 enum pmc_class {

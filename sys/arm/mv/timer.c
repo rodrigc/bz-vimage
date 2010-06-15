@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/mv/timer.c,v 1.1 2008/10/13 20:07:13 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/mv/timer.c,v 1.2 2010/06/13 13:28:53 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -47,6 +47,9 @@ __FBSDID("$FreeBSD: src/sys/arm/mv/timer.c,v 1.1 2008/10/13 20:07:13 raj Exp $")
 
 #include <arm/mv/mvreg.h>
 #include <arm/mv/mvvar.h>
+
+#include <dev/ofw/ofw_bus.h>
+#include <dev/ofw/ofw_bus_subr.h>
 
 #define MV_TIMER_TICK	(get_tclk() / hz)
 #define INITIAL_TIMECOUNTER	(0xffffffff)
@@ -96,6 +99,9 @@ static struct timecounter mv_timer_timecounter = {
 static int
 mv_timer_probe(device_t dev)
 {
+
+	if (!ofw_bus_is_compatible(dev, "mrvl,timer"))
+		return (ENXIO);
 
 	device_set_desc(dev, "Marvell CPU Timer");
 	return (0);
@@ -171,7 +177,7 @@ static driver_t mv_timer_driver = {
 
 static devclass_t mv_timer_devclass;
 
-DRIVER_MODULE(timer, mbus, mv_timer_driver, mv_timer_devclass, 0, 0);
+DRIVER_MODULE(timer, simplebus, mv_timer_driver, mv_timer_devclass, 0, 0);
 
 static unsigned
 mv_timer_get_timecount(struct timecounter *tc)

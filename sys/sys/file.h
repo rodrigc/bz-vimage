@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)file.h	8.3 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/file.h,v 1.83 2009/12/28 23:12:55 ed Exp $
+ * $FreeBSD: src/sys/sys/file.h,v 1.84 2010/06/11 23:38:25 jkim Exp $
  */
 
 #ifndef _SYS_FILE_H_
@@ -201,10 +201,17 @@ int fgetvp_write(struct thread *td, int fd, struct vnode **vpp);
 int fgetsock(struct thread *td, int fd, struct socket **spp, u_int *fflagp);
 void fputsock(struct socket *sp);
 
+static __inline int
+_fnoop(void)
+{
+
+	return (0);
+}
+
 #define	fhold(fp)							\
 	(refcount_acquire(&(fp)->f_count))
 #define	fdrop(fp, td)							\
-	(refcount_release(&(fp)->f_count) ? _fdrop((fp), (td)) : 0)
+	(refcount_release(&(fp)->f_count) ? _fdrop((fp), (td)) : _fnoop())
 
 static __inline fo_rdwr_t	fo_read;
 static __inline fo_rdwr_t	fo_write;

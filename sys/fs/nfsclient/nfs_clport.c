@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.9 2010/04/15 22:57:30 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.10 2010/06/15 00:25:04 rmacklem Exp $");
 
 /*
  * generally, I don't like #includes inside .h files, but it seems to
@@ -1275,4 +1275,6 @@ DECLARE_MODULE(nfscl, nfscl_mod, SI_SUB_VFS, SI_ORDER_FIRST);
 /* So that loader and kldload(2) can find us, wherever we are.. */
 MODULE_VERSION(nfscl, 1);
 MODULE_DEPEND(nfscl, nfscommon, 1, 1, 1);
+MODULE_DEPEND(nfscl, krpc, 1, 1, 1);
+MODULE_DEPEND(nfscl, nfssvc, 1, 1, 1);
 

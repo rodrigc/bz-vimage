@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_asus.c,v 1.43 2010/02/13 02:30:43 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_asus.c,v 1.44 2010/06/11 20:08:20 jkim Exp $");
 
 /*
  * Driver for extra ACPI-controlled gadgets (hotkeys, leds, etc) found on
@@ -711,7 +711,7 @@ good:
 	sbuf_printf(sb, "Unsupported Asus laptop: %s\n", Obj->String.Pointer);
 	sbuf_finish(sb);
 
-	device_printf(dev, sbuf_data(sb));
+	device_printf(dev, "%s", sbuf_data(sb));
 
 	sbuf_delete(sb);
 	AcpiOsFree(Buf.Pointer);

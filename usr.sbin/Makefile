@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	5.20 (Berkeley) 6/12/93
-# $FreeBSD: src/usr.sbin/Makefile,v 1.424 2010/05/19 23:56:26 jkim Exp $
+# $FreeBSD: src/usr.sbin/Makefile,v 1.425 2010/06/13 13:30:26 raj Exp $
 
 .include <bsd.own.mk>
 
@@ -496,6 +496,10 @@ _ndiscvt=	ndiscvt
 _sicontrol=	sicontrol
 _spkrtest=	spkrtest
 _zzz=		zzz
+.endif
+
+.if ${MACHINE_ARCH} == "arm"
+_ofwdump=	ofwdump
 .endif
 
 .if ${MACHINE_ARCH} == "ia64"

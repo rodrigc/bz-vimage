@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_device.c,v 1.61 2010/05/12 22:42:35 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_device.c,v 1.62 2010/06/11 19:27:21 avg Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -1577,7 +1577,7 @@ usb_alloc_device(device_t parent_dev, struct usb_bus *bus,
 	udev->ctrl_dev = usb_make_dev(udev, 0, FREAD|FWRITE);
 
 	/* Create a link from /dev/ugenX.X to the default endpoint */
-	make_dev_alias(udev->ctrl_dev, udev->ugen_name);
+	make_dev_alias(udev->ctrl_dev, "%s", udev->ugen_name);
 #endif
 	if (udev->flags.usb_mode == USB_MODE_HOST) {
 

@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.14 2008/09/11 12:39:54 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.15 2010/06/13 13:08:23 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -107,6 +107,7 @@ static devclass_t nexus_devclass;
 static int
 nexus_probe(device_t dev)
 {
+
 	device_quiet(dev);	/* suppress attach message for neatness */
 
 	mem_rman.rm_start = 0;
@@ -116,7 +117,7 @@ nexus_probe(device_t dev)
 	if (rman_init(&mem_rman) || rman_manage_region(&mem_rman, 0, ~0u))
 		panic("nexus_probe mem_rman");
 
-	return (0);
+	return (BUS_PROBE_DEFAULT);
 }
 
 static int

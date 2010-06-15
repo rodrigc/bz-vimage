@@ -25,7 +25,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/dev/cxgb/cxgb_adapter.h,v 1.54 2010/05/05 22:52:06 np Exp $
+$FreeBSD: src/sys/dev/cxgb/cxgb_adapter.h,v 1.55 2010/06/12 22:33:04 np Exp $
 
 ***************************************************************************/
 
@@ -388,6 +388,8 @@ struct adapter {
 	char                    reglockbuf[ADAPTER_LOCK_NAME_LEN];
 	char                    mdiolockbuf[ADAPTER_LOCK_NAME_LEN];
 	char                    elmerlockbuf[ADAPTER_LOCK_NAME_LEN];
+
+	int			timestamp;
 };
 
 struct t3_rx_mode {

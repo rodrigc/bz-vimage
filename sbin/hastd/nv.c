@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/nv.c,v 1.1 2010/02/18 23:16:19 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/nv.c,v 1.2 2010/06/14 21:33:18 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -707,8 +707,10 @@ nv_add(struct nv *nv, const unsigned char *value, size_t vsize, int type,
 		assert(errno != 0);
 		if (nv->nv_error == 0)
 			nv->nv_error = errno;
+		free(nvh);
 		return;
 	}
+	free(nvh);
 	/* Add the actual data. */
 	if (ebuf_add_tail(nv->nv_ebuf, value, vsize) < 0) {
 		assert(errno != 0);

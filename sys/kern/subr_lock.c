@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.25 2009/03/15 06:41:47 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.26 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_mprof.h"
@@ -256,9 +256,7 @@ lock_prof_idle(void)
 
 	td = curthread;
 	thread_lock(td);
-	for (cpu = 0; cpu <= mp_maxid; cpu++) {
-		if (CPU_ABSENT(cpu))
-			continue;
+	CPU_FOREACH(cpu) {
 		sched_bind(td, cpu);
 	}
 	sched_unbind(td);

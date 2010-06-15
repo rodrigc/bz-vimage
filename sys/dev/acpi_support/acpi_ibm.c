@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_ibm.c,v 1.23 2010/01/21 21:14:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_ibm.c,v 1.24 2010/06/11 19:53:42 jkim Exp $");
 
 /*
  * Driver for extra ACPI-controlled gadgets found on IBM ThinkPad laptops.
@@ -743,8 +743,6 @@ acpi_ibm_sysctl_set(struct acpi_ibm_softc *sc, int method, int arg)
 			return (status);
 
 		if (sc->cmos_handle) {
-			val = val_ec & IBM_EC_MASK_VOL;
-
 			Args.Count = 1;
 			Args.Pointer = &Arg;
 			Arg.Type = ACPI_TYPE_INTEGER;

@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/usr.sbin/sysinstall/tcpip.c,v 1.141 2010/04/21 12:02:45 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/tcpip.c,v 1.143 2010/06/11 20:56:40 randi Exp $
  *
  * Copyright (c) 1995
  *      Gary J Palmer. All rights reserved.
@@ -649,7 +649,6 @@ tcpDeviceScan(void)
 	int s;
 	struct ifmediareq ifmr;
 	struct ifaddrs *ifap, *ifa;
-	struct if_data *ifd;
 	char *network_dev;
 
 	if ((s = socket(AF_LOCAL, SOCK_DGRAM, 0)) < 0)
@@ -731,6 +730,9 @@ tcpDeviceSelect(void)
 
 	return (NULL);
     }
+
+    devs = deviceFind(NULL, DEVICE_TYPE_NETWORK);
+    cnt = deviceCount(devs); 
 
     if ((!RunningAsInit) && (variable_check("NETWORK_CONFIGURED=NO") != TRUE)) {
 	if (!msgYesNo("Running multi-user, assume that the network is already configured?"))

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/msi.c,v 1.1 2010/06/08 18:36:03 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/msi.c,v 1.2 2010/06/14 07:10:37 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -247,7 +247,8 @@ msi_assign_cpu(struct intsrc *isrc, u_int apic_id)
 		    "msi: Assigning MSI IRQ %d to local APIC %u vector %u\n",
 			    sib->msi_irq, sib->msi_cpu, sib->msi_vector);
 	}
-	pci_remap_msi_irq(msi->msi_dev, msi->msi_irq);
+	BUS_REMAP_INTR(device_get_parent(msi->msi_dev), msi->msi_dev,
+	    msi->msi_irq);
 
 	/*
 	 * Free the old vector after the new one is established.  This is done

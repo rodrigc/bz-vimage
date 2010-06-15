@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/uboot/common/metadata.c,v 1.3 2010/05/25 15:21:39 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/uboot/common/metadata.c,v 1.4 2010/06/13 12:46:32 raj Exp $");
 
 #include <stand.h>
 #include <sys/param.h>
@@ -36,7 +36,9 @@ __FBSDID("$FreeBSD: src/sys/boot/uboot/common/metadata.c,v 1.3 2010/05/25 15:21:
 
 #include <machine/elf.h>
 #include <machine/metadata.h>
+#if !defined(LOADER_FDT_SUPPORT)
 #include <machine/bootinfo.h>
+#endif
 
 #include "api_public.h"
 #include "bootstrap.h"

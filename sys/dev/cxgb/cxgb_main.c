@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_main.c,v 1.112 2010/06/07 08:23:16 np Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_main.c,v 1.113 2010/06/12 22:24:39 np Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -980,7 +980,7 @@ cxgb_makedev(struct port_info *pi)
 {
 	
 	pi->port_cdev = make_dev(&cxgb_cdevsw, pi->ifp->if_dunit,
-	    UID_ROOT, GID_WHEEL, 0600, if_name(pi->ifp));
+	    UID_ROOT, GID_WHEEL, 0600, "%s", if_name(pi->ifp));
 	
 	if (pi->port_cdev == NULL)
 		return (ENOMEM);

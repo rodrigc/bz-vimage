@@ -59,7 +59,7 @@
 #define SND_USE_FXDIV
 #include "snd_fxdiv_gen.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/feeder_rate.c,v 1.29 2009/07/14 18:53:34 ariff Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/feeder_rate.c,v 1.30 2010/06/15 07:06:54 avg Exp $");
 #endif
 
 #include "feeder_rate_gen.h"
@@ -159,7 +159,7 @@ int feeder_rate_quality = Z_QUALITY_DEFAULT;
 static int feeder_rate_polyphase_max = Z_POLYPHASE_MAX;
 
 #ifdef _KERNEL
-static const char feeder_rate_presets[] = FEEDER_RATE_PRESETS;
+static char feeder_rate_presets[] = FEEDER_RATE_PRESETS;
 SYSCTL_STRING(_hw_snd, OID_AUTO, feeder_rate_presets, CTLFLAG_RD,
     &feeder_rate_presets, 0, "compile-time rate presets");
 

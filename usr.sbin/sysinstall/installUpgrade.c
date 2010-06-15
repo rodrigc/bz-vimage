@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/installUpgrade.c,v 1.96 2007/06/05 05:44:41 delphij Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/installUpgrade.c,v 1.97 2010/06/11 20:56:40 randi Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -368,7 +368,7 @@ media:
 	       "Next comes stage 2, where we attempt to resurrect your /etc\n"
 	       "directory!");
 
-    if (saved_etc && chdir(saved_etc)) {
+    if (chdir(saved_etc)) {
 	msgConfirm("Unable to go to your saved /etc directory in %s?!  Argh!\n"
 		   "Something went seriously wrong!  It's quite possible that\n"
 		   "your former /etc is toast.  I hope you didn't have any\n"

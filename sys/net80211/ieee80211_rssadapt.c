@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/net80211/ieee80211_rssadapt.c,v 1.4 2010/04/28 13:25:53 rpaulo Exp $	*/
+/*	$FreeBSD: src/sys/net80211/ieee80211_rssadapt.c,v 1.5 2010/06/12 07:02:43 ed Exp $	*/
 /* $NetBSD: ieee80211_rssadapt.c,v 1.9 2005/02/26 22:45:09 perry Exp $ */
 /*-
  * Copyright (c) 2010 Rui Paulo <rpaulo@FreeBSD.org>
@@ -58,12 +58,12 @@ struct rssadapt_expavgctl {
 };
 
 static struct rssadapt_expavgctl master_expavgctl = {
-	rc_decay_denom : 16,
-	rc_decay_old : 15,
-	rc_thresh_denom : 8,
-	rc_thresh_old : 4,
-	rc_avgrssi_denom : 8,
-	rc_avgrssi_old : 4
+	.rc_decay_denom = 16,
+	.rc_decay_old = 15,
+	.rc_thresh_denom = 8,
+	.rc_thresh_old = 4,
+	.rc_avgrssi_denom = 8,
+	.rc_avgrssi_old = 4
 };
 
 #ifdef interpolate

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/platform_chrp.c,v 1.4 2009/10/23 03:17:02 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/platform_chrp.c,v 1.5 2010/06/12 21:14:22 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -228,8 +228,26 @@ chrp_smp_start_cpu(platform_t plat, struct pcpu *pc)
 
 	cpu = pc->pc_hwref;
 	res = OF_getprop(cpu, "soft-reset", &reset, sizeof(reset));
-	if (res < 0)
-		return (ENXIO);
+	if (res < 0) {
+		reset = 0x58;
+
+		switch (pc->pc_cpuid) {
+		case 0:
+			reset += 0x03;
+			break;
+		case 1:
+			reset += 0x04;
+			break;
+		case 2:
+			reset += 0x0f;
+			break;
+		case 4:
+			reset += 0x10;
+			break;
+		default:
+			return (ENXIO);
+		}
+	}
 
 	ap_pcpu = pc;
 
@@ -239,10 +257,12 @@ chrp_smp_start_cpu(platform_t plat, struct pcpu *pc)
 	rstvec = rstvec_virtbase + reset;
 
 	*rstvec = 4;
+	powerpc_sync();
 	(void)(*rstvec);
 	powerpc_sync();
 	DELAY(1);
 	*rstvec = 0;
+	powerpc_sync();
 	(void)(*rstvec);
 	powerpc_sync();
 

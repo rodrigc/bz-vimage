@@ -42,7 +42,7 @@
 
 #include "feeder_if.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/sound.c,v 1.123 2009/06/07 19:12:08 ariff Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/sound.c,v 1.124 2010/06/15 07:06:54 avg Exp $");
 
 devclass_t pcm_devclass;
 
@@ -68,7 +68,7 @@ SYSCTL_NODE(_hw, OID_AUTO, snd, CTLFLAG_RD, 0, "Sound driver");
  * XXX I've had enough with people not telling proper version/arch
  *     while reporting problems, not after 387397913213th questions/requests.
  */
-static const char snd_driver_version[] =
+static char snd_driver_version[] =
     __XSTRING(SND_DRV_VERSION)"/"MACHINE_ARCH;
 SYSCTL_STRING(_hw_snd, OID_AUTO, version, CTLFLAG_RD, &snd_driver_version,
     0, "driver version/arch");

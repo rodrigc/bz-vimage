@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.19 2010/05/21 17:17:56 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.20 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_ddb.h"
 
@@ -317,9 +317,7 @@ DB_SHOW_COMMAND(dpcpu_off, db_show_dpcpu_off)
 {
 	int id;
 
-	for (id = 0; id <= mp_maxid; id++) {
-		if (CPU_ABSENT(id))
-			continue;
+	CPU_FOREACH(id) {
 		db_printf("dpcpu_off[%2d] = 0x%jx (+ DPCPU_START = %p)\n",
 		    id, (uintmax_t)dpcpu_off[id],
 		    (void *)(uintptr_t)(dpcpu_off[id] + DPCPU_START));

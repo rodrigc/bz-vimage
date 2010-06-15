@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/system.c,v 1.135 2008/12/16 01:18:10 kensmith Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/system.c,v 1.136 2010/06/11 20:56:40 randi Exp $
  *
  * Jordan Hubbard
  *
@@ -524,7 +524,7 @@ systemCreateHoloshell(void)
 	        printf("Type ``exit'' in this fixit shell to resume sysinstall.\n\n");
 		fflush(stdout);
 	    }
-	    execlp("sh", "-sh", 0);
+	    execlp("sh", "-sh", NULL);
 	    msgDebug("Was unable to execute sh for Holographic shell!\n");
 	    exit(1);
 	}

@@ -1,7 +1,7 @@
 #
 # Custom kernel for Marvell DB-88F6xxx boards.
 #
-# $FreeBSD: src/sys/arm/conf/DB-88F6XXX,v 1.9 2010/04/22 21:31:34 thompsa Exp $
+# $FreeBSD: src/sys/arm/conf/DB-88F6XXX,v 1.10 2010/06/13 13:28:53 raj Exp $
 #
 
 ident		DB-88F6XXX
@@ -82,3 +82,7 @@ device		iicbus
 # SATA
 device		ata
 device		atadisk
+
+# Flattened Device Tree
+options 	FDT
+makeoptions	FDT_DTS_FILE=db88f6281.dts

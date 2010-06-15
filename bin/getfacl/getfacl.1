@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/bin/getfacl/getfacl.1,v 1.13 2009/11/02 12:35:38 brueffer Exp $
+.\" $FreeBSD: src/bin/getfacl/getfacl.1,v 1.14 2010/06/11 06:04:07 uqs Exp $
 .\"
 .\" Developed by the TrustedBSD Project.
 .\" Support for POSIX.1e access control lists.
@@ -48,7 +48,7 @@ the specified file(s) to standard output.
 If the
 .Xr getconf 1
 utility indicates that
-.Eq { } Va _POSIX_ACL_EXTENDED
+.Brq Va _POSIX_ACL_EXTENDED
 is not in effect for a
 .Ar file
 then the standard discretionary access permissions are interpreted as

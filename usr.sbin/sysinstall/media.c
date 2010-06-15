@@ -4,7 +4,7 @@
  * This is probably the last attempt in the `sysinstall' line, the next
  * generation being slated to essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/media.c,v 1.128 2009/08/16 10:11:33 rink Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/media.c,v 1.129 2010/06/11 20:56:40 randi Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -350,7 +350,7 @@ mediaSetFTP(dialogMenuItem *self)
 	}
 	urllen = strlen(cp);
 	if (urllen >= sizeof(ftpDevice.name)) {
-	    msgConfirm("Length of specified URL is %d characters. Allowable maximum is %d.",
+	    msgConfirm("Length of specified URL is %zu characters. Allowable maximum is %zu.",
 			urllen,sizeof(ftpDevice.name)-1);
 	    variable_unset(VAR_FTP_PATH);
 	    return DITEM_FAILURE;
@@ -563,7 +563,7 @@ mediaSetNFS(dialogMenuItem *self)
     }
     pathlen = strlen(hostname);
     if (pathlen >= sizeof(nfsDevice.name)) {
-	msgConfirm("Length of specified NFS path is %d characters. Allowable maximum is %d.",
+	msgConfirm("Length of specified NFS path is %zu characters. Allowable maximum is %zu.",
 		   pathlen,sizeof(nfsDevice.name)-1);
 	variable_unset(VAR_NFS_PATH);
 	return DITEM_FAILURE;

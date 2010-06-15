@@ -34,7 +34,7 @@
 static char sccsid[] = "@(#)atexit.c	8.2 (Berkeley) 7/3/94";
 #endif /* LIBC_SCCS and not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/stdlib/atexit.c,v 1.8 2007/01/09 00:28:09 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/stdlib/atexit.c,v 1.9 2010/06/13 01:13:36 cperciva Exp $");
 
 #include "namespace.h"
 #include <stddef.h>
@@ -54,6 +54,7 @@ static pthread_mutex_t atexit_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define _MUTEX_LOCK(x)		if (__isthreaded) _pthread_mutex_lock(x)
 #define _MUTEX_UNLOCK(x)	if (__isthreaded) _pthread_mutex_unlock(x)
+#define _MUTEX_DESTROY(x)	if (__isthreaded) _pthread_mutex_destroy(x)
 
 struct atexit {
 	struct atexit *next;			/* next in list */
@@ -182,4 +183,6 @@ __cxa_finalize(void *dso)
 		}
 	}
 	_MUTEX_UNLOCK(&atexit_mutex);
+	if (dso == NULL)
+		_MUTEX_DESTROY(&atexit_mutex);
 }

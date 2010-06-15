@@ -26,7 +26,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_locore.S,v 1.16 2010/05/02 19:38:17 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_locore.S,v 1.17 2010/06/13 20:29:55 marius Exp $");
 
 #include <machine/asi.h>
 #include <machine/asmacros.h>
@@ -207,7 +207,7 @@ ENTRY(mp_startup)
 	bl	%icc, 2f
 	 nop
 	cmp	%l1, CPU_IMPL_ULTRASPARCIII
-	bl	%icc, 3f
+	bl	%icc, 4f
 	 nop
 2:	mov	CPU_STICKSYNC, %l2
 	membar	#StoreLoad

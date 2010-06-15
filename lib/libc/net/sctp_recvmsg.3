@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libc/net/sctp_recvmsg.3,v 1.7 2010/01/31 21:45:14 brucec Exp $
+.\" $FreeBSD: src/lib/libc/net/sctp_recvmsg.3,v 1.8 2010/06/11 18:43:55 brucec Exp $
 .\"
 .Dd August 13, 2007
 .Dt SCTP_RECVMSG 3
@@ -238,7 +238,7 @@ The
 field is not used by 
 .Fn sctp_recvmsg .
 .Sh RETURN VALUES
-The call returns the number of characters sent, or -1
+The call returns the number of bytes received, or -1
 if an error occurred.
 .Sh ERRORS
 The

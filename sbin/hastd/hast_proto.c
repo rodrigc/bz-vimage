@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/hast_proto.c,v 1.2 2010/04/22 19:18:10 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/hast_proto.c,v 1.3 2010/06/14 21:01:13 pjd Exp $");
 
 #include <sys/endian.h>
 
@@ -329,9 +329,7 @@ hast_proto_recv_hdr(struct proto_conn *conn, struct nv **nvp)
 	*nvp = nv;
 	return (0);
 fail:
-	if (nv != NULL)
-		nv_free(nv);
-	else if (eb != NULL)
+	if (eb != NULL)
 		ebuf_free(eb);
 	return (-1);
 }

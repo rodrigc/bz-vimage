@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/vm/uma_int.h,v 1.43 2010/03/22 22:39:32 kmacy Exp $
+ * $FreeBSD: src/sys/vm/uma_int.h,v 1.44 2010/06/15 19:28:37 sbruno Exp $
  *
  */
 
@@ -327,6 +327,7 @@ struct uma_zone {
 	u_int64_t	uz_allocs UMA_ALIGN; /* Total number of allocations */
 	u_int64_t	uz_frees;	/* Total number of frees */
 	u_int64_t	uz_fails;	/* Total number of alloc failures */
+	u_int64_t	uz_sleeps;	/* Total number of alloc sleeps */
 	uint16_t	uz_fills;	/* Outstanding bucket fills */
 	uint16_t	uz_count;	/* Highest value ub_ptr can have */
 

@@ -42,7 +42,7 @@ static char const sccsid[] = "@(#)from: arp.c	8.2 (Berkeley) 1/2/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/arp/arp.c,v 1.75 2010/02/15 14:29:17 ru Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/arp/arp.c,v 1.76 2010/06/11 19:35:05 mlaier Exp $");
 
 /*
  * arp - display, set, and delete arp table entries
@@ -555,6 +555,9 @@ search(u_long addr, action_fn *action)
 /*
  * Display an arp entry
  */
+static char lifname[IF_NAMESIZE];
+static int64_t lifindex = -1;
+
 static void
 print_entry(struct sockaddr_dl *sdl,
 	struct sockaddr_inarp *addr, struct rt_msghdr *rtm)
@@ -562,7 +565,6 @@ print_entry(struct sockaddr_dl *sdl,
 	const char *host;
 	struct hostent *hp;
 	struct iso88025_sockaddr_dl_data *trld;
-	char ifname[IF_NAMESIZE];
 	int seg;
 
 	if (nflag == 0)
@@ -591,8 +593,12 @@ print_entry(struct sockaddr_dl *sdl,
 		}
 	} else
 		printf("(incomplete)");
-	if (if_indextoname(sdl->sdl_index, ifname) != NULL)
-		printf(" on %s", ifname);
+	if (sdl->sdl_index != lifindex &&
+	    if_indextoname(sdl->sdl_index, lifname) != NULL) {
+        	lifindex = sdl->sdl_index;
+		printf(" on %s", lifname);
+        } else if (sdl->sdl_index == lifindex)
+		printf(" on %s", lifname);
 	if (rtm->rtm_rmx.rmx_expire == 0)
 		printf(" permanent");
 	else {

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clcomsubs.c,v 1.1 2009/05/04 15:23:58 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clcomsubs.c,v 1.2 2010/06/13 05:24:27 kib Exp $");
 
 /*
  * These functions support the macros and help fiddle mbuf chains for
@@ -194,10 +194,7 @@ nfsm_uiombuf(struct nfsrv_descript *nd, struct uio *uiop, int siz)
 	int uiosiz, clflg, rem;
 	char *cp, *tcp;
 
-#ifdef DIAGNOSTIC
-	if (uiop->uio_iovcnt != 1)
-		panic("nfsm_uiotombuf: iovcnt != 1");
-#endif
+	KASSERT(uiop->uio_iovcnt == 1, ("nfsm_uiotombuf: iovcnt != 1"));
 
 	if (siz > ncl_mbuf_mlen)	/* or should it >= MCLBYTES ?? */
 		clflg = 1;
@@ -346,10 +343,7 @@ nfscl_getcookie(struct nfsnode *np, off_t off, int add)
 
 	pos = off / NFS_DIRBLKSIZ;
 	if (pos == 0) {
-#ifdef DIAGNOSTIC
-		if (add)
-			panic("nfs getcookie add at 0");
-#endif
+		KASSERT(!add, ("nfs getcookie add at 0"));
 		return (&nfs_nullcookie);
 	}
 	pos--;

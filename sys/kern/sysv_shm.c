@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sysv_shm.c,v 1.127 2010/03/19 11:04:42 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sysv_shm.c,v 1.128 2010/06/11 09:27:33 ivoras Exp $");
 
 #include "opt_compat.h"
 #include "opt_sysvipc.h"
@@ -133,7 +133,7 @@ static int sysctl_shmsegs(SYSCTL_HANDLER_ARGS);
  * Tuneable values.
  */
 #ifndef SHMMAXPGS
-#define	SHMMAXPGS	8192	/* Note: sysv shared memory is swap backed. */
+#define	SHMMAXPGS	131072	/* Note: sysv shared memory is swap backed. */
 #endif
 #ifndef SHMMAX
 #define	SHMMAX	(SHMMAXPGS*PAGE_SIZE)

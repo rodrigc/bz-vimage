@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sysv_sem.c,v 1.100 2010/03/19 11:04:42 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sysv_sem.c,v 1.101 2010/06/11 09:27:33 ivoras Exp $");
 
 #include "opt_compat.h"
 #include "opt_sysvipc.h"
@@ -133,16 +133,16 @@ struct sem_undo {
  * Configuration parameters
  */
 #ifndef SEMMNI
-#define SEMMNI	10		/* # of semaphore identifiers */
+#define SEMMNI	50		/* # of semaphore identifiers */
 #endif
 #ifndef SEMMNS
-#define SEMMNS	60		/* # of semaphores in system */
+#define SEMMNS	340		/* # of semaphores in system */
 #endif
 #ifndef SEMUME
-#define SEMUME	10		/* max # of undo entries per process */
+#define SEMUME	50		/* max # of undo entries per process */
 #endif
 #ifndef SEMMNU
-#define SEMMNU	30		/* # of undo structures in system */
+#define SEMMNU	150		/* # of undo structures in system */
 #endif
 
 /* shouldn't need tuning */

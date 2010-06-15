@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/busdma_machdep.c,v 1.50 2009/04/17 13:22:18 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/busdma_machdep.c,v 1.51 2010/06/11 03:00:32 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -48,7 +48,7 @@ __FBSDID("$FreeBSD: src/sys/ia64/ia64/busdma_machdep.c,v 1.50 2009/04/17 13:22:1
 #include <machine/bus.h>
 #include <machine/md_var.h>
 
-#define MAX_BPAGES 256
+#define	MAX_BPAGES	1024
 
 struct bus_dma_tag {
 	bus_dma_tag_t	  parent;
@@ -77,7 +77,7 @@ struct bounce_page {
 	STAILQ_ENTRY(bounce_page) links;
 };
 
-int busdma_swi_pending;
+u_int busdma_swi_pending;
 
 static struct mtx bounce_lock;
 static STAILQ_HEAD(bp_list, bounce_page) bounce_page_list;

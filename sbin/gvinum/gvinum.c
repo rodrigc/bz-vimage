@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/gvinum/gvinum.c,v 1.14 2010/03/03 21:27:54 lulf Exp $
+ * $FreeBSD: src/sbin/gvinum/gvinum.c,v 1.15 2010/06/11 17:02:57 uqs Exp $
  */
 
 #include <sys/param.h>
@@ -644,6 +644,7 @@ gvinum_detach(int argc, char **argv)
 	struct gctl_req *req;
 	int flags, i;
 
+	flags = 0;
 	optreset = 1;
 	optind = 1;
 	while ((i = getopt(argc, argv, "f")) != -1) {

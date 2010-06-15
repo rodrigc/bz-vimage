@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/sys/smp.h,v 1.92 2009/09/21 13:09:56 kib Exp $
+ * $FreeBSD: src/sys/sys/smp.h,v 1.93 2010/06/11 15:56:18 jhb Exp $
  */
 
 #ifndef _SYS_SMP_H_
@@ -90,6 +90,44 @@ extern cpumask_t all_cpus;
  * (per-CPU) structures.
  */
 #define	CPU_ABSENT(x_cpu)	((all_cpus & (1 << (x_cpu))) == 0)
+
+/*
+ * Macros to iterate over non-absent CPUs.  CPU_FOREACH() takes an
+ * integer iterator and iterates over the available set of CPUs.
+ * CPU_FIRST() returns the id of the first non-absent CPU.  CPU_NEXT()
+ * returns the id of the next non-absent CPU.  It will wrap back to
+ * CPU_FIRST() once the end of the list is reached.  The iterators are
+ * currently implemented via inline functions.
+ */
+#define	CPU_FOREACH(i)							\
+	for ((i) = 0; (i) <= mp_maxid; (i)++)				\
+		if (!CPU_ABSENT((i)))
+
+static __inline int
+cpu_first(void)
+{
+	int i;
+
+	for (i = 0;; i++)
+		if (!CPU_ABSENT(i))
+			return (i);
+}
+
+static __inline int
+cpu_next(int i)
+{
+
+	for (;;) {
+		i++;
+		if (i > mp_maxid)
+			i = 0;
+		if (!CPU_ABSENT(i))
+			return (i);
+	}
+}
+
+#define	CPU_FIRST()	cpu_first()
+#define	CPU_NEXT(i)	cpu_next((i))
 
 #ifdef SMP
 /*

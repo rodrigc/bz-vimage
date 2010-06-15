@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/pci/pcivar.h,v 1.86 2010/02/05 17:18:48 mav Exp $
+ * $FreeBSD: src/sys/dev/pci/pcivar.h,v 1.87 2010/06/14 07:10:37 mav Exp $
  *
  */
 
@@ -444,12 +444,6 @@ pci_msix_count(device_t dev)
 device_t pci_find_bsf(uint8_t, uint8_t, uint8_t);
 device_t pci_find_dbsf(uint32_t, uint8_t, uint8_t, uint8_t);
 device_t pci_find_device(uint16_t, uint16_t);
-
-/*
- * Can be used by MD code to request the PCI bus to re-map an MSI or
- * MSI-X message.
- */
-int	pci_remap_msi_irq(device_t dev, u_int irq);
 
 /* Can be used by drivers to manage the MSI-X table. */
 int	pci_pending_msix(device_t dev, u_int index);

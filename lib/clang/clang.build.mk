@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/clang.build.mk,v 1.2 2010/06/10 12:06:35 ed Exp $
+# $FreeBSD: src/lib/clang/clang.build.mk,v 1.6 2010/06/15 17:08:03 ed Exp $
 
 CLANG_SRCS=${LLVM_SRCS}/tools/clang
 
@@ -8,10 +8,16 @@ CFLAGS+=-I${LLVM_SRCS}/include -I${CLANG_SRCS}/include \
 	-DLLVM_ON_UNIX -DLLVM_ON_FREEBSD \
 	-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS #-DNDEBUG
 
+# Correct for gcc miscompilation when compiling on PPC with -O2
+.if ${MACHINE_ARCH} == "powerpc"
+CFLAGS+= -O1
+.endif
+
 TARGET_ARCH?=	${MACHINE_ARCH}
 # XXX: 8.0, to keep __FreeBSD_cc_version happy
 CFLAGS+=-DLLVM_HOSTTRIPLE=\"${TARGET_ARCH}-undermydesk-freebsd9.0\" \
-	-DCLANG_VENDOR=\"clang\ r104832\ 20100610\ [FreeBSD]\\n\"
+	-DCLANG_VENDOR=\"FreeBSD\ \" -DSVN_REVISION=\"104832\" \
+	-DCLANG_VENDOR_SUFFIX=\"\ 20100615\"
 
 .PATH:	${LLVM_SRCS}/${SRCDIR}
 

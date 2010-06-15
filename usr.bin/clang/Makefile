@@ -1,5 +1,5 @@
-# $FreeBSD: src/usr.bin/clang/Makefile,v 1.1 2010/06/09 19:32:20 rdivacky Exp $
+# $FreeBSD: src/usr.bin/clang/Makefile,v 1.2 2010/06/12 16:04:29 des Exp $
 
-SUBDIR=	clang
+SUBDIR=	clang tblgen
 
 .include <bsd.subdir.mk>

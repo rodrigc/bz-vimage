@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_taskqueue.c,v 1.56 2010/06/01 16:04:01 zml Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_taskqueue.c,v 1.57 2010/06/11 19:27:21 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -322,7 +322,7 @@ taskqueue_start_threads(struct taskqueue **tqp, int count, int pri,
 	for (i = 0; i < count; i++) {
 		if (count == 1)
 			error = kthread_add(taskqueue_thread_loop, tqp, NULL,
-			    &tq->tq_threads[i], RFSTOPPED, 0, ktname);
+			    &tq->tq_threads[i], RFSTOPPED, 0, "%s", ktname);
 		else
 			error = kthread_add(taskqueue_thread_loop, tqp, NULL,
 			    &tq->tq_threads[i], RFSTOPPED, 0,

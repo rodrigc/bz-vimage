@@ -1,4 +1,6 @@
-# $FreeBSD: src/sys/boot/powerpc/uboot/Makefile,v 1.5 2010/05/25 15:21:39 raj Exp $
+# $FreeBSD: src/sys/boot/powerpc/uboot/Makefile,v 1.6 2010/06/13 12:46:32 raj Exp $
+
+.include <bsd.own.mk>
 
 PROG=		ubldr
 NEWVERSWHAT=	"U-Boot loader" ${MACHINE_ARCH}
@@ -18,7 +20,7 @@ LOADER_NFS_SUPPORT?=	yes
 LOADER_TFTP_SUPPORT?=	no
 LOADER_GZIP_SUPPORT?=	no
 LOADER_BZIP2_SUPPORT?=	no
-.if defined(WITH_FDT)
+.if ${MK_FDT} != "no"
 LOADER_FDT_SUPPORT=	yes
 .else
 LOADER_FDT_SUPPORT=	no

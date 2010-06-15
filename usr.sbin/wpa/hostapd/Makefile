@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/wpa/hostapd/Makefile,v 1.7 2009/03/02 02:28:22 sam Exp $
+# $FreeBSD: src/usr.sbin/wpa/hostapd/Makefile,v 1.8 2010/06/14 15:38:30 rpaulo Exp $
 
 .include "${.CURDIR}/../Makefile.inc"
 
@@ -14,7 +14,7 @@ SRCS=	accounting.c aes.c aes_wrap.c ap_list.c beacon.c common.c \
 	ieee802_1x.c ip_addr.c md5.c mlme.c pmksa_cache.c radius.c \
 	radius_client.c rc4.c sha1.c sta_info.c vlan_init.c wme.c \
 	wpa.c wpa_auth_ie.c wpa_common.c wpa_debug.c wpabuf.c
-SRCS+=	l2_packet.c driver_freebsd.c os_unix.c
+SRCS+=	l2_packet_freebsd.c driver_freebsd.c os_unix.c
 
 MAN=	hostapd.8 hostapd.conf.5
 

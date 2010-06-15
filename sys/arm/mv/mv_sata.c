@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/mv/mv_sata.c,v 1.6 2010/04/01 19:05:43 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/mv/mv_sata.c,v 1.7 2010/06/13 13:28:53 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -48,6 +48,8 @@ __FBSDID("$FreeBSD: src/sys/arm/mv/mv_sata.c,v 1.6 2010/04/01 19:05:43 mav Exp $
 
 #include <sys/ata.h>
 #include <dev/ata/ata-all.h>
+#include <dev/ofw/ofw_bus.h>
+#include <dev/ofw/ofw_bus_subr.h>
 
 #include "ata_if.h"
 
@@ -173,7 +175,7 @@ static driver_t sata_driver = {
 
 devclass_t sata_devclass;
 
-DRIVER_MODULE(sata, mbus, sata_driver, sata_devclass, 0, 0);
+DRIVER_MODULE(sata, simplebus, sata_driver, sata_devclass, 0, 0);
 MODULE_VERSION(sata, 1);
 MODULE_DEPEND(sata, ata, 1, 1, 1);
 
@@ -183,12 +185,11 @@ sata_probe(device_t dev)
 	struct sata_softc *sc;
 	uint32_t d, r;
 
+	if (!ofw_bus_is_compatible(dev, "mrvl,sata"))
+		return (ENXIO);
+
 	soc_id(&d, &r);
 	sc = device_get_softc(dev);
-
-	/* No SATA controller on the 88F5281 SoC */
-	if (d == MV_DEV_88F5281)
-		return (ENXIO);
 
 	switch(d) {
 	case MV_DEV_88F5182:

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/camcontrol/modeedit.c,v 1.17 2004/01/22 07:23:35 grehan Exp $");
+__FBSDID("$FreeBSD: src/sbin/camcontrol/modeedit.c,v 1.18 2010/06/11 17:02:57 uqs Exp $");
 
 #include <sys/queue.h>
 #include <sys/types.h>
@@ -394,6 +394,7 @@ load_format(const char *pagedb_path, int page)
 
 	SLIST_INIT(&namelist);
 
+	c = '\0';
 	depth = 0;
 	lineno = 0;
 	found = 0;

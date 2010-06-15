@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.84 2010/04/15 08:39:56 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.85 2010/06/10 17:49:36 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -779,19 +779,18 @@ g_print_bio(struct bio *bp)
 		return;
 	case BIO_READ:
 		cmd = "READ";
+		break;
 	case BIO_WRITE:
-		if (cmd == NULL)
-			cmd = "WRITE";
+		cmd = "WRITE";
+		break;
 	case BIO_DELETE:
-		if (cmd == NULL)
-			cmd = "DELETE";
-		printf("%s[%s(offset=%jd, length=%jd)]", pname, cmd,
-		    (intmax_t)bp->bio_offset, (intmax_t)bp->bio_length);
-		return;
+		cmd = "DELETE";
+		break;
 	default:
 		cmd = "UNKNOWN";
 		printf("%s[%s()]", pname, cmd);
 		return;
 	}
-	/* NOTREACHED */
+	printf("%s[%s(offset=%jd, length=%jd)]", pname, cmd,
+	    (intmax_t)bp->bio_offset, (intmax_t)bp->bio_length);
 }

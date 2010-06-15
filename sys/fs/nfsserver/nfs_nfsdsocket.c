@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdsocket.c,v 1.4 2009/05/26 01:16:09 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdsocket.c,v 1.5 2010/06/13 05:24:27 kib Exp $");
 
 /*
  * Socket operations for use by the nfs server.
@@ -364,10 +364,7 @@ nfsrvd_dorpc(struct nfsrv_descript *nd, int isdgram,
 	 * Get a locked vnode for the first file handle
 	 */
 	if (!(nd->nd_flag & ND_NFSV4)) {
-#ifdef DIAGNOSTIC
-		if (nd->nd_repstat)
-			panic("nfsrvd_dorpc");
-#endif
+		KASSERT(nd->nd_repstat == 0, ("nfsrvd_dorpc"));
 		/*
 		 * For NFSv3, if the malloc/mget allocation is near limits,
 		 * return NFSERR_DELAY.

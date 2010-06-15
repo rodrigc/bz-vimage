@@ -42,7 +42,7 @@ static const char sccsid[] = "@(#)random.c	8.5 (Berkeley) 4/5/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/games/random/random.c,v 1.25 2010/02/15 18:46:02 imp Exp $");
+__FBSDID("$FreeBSD: src/games/random/random.c,v 1.26 2010/06/14 13:03:25 uqs Exp $");
 
 #include <sys/types.h>
 
@@ -73,7 +73,7 @@ main(int argc, char *argv[])
 	denom = 0;
 	filename = "/dev/fd/0";
 	random_type = RANDOM_TYPE_UNSET;
-	random_exit = randomize_lines = random_type = unbuffer_output = 0;
+	random_exit = randomize_lines = unbuffer_output = 0;
 	unique_output = 1;
 
 	(void)setlocale(LC_CTYPE, "");

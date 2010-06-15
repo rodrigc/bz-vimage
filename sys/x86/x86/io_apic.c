@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/io_apic.c,v 1.1 2010/06/08 17:51:21 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/io_apic.c,v 1.2 2010/06/10 17:04:01 mav Exp $");
 
 #include "opt_isa.h"
 
@@ -356,7 +356,7 @@ ioapic_assign_cpu(struct intsrc *isrc, u_int apic_id)
 	 * extra DELAY() to avoid being stuck in a non-EOI'd state.
 	 */
 	mtx_lock_spin(&icu_lock);
-	if (!intpin->io_masked) {
+	if (!intpin->io_masked && !intpin->io_edgetrigger) {
 		ioapic_write(io->io_addr, IOAPIC_REDTBL_LO(intpin->io_intpin),
 		    intpin->io_lowreg | IOART_INTMSET);
 		DELAY(100);

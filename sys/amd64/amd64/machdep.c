@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.718 2010/06/05 15:59:59 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.720 2010/06/15 18:16:04 kib Exp $");
 
 #include "opt_atalk.h"
 #include "opt_atpic.h"
@@ -2103,11 +2103,6 @@ set_fpcontext(struct thread *td, const mcontext_t *mcp)
 		fpstate_drop(td);
 	else if (mcp->mc_ownedfp == _MC_FPOWNED_FPU ||
 	    mcp->mc_ownedfp == _MC_FPOWNED_PCB) {
-		/*
-		 * XXX we violate the dubious requirement that fpusetregs()
-		 * be called with interrupts disabled.
-		 * XXX obsolete on trap-16 systems?
-		 */
 		fpstate = (struct savefpu *)&mcp->mc_fpstate;
 		fpstate->sv_env.en_mxcsr &= cpu_mxcsr_mask;
 		fpusetuserregs(td, fpstate);
@@ -2119,10 +2114,9 @@ set_fpcontext(struct thread *td, const mcontext_t *mcp)
 void
 fpstate_drop(struct thread *td)
 {
-	register_t s;
 
 	KASSERT(PCB_USER_FPU(td->td_pcb), ("fpstate_drop: kernel-owned fpu"));
-	s = intr_disable();
+	critical_enter();
 	if (PCPU_GET(fpcurthread) == td)
 		fpudrop();
 	/*
@@ -2137,7 +2131,7 @@ fpstate_drop(struct thread *td)
 	 */
 	curthread->td_pcb->pcb_flags &= ~(PCB_FPUINITDONE |
 	    PCB_USERFPUINITDONE);
-	intr_restore(s);
+	critical_exit();
 }
 
 int

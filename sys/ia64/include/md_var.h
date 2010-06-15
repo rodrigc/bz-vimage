@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/md_var.h,v 1.32 2010/02/14 16:56:24 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/md_var.h,v 1.33 2010/06/11 03:00:32 marcel Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -75,6 +75,7 @@ struct ia64_init_return {
 extern uint64_t ia64_lapic_addr;
 
 extern long Maxmem;
+extern u_int busdma_swi_pending;
 
 void	busdma_swi(void);
 int	copyout_regstack(struct thread *, uint64_t *, uint64_t *);

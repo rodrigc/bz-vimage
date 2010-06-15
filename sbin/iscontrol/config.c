@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/iscontrol/config.c,v 1.2 2008/11/25 07:17:11 scottl Exp $");
+__FBSDID("$FreeBSD: src/sbin/iscontrol/config.c,v 1.3 2010/06/11 17:03:04 uqs Exp $");
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -249,7 +249,6 @@ getConfig(FILE *fd, char *key, char **Ar, int *nargs)
 	  switch(state) {
 	  case 0:
 	       if((p = strchr(lp, '{')) != NULL) {
-		    n = 0;
 		    while((--p > lp) && *p && isspace(*p));
 		    n = p - lp;
 		    if(len && strncmp(lp, key, MAX(n, len)) == 0)

@@ -32,7 +32,7 @@
 static char sccsid[] = "@(#)mkmakefile.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.98 2010/04/27 05:04:32 imp Exp $";
+  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.99 2010/06/13 16:54:11 imp Exp $";
 #endif /* not lint */
 
 /*
@@ -683,6 +683,7 @@ do_rules(FILE *f)
 	char *cp, *np, och;
 	struct file_list *ftp;
 	char *compilewith;
+	char cmd[128];
 
 	STAILQ_FOREACH(ftp, &ftab, f_next) {
 		if (ftp->f_warn)
@@ -720,25 +721,22 @@ do_rules(FILE *f)
 		compilewith = ftp->f_compilewith;
 		if (compilewith == 0) {
 			const char *ftype = NULL;
-			static char cmd[128];
 
 			switch (ftp->f_type) {
-
 			case NORMAL:
 				ftype = "NORMAL";
 				break;
-
 			case PROFILING:
 				if (!profiling)
 					continue;
 				ftype = "PROFILE";
 				break;
-
 			default:
 				printf("config: don't know rules for %s\n", np);
 				break;
 			}
-			snprintf(cmd, sizeof(cmd), "${%s_%c%s}\n\t@${NORMAL_CTFCONVERT}", ftype,
+			snprintf(cmd, sizeof(cmd),
+			    "${%s_%c%s}\n\t@${NORMAL_CTFCONVERT}", ftype,
 			    toupper(och),
 			    ftp->f_flags & NOWERROR ? "_NOWERROR" : "");
 			compilewith = cmd;

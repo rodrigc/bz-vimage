@@ -57,7 +57,7 @@
  * any improvements or extensions that they make and grant Carnegie the
  * rights to redistribute these changes.
  *
- * $FreeBSD: src/sys/vm/vm_page.h,v 1.169 2010/05/29 17:10:45 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_page.h,v 1.170 2010/06/10 16:56:35 alc Exp $
  */
 
 /*
@@ -218,6 +218,9 @@ extern struct vpglocks pa_lock[];
  *	 via the object/vm_page_t because there is no knowledge of their
  *	 pte mappings, nor can they be removed from their objects via 
  *	 the object, and such pages are also not on any PQ queue.
+ *
+ * PG_REFERENCED may be cleared only if the object containing the page is
+ * locked.
  *
  * PG_WRITEABLE is set exclusively on managed pages by pmap_enter().  When it
  * does so, the page must be VPO_BUSY.

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_timeout.c,v 1.120 2009/12/14 12:23:46 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_timeout.c,v 1.121 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_kdtrace.h"
 
@@ -228,10 +228,8 @@ start_softclock(void *dummy)
 		panic("died while creating standard software ithreads");
 	cc->cc_cookie = softclock_ih;
 #ifdef SMP
-	for (cpu = 0; cpu <= mp_maxid; cpu++) {
+	CPU_FOREACH(cpu) {
 		if (cpu == timeout_cpu)
-			continue;
-		if (CPU_ABSENT(cpu))
 			continue;
 		cc = CC_CPU(cpu);
 		if (swi_add(NULL, "clock", softclock, cc, SWI_CLOCK,

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_thermal.c,v 1.73 2009/08/20 19:17:53 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_thermal.c,v 1.74 2010/06/11 19:27:21 avg Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -1171,7 +1171,6 @@ static int
 acpi_tz_cooling_thread_start(struct acpi_tz_softc *sc)
 {
     int error;
-    char name[16];
 
     ACPI_LOCK(thermal);
     if (sc->tz_cooling_proc_running) {
@@ -1182,10 +1181,9 @@ acpi_tz_cooling_thread_start(struct acpi_tz_softc *sc)
     ACPI_UNLOCK(thermal);
     error = 0;
     if (sc->tz_cooling_proc == NULL) {
-	snprintf(name, sizeof(name), "acpi_cooling%d",
-	    device_get_unit(sc->tz_dev));
 	error = kproc_create(acpi_tz_cooling_thread, sc,
-	    &sc->tz_cooling_proc, RFHIGHPID, 0, name);
+	    &sc->tz_cooling_proc, RFHIGHPID, 0, "acpi_cooling%d",
+	    device_get_unit(sc->tz_dev));
 	if (error != 0) {
 	    device_printf(sc->tz_dev, "could not create thread - %d", error);
 	    ACPI_LOCK(thermal);

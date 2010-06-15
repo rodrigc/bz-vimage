@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_kdb.c,v 1.28 2009/08/13 17:09:45 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_kdb.c,v 1.29 2010/06/11 19:27:21 avg Exp $");
 
 #include "opt_kdb.h"
 
@@ -230,7 +230,7 @@ kdb_panic(const char *msg)
 	stop_cpus_hard(PCPU_GET(other_cpus));
 #endif
 	printf("KDB: panic\n");
-	panic(msg);
+	panic("%s", msg);
 }
 
 void

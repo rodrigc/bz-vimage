@@ -26,7 +26,7 @@
 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_switch.c,v 1.146 2009/06/25 01:33:51 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_switch.c,v 1.147 2010/06/11 18:46:34 jhb Exp $");
 
 #include "opt_sched.h"
 
@@ -133,9 +133,7 @@ sysctl_stats_reset(SYSCTL_HANDLER_ARGS)
 		if (p == oidp || p->oid_arg1 == NULL)
 			continue;
 		counter = (uintptr_t)p->oid_arg1;
-		for (i = 0; i <= mp_maxid; i++) {
-			if (CPU_ABSENT(i))
-				continue;
+		CPU_FOREACH(i) {
 			*(long *)(dpcpu_off[i] + counter) = 0;
 		}
 	}

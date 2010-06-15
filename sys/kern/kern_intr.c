@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_intr.c,v 1.176 2010/01/27 09:59:08 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_intr.c,v 1.177 2010/06/10 16:14:05 mav Exp $");
 
 #include "opt_ddb.h"
 
@@ -1347,6 +1347,7 @@ int
 intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 {
 	struct intr_handler *ih;
+	struct trapframe *oldframe;
 	struct thread *td;
 	int error, ret, thread;
 
@@ -1366,6 +1367,8 @@ intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 	thread = 0;
 	ret = 0;
 	critical_enter();
+	oldframe = td->td_intr_frame;
+	td->td_intr_frame = frame;
 	TAILQ_FOREACH(ih, &ie->ie_handlers, ih_next) {
 		if (ih->ih_filter == NULL) {
 			thread = 1;
@@ -1403,6 +1406,7 @@ intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 				thread = 1;
 		}
 	}
+	td->td_intr_frame = oldframe;
 
 	if (thread) {
 		if (ie->ie_pre_ithread != NULL)
@@ -1592,6 +1596,7 @@ int
 intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 {
 	struct intr_thread *ithd;
+	struct trapframe *oldframe;
 	struct thread *td;
 	int thread;
 
@@ -1604,6 +1609,8 @@ intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 	td->td_intr_nesting_level++;
 	thread = 0;
 	critical_enter();
+	oldframe = td->td_intr_frame;
+	td->td_intr_frame = frame;
 	thread = intr_filter_loop(ie, frame, &ithd);	
 	if (thread & FILTER_HANDLED) {
 		if (ie->ie_post_filter != NULL)
@@ -1612,6 +1619,7 @@ intr_event_handle(struct intr_event *ie, struct trapframe *frame)
 		if (ie->ie_pre_ithread != NULL)
 			ie->ie_pre_ithread(ie->ie_source);
 	}
+	td->td_intr_frame = oldframe;
 	critical_exit();
 	
 	/* Interrupt storm logic */

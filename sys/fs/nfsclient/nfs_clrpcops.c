@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.10 2010/04/28 23:05:42 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.11 2010/06/13 05:24:27 kib Exp $");
 
 /*
  * Rpc op calls, generally called from the vnode op calls or through the
@@ -1445,10 +1445,7 @@ nfsrpc_writerpc(vnode_t vp, struct uio *uiop, int *iomode,
 	struct nfsrv_descript *nd = &nfsd;
 	nfsattrbit_t attrbits;
 
-#ifdef DIAGNOSTIC
-	if (uiop->uio_iovcnt != 1)
-		panic("nfs: writerpc iovcnt > 1");
-#endif
+	KASSERT(uiop->uio_iovcnt == 1, ("nfs: writerpc iovcnt > 1"));
 	*attrflagp = 0;
 	tsiz = uio_uio_resid(uiop);
 	NFSLOCKMNT(nmp);
@@ -2501,10 +2498,9 @@ nfsrpc_readdir(vnode_t vp, struct uio *uiop, nfsuint64 *cookiep,
 	u_int32_t *tl2 = NULL;
 	size_t tresid;
 
-#ifdef DIAGNOSTIC
-	if (uiop->uio_iovcnt != 1 || (uio_uio_resid(uiop) & (DIRBLKSIZ - 1)))
-		panic("nfs readdirrpc bad uio");
-#endif
+	KASSERT(uiop->uio_iovcnt == 1 &&
+	    (uio_uio_resid(uiop) & (DIRBLKSIZ - 1)) == 0,
+	    ("nfs readdirrpc bad uio"));
 
 	/*
 	 * There is no point in reading a lot more than uio_resid, however
@@ -2939,10 +2935,9 @@ nfsrpc_readdirplus(vnode_t vp, struct uio *uiop, nfsuint64 *cookiep,
 	size_t tresid;
 	u_int32_t *tl2 = NULL, fakefileno = 0xffffffff, rderr;
 
-#ifdef DIAGNOSTIC
-	if (uiop->uio_iovcnt != 1 || (uio_uio_resid(uiop) & (DIRBLKSIZ - 1)))
-		panic("nfs readdirplusrpc bad uio");
-#endif
+	KASSERT(uiop->uio_iovcnt == 1 &&
+	    (uio_uio_resid(uiop) & (DIRBLKSIZ - 1)) == 0,
+	    ("nfs readdirplusrpc bad uio"));
 	*attrflagp = 0;
 	if (eofp != NULL)
 		*eofp = 0;

@@ -35,7 +35,7 @@ __KERNEL_RCSID(0, "$NetBSD$");
 #endif
 #ifdef	__FreeBSD__
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_library.c,v 1.22 2010/06/02 23:31:27 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_library.c,v 1.23 2010/06/10 19:38:07 mjacob Exp $");
 #include <dev/isp/isp_freebsd.h>
 #endif
 #ifdef	__OpenBSD__
@@ -344,7 +344,7 @@ isp_print_qentry(ispsoftc_t *isp, const char *msg, int idx, void *arg)
 		for (j = 0; j < (QENTRY_LEN >> 2); j++) {
 			ISP_SNPRINTF(buf, TBA, "%s %02x", buf, ptr[amt++] & 0xff);
 		}
-		isp_prt(isp, ISP_LOGALL, buf);
+		isp_prt(isp, ISP_LOGALL, "%s", buf);
 	}
 }
 

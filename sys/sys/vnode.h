@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vnode.h	8.7 (Berkeley) 2/4/94
- * $FreeBSD: src/sys/sys/vnode.h,v 1.368 2010/05/12 21:24:46 zml Exp $
+ * $FreeBSD: src/sys/sys/vnode.h,v 1.369 2010/06/11 18:20:56 avg Exp $
  */
 
 #ifndef _SYS_VNODE_H_
@@ -524,17 +524,17 @@ void	assert_vop_unlocked(struct vnode *vp, const char *str);
 
 #else /* !DEBUG_VFS_LOCKS */
 
-#define	ASSERT_VI_LOCKED(vp, str)
-#define	ASSERT_VI_UNLOCKED(vp, str)
-#define	ASSERT_VOP_ELOCKED(vp, str)
+#define	ASSERT_VI_LOCKED(vp, str)	((void)0)
+#define	ASSERT_VI_UNLOCKED(vp, str)	((void)0)
+#define	ASSERT_VOP_ELOCKED(vp, str)	((void)0)
 #if 0
 #define	ASSERT_VOP_ELOCKED_OTHER(vp, str)
 #endif
-#define	ASSERT_VOP_LOCKED(vp, str)
+#define	ASSERT_VOP_LOCKED(vp, str)	((void)0)
 #if 0
 #define	ASSERT_VOP_SLOCKED(vp, str)
 #endif
-#define	ASSERT_VOP_UNLOCKED(vp, str)
+#define	ASSERT_VOP_UNLOCKED(vp, str)	((void)0)
 #endif /* DEBUG_VFS_LOCKS */
 
 

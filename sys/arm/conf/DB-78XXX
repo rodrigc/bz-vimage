@@ -1,7 +1,7 @@
 #
 # Custom kernel for Marvell DB-78xx boards.
 #
-# $FreeBSD: src/sys/arm/conf/DB-78XXX,v 1.8 2010/04/22 21:31:34 thompsa Exp $
+# $FreeBSD: src/sys/arm/conf/DB-78XXX,v 1.9 2010/06/13 13:28:53 raj Exp $
 #
 
 ident		DB-88F78XX
@@ -83,3 +83,7 @@ device		ds133x
 # SATA
 device		ata
 device		atadisk
+
+# Flattened Device Tree
+options 	FDT
+makeoptions	FDT_DTS_FILE=db78100.dts

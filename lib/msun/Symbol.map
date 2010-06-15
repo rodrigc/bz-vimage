@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/msun/Symbol.map,v 1.21 2008/08/07 15:07:48 das Exp $
+ * $FreeBSD: src/lib/msun/Symbol.map,v 1.22 2010/06/12 17:32:05 das Exp $
  */
 
 /* 7.0-CURRENT */
@@ -217,4 +217,9 @@ FBSD_1.1 {
 	cproj;
 	cprojf;
 	cprojl;
+};
+
+/* First added in 9.0-CURRENT */
+FBSD_1.2 {
+	__isnanf;
 };

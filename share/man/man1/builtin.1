@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man1/builtin.1,v 1.32 2010/05/09 15:00:30 jilles Exp $
+.\" $FreeBSD: src/share/man/man1/builtin.1,v 1.33 2010/06/11 06:04:00 uqs Exp $
 .\"
 .Dd May 9, 2010
 .Dt BUILTIN 1
@@ -193,9 +193,7 @@ under
 do exist externally,
 but are implemented as scripts using a builtin command of the same name.
 .Bl -column ".Ic uncomplete" ".Em External" ".Xr csh 1" ".Xr sh 1" -offset indent
-.It Xo
-.Em "Command	External" Ta Xr csh 1 Ta Xr sh 1
-.Xc
+.It Em Command Ta Em External Ta Xr csh 1 Ta Xr sh 1
 .It Ic \&! Ta \&No Ta \&No Ta Yes
 .It Ic % Ta \&No Ta Yes Ta \&No
 .It Ic \&. Ta \&No Ta \&No Ta Yes

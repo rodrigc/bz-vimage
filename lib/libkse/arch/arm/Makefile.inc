@@ -1,6 +1,4 @@
-# $FreeBSD: src/lib/libkse/arch/arm/Makefile.inc,v 1.3 2007/10/09 13:42:22 obrien Exp $
-
-.PATH:	${.CURDIR}/arch/${MACHINE_ARCH}/${MACHINE_ARCH}
+# $FreeBSD: src/lib/libkse/arch/arm/Makefile.inc,v 1.4 2010/06/13 01:27:29 imp Exp $
 
 CFLAGS+=-DSYSTEM_SCOPE_ONLY
 

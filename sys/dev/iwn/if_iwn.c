@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iwn/if_iwn.c,v 1.36 2010/05/06 17:53:04 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iwn/if_iwn.c,v 1.37 2010/06/14 18:26:10 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/sockio.h>
@@ -3007,7 +3007,7 @@ iwn_tx_data(struct iwn_softc *sc, struct mbuf *m, struct ieee80211_node *ni,
 		txant = IWN_LSB(sc->txchainmask);
 		tx->rflags |= IWN_RFLAG_ANT(txant);
 	} else {
-		tx->linkq = 0;
+		tx->linkq = IWN_RIDX_OFDM54 - ridx;
 		flags |= IWN_TX_LINKQ;	/* enable MRR */
 	}
 

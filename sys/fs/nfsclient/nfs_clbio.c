@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clbio.c,v 1.17 2010/05/07 15:49:43 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clbio.c,v 1.18 2010/06/13 05:24:27 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -453,10 +453,7 @@ ncl_bioread(struct vnode *vp, struct uio *uio, int ioflag, struct ucred *cred)
 	int seqcount;
 	int nra, error = 0, n = 0, on = 0;
 
-#ifdef DIAGNOSTIC
-	if (uio->uio_rw != UIO_READ)
-		panic("ncl_read mode");
-#endif
+	KASSERT(uio->uio_rw == UIO_READ, ("ncl_read mode"));
 	if (uio->uio_resid == 0)
 		return (0);
 	if (uio->uio_offset < 0)	/* XXX VDIR cookies can be negative */
@@ -881,12 +878,9 @@ ncl_write(struct vop_write_args *ap)
 	int bcount;
 	int n, on, error = 0;
 
-#ifdef DIAGNOSTIC
-	if (uio->uio_rw != UIO_WRITE)
-		panic("ncl_write mode");
-	if (uio->uio_segflg == UIO_USERSPACE && uio->uio_td != curthread)
-		panic("ncl_write proc");
-#endif
+	KASSERT(uio->uio_rw == UIO_WRITE, ("ncl_write mode"));
+	KASSERT(uio->uio_segflg != UIO_USERSPACE || uio->uio_td == curthread,
+	    ("ncl_write proc"));
 	if (vp->v_type != VREG)
 		return (EIO);
 	mtx_lock(&np->n_mtx);

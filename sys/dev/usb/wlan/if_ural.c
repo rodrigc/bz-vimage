@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.25 2010/05/03 07:32:50 sobomax Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.26 2010/06/14 23:01:50 jkim Exp $	*/
 
 /*-
  * Copyright (c) 2005, 2006
@@ -21,7 +21,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.25 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.26 2010/06/14 23:01:50 jkim Exp $");
 
 /*-
  * Ralink Technology RT2500USB chipset driver
@@ -1157,7 +1157,7 @@ ural_sendprot(struct ural_softc *sc,
 	ackrate = ieee80211_ack_rate(ic->ic_rt, rate);
 
 	isshort = (ic->ic_flags & IEEE80211_F_SHPREAMBLE) != 0;
-	dur = ieee80211_compute_duration(ic->ic_rt, pktlen, rate, isshort);
+	dur = ieee80211_compute_duration(ic->ic_rt, pktlen, rate, isshort)
 	    + ieee80211_ack_duration(ic->ic_rt, rate, isshort);
 	flags = RAL_TX_RETRY(7);
 	if (prot == IEEE80211_PROT_RTSCTS) {

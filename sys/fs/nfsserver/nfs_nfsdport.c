@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.22 2010/04/04 23:19:11 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.23 2010/06/15 00:25:04 rmacklem Exp $");
 
 /*
  * Functions that perform the vfs operations required by the routines in
@@ -3147,4 +3147,6 @@ DECLARE_MODULE(nfsd, nfsd_mod, SI_SUB_VFS, SI_ORDER_ANY);
 MODULE_VERSION(nfsd, 1);
 MODULE_DEPEND(nfsd, nfscommon, 1, 1, 1);
 MODULE_DEPEND(nfsd, nfslockd, 1, 1, 1);
+MODULE_DEPEND(nfsd, krpc, 1, 1, 1);
+MODULE_DEPEND(nfsd, nfssvc, 1, 1, 1);
 

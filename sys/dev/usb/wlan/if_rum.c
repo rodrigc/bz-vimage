@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.30 2010/05/08 11:56:00 emaste Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.31 2010/06/14 23:01:50 jkim Exp $	*/
 
 /*-
  * Copyright (c) 2005-2007 Damien Bergamini <damien.bergamini@free.fr>
@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.30 2010/05/08 11:56:00 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.31 2010/06/14 23:01:50 jkim Exp $");
 
 /*-
  * Ralink Technology RT2501USB/RT2601USB chipset driver
@@ -1051,7 +1051,7 @@ rum_sendprot(struct rum_softc *sc,
 	ackrate = ieee80211_ack_rate(ic->ic_rt, rate);
 
 	isshort = (ic->ic_flags & IEEE80211_F_SHPREAMBLE) != 0;
-	dur = ieee80211_compute_duration(ic->ic_rt, pktlen, rate, isshort);
+	dur = ieee80211_compute_duration(ic->ic_rt, pktlen, rate, isshort)
 	    + ieee80211_ack_duration(ic->ic_rt, rate, isshort);
 	flags = RT2573_TX_MORE_FRAG;
 	if (prot == IEEE80211_PROT_RTSCTS) {

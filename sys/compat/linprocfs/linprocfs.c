@@ -42,7 +42,7 @@
 #include "opt_compat.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.150 2010/04/14 13:44:22 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.151 2010/06/11 18:46:34 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -468,9 +468,7 @@ linprocfs_dostat(PFS_FILL_ARGS)
 	    T2J(cp_time[CP_NICE]),
 	    T2J(cp_time[CP_SYS] /*+ cp_time[CP_INTR]*/),
 	    T2J(cp_time[CP_IDLE]));
-	for (i = 0; i <= mp_maxid; ++i) {
-		if (CPU_ABSENT(i))
-			continue;
+	CPU_FOREACH(i) {
 		pcpu = pcpu_find(i);
 		cp = pcpu->pc_cp_time;
 		sbuf_printf(sb, "cpu%d %ld %ld %ld %ld\n", i,

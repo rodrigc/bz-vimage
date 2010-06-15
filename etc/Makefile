@@ -1,5 +1,5 @@
 #	from: @(#)Makefile	5.11 (Berkeley) 5/21/91
-# $FreeBSD: src/etc/Makefile,v 1.382 2010/05/19 23:56:26 jkim Exp $
+# $FreeBSD: src/etc/Makefile,v 1.383 2010/06/13 16:35:20 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -22,8 +22,12 @@ BIN1=	auth.conf \
 
 .if exists(${.CURDIR}/etc.${MACHINE}/ttys)
 BIN1+=	etc.${MACHINE}/ttys
-.else
+.elif exists(${.CURDIR}/etc.${MACHINE_ARCH}/ttys)
 BIN1+=	etc.${MACHINE_ARCH}/ttys
+.elif exists(${.CURDIR}/etc.${MACHINE_CPUARCH}/ttys)
+BIN1+=	etc.${MACHINE_CPUARCH}/ttys
+.else
+.error etc.MACHINE/ttys missing
 .endif
 
 OPENBSMDIR=			${.CURDIR}/../contrib/openbsm

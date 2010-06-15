@@ -38,7 +38,7 @@
  *
  *	from: @(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
- * $FreeBSD: src/sys/ia64/ia64/vm_machdep.c,v 1.99 2010/03/09 02:08:02 marcel Exp $
+ * $FreeBSD: src/sys/ia64/ia64/vm_machdep.c,v 1.100 2010/06/11 03:00:32 marcel Exp $
  */
 /*-
  * Copyright (c) 1994, 1995, 1996 Carnegie-Mellon University.
@@ -378,9 +378,8 @@ sf_buf_free(struct sf_buf *sf)
  */   
 void  
 swi_vm(void *dummy) 
-{     
-#if 0
+{
+
 	if (busdma_swi_pending != 0)
 		busdma_swi();
-#endif
 }

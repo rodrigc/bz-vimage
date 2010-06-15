@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)proc.h	8.15 (Berkeley) 5/19/95
- * $FreeBSD: src/sys/sys/proc.h,v 1.548 2010/05/23 18:32:02 kib Exp $
+ * $FreeBSD: src/sys/sys/proc.h,v 1.551 2010/06/15 14:59:35 kib Exp $
  */
 
 #ifndef _SYS_PROC_H_
@@ -301,6 +301,7 @@ struct thread {
 	int		td_errno;	/* Error returned by last syscall. */
 	struct vnet	*td_vnet;	/* (k) Effective vnet. */
 	const char	*td_vnet_lpush;	/* (k) Debugging vnet push / pop. */
+	struct trapframe *td_intr_frame;/* (k) Frame of the current irq */
 };
 
 struct mtx *thread_lock_block(struct thread *);
@@ -323,6 +324,9 @@ do {									\
 #else
 #define	THREAD_LOCKPTR_ASSERT(td, lock)
 #endif
+
+#define	CRITICAL_ASSERT(td)						\
+    KASSERT((td)->td_critnest >= 1, ("Not in critical section"));
 
 /*
  * Flags kept in td_flags:

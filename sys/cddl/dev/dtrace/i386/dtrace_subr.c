@@ -19,7 +19,7 @@
  *
  * CDDL HEADER END
  *
- * $FreeBSD: src/sys/cddl/dev/dtrace/i386/dtrace_subr.c,v 1.3 2009/07/15 17:07:39 avg Exp $
+ * $FreeBSD: src/sys/cddl/dev/dtrace/i386/dtrace_subr.c,v 1.4 2010/06/11 18:46:34 jhb Exp $
  *
  */
 /*
@@ -439,11 +439,8 @@ dtrace_gethrtime_init(void *arg)
 	/* The current CPU is the reference one. */
 	tsc_skew[curcpu] = 0;
 
-	for (i = 0; i <= mp_maxid; i++) {
+	CPU_FOREACH(i) {
 		if (i == curcpu)
-			continue;
-
-		if (pcpu_find(i) == NULL)
 			continue;
 
 		map = 0;

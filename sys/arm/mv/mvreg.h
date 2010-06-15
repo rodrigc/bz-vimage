@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/mv/mvreg.h,v 1.8 2009/08/25 09:35:50 raj Exp $
+ * $FreeBSD: src/sys/arm/mv/mvreg.h,v 1.9 2010/06/13 13:28:53 raj Exp $
  */
 
 #ifndef _MVREG_H_
@@ -240,6 +240,9 @@
 #define CPU_PM_CTRL_XOR		(CPU_PM_CTRL_XOR0 | CPU_PM_CTRL_XOR1)
 #define CPU_PM_CTRL_USB(u)	(CPU_PM_CTRL_USB0)
 #define CPU_PM_CTRL_SATA	(CPU_PM_CTRL_SATA0 | CPU_PM_CTRL_SATA1)
+#define CPU_PM_CTRL_GE(u)	(CPU_PM_CTRL_GE1 * (u) | CPU_PM_CTRL_GE0 * \
+				(1 - (u)))
+#define CPU_PM_CTRL_IDMA	(CPU_PM_CTRL_NONE)
 #elif defined(SOC_MV_DISCOVERY)
 #define CPU_PM_CTRL_GE0		(1 << 1)
 #define CPU_PM_CTRL_GE1		(1 << 2)
@@ -264,12 +267,15 @@
 #define CPU_PM_CTRL_DEVICE	(1 << 23)
 #define CPU_PM_CTRL_USB(u)	(1 << (17 + (u)))
 #define CPU_PM_CTRL_SATA	(CPU_PM_CTRL_SATA0 | CPU_PM_CTRL_SATA1)
+#define CPU_PM_CTRL_GE(u)	(CPU_PM_CTRL_GE1 * (u) | CPU_PM_CTRL_GE0 * \
+				(1 - (u)))
 #else
 #define CPU_PM_CTRL_CRYPTO	(CPU_PM_CTRL_NONE)
 #define CPU_PM_CTRL_IDMA	(CPU_PM_CTRL_NONE)
 #define CPU_PM_CTRL_XOR		(CPU_PM_CTRL_NONE)
 #define CPU_PM_CTRL_SATA	(CPU_PM_CTRL_NONE)
 #define CPU_PM_CTRL_USB(u)	(CPU_PM_CTRL_NONE)
+#define CPU_PM_CTRL_GE(u)	(CPU_PM_CTRL_NONE)
 #endif
 
 /*
@@ -378,10 +384,14 @@
 #define GPIO(n)			(1 << (n))
 #define MV_GPIO_MAX_NPINS	64
 
-#define MV_GPIO_BLINK		0x1
-#define MV_GPIO_POLAR_LOW	0x2
-#define MV_GPIO_EDGE		0x4
-#define MV_GPIO_LEVEL		0x8
+#define MV_GPIO_IN_NONE		0x0
+#define MV_GPIO_IN_POL_LOW	(1 << 16)
+#define MV_GPIO_IN_IRQ_EDGE	(2 << 16)
+#define MV_GPIO_IN_IRQ_LEVEL	(4 << 16)
+#define MV_GPIO_OUT_NONE	0x0
+#define MV_GPIO_OUT_BLINK	0x1
+#define MV_GPIO_OUT_OPEN_DRAIN	0x2
+#define MV_GPIO_OUT_OPEN_SRC	0x4
 
 #define IS_GPIO_IRQ(irq)	((irq) >= NIRQ && (irq) < NIRQ + MV_GPIO_MAX_NPINS)
 #define GPIO2IRQ(gpio)		((gpio) + NIRQ)

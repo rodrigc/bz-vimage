@@ -31,7 +31,7 @@
 /* $KAME: sctp_asconf.c,v 1.24 2005/03/06 16:04:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.45 2010/04/23 08:19:47 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.46 2010/06/14 21:25:07 tuexen Exp $");
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
 #include <netinet/sctp_sysctl.h>
@@ -826,6 +826,7 @@ send_reply:
 	ack->serial_number = serial_num;
 	ack->last_sent_to = NULL;
 	ack->data = m_ack;
+	ack->len = 0;
 	n = m_ack;
 	while (n) {
 		ack->len += SCTP_BUF_LEN(n);
@@ -1025,7 +1026,8 @@ sctp_asconf_nets_cleanup(struct sctp_tcb *stcb, struct sctp_ifn *ifn)
 		 * address.
 		 */
 		if (SCTP_ROUTE_HAS_VALID_IFN(&net->ro) &&
-		    SCTP_GET_IF_INDEX_FROM_ROUTE(&net->ro) != ifn->ifn_index) {
+		    ((ifn == NULL) ||
+		    (SCTP_GET_IF_INDEX_FROM_ROUTE(&net->ro) != ifn->ifn_index))) {
 			/* clear any cached route */
 			RTFREE(net->ro.ro_rt);
 			net->ro.ro_rt = NULL;
