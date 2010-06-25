@@ -237,6 +237,10 @@ extern struct rwlock		vimage_subsys_rwlock;
 	    vimage_register_sysuninit, &ident ## _ ## name ## _uninit);	\
 	SYSUNINIT(name ## _uninit_ ## ident, subsystem, order,		\
 	    vimage_deregister_sysuninit, &ident ## _ ## name ## _uninit)
+#ifdef VIMAGE_SYSUNINIT
+#undef VIMAGE_SYSUNINIT
+#define	VIMAGE_SYSINIT(ident, subsystem, order, func, arg, name, v_subsys)
+#endif
 #else /* !VIMAGE */
 /*
  * When VIMAGE isn't compiled into the kernel, <SUBSYS>_SYSINIT/
