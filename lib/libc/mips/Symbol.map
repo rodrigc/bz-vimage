@@ -1,5 +1,5 @@
 /* 
- * $FreeBSD: src/lib/libc/mips/Symbol.map,v 1.4 2010/01/09 00:01:35 imp Exp $ 
+ * $FreeBSD: src/lib/libc/mips/Symbol.map,v 1.5 2010/06/16 14:13:36 jchandra Exp $ 
  */
 
 /*
@@ -24,13 +24,9 @@ FBSD_1.0 {
 	sigsetjmp;
 	siglongjmp;
 	htonl;
-	__htonl;
 	htons;
-	__htons;
 	ntohl;
-	__ntohl;
 	ntohs;
-	__ntohs;
 	vfork;
 	brk;
 	cerror;		/* XXX - Should this be .cerror (see sys/cerror.S)? */

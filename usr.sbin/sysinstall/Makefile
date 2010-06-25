@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.148 2010/06/11 20:56:40 randi Exp $
+# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.149 2010/06/20 04:14:49 randi Exp $
 
 .if ${MACHINE_ARCH} != "ia64"
 _wizard=	wizard.c
@@ -14,7 +14,7 @@ SRCS=	anonFTP.c cdrom.c command.c config.c devices.c dhcp.c \
 	system.c tcpip.c termcap.c ttys.c ufs.c usb.c user.c \
 	variable.c ${_wizard} keymap.h countries.h
 
-CFLAGS+= -DUSE_GZIP=1 -fno-strict-aliasing
+CFLAGS+= -DUSE_GZIP=1 
 .if ${MACHINE} == "pc98"
 CFLAGS+= -DPC98
 .endif

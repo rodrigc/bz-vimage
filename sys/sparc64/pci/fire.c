@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/fire.c,v 1.5 2010/01/27 20:30:14 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/fire.c,v 1.6 2010/06/18 14:06:27 nwhitehorn Exp $");
 
 /*
  * Driver for `Fire' JBus to PCI Express and `Oberon' Uranus to PCI Express
@@ -1476,7 +1476,7 @@ fire_route_interrupt(device_t bridge, device_t dev, int pin)
 	pintr = pin;
 	if (ofw_bus_lookup_imap(ofw_bus_get_node(dev), &sc->sc_pci_iinfo,
 	    &reg, sizeof(reg), &pintr, sizeof(pintr), &mintr, sizeof(mintr),
-	    maskbuf) != 0)
+	    NULL, maskbuf) != 0)
 		return (mintr);
 
 	device_printf(bridge, "could not route pin %d for device %d.%d\n",

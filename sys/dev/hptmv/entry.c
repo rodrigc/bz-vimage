@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/hptmv/entry.c,v 1.22 2010/01/07 21:01:37 mbr Exp $
+ * $FreeBSD: src/sys/dev/hptmv/entry.c,v 1.23 2010/06/19 13:42:14 mav Exp $
  */
  
 #include <sys/param.h>
@@ -2414,6 +2414,10 @@ hpt_action(struct cam_sim *sim, union ccb *ccb)
 			strncpy(cpi->hba_vid, "HPT   ", HBA_IDLEN);
 			strncpy(cpi->dev_name, cam_sim_name(sim), DEV_IDLEN);
 			cpi->unit_number = cam_sim_unit(sim);
+			cpi->transport = XPORT_SPI;
+			cpi->transport_version = 2;
+			cpi->protocol = PROTO_SCSI;
+			cpi->protocol_version = SCSI_REV_2;
 			cpi->ccb_h.status = CAM_REQ_CMP;
 			xpt_done(ccb);
 			break;

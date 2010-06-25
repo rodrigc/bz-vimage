@@ -14,7 +14,7 @@
 # Copyright (c) 2001, 2004-2005, Juniper Networks, Inc.
 # All rights reserved.
 # JNPR: files.mips,v 1.11 2007/08/09 12:25:35 katta
-# $FreeBSD: src/sys/conf/files.mips,v 1.14 2010/04/19 07:51:57 jmallett Exp $
+# $FreeBSD: src/sys/conf/files.mips,v 1.15 2010/06/17 05:03:01 jchandra Exp $
 #
 # ----------------------------------------------------------------------
 # Phase 2
@@ -44,7 +44,7 @@ mips/mips/vm_machdep.c		standard
 mips/mips/fp.S			standard
 mips/mips/pm_machdep.c		standard
 mips/mips/swtch.S		standard
-mips/mips/tlb.S			standard
+mips/mips/tlb.c			standard
 
 mips/mips/bus_space_generic.c 	standard
 mips/mips/busdma_machdep.c 	standard

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/vm.h,v 1.3 2009/07/12 23:31:20 alc Exp $
+ * $FreeBSD: src/sys/mips/include/vm.h,v 1.4 2010/06/23 19:42:01 jchandra Exp $
  */
 
 #ifndef _MACHINE_VM_H_
@@ -32,9 +32,7 @@
 #include <machine/pte.h>
 
 /* Memory attributes. */
-#define	VM_MEMATTR_UNCACHED			((vm_memattr_t)PTE_UNCACHED)
-#define	VM_MEMATTR_CACHEABLE_NONCOHERENT	((vm_memattr_t)PTE_CACHE)
-
-#define	VM_MEMATTR_DEFAULT		VM_MEMATTR_CACHEABLE_NONCOHERENT
+#define	VM_MEMATTR_UNCACHED	((vm_memattr_t)PTE_C_UNCACHED)
+#define	VM_MEMATTR_DEFAULT	((vm_memattr_t)PTE_C_CACHE)
 
 #endif /* !_MACHINE_VM_H_ */

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.297 2010/05/06 17:43:41 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.298 2010/06/21 09:55:56 ed Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2589,7 +2589,7 @@ sctp_generic_recvmsg(td, uap)
 	} */ *uap;
 {
 #if (defined(INET) || defined(INET6)) && defined(SCTP)
-	u_int8_t sockbufstore[256];
+	uint8_t sockbufstore[256];
 	struct uio auio;
 	struct iovec *iov, *tiov;
 	struct sctp_sndrcvinfo sinfo;

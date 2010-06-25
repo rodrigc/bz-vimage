@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf2.c,v 1.35 2009/06/05 14:55:22 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf2.c,v 1.36 2010/06/21 09:55:56 ed Exp $");
 
 /*#define PULLDOWN_DEBUG*/
 
@@ -314,7 +314,7 @@ m_tag_free_default(struct m_tag *t)
 
 /* Get a packet tag structure along with specified data following. */
 struct m_tag *
-m_tag_alloc(u_int32_t cookie, int type, int len, int wait)
+m_tag_alloc(uint32_t cookie, int type, int len, int wait)
 {
 	struct m_tag *t;
 
@@ -376,7 +376,7 @@ m_tag_delete_nonpersistent(struct mbuf *m)
 
 /* Find a tag, starting from a given position. */
 struct m_tag *
-m_tag_locate(struct mbuf *m, u_int32_t cookie, int type, struct m_tag *t)
+m_tag_locate(struct mbuf *m, uint32_t cookie, int type, struct m_tag *t)
 {
 	struct m_tag *p;
 

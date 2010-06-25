@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_conf.c,v 1.238 2010/06/12 13:22:39 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_conf.c,v 1.240 2010/06/17 08:49:31 ed Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -766,19 +766,19 @@ make_dev_credf(int flags, struct cdevsw *devsw, int unit, struct ucred *cr,
 }
 
 int
-make_dev_p(int flags, struct cdev **cdev, struct cdevsw *devsw, int unit,
+make_dev_p(int flags, struct cdev **cdev, struct cdevsw *devsw,
     struct ucred *cr, uid_t uid, gid_t gid, int mode, const char *fmt, ...)
 {
 	va_list ap;
 	int res;
 
 	va_start(ap, fmt);
-	res = make_dev_credv(flags, cdev, devsw, unit, cr, uid, gid, mode,
+	res = make_dev_credv(flags, cdev, devsw, 0, cr, uid, gid, mode,
 	    fmt, ap);
 	va_end(ap);
 
 	KASSERT((flags & MAKEDEV_NOWAIT) != 0 || res == 0,
-	    ("make_dev_credf: failed make_dev_credv"));
+	    ("make_dev_p: failed make_dev_credv"));
 	return (res);
 }
 

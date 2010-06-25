@@ -24,13 +24,19 @@
 # SUCH DAMAGE.
 #
 # from: src/sys/kern/bus_if.m,v 1.21 2002/04/21 11:16:10 markm Exp
-# $FreeBSD: src/sys/powerpc/powerpc/pic_if.m,v 1.6 2008/03/07 22:08:43 marcel Exp $
+# $FreeBSD: src/sys/powerpc/powerpc/pic_if.m,v 1.8 2010/06/23 22:33:03 nwhitehorn Exp $
 #
 
 #include <sys/bus.h>
 #include <machine/frame.h>
 
 INTERFACE pic;
+
+METHOD void bind {
+	device_t	dev;
+	u_int		irq;
+	cpumask_t	cpumask;
+};
 
 METHOD void config {
 	device_t	dev;
@@ -60,6 +66,10 @@ METHOD void ipi {
 	u_int		cpu;
 };
 
+METHOD uint32_t id {
+	device_t	dev;
+};
+
 METHOD void mask {
 	device_t	dev;
 	u_int		irq;
@@ -69,3 +79,4 @@ METHOD void unmask {
 	device_t	dev;
 	u_int		irq;
 };
+

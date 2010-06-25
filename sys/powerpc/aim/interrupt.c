@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/aim/interrupt.c,v 1.11 2010/03/09 02:00:53 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/interrupt.c,v 1.12 2010/06/18 14:06:27 nwhitehorn Exp $
  */
 
 /*
@@ -81,7 +81,7 @@ powerpc_interrupt(struct trapframe *framep)
 	switch (framep->exc) {
 	case EXC_EXI:
 		critical_enter();
-		PIC_DISPATCH(pic, framep);
+		PIC_DISPATCH(root_pic, framep);
 		critical_exit();
 		break;
 

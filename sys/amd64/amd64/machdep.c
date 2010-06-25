@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.720 2010/06/15 18:16:04 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.721 2010/06/23 12:17:13 kib Exp $");
 
 #include "opt_atalk.h"
 #include "opt_atpic.h"
@@ -2123,10 +2123,10 @@ fpstate_drop(struct thread *td)
 	 * XXX force a full drop of the fpu.  The above only drops it if we
 	 * owned it.
 	 *
-	 * XXX I don't much like fpugetregs()'s semantics of doing a full
+	 * XXX I don't much like fpugetuserregs()'s semantics of doing a full
 	 * drop.  Dropping only to the pcb matches fnsave's behaviour.
 	 * We only need to drop to !PCB_INITDONE in sendsig().  But
-	 * sendsig() is the only caller of fpugetregs()... perhaps we just
+	 * sendsig() is the only caller of fpugetuserregs()... perhaps we just
 	 * have too many layers.
 	 */
 	curthread->td_pcb->pcb_flags &= ~(PCB_FPUINITDONE |

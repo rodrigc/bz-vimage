@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: filecomplete.h,v 1.9 2009/12/30 22:37:40 christos Exp $
- * $FreeBSD: src/lib/libedit/filecomplete.h,v 1.1 2010/06/13 17:04:42 jilles Exp $
+ * $FreeBSD: src/lib/libedit/filecomplete.h,v 1.2 2010/06/15 21:34:57 jilles Exp $
  */
 #ifndef _FILECOMPLETE_H_
 #define _FILECOMPLETE_H_
@@ -36,7 +36,10 @@ int fn_complete(EditLine *,
     char *(*)(const char *, int),
     char **(*)(const char *, int, int),
     const char *, const char *, const char *(*)(const char *), size_t,
-    int *, int *, int *, int *);
+    int *, int *, int *, int *,
+    const char *(*)(const char *, const char *),
+    char *(*)(const char *),
+    char *(*)(const char *));
 
 void fn_display_match_list(EditLine *, char **, size_t, size_t);
 char *fn_tilde_expand(const char *);

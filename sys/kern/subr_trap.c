@@ -42,12 +42,10 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.312 2010/05/26 15:39:43 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.314 2010/06/23 11:12:58 kib Exp $");
 
 #include "opt_ktrace.h"
-#ifdef __i386__
-#include "opt_npx.h"
-#endif
+#include "opt_kdtrace.h"
 #include "opt_sched.h"
 
 #include <sys/param.h>
@@ -74,7 +72,6 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.312 2010/05/26 15:39:43 kib Exp
 #include <security/audit/audit.h>
 
 #include <machine/cpu.h>
-#include <machine/pcb.h>
 
 #ifdef VIMAGE
 #include <net/vnet.h>
@@ -157,10 +154,6 @@ ast(struct trapframe *framep)
 	struct proc *p;
 	int flags;
 	int sig;
-#if defined(DEV_NPX) && !defined(SMP)
-	int ucode;
-	ksiginfo_t ksi;
-#endif
 
 	td = curthread;
 	p = td->td_proc;
@@ -200,19 +193,6 @@ ast(struct trapframe *framep)
 		psignal(p, SIGVTALRM);
 		PROC_UNLOCK(p);
 	}
-#if defined(DEV_NPX) && !defined(SMP)
-	if (PCPU_GET(curpcb)->pcb_flags & PCB_NPXTRAP) {
-		atomic_clear_int(&PCPU_GET(curpcb)->pcb_flags,
-		    PCB_NPXTRAP);
-		ucode = npxtrap();
-		if (ucode != -1) {
-			ksiginfo_init_trap(&ksi);
-			ksi.ksi_signo = SIGFPE;
-			ksi.ksi_code = ucode;
-			trapsignal(td, &ksi);
-		}
-	}
-#endif
 	if (flags & TDF_PROFPEND) {
 		PROC_LOCK(p);
 		psignal(p, SIGPROF);

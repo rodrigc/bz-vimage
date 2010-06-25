@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)du.1	8.2 (Berkeley) 4/1/94
-.\" $FreeBSD: src/usr.bin/du/du.1,v 1.34 2008/11/06 16:30:38 mlaier Exp $
+.\" $FreeBSD: src/usr.bin/du/du.1,v 1.35 2010/06/20 08:27:03 brian Exp $
 .\"
 .Dd November 6, 2008
 .Dt DU 1
@@ -42,7 +42,7 @@
 .Nm
 .Op Fl A
 .Op Fl H | L | P
-.Op Fl a | s | d Ar depth
+.Op Fl a | s | d Ar depth | Fl t Ar threshold
 .Op Fl c
 .Op Fl l
 .Op Fl h | k | m | B Ar blocksize
@@ -107,6 +107,14 @@ This option exists solely for conformance with
 Display an entry for each specified file.
 (Equivalent to
 .Fl d Li 0 )
+.It Fl t Ar threshold
+Display only entries for which size exceeds
+.Ar threshold .
+If
+.Ar threshold
+is negative, display only entries for which size is less than the absolute
+value of
+.Ar threshold .
 .It Fl d Ar depth
 Display an entry for all files and directories
 .Ar depth

@@ -33,7 +33,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/mips/sys/pipe.S,v 1.3 2008/04/26 12:08:02 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/mips/sys/pipe.S,v 1.4 2010/06/16 12:55:14 jchandra Exp $");
 #include "SYS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
@@ -44,19 +44,14 @@ __FBSDID("$FreeBSD: src/lib/libc/mips/sys/pipe.S,v 1.3 2008/04/26 12:08:02 imp E
 LEAF(__sys_pipe)
 	WEAK_ALIAS(pipe, __sys_pipe)
 	WEAK_ALIAS(_pipe, __sys_pipe)
-#ifdef __ABICALLS__
-	.set    noreorder
-	.cpload t9
-	.set    reorder
-#endif
+	PIC_PROLOGUE(__sys_pipe)
 	li	v0, SYS_pipe	# pipe(fildes) int fildes[2];
 	syscall
 	bne	a3, zero, 1f
 	sw	v0, 0(a0)	# store the two file descriptors
 	sw	v1, 4(a0)
 	move	v0, zero
-	j	ra
+	PIC_RETURN()
 1:
-	la	t9, _C_LABEL(__cerror)
-	jr	t9
+	PIC_TAILCALL(__cerror)
 END(__sys_pipe)

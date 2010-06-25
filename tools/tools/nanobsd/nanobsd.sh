@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.58 2010/06/15 18:18:31 imp Exp $
+# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.59 2010/06/15 23:55:42 imp Exp $
 #
 
 set -e
@@ -123,6 +123,10 @@ NANO_HEADS=16
 # boot0 flags/options and configuration
 NANO_BOOT0CFG="-o packet -s 1 -m 3"
 NANO_BOOTLOADER="boot/boot0sio"
+
+# boot2 flags/options
+# default force serial console
+NANO_BOOT2CFG="-h"
 
 # Backing type of md(4) device
 # Can be "file" or "swap"
@@ -608,7 +612,7 @@ cust_comconsole () (
 	sed -i "" -e '/^ttyv[0-8]/s/	on/	off/' ${NANO_WORLDDIR}/etc/ttys
 
 	# Tell loader to use serial console early.
-	echo " -h" > ${NANO_WORLDDIR}/boot.config
+	echo "${NANO_BOOT2CFG}" > ${NANO_WORLDDIR}/boot.config
 )
 
 #######################################################################

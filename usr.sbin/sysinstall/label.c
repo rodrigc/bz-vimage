@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/label.c,v 1.159 2010/01/02 12:42:33 nyan Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/label.c,v 1.160 2010/06/16 15:40:13 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -999,6 +999,7 @@ diskLabel(Device *dev)
 	    else {
 		char *val;
 		daddr_t size;
+		long double dsize;
 		struct chunk *tmp;
 		char osize[80];
 		u_long flags = 0;
@@ -1019,22 +1020,24 @@ diskLabel(Device *dev)
 #endif
 				  "%jd blocks (%jdMB) are free.",
 				  (intmax_t)sz, (intmax_t)sz / ONE_MEG);
-		if (!val || (size = strtoimax(val, &cp, 0)) <= 0) {
+		if (!val || (dsize = strtold(val, &cp)) <= 0) {
 		    clear_wins();
 		    break;
 		}
 
 		if (*cp) {
 		    if (toupper(*cp) == 'M')
-			size *= ONE_MEG;
+			size = (daddr_t) (dsize * ONE_MEG);
 		    else if (toupper(*cp) == 'G')
-			size *= ONE_GIG;
+			size = (daddr_t) (dsize * ONE_GIG);
 #ifndef __ia64__
 		    else if (toupper(*cp) == 'C')
-			size *= (label_chunk_info[here].c->disk->bios_hd * label_chunk_info[here].c->disk->bios_sect);
+			size = (daddr_t) dsize * (label_chunk_info[here].c->disk->bios_hd * label_chunk_info[here].c->disk->bios_sect);
 #endif
+		    else
+			size = (daddr_t) dsize;
 		}
-		if (size <= FS_MIN_SIZE) {
+		if (size < FS_MIN_SIZE) {
 		    msgConfirm("The minimum filesystem size is %dMB", FS_MIN_SIZE / ONE_MEG);
 		    clear_wins();
 		    break;

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/asmacros.h,v 1.34 2009/04/01 13:09:26 kib Exp $
+ * $FreeBSD: src/sys/amd64/include/asmacros.h,v 1.35 2010/06/23 20:44:07 kib Exp $
  */
 
 #ifndef _MACHINE_ASMACROS_H_
@@ -166,7 +166,8 @@
 	movw	%gs,TF_GS(%rsp) ;					\
 	movw	%es,TF_ES(%rsp) ;					\
 	movw	%ds,TF_DS(%rsp) ;					\
-	movl	$TF_HASSEGS,TF_FLAGS(%rsp)
+	movl	$TF_HASSEGS,TF_FLAGS(%rsp) ;				\
+	cld
 
 #define POP_FRAME							\
 	movq	TF_RDI(%rsp),%rdi ;					\

@@ -27,7 +27,7 @@
 #include "opt_compat.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_module.c,v 1.58 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_module.c,v 1.59 2010/06/21 09:55:56 ed Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -455,9 +455,9 @@ MODULE_VERSION(kernel, __FreeBSD_version);
 
 typedef union modspecific32 {
 	int		intval;
-	u_int32_t	uintval;
+	uint32_t	uintval;
 	int		longval;
-	u_int32_t	ulongval;
+	uint32_t	ulongval;
 } modspecific32_t;
 
 struct module_stat32 {

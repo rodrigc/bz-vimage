@@ -33,7 +33,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/mips/sys/fork.S,v 1.3 2008/04/26 12:08:02 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/mips/sys/fork.S,v 1.4 2010/06/16 12:55:14 jchandra Exp $");
 #include "SYS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
@@ -44,20 +44,14 @@ __FBSDID("$FreeBSD: src/lib/libc/mips/sys/fork.S,v 1.3 2008/04/26 12:08:02 imp E
 LEAF(__sys_fork)
 	WEAK_ALIAS(fork, __sys_fork)
 	WEAK_ALIAS(_fork, __sys_fork)
-#ifdef __ABICALLS__
-	.set    noreorder
-	.cpload t9
-	.set    reorder
-#endif
-	fork = __sys_fork
+	PIC_PROLOGUE(__sys_fork)
 	li	v0, SYS_fork	# pid = fork()
 	syscall
 	bne	a3, zero, 2f
 	beq	v1, zero, 1f	# v1 == 0 in parent, 1 in child
 	move	v0, zero
 1:
-	j	ra
+	PIC_RETURN()
 2:
-	la	t9, _C_LABEL(__cerror)
-	jr	t9
+	PIC_TAILCALL(__cerror)
 END(__sys_fork)

@@ -57,7 +57,7 @@
  * any improvements or extensions that they make and grant Carnegie the
  * rights to redistribute these changes.
  *
- * $FreeBSD: src/sys/vm/vm_page.h,v 1.170 2010/06/10 16:56:35 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_page.h,v 1.171 2010/06/21 23:27:24 alc Exp $
  */
 
 /*
@@ -359,7 +359,9 @@ void vm_page_dontneed(vm_page_t);
 void vm_page_deactivate (vm_page_t);
 void vm_page_insert (vm_page_t, vm_object_t, vm_pindex_t);
 vm_page_t vm_page_lookup (vm_object_t, vm_pindex_t);
+vm_page_t vm_page_next(vm_page_t m);
 int vm_page_pa_tryrelock(pmap_t, vm_paddr_t, vm_paddr_t *);
+vm_page_t vm_page_prev(vm_page_t m);
 void vm_page_remove (vm_page_t);
 void vm_page_rename (vm_page_t, vm_object_t, vm_pindex_t);
 void vm_page_requeue(vm_page_t m);

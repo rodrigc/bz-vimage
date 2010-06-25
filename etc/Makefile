@@ -1,5 +1,5 @@
 #	from: @(#)Makefile	5.11 (Berkeley) 5/21/91
-# $FreeBSD: src/etc/Makefile,v 1.383 2010/06/13 16:35:20 imp Exp $
+# $FreeBSD: src/etc/Makefile,v 1.385 2010/06/16 08:20:01 avg Exp $
 
 .include <bsd.own.mk>
 
@@ -253,10 +253,12 @@ distribution:
 	    ${DESTDIR}/var/crash
 	cd ${.CURDIR}/..; ${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 444 \
 		${FREEBSD} ${DESTDIR}/
+.if ${MK_BOOT} != "no"
 .if exists(${.CURDIR}/../sys/${MACHINE}/conf/GENERIC.hints)
 	${INSTALL} -o ${BINOWN} -g ${BINGRP} -m 444 \
 	    ${.CURDIR}/../sys/${MACHINE}/conf/GENERIC.hints \
 	    ${DESTDIR}/boot/device.hints
+.endif
 .endif
 
 distrib-dirs:

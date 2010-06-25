@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/include/md_var.h,v 1.80 2010/03/24 03:07:35 alc Exp $
+ * $FreeBSD: src/sys/i386/include/md_var.h,v 1.81 2010/06/23 10:40:28 kib Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -35,11 +35,6 @@
 /*
  * Miscellaneous machine-dependent declarations.
  */
-
-extern	void	(*bcopy_vector)(const void *from, void *to, size_t len);
-extern	void	(*bzero_vector)(void *buf, size_t len);
-extern	int	(*copyin_vector)(const void *udaddr, void *kaddr, size_t len);
-extern	int	(*copyout_vector)(const void *kaddr, void *udaddr, size_t len);
 
 extern	long	Maxmem;
 extern	u_int	basemem;	/* PA of original top of base memory */
@@ -98,11 +93,6 @@ void	dump_add_page(vm_paddr_t);
 void	dump_drop_page(vm_paddr_t);
 void	enable_sse(void);
 void	fillw(int /*u_short*/ pat, void *base, size_t cnt);
-void	i486_bzero(void *buf, size_t len);
-void	i586_bcopy(const void *from, void *to, size_t len);
-void	i586_bzero(void *buf, size_t len);
-int	i586_copyin(const void *udaddr, void *kaddr, size_t len);
-int	i586_copyout(const void *kaddr, void *udaddr, size_t len);
 void	i686_pagezero(void *addr);
 void	sse2_pagezero(void *addr);
 void	init_AMD_Elan_sc520(void);

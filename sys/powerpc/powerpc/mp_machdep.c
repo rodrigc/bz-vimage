@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.26 2009/10/23 03:17:02 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.27 2010/06/18 14:06:27 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -319,7 +319,7 @@ ipi_send(struct pcpu *pc, int ipi)
 	    pc, pc->pc_cpuid, ipi);
 
 	atomic_set_32(&pc->pc_ipimask, (1 << ipi));
-	PIC_IPI(pic, pc->pc_cpuid);
+	PIC_IPI(root_pic, pc->pc_cpuid);
 
 	CTR1(KTR_SMP, "%s: sent", __func__);
 }

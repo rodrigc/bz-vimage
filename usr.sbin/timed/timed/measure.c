@@ -36,7 +36,7 @@
 static char sccsid[] = "@(#)measure.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/timed/timed/measure.c,v 1.7 2001/11/20 07:13:40 jhb Exp $";
+  "$FreeBSD: src/usr.sbin/timed/timed/measure.c,v 1.8 2010/06/19 17:04:01 gavin Exp $";
 #endif /* not lint */
 
 #include "globals.h"
@@ -86,6 +86,7 @@ measure(maxmsec, wmsec, hname, addr, print)
 	min_idelta = min_odelta = 0x7fffffff;
 	measure_status = HOSTDOWN;
 	measure_delta = HOSTDOWN;
+	trials = 0;
 	errno = 0;
 
 	/* open raw socket used to measure time differences */
@@ -138,7 +139,6 @@ measure(maxmsec, wmsec, hname, addr, print)
 	mstotvround(&twait, wmsec);
 
 	rcvcount = 0;
-	trials = 0;
 	while (rcvcount < MSGS) {
 		(void)gettimeofday(&tcur, 0);
 

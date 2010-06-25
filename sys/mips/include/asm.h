@@ -33,7 +33,7 @@
  *
  *	@(#)machAsmDefs.h	8.1 (Berkeley) 6/10/93
  *	JNPR: asm.h,v 1.10 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/asm.h,v 1.6 2010/05/25 05:45:16 neel Exp $
+ * $FreeBSD: src/sys/mips/include/asm.h,v 1.7 2010/06/24 08:08:43 jchandra Exp $
  */
 
 /*
@@ -806,10 +806,11 @@ _C_LABEL(x):
  *       9	S7
  *       10	SP
  *       11	S8
- *       12	signal mask	(dependant on magic)
- *       13	(con't)
+ *       12	GP		(dependent on ABI)
+ *       13	signal mask	(dependant on magic)
  *       14	(con't)
  *       15	(con't)
+ *       16	(con't)
  *
  * The magic number number identifies the jmp_buf and
  * how the buffer was created as well as providing
@@ -834,9 +835,12 @@ _C_LABEL(x):
 #define _JB_REG_S7		9
 #define _JB_REG_SP		10
 #define _JB_REG_S8		11
+#if defined(__mips_n32) || defined(__mips_n64)
+#define	_JB_REG_GP		12
+#endif
 
 /* Only valid with the _JB_MAGIC_SETJMP magic */
 
-#define _JB_SIGMASK		12
+#define _JB_SIGMASK		13
 
 #endif /* !_MACHINE_ASM_H_ */

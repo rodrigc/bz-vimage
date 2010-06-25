@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/sys/dev/twa/tw_cl_misc.c,v 1.5 2010/06/09 21:40:38 delphij Exp $
+ *	$FreeBSD: src/sys/dev/twa/tw_cl_misc.c,v 1.6 2010/06/17 19:48:03 delphij Exp $
  */
 
 /*
@@ -810,7 +810,7 @@ tw_cli_check_ctlr_state(struct tw_cli_ctlr_context *ctlr, TW_UINT32 status_reg)
 				"status reg = 0x%x %s",
 				status_reg,
 				tw_cli_describe_bits(status_reg, desc));
-			error = TW_OSL_EGENFAILURE; // tw_cl_reset_ctlr(ctlr_handle);
+			error = TW_OSL_EGENFAILURE;
 		}
 	}
 	return(error);

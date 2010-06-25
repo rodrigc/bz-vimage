@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/ia32/ia32_exception.S,v 1.7 2009/07/09 09:34:11 kib Exp $
+ * $FreeBSD: src/sys/amd64/ia32/ia32_exception.S,v 1.8 2010/06/23 20:44:07 kib Exp $
  */
 
 #include <machine/asmacros.h>
@@ -67,6 +67,7 @@ IDTVEC(int0x80_syscall)
 	movq	%r14,TF_R14(%rsp)
 	movq	%r15,TF_R15(%rsp)
 	movl	$TF_HASSEGS,TF_FLAGS(%rsp)
+	cld
 	FAKE_MCOUNT(TF_RIP(%rsp))
 	movq	%rsp, %rdi
 	call	ia32_syscall

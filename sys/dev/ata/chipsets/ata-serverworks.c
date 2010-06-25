@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-serverworks.c,v 1.14 2010/06/06 14:09:48 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-serverworks.c,v 1.15 2010/06/18 14:17:45 nwhitehorn Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -41,9 +41,6 @@ __FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-serverworks.c,v 1.14 2010/06/06
 #include <sys/sema.h>
 #include <sys/taskqueue.h>
 #include <vm/uma.h>
-#ifdef __powerpc__
-#include <machine/intr_machdep.h>
-#endif
 #include <machine/stdarg.h>
 #include <machine/resource.h>
 #include <machine/bus.h>
@@ -220,10 +217,6 @@ ata_serverworks_ch_attach(device_t dev)
     ch->hw.tf_write = ata_serverworks_tf_write;
 #ifdef __powerpc__
     ch->hw.status = ata_serverworks_status;
-
-    /* Make sure that our interrupt is level low */
-    powerpc_config_intr(bus_get_resource_start(device_get_parent(dev),
-	SYS_RES_IRQ, 0), INTR_TRIGGER_LEVEL, INTR_POLARITY_LOW);
 #endif
 
     if (ctlr->chip->chipid == ATA_K2) {

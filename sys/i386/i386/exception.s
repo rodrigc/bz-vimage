@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/i386/exception.s,v 1.123 2010/02/25 14:13:39 attilio Exp $
+ * $FreeBSD: src/sys/i386/i386/exception.s,v 1.124 2010/06/23 20:44:07 kib Exp $
  */
 
 #include "opt_apic.h"
@@ -159,6 +159,7 @@ alltraps:
 	pushl	%fs
 alltraps_with_regs_pushed:
 	SET_KERNEL_SREGS
+	cld
 	FAKE_MCOUNT(TF_EIP(%esp))
 calltrap:
 	pushl	%esp
@@ -233,6 +234,7 @@ IDTVEC(lcall_syscall)
 	pushl	%es
 	pushl	%fs
 	SET_KERNEL_SREGS
+	cld
 	FAKE_MCOUNT(TF_EIP(%esp))
 	pushl	%esp
 	call	syscall
@@ -256,6 +258,7 @@ IDTVEC(int0x80_syscall)
 	pushl	%es
 	pushl	%fs
 	SET_KERNEL_SREGS
+	cld
 	FAKE_MCOUNT(TF_EIP(%esp))
 	pushl	%esp
 	call	syscall

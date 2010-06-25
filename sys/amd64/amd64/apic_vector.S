@@ -28,13 +28,15 @@
  * SUCH DAMAGE.
  *
  *	from: vector.s, 386BSD 0.1 unknown origin
- * $FreeBSD: src/sys/amd64/amd64/apic_vector.S,v 1.116 2010/05/24 15:45:05 jhb Exp $
+ * $FreeBSD: src/sys/amd64/amd64/apic_vector.S,v 1.117 2010/06/17 11:54:49 mav Exp $
  */
 
 /*
  * Interrupt entry points for external interrupts triggered by I/O APICs
  * as well as IPI handlers.
  */
+
+#include "opt_smp.h"
 
 #include <machine/asmacros.h>
 #include <machine/apicreg.h>
@@ -135,6 +137,19 @@ IDTVEC(errorint)
 	.text
 	SUPERALIGN_TEXT
 IDTVEC(invltlb)
+#if defined(COUNT_XINVLTLB_HITS) || defined(COUNT_IPIS)
+	PUSH_FRAME
+	movl	PCPU(CPUID), %eax
+#ifdef COUNT_XINVLTLB_HITS
+	incl	xhits_gbl(,%rax,4)
+#endif
+#ifdef COUNT_IPIS
+	movq	ipi_invltlb_counts(,%rax,8),%rax
+	incq	(%rax)
+#endif
+	POP_FRAME
+#endif
+
 	pushq	%rax
 
 	movq	%cr3, %rax		/* invalidate the TLB */
@@ -155,6 +170,19 @@ IDTVEC(invltlb)
 	.text
 	SUPERALIGN_TEXT
 IDTVEC(invlpg)
+#if defined(COUNT_XINVLTLB_HITS) || defined(COUNT_IPIS)
+	PUSH_FRAME
+	movl	PCPU(CPUID), %eax
+#ifdef COUNT_XINVLTLB_HITS
+	incl	xhits_pg(,%rax,4)
+#endif
+#ifdef COUNT_IPIS
+	movq	ipi_invlpg_counts(,%rax,8),%rax
+	incq	(%rax)
+#endif
+	POP_FRAME
+#endif
+
 	pushq	%rax
 
 	movq	smp_tlb_addr1, %rax
@@ -175,6 +203,19 @@ IDTVEC(invlpg)
 	.text
 	SUPERALIGN_TEXT
 IDTVEC(invlrng)
+#if defined(COUNT_XINVLTLB_HITS) || defined(COUNT_IPIS)
+	PUSH_FRAME
+	movl	PCPU(CPUID), %eax
+#ifdef COUNT_XINVLTLB_HITS
+	incl	xhits_rng(,%rax,4)
+#endif
+#ifdef COUNT_IPIS
+	movq	ipi_invlrng_counts(,%rax,8),%rax
+	incq	(%rax)
+#endif
+	POP_FRAME
+#endif
+
 	pushq	%rax
 	pushq	%rdx
 
@@ -201,6 +242,14 @@ IDTVEC(invlrng)
 	.text
 	SUPERALIGN_TEXT
 IDTVEC(invlcache)
+#ifdef COUNT_IPIS
+	PUSH_FRAME
+	movl	PCPU(CPUID), %eax
+	movq	ipi_invlcache_counts(,%rax,8),%rax
+	incq	(%rax)
+	POP_FRAME
+#endif
+
 	pushq	%rax
 
 	wbinvd
@@ -270,6 +319,11 @@ IDTVEC(cpususpend)
 	SUPERALIGN_TEXT
 IDTVEC(rendezvous)
 	PUSH_FRAME
+#ifdef COUNT_IPIS
+	movl	PCPU(CPUID), %eax
+	movq	ipi_rendezvous_counts(,%rax,8), %rax
+	incq	(%rax)
+#endif
 	call	smp_rendezvous_action
 	movq	lapic, %rax
 	movl	$0, LA_EOI(%rax)	/* End Of Interrupt to APIC */

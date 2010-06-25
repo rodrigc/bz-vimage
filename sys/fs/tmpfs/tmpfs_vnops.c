@@ -34,7 +34,7 @@
  * tmpfs vnode interface.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.39 2010/05/06 18:43:19 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.40 2010/06/16 00:41:21 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -653,9 +653,7 @@ lookupvpg:
 			goto lookupvpg;
 		}
 		vm_page_busy(vpg);
-		vm_page_lock_queues();
 		vm_page_undirty(vpg);
-		vm_page_unlock_queues();
 		VM_OBJECT_UNLOCK(vobj);
 		error = uiomove_fromphys(&vpg, offset, tlen, uio);
 	} else {
@@ -690,15 +688,13 @@ nocache:
 out:
 	if (vobj != NULL)
 		VM_OBJECT_LOCK(vobj);
-	vm_page_lock(tpg);
-	vm_page_lock_queues();
 	if (error == 0) {
 		KASSERT(tpg->valid == VM_PAGE_BITS_ALL,
 		    ("parts of tpg invalid"));
 		vm_page_dirty(tpg);
 	}
+	vm_page_lock(tpg);
 	vm_page_unwire(tpg, TRUE);
-	vm_page_unlock_queues();
 	vm_page_unlock(tpg);
 	vm_page_wakeup(tpg);
 	if (vpg != NULL)

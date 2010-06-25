@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci.c,v 1.25 2009/11/22 21:21:22 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci.c,v 1.26 2010/06/22 20:57:48 thompsa Exp $");
 
 /*
  * USB Open Host Controller driver.
@@ -2614,9 +2614,7 @@ ohci_ep_init(struct usb_device *udev, struct usb_endpoint_descriptor *edesc,
 			}
 			break;
 		case UE_BULK:
-			if (udev->speed != USB_SPEED_LOW) {
-				ep->methods = &ohci_device_bulk_methods;
-			}
+			ep->methods = &ohci_device_bulk_methods;
 			break;
 		default:
 			/* do nothing */

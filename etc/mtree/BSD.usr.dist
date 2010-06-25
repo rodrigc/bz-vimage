@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.345 2010/04/21 12:17:01 avg Exp $
+# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.346 2010/06/24 22:21:47 imp Exp $
 #
 # Please see the file src/etc/mtree/README before making changes to this file.
 #
@@ -260,6 +260,8 @@
                 ..
             ..
             nwclient
+            ..
+            pc-sysinstall
             ..
             perfmon
             ..
@@ -1224,6 +1226,20 @@
                 ..
                 man3
                 ..
+            ..
+        ..
+        pc-sysinstall
+            backend
+            ..
+	    backend-partmanager
+            ..
+	    backend-query
+            ..
+	    conf
+                license
+		..
+            ..
+	    doc
             ..
         ..
         security

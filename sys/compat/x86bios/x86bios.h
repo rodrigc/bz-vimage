@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.5 2009/10/19 20:58:10 jkim Exp $
+ * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.6 2010/06/23 17:20:51 jkim Exp $
  */
 /*
  * x86 registers were borrowed from x86emu.h x86emu_regs.h
@@ -142,7 +142,7 @@ typedef struct x86regs	x86regs_t;
 #define	X86BIOS_PHYSTOOFF(x)	((x) & 0x000f)
 
 __BEGIN_DECLS
-void	*x86bios_alloc(uint32_t *offset, size_t size);
+void	*x86bios_alloc(uint32_t *offset, size_t size, int flags);
 void	 x86bios_call(struct x86regs *regs, uint16_t seg, uint16_t off);
 void	 x86bios_free(void *addr, size_t size);
 uint32_t x86bios_get_intr(int intno);

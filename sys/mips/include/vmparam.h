@@ -37,7 +37,7 @@
  *	from: Utah Hdr: vmparam.h 1.16 91/01/18
  *	@(#)vmparam.h	8.2 (Berkeley) 4/22/94
  *	JNPR: vmparam.h,v 1.3.2.1 2007/09/10 06:01:28 girish
- * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.4 2010/04/24 03:11:35 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.5 2010/06/24 08:08:43 jchandra Exp $
  */
 
 #ifndef _MACHINE_VMPARAM_H_
@@ -100,11 +100,17 @@
 #define	VM_MAX_ADDRESS		((vm_offset_t)(intptr_t)(int32_t)0xffffffff)
 
 #define	VM_MINUSER_ADDRESS	((vm_offset_t)0x00000000)
-#define	VM_MAXUSER_ADDRESS	((vm_offset_t)0x80000000)
 #define	VM_MAX_MMAP_ADDR	VM_MAXUSER_ADDRESS
 
-#define	VM_MIN_KERNEL_ADDRESS		((vm_offset_t)0xC0000000)
-#define	VM_MAX_KERNEL_ADDRESS		((vm_offset_t)0xFFFFC000)
+#if defined(__mips_n64)
+#define	VM_MAXUSER_ADDRESS	(VM_MINUSER_ADDRESS + (NPDEPG * NPTEPG * PAGE_SIZE))
+#define	VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xc000000000000000)
+#define	VM_MAX_KERNEL_ADDRESS	(VM_MIN_KERNEL_ADDRESS + (NPDEPG * NPTEPG * PAGE_SIZE))
+#else
+#define	VM_MAXUSER_ADDRESS	((vm_offset_t)0x80000000)
+#define	VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xC0000000)
+#define	VM_MAX_KERNEL_ADDRESS	((vm_offset_t)0xFFFFC000)
+#endif
 #if 0
 #define	KERNBASE		(VM_MIN_KERNEL_ADDRESS)
 #else

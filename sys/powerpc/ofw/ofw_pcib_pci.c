@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/ofw/ofw_pcib_pci.c,v 1.7 2008/12/15 15:31:10 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/ofw/ofw_pcib_pci.c,v 1.9 2010/06/18 17:39:56 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -41,6 +41,8 @@
 #include <dev/pci/pcivar.h>
 #include <dev/pci/pcireg.h>
 #include <dev/pci/pcib_private.h>
+
+#include <machine/intr_machdep.h>
 
 #include "pcib_if.h"
 
@@ -74,6 +76,11 @@ static device_method_t ofw_pcib_pci_methods[] = {
 	DEVMETHOD(pcib_read_config,		pcib_read_config),
 	DEVMETHOD(pcib_write_config,	pcib_write_config),
 	DEVMETHOD(pcib_route_interrupt,	ofw_pcib_pci_route_interrupt),
+	DEVMETHOD(pcib_alloc_msi,	pcib_alloc_msi),
+	DEVMETHOD(pcib_release_msi,	pcib_release_msi),
+	DEVMETHOD(pcib_alloc_msix,	pcib_alloc_msix),
+	DEVMETHOD(pcib_release_msix,	pcib_release_msix),
+	DEVMETHOD(pcib_map_msi,		pcib_map_msi),
 
 	/* ofw_bus interface */
 	DEVMETHOD(ofw_bus_get_node,     ofw_pcib_pci_get_node),
@@ -149,6 +156,7 @@ ofw_pcib_pci_route_interrupt(device_t bridge, device_t dev, int intpin)
 	struct ofw_bus_iinfo *ii;
 	struct ofw_pci_register reg;
 	cell_t pintr, mintr;
+	phandle_t iparent;
 	uint8_t maskbuf[sizeof(reg) + sizeof(pintr)];
 
 	sc = device_get_softc(bridge);
@@ -157,13 +165,13 @@ ofw_pcib_pci_route_interrupt(device_t bridge, device_t dev, int intpin)
 		pintr = intpin;
 		if (ofw_bus_lookup_imap(ofw_bus_get_node(dev), ii, &reg,
 		    sizeof(reg), &pintr, sizeof(pintr), &mintr, sizeof(mintr),
-		    maskbuf)) {
+		    &iparent, maskbuf)) {
 			/*
 			 * If we've found a mapping, return it and don't map
 			 * it again on higher levels - that causes problems
 			 * in some cases, and never seems to be required.
 			 */
-			return (mintr);
+			return (INTR_VEC(iparent, mintr));
 		}
 	} else if (intpin >= 1 && intpin <= 4) {
 		/*

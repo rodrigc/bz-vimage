@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)pcb.h	5.10 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/i386/include/pcb.h,v 1.58 2010/06/05 15:59:59 kib Exp $
+ * $FreeBSD: src/sys/i386/include/pcb.h,v 1.59 2010/06/23 11:12:58 kib Exp $
  */
 
 #ifndef _I386_PCB_H_
@@ -65,7 +65,6 @@ struct pcb {
 	u_int	pcb_flags;
 #define	FP_SOFTFP	0x01	/* process using software fltng pnt emulator */
 #define	PCB_DBREGS	0x02	/* process using debug registers */
-#define	PCB_NPXTRAP	0x04	/* npx trap pending */
 #define	PCB_NPXINITDONE	0x08	/* fpu state is initialized */
 #define	PCB_VM86CALL	0x10	/* in vm86 call */
 #define	PCB_NPXUSERINITDONE 0x20 /* user fpu state is initialized */

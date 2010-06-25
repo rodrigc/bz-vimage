@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/kern/kern_sdt.c,v 1.1 2008/05/18 19:32:36 jb Exp $
+ * $FreeBSD: src/sys/kern/kern_sdt.c,v 1.2 2010/06/21 09:55:56 ed Exp $
  *
  * Backend for the Statically Defined Tracing (SDT) kernel support. This is
  * required to allow a module to load even though DTrace kernel support may
@@ -65,7 +65,7 @@ sdt_probe_func_t sdt_probe_func = sdt_probe_stub;
  * support to enable it.
  */
 void
-sdt_probe_stub(u_int32_t id, uintptr_t arg0, uintptr_t arg1,
+sdt_probe_stub(uint32_t id, uintptr_t arg0, uintptr_t arg1,
     uintptr_t arg2, uintptr_t arg3, uintptr_t arg4)
 {
 	printf("sdt_probe_stub: Why did this get called?\n");

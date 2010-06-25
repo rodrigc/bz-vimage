@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/pcpu.h,v 1.39 2010/06/13 02:39:55 lstewart Exp $
+ * $FreeBSD: src/sys/sys/pcpu.h,v 1.40 2010/06/19 02:30:10 lstewart Exp $
  */
 
 #ifndef _SYS_PCPU_H_
@@ -109,13 +109,17 @@ extern uintptr_t dpcpu_off[];
 /*
  * Utility macros.
  */
-#define DPCPU_SUM(n, var, sum)						\
-do {									\
-	(sum) = 0;							\
-	u_int i;							\
-	CPU_FOREACH(i)							\
-		(sum) += (DPCPU_ID_PTR(i, n))->var;			\
-} while (0)
+#define	DPCPU_SUM(n, var) __extension__					\
+({									\
+	u_int _i;							\
+	__typeof((DPCPU_PTR(n))->var) sum;				\
+									\
+	sum = 0;							\
+	CPU_FOREACH(_i) {						\
+		sum += (DPCPU_ID_PTR(_i, n))->var;			\
+	}								\
+	sum;								\
+})
 
 /* 
  * XXXUPS remove as soon as we have per cpu variable

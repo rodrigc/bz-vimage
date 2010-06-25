@@ -80,12 +80,20 @@ mixes.
 Configuration Notes
 -------------------
 
-In my testing, I use sysctl.conf entries of:
+In my testing, I use loader.conf entries of:
 
-net.inet.ip.portrange.first=100
 kern.ipc.maxsockets=1000000
 net.inet.tcp.maxtcptw=3000000
 kern.ipc.somaxconn=49152
+kern.ipc.nmbjumbo16=262144
+kern.ipc.nmbjumbo9=262144
+kern.ipc.nmbjumbop=262144
+kern.ipc.nmbclusters=262144
+net.inet.tcp.syncache.cachelimit=65536
+net.inet.tcp.syncache.bucketlimit=512
+
+# May be useful if you can't use multiple IP addresses
+net.inet.ip.portrange.first=100
 
 # For running !multiq, do this before loading the driver:
 kenv hw.cxgb.singleq="1"
@@ -97,4 +105,4 @@ ifconfig cxgb0 -tso
 ifconfig cxgb0 mtu 1500
 
 
-$FreeBSD: src/tools/tools/netrate/tcpp/README,v 1.2 2010/06/05 22:59:37 rwatson Exp $
+$FreeBSD: src/tools/tools/netrate/tcpp/README,v 1.3 2010/06/22 10:45:35 rwatson Exp $

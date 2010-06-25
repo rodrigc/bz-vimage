@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.198 2010/05/24 10:23:49 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.199 2010/06/21 09:55:56 ed Exp $");
 
 #include "opt_compat.h"
 
@@ -851,7 +851,7 @@ calcru1(struct proc *p, struct rusage_ext *ruxp, struct timeval *up,
     struct timeval *sp)
 {
 	/* {user, system, interrupt, total} {ticks, usec}: */
-	u_int64_t ut, uu, st, su, it, tt, tu;
+	uint64_t ut, uu, st, su, it, tt, tu;
 
 	ut = ruxp->rux_uticks;
 	st = ruxp->rux_sticks;

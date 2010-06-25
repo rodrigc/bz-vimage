@@ -1,7 +1,7 @@
-# $FreeBSD: src/lib/libc/mips/sys/Makefile.inc,v 1.4 2008/11/09 10:45:13 ed Exp $
+# $FreeBSD: src/lib/libc/mips/sys/Makefile.inc,v 1.5 2010/06/16 14:13:36 jchandra Exp $
 
 MDASM=  Ovfork.S brk.S cerror.S exect.S \
-	fork.S pipe.S ptrace.S sbrk.S shmat.S syscall.S
+	fork.S pipe.S ptrace.S sbrk.S syscall.S
 
 # Don't generate default code for these syscalls:
 NOASM=	break.o exit.o ftruncate.o getlogin.o lseek.o mmap.o \

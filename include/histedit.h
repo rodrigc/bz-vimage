@@ -31,7 +31,7 @@
  *
  *	@(#)histedit.h	8.2 (Berkeley) 1/3/94
  *	$NetBSD: histedit.h,v 1.32 2007/06/10 20:20:28 christos Exp $
- * $FreeBSD: src/include/histedit.h,v 1.13 2010/06/13 17:04:42 jilles Exp $
+ * $FreeBSD: src/include/histedit.h,v 1.14 2010/06/15 21:34:57 jilles Exp $
  */
 
 /*
@@ -106,6 +106,7 @@ int		 el_parse(EditLine *, int, const char **);
 int		 el_set(EditLine *, int, ...);
 int		 el_get(EditLine *, int, ...);
 unsigned char	_el_fn_complete(EditLine *, int);
+unsigned char	_el_fn_sh_complete(EditLine *, int);
 
 /*
  * el_set/el_get parameters

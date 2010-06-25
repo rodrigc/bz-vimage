@@ -85,7 +85,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.274 2010/05/11 18:24:22 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.275 2010/06/21 21:15:51 mav Exp $");
 
 #include "opt_ddb.h"
 #include "opt_hwpmc_hooks.h"
@@ -495,6 +495,7 @@ static struct witness_order_list_entry order_lists[] = {
 #ifdef	HWPMC_HOOKS
 	{ "pmc-sleep", &lock_class_mtx_sleep },
 #endif
+	{ "time lock", &lock_class_mtx_sleep },
 	{ NULL, NULL },
 	/*
 	 * Sockets
@@ -654,7 +655,6 @@ static struct witness_order_list_entry order_lists[] = {
 	{ "callout", &lock_class_mtx_spin },
 	{ "entropy harvest mutex", &lock_class_mtx_spin },
 	{ "syscons video lock", &lock_class_mtx_spin },
-	{ "time lock", &lock_class_mtx_spin },
 #ifdef SMP
 	{ "smp rendezvous", &lock_class_mtx_spin },
 #endif

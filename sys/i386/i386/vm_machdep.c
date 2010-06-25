@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.301 2010/06/05 15:59:59 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.303 2010/06/23 11:21:19 kib Exp $");
 
 #include "opt_isa.h"
 #include "opt_npx.h"
@@ -150,9 +150,6 @@ cpu_fork(td1, p2, td2, flags)
 	register struct proc *p1;
 	struct pcb *pcb2;
 	struct mdproc *mdp2;
-#ifdef DEV_NPX
-	register_t savecrit;
-#endif
 
 	p1 = td1->td_proc;
 	if ((flags & RFPROC) == 0) {
@@ -180,10 +177,10 @@ cpu_fork(td1, p2, td2, flags)
 	if (td1 == curthread)
 		td1->td_pcb->pcb_gs = rgs();
 #ifdef DEV_NPX
-	savecrit = intr_disable();
+	critical_enter();
 	if (PCPU_GET(fpcurthread) == td1)
 		npxsave(td1->td_pcb->pcb_save);
-	intr_restore(savecrit);
+	critical_exit();
 #endif
 
 	/* Point the pcb to the top of the stack */
@@ -328,8 +325,10 @@ cpu_thread_exit(struct thread *td)
 {
 
 #ifdef DEV_NPX
+	critical_enter();
 	if (td == PCPU_GET(fpcurthread))
 		npxdrop();
+	critical_exit();
 #endif
 
 	/* Disable any hardware breakpoints. */
@@ -441,7 +440,7 @@ cpu_set_upcall(struct thread *td, struct thread *td0)
 	 * values here.
 	 */
 	bcopy(td0->td_pcb, pcb2, sizeof(*pcb2));
-	pcb2->pcb_flags &= ~(PCB_NPXTRAP|PCB_NPXINITDONE|PCB_NPXUSERINITDONE);
+	pcb2->pcb_flags &= ~(PCB_NPXINITDONE | PCB_NPXUSERINITDONE);
 	pcb2->pcb_save = &pcb2->pcb_user_save;
 
 	/*

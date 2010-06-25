@@ -140,7 +140,7 @@
 #include "opt_vm.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.129 2010/06/11 15:49:39 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.130 2010/06/15 22:16:02 cognet Exp $");
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kernel.h>
@@ -1368,7 +1368,7 @@ pmap_fix_cache(struct vm_page *pg, pmap_t pm, vm_offset_t va)
 		 * check for kernel uncachable conditions
 		 * kernel writable or kernel readable with writable user entry
 		 */
-		if ((kwritable && entries) ||
+		if ((kwritable && (entries || kentries > 1)) ||
 		    (kwritable > 1) ||
 		    ((kwritable != writable) && kentries &&
 		     (pv->pv_pmap == pmap_kernel() ||

@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	from: vector.s, 386BSD 0.1 unknown origin
- * $FreeBSD: src/sys/i386/i386/atpic_vector.s,v 1.1 2010/02/25 14:13:39 attilio Exp $
+ * $FreeBSD: src/sys/i386/i386/atpic_vector.s,v 1.2 2010/06/23 20:44:07 kib Exp $
  */
 
 /*
@@ -49,6 +49,7 @@
 IDTVEC(vec_name) ;							\
 	PUSH_FRAME ;							\
 	SET_KERNEL_SREGS ;						\
+	cld ;								\
 ;									\
 	FAKE_MCOUNT(TF_EIP(%esp)) ;					\
 	pushl	%esp		;                                       \

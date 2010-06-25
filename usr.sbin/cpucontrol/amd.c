@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/amd.c,v 1.1 2008/08/08 16:26:53 stas Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/amd.c,v 1.2 2010/06/19 16:29:23 gavin Exp $");
 
 #include <assert.h>
 #include <stdio.h>
@@ -92,9 +92,7 @@ amd_update(const char *dev, const char *path)
 	assert(dev);
 
 	fd  = -1;
-	devfd = -1;
 	fw_image = MAP_FAILED;
-	error = 0;
 	devfd = open(dev, O_RDWR);
 	if (devfd < 0) {
 		WARN(0, "could not open %s for writing", dev);

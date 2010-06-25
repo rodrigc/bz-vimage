@@ -1,5 +1,5 @@
 /*	$NetBSD: uaudioreg.h,v 1.12 2004/11/05 19:08:29 kent Exp $	*/
-/* $FreeBSD: src/sys/dev/sound/usb/uaudioreg.h,v 1.9 2010/02/08 19:44:09 brucec Exp $ */
+/* $FreeBSD: src/sys/dev/sound/usb/uaudioreg.h,v 1.10 2010/06/22 21:16:18 thompsa Exp $ */
 
 /*-
  * Copyright (c) 1999 The NetBSD Foundation, Inc.
@@ -46,6 +46,11 @@
 #define	UDESCSUB_AC_FEATURE	6
 #define	UDESCSUB_AC_PROCESSING	7
 #define	UDESCSUB_AC_EXTENSION	8
+
+/* These macros check if the endpoint descriptor has additional fields */
+#define	UEP_MINSIZE	7
+#define	UEP_HAS_REFRESH(ep)	((ep)->bLength >= 8)
+#define	UEP_HAS_SYNCADDR(ep)	((ep)->bLength >= 9)
 
 /* The first fields are identical to struct usb_endpoint_descriptor */
 typedef struct {

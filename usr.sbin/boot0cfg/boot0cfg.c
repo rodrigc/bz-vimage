@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/boot0cfg/boot0cfg.c,v 1.24 2009/03/02 04:35:52 marcel Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/boot0cfg/boot0cfg.c,v 1.25 2010/06/23 14:28:08 brucec Exp $");
 
 #include <sys/param.h>
 #include <sys/disklabel.h>
@@ -356,6 +356,8 @@ write_mbr(const char *fname, int flags, u_int8_t *mbr, int mbr_size)
 	if (n != mbr_size)
 	   errx(1, "%s: short write", fname);
 	return;
+    } else {
+	    err(1, "write_mbr: %s", fname);
     }
 
     /*

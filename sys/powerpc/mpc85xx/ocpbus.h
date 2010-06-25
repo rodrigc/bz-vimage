@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/mpc85xx/ocpbus.h,v 1.6 2010/03/23 20:12:53 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/mpc85xx/ocpbus.h,v 1.7 2010/06/18 14:06:27 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_OCP85XX_H_
@@ -104,11 +104,9 @@
 /*
  * PIC definitions
  */
-#define	ISA_IRQ_START	0
-#define	PIC_IRQ_START	(ISA_IRQ_START + 16)
 
-#define	ISA_IRQ(n)	(ISA_IRQ_START + (n))
-#define	PIC_IRQ_EXT(n)	(PIC_IRQ_START + (n))
-#define	PIC_IRQ_INT(n)	(PIC_IRQ_START + 16 + (n))
+#define	ISA_IRQ(n)	(INTR_VEC(ATPIC_ID, n))
+#define	PIC_IRQ_EXT(n)	(INTR_VEC(OPIC_ID, (n)))
+#define	PIC_IRQ_INT(n)	(INTR_VEC(OPIC_ID, (16 + (n))))
 
 #endif /* _MACHINE_OCP85XX_H */

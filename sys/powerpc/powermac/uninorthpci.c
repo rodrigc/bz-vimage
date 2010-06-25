@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorthpci.c,v 1.1 2010/05/16 15:18:25 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorthpci.c,v 1.2 2010/06/18 14:06:27 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -356,14 +356,15 @@ uninorth_route_interrupt(device_t bus, device_t dev, int pin)
 	struct uninorth_softc *sc;
 	struct ofw_pci_register reg;
 	uint32_t pintr, mintr;
+	phandle_t iparent;
 	uint8_t maskbuf[sizeof(reg) + sizeof(pintr)];
 
 	sc = device_get_softc(bus);
 	pintr = pin;
 	if (ofw_bus_lookup_imap(ofw_bus_get_node(dev), &sc->sc_pci_iinfo, &reg,
 	    sizeof(reg), &pintr, sizeof(pintr), &mintr, sizeof(mintr),
-	    maskbuf))
-		return (mintr);
+	    &iparent, maskbuf))
+		return (INTR_VEC(iparent, mintr));
 
 	/* Maybe it's a real interrupt, not an intpin */
 	if (pin > 4)

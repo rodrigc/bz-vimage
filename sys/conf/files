@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/files,v 1.1520 2010/06/13 13:02:43 raj Exp $
+# $FreeBSD: src/sys/conf/files,v 1.1521 2010/06/20 21:33:29 mav Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -2085,6 +2085,7 @@ kern/kern_context.c		standard
 kern/kern_descrip.c		standard
 kern/kern_dtrace.c		optional kdtrace_hooks
 kern/kern_environment.c		standard
+kern/kern_et.c			standard
 kern/kern_event.c		standard
 kern/kern_exec.c		standard
 kern/kern_exit.c		standard

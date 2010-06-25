@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_param.c,v 1.94 2010/03/02 23:57:42 ivoras Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_param.c,v 1.96 2010/06/24 00:27:20 nwhitehorn Exp $");
 
 #include "opt_param.h"
 #include "opt_maxusers.h"
@@ -53,10 +53,10 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_param.c,v 1.94 2010/03/02 23:57:42 ivoras 
  */
 
 #ifndef HZ
-#  if defined(__amd64__) || defined(__i386__) || defined(__ia64__) || defined(__sparc64__)
-#    define	HZ 1000
-#  else
+#  if defined(__mips__) || defined(__arm__)
 #    define	HZ 100
+#  else
+#    define	HZ 1000
 #  endif
 #  ifndef HZ_VM
 #    define	HZ_VM 100

@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/intel.c,v 1.1 2008/08/08 16:26:53 stas Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/intel.c,v 1.2 2010/06/19 16:29:23 gavin Exp $");
 
 #include <assert.h>
 #include <stdio.h>
@@ -104,7 +104,6 @@ intel_update(const char *dev, const char *path)
 	assert(dev);
 
 	fd = -1;
-	devfd = -1;
 	fw_image = MAP_FAILED;
 	ext_table = NULL;
 	ext_header = NULL;

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ypwhich/ypwhich.c,v 1.19 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ypwhich/ypwhich.c,v 1.20 2010/06/19 16:24:55 gavin Exp $");
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -143,11 +143,11 @@ main(int argc, char *argv[])
 	struct ypmaplist *ypml, *y;
 	struct hostent *hent;
 	struct sockaddr_in lsin;
-	int notrans, mode, getmap;
+	int notrans, mode;
 	int c, r;
 	u_int i;
 
-	getmap = notrans = mode = 0;
+	notrans = mode = 0;
 	while ((c = getopt(argc, argv, "xd:mt")) != -1)
 		switch (c) {
 		case 'x':

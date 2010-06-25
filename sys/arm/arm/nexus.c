@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.15 2010/06/13 13:08:23 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.16 2010/06/16 14:10:39 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -110,13 +110,6 @@ nexus_probe(device_t dev)
 
 	device_quiet(dev);	/* suppress attach message for neatness */
 
-	mem_rman.rm_start = 0;
-	mem_rman.rm_end = ~0u;
-	mem_rman.rm_type = RMAN_ARRAY;
-	mem_rman.rm_descr = "I/O memory addresses";
-	if (rman_init(&mem_rman) || rman_manage_region(&mem_rman, 0, ~0u))
-		panic("nexus_probe mem_rman");
-
 	return (BUS_PROBE_DEFAULT);
 }
 
@@ -143,6 +136,13 @@ nexus_teardown_intr(device_t dev, device_t child, struct resource *r, void *ih)
 static int
 nexus_attach(device_t dev)
 {
+
+	mem_rman.rm_start = 0;
+	mem_rman.rm_end = ~0u;
+	mem_rman.rm_type = RMAN_ARRAY;
+	mem_rman.rm_descr = "I/O memory addresses";
+	if (rman_init(&mem_rman) || rman_manage_region(&mem_rman, 0, ~0u))
+		panic("nexus_probe mem_rman");
 
 	/*
 	 * First, deal with the children we know about already

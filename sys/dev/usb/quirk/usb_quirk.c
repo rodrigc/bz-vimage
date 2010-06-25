@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.17 2010/05/12 22:26:23 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.18 2010/06/22 21:03:13 thompsa Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -450,6 +450,7 @@ static struct usb_quirk_entry usb_quirks[USB_DEV_QUIRKS_MAX] = {
 	    UQ_MSC_FORCE_PROTO_SCSI, UQ_MSC_NO_SYNC_CACHE),
 	USB_QUIRK(ASUS, GMSC, 0x0000, 0xffff, UQ_MSC_NO_SYNC_CACHE),
 	USB_QUIRK(UNKNOWN4, USBMEMSTICK, 0x0000, 0xffff, UQ_MSC_NO_SYNC_CACHE),
+	USB_QUIRK(UNKNOWN5, USB2IDEBRIDGE, 0x0000, 0xffff, UQ_MSC_NO_SYNC_CACHE),
 };
 #undef USB_QUIRK_VP
 #undef USB_QUIRK

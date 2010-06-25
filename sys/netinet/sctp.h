@@ -30,7 +30,7 @@
 /* $KAME: sctp.h,v 1.18 2005/03/06 16:04:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp.h,v 1.29 2009/06/17 12:34:56 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp.h,v 1.30 2010/06/18 09:01:44 tuexen Exp $");
 
 #ifndef _NETINET_SCTP_H_
 #define _NETINET_SCTP_H_
@@ -442,6 +442,7 @@ struct sctp_error_unrecognized_chunk {
 #define SCTP_PCB_FLAGS_BLOCKING_IO	0x08000000
 #define SCTP_PCB_FLAGS_SOCKET_GONE	0x10000000
 #define SCTP_PCB_FLAGS_SOCKET_ALLGONE	0x20000000
+#define SCTP_PCB_FLAGS_SOCKET_CANT_READ	0x40000000
 /* flags to copy to new PCB */
 #define SCTP_PCB_COPY_FLAGS		(SCTP_PCB_FLAGS_BOUNDALL|\
 					 SCTP_PCB_FLAGS_WAKEINPUT|\

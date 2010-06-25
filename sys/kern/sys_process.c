@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sys_process.c,v 1.167 2010/05/25 21:32:37 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sys_process.c,v 1.168 2010/06/21 09:55:56 ed Exp $");
 
 #include "opt_compat.h"
 
@@ -67,9 +67,9 @@ __FBSDID("$FreeBSD: src/sys/kern/sys_process.c,v 1.167 2010/05/25 21:32:37 jhb E
 
 struct ptrace_io_desc32 {
 	int		piod_op;
-	u_int32_t	piod_offs;
-	u_int32_t	piod_addr;
-	u_int32_t	piod_len;
+	uint32_t	piod_offs;
+	uint32_t	piod_addr;
+	uint32_t	piod_len;
 };
 
 struct ptrace_vm_entry32 {

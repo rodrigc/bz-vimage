@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	5.20 (Berkeley) 6/12/93
-# $FreeBSD: src/usr.sbin/Makefile,v 1.425 2010/06/13 13:30:26 raj Exp $
+# $FreeBSD: src/usr.sbin/Makefile,v 1.426 2010/06/24 22:21:47 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -125,6 +125,7 @@ SUBDIR=	${_ac} \
 	${_ntp} \
 	${_nvram} \
 	${_ofwdump} \
+	pc-sysinstall \
 	pciconf \
 	periodic \
 	${_pkg_install} \

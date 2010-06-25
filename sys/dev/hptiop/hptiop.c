@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/hptiop/hptiop.c,v 1.7 2010/01/28 08:41:30 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/hptiop/hptiop.c,v 1.8 2010/06/19 13:41:17 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -1823,6 +1823,10 @@ scsi_done:
 		strncpy(cpi->sim_vid, "FreeBSD", SIM_IDLEN);
 		strncpy(cpi->hba_vid, "HPT   ", HBA_IDLEN);
 		strncpy(cpi->dev_name, cam_sim_name(sim), DEV_IDLEN);
+		cpi->transport = XPORT_SPI;
+		cpi->transport_version = 2;
+		cpi->protocol = PROTO_SCSI;
+		cpi->protocol_version = SCSI_REV_2;
 		cpi->ccb_h.status = CAM_REQ_CMP;
 		break;
 	}

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/hrowpic.c,v 1.16 2009/10/24 18:31:22 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/hrowpic.c,v 1.17 2010/06/18 14:06:27 nwhitehorn Exp $
  */
 
 /*
@@ -70,6 +70,7 @@ static void	hrowpic_eoi(device_t, u_int);
 static void	hrowpic_ipi(device_t, u_int);
 static void	hrowpic_mask(device_t, u_int);
 static void	hrowpic_unmask(device_t, u_int);
+static uint32_t hrowpic_id(device_t dev);
 
 static device_method_t  hrowpic_methods[] = {
 	/* Device interface */
@@ -80,6 +81,7 @@ static device_method_t  hrowpic_methods[] = {
 	DEVMETHOD(pic_dispatch,		hrowpic_dispatch),
 	DEVMETHOD(pic_enable,		hrowpic_enable),
 	DEVMETHOD(pic_eoi,		hrowpic_eoi),
+	DEVMETHOD(pic_id,		hrowpic_id),
 	DEVMETHOD(pic_ipi,		hrowpic_ipi),
 	DEVMETHOD(pic_mask,		hrowpic_mask),
 	DEVMETHOD(pic_unmask,		hrowpic_unmask),
@@ -169,6 +171,8 @@ hrowpic_attach(device_t dev)
 	hrowpic_write_reg(sc, HPIC_CLEAR,  HPIC_SECONDARY, 0xffffffff);
 
 	powerpc_register_pic(dev, 64);
+	root_pic = dev; /* Heathrow systems have only one PIC */
+
 	return (0);
 }
 
@@ -282,3 +286,10 @@ hrowpic_unmask(device_t dev, u_int irq)
 	sc = device_get_softc(dev);
 	hrowpic_toggle_irq(sc, irq, 1);
 }
+
+static uint32_t
+hrowpic_id(device_t dev)
+{
+	return (ofw_bus_get_node(dev));
+}
+

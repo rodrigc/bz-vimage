@@ -4,12 +4,18 @@
 # This file contains machine dependent kernel configuration notes.  For
 # machine independent notes, look in /sys/conf/NOTES.
 #
-# $FreeBSD: src/sys/i386/conf/NOTES,v 1.1290 2010/03/10 19:50:52 jhb Exp $
+# $FreeBSD: src/sys/i386/conf/NOTES,v 1.1291 2010/06/18 18:51:09 kib Exp $
 #
 
 #
 # We want LINT to cover profiling as well.
 profile         2
+
+#
+# Enable the kernel DTrace hooks which are required to load the DTrace
+# kernel modules.
+#
+options 	KDTRACE_HOOKS
 
 
 #####################################################################

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>                  /* RCS ID & Copyright macro defns */
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/interrupt.c,v 1.4 2010/03/23 19:30:56 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/interrupt.c,v 1.5 2010/06/18 14:06:27 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -134,7 +134,7 @@ powerpc_extr_interrupt(struct trapframe *framep)
 {
 
 	critical_enter();
-	PIC_DISPATCH(pic, framep);
+	PIC_DISPATCH(root_pic, framep);
 	critical_exit();
 	framep->srr1 &= ~PSL_WE;
 }

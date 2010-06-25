@@ -1,6 +1,6 @@
 #! /bin/sh -
 #	@(#)makesyscalls.sh	8.1 (Berkeley) 6/10/93
-# $FreeBSD: src/sys/kern/makesyscalls.sh,v 1.77 2010/02/08 10:02:01 ed Exp $
+# $FreeBSD: src/sys/kern/makesyscalls.sh,v 1.78 2010/06/21 09:55:56 ed Exp $
 
 set -e
 
@@ -165,7 +165,7 @@ s/\$//g
 		printf "# created from%s\nMIASM = ", $0 > sysmk
 
 		printf " * This file is part of the DTrace syscall provider.\n */\n\n" > systrace
-		printf "static void\nsystrace_args(int sysnum, void *params, u_int64_t *uarg, int *n_args)\n{\n" > systrace
+		printf "static void\nsystrace_args(int sysnum, void *params, uint64_t *uarg, int *n_args)\n{\n" > systrace
 		printf "\tint64_t *iarg  = (int64_t *) uarg;\n" > systrace
 		printf "\tswitch (sysnum) {\n" > systrace
 

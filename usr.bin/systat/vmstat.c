@@ -33,7 +33,7 @@
 
 #include <sys/cdefs.h>
 
-__FBSDID("$FreeBSD: src/usr.bin/systat/vmstat.c,v 1.89 2010/01/13 18:09:54 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/systat/vmstat.c,v 1.90 2010/06/18 18:18:03 mav Exp $");
 
 #ifdef lint
 static const char sccsid[] = "@(#)vmstat.c	8.2 (Berkeley) 1/12/94";
@@ -254,24 +254,23 @@ initkre(void)
 					cp1++;
 				if (cp1 != cp && *cp1 == ':' &&
 				    *(cp1 + 1) == ' ') {
+					sz = strlen(cp);
 					*cp1 = '\0';
 					cp1 = cp1 + 2;
 					cp2 = strdup(cp);
-					bcopy(cp1, cp, strlen(cp1) + 1);
-					strcat(cp, " ");
-					strcat(cp, cp2);
+					bcopy(cp1, cp, sz - (cp1 - cp) + 1);
+					/* If line is long - drop "irq",
+					   if too long - drop "irqN". */
+					if (sz <= 10 + 1) {
+						strcat(cp, " ");
+						strcat(cp, cp2);
+					} else if (sz <= 10 + 4) {
+						strcat(cp, " ");
+						strcat(cp, cp2 + 3);
+					}
 					free(cp2);
 				}
 			}
-
-			/*
-			 * Convert "name irqN" to "name N" if the former is
-			 * longer than the field width.
-			 */
-			if ((cp1 = strstr(cp, "irq")) != NULL &&
-			    strlen(cp) > 10)
-				bcopy(cp1 + 3, cp1, strlen(cp1 + 3) + 1);
-
 			intrname[i] = cp;
 			cp = nextcp;
 		}

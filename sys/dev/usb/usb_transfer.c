@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.39 2010/04/22 22:15:08 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.40 2010/06/22 20:57:48 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -3057,7 +3057,7 @@ usbd_get_std_packet_size(struct usb_std_packet_size *ptr,
 	};
 
 	static const uint16_t bulk_min[USB_SPEED_MAX] = {
-		[USB_SPEED_LOW] = 0,	/* not supported */
+		[USB_SPEED_LOW] = 8,
 		[USB_SPEED_FULL] = 8,
 		[USB_SPEED_HIGH] = 512,
 		[USB_SPEED_VARIABLE] = 512,

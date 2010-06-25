@@ -28,7 +28,7 @@
 #ifndef lint
 __RCSID("$NetBSD: check.c,v 1.10 2000/04/25 23:02:51 jdolecek Exp $");
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/fsck_msdosfs/check.c,v 1.13 2010/02/14 12:31:28 kib Exp $";
+  "$FreeBSD: src/sbin/fsck_msdosfs/check.c,v 1.14 2010/06/20 09:40:54 brian Exp $";
 #endif /* not lint */
 
 #include <stdlib.h>
@@ -98,7 +98,7 @@ checkfilesys(const char *fname)
 	}
 
 	if (boot.ValidFat < 0)
-		for (i = 1; i < (int)boot.bpbFATs; i++) {
+		for (i = 1; i < boot.bpbFATs; i++) {
 			struct fatEntry *currentFat;
 
 			mod |= readfat(dosfs, &boot, i, &currentFat);

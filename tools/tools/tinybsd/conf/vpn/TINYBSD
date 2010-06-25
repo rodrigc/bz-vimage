@@ -1,4 +1,4 @@
-# $FreeBSD: src/tools/tools/tinybsd/conf/vpn/TINYBSD,v 1.3 2007/08/22 18:45:00 remko Exp $
+# $FreeBSD: src/tools/tools/tinybsd/conf/vpn/TINYBSD,v 1.4 2010/06/19 09:21:34 brian Exp $
 machine		i386
 cpu		I486_CPU
 cpu		I586_CPU
@@ -133,7 +133,6 @@ device		xe		# Xircom pccard Ethernet
 device		loop		# Network loopback
 device		random		# Entropy device
 device		ether		# Ethernet support
-#device		sl		# Kernel SLIP
 device		ppp		# Kernel PPP
 device		tun		# Packet tunnel.
 device		pty		# Pseudo-ttys (telnet etc)

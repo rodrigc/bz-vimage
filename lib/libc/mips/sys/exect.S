@@ -32,7 +32,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/mips/sys/exect.S,v 1.3 2008/04/26 12:08:02 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/mips/sys/exect.S,v 1.4 2010/06/16 12:55:14 jchandra Exp $");
 #include "SYS.h"
 
 #if defined(LIBC_SCCS) && !defined(lint)
@@ -41,16 +41,11 @@ __FBSDID("$FreeBSD: src/lib/libc/mips/sys/exect.S,v 1.3 2008/04/26 12:08:02 imp 
 #endif /* LIBC_SCCS and not lint */
 
 LEAF(exect)
-#ifdef __ABICALLS__
-	.set    noreorder
-	.cpload t9
-	.set    reorder
-#endif
+	PIC_PROLOGUE(exect)
 	li	v0, SYS_execve
 	syscall
 	bne	a3, zero, 1f
-	j	ra
+	PIC_RETURN()
 1:
-	la      t9, _C_LABEL(__cerror)
-	jr      t9
+	PIC_TAILCALL(__cerror)
 END(exect)

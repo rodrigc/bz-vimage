@@ -1,4 +1,4 @@
-$ $FreeBSD: src/lib/libc/nls/ru_RU.KOI8-R.msg,v 1.2 2009/03/21 10:10:33 maxim Exp $
+$ $FreeBSD: src/lib/libc/nls/ru_RU.KOI8-R.msg,v 1.3 2010/06/20 06:52:10 maxim Exp $
 $
 $ Message catalog for ru_RU.KOI8-R locale
 $
@@ -183,6 +183,16 @@ $ ENOATTR
 87 Атрибут не найден
 $ EDOOFUS
 88 Ошибка программирования
+$ EBADMSG
+89 Плохой формат сообщения
+$ EMULTIHOP
+90 Попытка мультихопа
+$ ENOLINK
+91 Канал разорван
+$ EPROTO
+92 Ошибка протокола
+$ ENOTCAPABLE
+93 Недостаточно возможностей
 $
 $ strsignal() support catalog
 $

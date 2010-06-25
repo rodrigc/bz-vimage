@@ -49,7 +49,7 @@
   */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.33 2010/06/11 15:49:39 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.34 2010/06/24 05:47:00 marcel Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -1505,8 +1505,6 @@ mmu_booke_pinit(mmu_t mmu, pmap_t pmap)
 static void
 mmu_booke_release(mmu_t mmu, pmap_t pmap)
 {
-
-	printf("mmu_booke_release: s\n");
 
 	KASSERT(pmap->pm_stats.resident_count == 0,
 	    ("pmap_release: pmap resident count %ld != 0",

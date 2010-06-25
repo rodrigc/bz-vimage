@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/geom/misc/subr.h,v 1.9 2008/06/06 22:44:03 marcel Exp $
+ * $FreeBSD: src/sbin/geom/misc/subr.h,v 1.10 2010/06/21 08:24:50 ae Exp $
  */
 
 #ifndef _SUBR_H_
@@ -32,6 +32,7 @@
 
 unsigned g_lcm(unsigned a, unsigned b);
 uint32_t bitcount32(uint32_t x);
+int g_parse_lba(const char *lbastr, unsigned sectorsize, off_t *sectors);
 
 off_t g_get_mediasize(const char *name);
 unsigned g_get_sectorsize(const char *name);

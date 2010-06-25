@@ -26,7 +26,7 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/share/examples/perfmon/perfmon.c,v 1.5 1999/08/28 00:19:26 peter Exp $
+ * $FreeBSD: src/share/examples/perfmon/perfmon.c,v 1.6 2010/06/23 04:42:47 kevlo Exp $
  */
 
 #include <sys/types.h>
@@ -173,15 +173,13 @@ getnum(const char *buf, int min, int max)
 	l = strtol(buf, &ep, 0);
 	if (*buf && !*ep && !errno) {
 		if (l < min || l > max) {
-			errx(1, "`%s': must be between %d and %d", 
+			errx(1, "%s: must be between %d and %d", 
 			     buf, min, max);
 		}
 		return (int)l;
-	} else if(errno) {
-		errx(1, "`%s': must be between %ld and %ld", 
-		     LONG_MIN, LONG_MAX);
-	}
-	errx(1, "`%s': parameter must be an integer");
+	} 
+
+	errx(1, "%s: parameter must be an integer", buf);
 }
 
 static void

@@ -68,7 +68,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_acct.c,v 1.104 2009/06/16 15:13:45 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_acct.c,v 1.105 2010/06/21 09:55:56 ed Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -494,7 +494,7 @@ encode_timeval(struct timeval tv)
 			val = 1000000 * tv.tv_sec + tv.tv_usec;
 		} else {
 			exp = log2_s + LOG2_1M - CALC_BITS;
-			val = (unsigned int)(((u_int64_t)1000000 * tv.tv_sec +
+			val = (unsigned int)(((uint64_t)1000000 * tv.tv_sec +
 			    tv.tv_usec) >> exp);
 		}
 	}

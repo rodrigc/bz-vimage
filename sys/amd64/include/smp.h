@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/amd64/include/smp.h,v 1.97 2009/08/13 17:09:45 attilio Exp $
+ * $FreeBSD: src/sys/amd64/include/smp.h,v 1.98 2010/06/17 11:54:49 mav Exp $
  *
  */
 
@@ -35,6 +35,14 @@ extern int			mp_naps;
 extern int			boot_cpu_id;
 extern struct pcb		stoppcbs[];
 extern int			cpu_apic_ids[];
+#ifdef COUNT_IPIS
+extern u_long *ipi_invltlb_counts[MAXCPU];
+extern u_long *ipi_invlrng_counts[MAXCPU];
+extern u_long *ipi_invlpg_counts[MAXCPU];
+extern u_long *ipi_invlcache_counts[MAXCPU];
+extern u_long *ipi_rendezvous_counts[MAXCPU];
+extern u_long *ipi_lazypmap_counts[MAXCPU];
+#endif
 
 /* IPI handlers */
 inthand_t

@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.289 2010/06/11 21:46:45 cperciva Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.290 2010/06/20 04:14:49 randi Exp $
  */
 
 #ifndef _SYSINSTALL_H_INCLUDE
@@ -755,7 +755,7 @@ extern dialogMenuItem *item_add(dialogMenuItem *list, char *prompt, char *title,
 				int (*checked)(dialogMenuItem *self),
 				int (*fire)(dialogMenuItem *self),
 				void (*selected)(dialogMenuItem *self, int is_selected),
-				void *data, int *aux, int *curr, int *max);
+				void *data, void *aux, int *curr, int *max);
 extern void	items_free(dialogMenuItem *list, int *curr, int *max);
 extern int	Mkdir(char *);
 extern int	Mkdir_command(char *key, void *data);

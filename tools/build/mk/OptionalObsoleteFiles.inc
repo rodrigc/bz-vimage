@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/tools/build/mk/OptionalObsoleteFiles.inc,v 1.65 2010/06/14 19:10:30 ed Exp $
+# $FreeBSD: src/tools/build/mk/OptionalObsoleteFiles.inc,v 1.66 2010/06/17 12:37:50 netchild Exp $
 #
 # This file add support for the WITHOUT_* and WITH_* knobs in src.conf(5) to
 # the check-old and delete-old* targets.
@@ -596,6 +596,8 @@ OLD_FILES+=usr/share/man/man1/dtrace.1.gz
 OLD_FILES+=boot/gptzfsboot
 OLD_FILES+=boot/zfsboot
 OLD_FILES+=boot/zfsloader
+OLD_FILES+=etc/periodic/daily/404.status-zfs
+OLD_FILES+=etc/periodic/daily/800.scrub-zfs
 OLD_LIBS+=lib/libzfs.so.2
 OLD_LIBS+=lib/libzpool.so.2
 OLD_FILES+=rescue/zfs

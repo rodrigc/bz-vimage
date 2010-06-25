@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_cache.c,v 1.161 2010/04/20 10:19:27 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_cache.c,v 1.162 2010/06/21 09:55:56 ed Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_ktrace.h"
@@ -379,7 +379,7 @@ cache_lookup(dvp, vpp, cnp)
 	struct componentname *cnp;
 {
 	struct namecache *ncp;
-	u_int32_t hash;
+	uint32_t hash;
 	int error, ltype, wlocked;
 
 	if (!doingcache) {
@@ -602,7 +602,7 @@ cache_enter(dvp, vp, cnp)
 {
 	struct namecache *ncp, *n2;
 	struct nchashhead *ncpp;
-	u_int32_t hash;
+	uint32_t hash;
 	int flag;
 	int hold;
 	int zap;

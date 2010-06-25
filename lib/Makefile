@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/Makefile,v 1.248 2010/06/09 19:57:20 rdivacky Exp $
+# $FreeBSD: src/lib/Makefile,v 1.249 2010/06/21 19:44:29 ed Exp $
 
 .include <bsd.own.mk>
 
@@ -138,7 +138,7 @@ _libsdp=	libsdp
 _libbsnmp=	libbsnmp
 .endif
 
-.if ${MK_CLANG} != "no"
+.if ${MK_CLANG} != "no" && !defined(COMPAT_32BIT)
 _clang=		clang
 .endif
 

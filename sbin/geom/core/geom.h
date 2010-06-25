@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/geom/core/geom.h,v 1.7 2009/06/07 20:12:14 marcel Exp $
+ * $FreeBSD: src/sbin/geom/core/geom.h,v 1.8 2010/06/21 08:24:50 ae Exp $
  */
 
 #ifndef _GEOM_H_
@@ -39,7 +39,6 @@
 #define	G_TYPE_STRING	0x02
 #define	G_TYPE_NUMBER	0x03
 #define	G_TYPE_ASCNUM	0x04
-#define	G_TYPE_ASCLBA	0x05
 #define	G_TYPE_MASK	0x0f
 #define	G_TYPE_DONE	0x10
 

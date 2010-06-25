@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/uhci.c,v 1.25 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/uhci.c,v 1.26 2010/06/22 20:57:48 thompsa Exp $");
 
 /*
  * USB Universal Host Controller driver.
@@ -3068,9 +3068,7 @@ uhci_ep_init(struct usb_device *udev, struct usb_endpoint_descriptor *edesc,
 			}
 			break;
 		case UE_BULK:
-			if (udev->speed != USB_SPEED_LOW) {
-				ep->methods = &uhci_device_bulk_methods;
-			}
+			ep->methods = &uhci_device_bulk_methods;
 			break;
 		default:
 			/* do nothing */

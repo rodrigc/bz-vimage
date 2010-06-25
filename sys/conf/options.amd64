@@ -1,8 +1,10 @@
-# $FreeBSD: src/sys/conf/options.amd64,v 1.38 2010/03/11 14:49:06 nwhitehorn Exp $
+# $FreeBSD: src/sys/conf/options.amd64,v 1.39 2010/06/17 11:54:49 mav Exp $
 # Options specific to AMD64 platform kernels
 
 AUTO_EOI_1		opt_auto_eoi.h
 AUTO_EOI_2		opt_auto_eoi.h
+COUNT_XINVLTLB_HITS	opt_smp.h
+COUNT_IPIS		opt_smp.h
 MAXMEM
 PERFMON
 PMAP_SHPGPERPROC	opt_pmap.h

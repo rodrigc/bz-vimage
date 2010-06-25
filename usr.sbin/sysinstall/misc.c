@@ -1,7 +1,7 @@
 /*
  * Miscellaneous support routines..
  *
- * $FreeBSD: src/usr.sbin/sysinstall/misc.c,v 1.44 2006/07/15 12:23:56 simon Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/misc.c,v 1.45 2010/06/20 04:14:49 randi Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -238,7 +238,7 @@ item_add(dialogMenuItem *list, char *prompt, char *title,
 	 int (*checked)(dialogMenuItem *self),
 	 int (*fire)(dialogMenuItem *self),
 	 void (*selected)(dialogMenuItem *self, int is_selected),
-	 void *data, int *aux, int *curr, int *max)
+	 void *data, void *aux, int *curr, int *max)
 {
     dialogMenuItem *d;
 

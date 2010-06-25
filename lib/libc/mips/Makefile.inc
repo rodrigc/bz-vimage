@@ -1,7 +1,5 @@
 #	$NetBSD: Makefile.inc,v 1.7 2005/09/17 11:49:39 tsutsui Exp $
-# $FreeBSD: src/lib/libc/mips/Makefile.inc,v 1.3 2008/04/26 12:07:59 imp Exp $
-
-SOFTFLOAT_BITS=32
+# $FreeBSD: src/lib/libc/mips/Makefile.inc,v 1.4 2010/06/16 14:13:36 jchandra Exp $
 
 CFLAGS+=-DSOFTFLOAT
 

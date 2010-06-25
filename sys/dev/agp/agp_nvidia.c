@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/agp/agp_nvidia.c,v 1.15 2009/06/11 17:06:07 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/agp/agp_nvidia.c,v 1.16 2010/06/19 08:42:29 brian Exp $");
 
 /*
  * Written using information gleaned from the
@@ -282,7 +282,7 @@ agp_nvidia_get_aperture(device_t dev)
 	case 14: return (64 * 1024 * 1024); break;
 	case 15: return (32 * 1024 * 1024); break;
 	default:
-		device_printf(dev, "Invalid aperture setting 0x%x",
+		device_printf(dev, "Invalid aperture setting 0x%x\n",
 		    pci_read_config(dev, AGP_NVIDIA_0_APSIZE, 1));
 		return 0;
 	}

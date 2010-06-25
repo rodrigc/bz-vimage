@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/periodic/daily/Makefile,v 1.17 2008/09/21 22:02:26 sam Exp $
+# $FreeBSD: src/etc/periodic/daily/Makefile,v 1.18 2010/06/17 12:25:47 netchild Exp $
 
 .include <bsd.own.mk>
 
@@ -8,7 +8,6 @@ FILES=	100.clean-disks \
 	200.backup-passwd \
 	330.news \
 	400.status-disks \
-	404.status-zfs \
 	405.status-ata-raid \
 	406.status-gmirror \
 	407.status-graid3 \
@@ -51,6 +50,11 @@ FILES+=	150.clean-hoststat \
 	440.status-mailq \
 	460.status-mail-rejects \
 	500.queuerun
+.endif
+
+.if ${MK_ZFS} != "no"
+FILES+=	404.status-zfs \
+	800.scrub-zfs
 .endif
 
 .include <bsd.prog.mk>

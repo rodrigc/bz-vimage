@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.26 2010/06/06 14:29:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.28 2010/06/18 14:16:24 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -144,9 +144,9 @@ DRIVER_MODULE(unin, nexus, unin_chip_driver, unin_chip_devclass, 0, 0);
 static void
 unin_chip_add_intr(phandle_t devnode, struct unin_chip_devinfo *dinfo)
 {
+	phandle_t iparent;
 	int	*intr;
 	int	i, nintr;
-	phandle_t iparent;
 	int 	icells;
 
 	if (dinfo->udi_ninterrupts >= 6) {
@@ -176,9 +176,17 @@ unin_chip_add_intr(phandle_t devnode, struct unin_chip_devinfo *dinfo)
 
 	for (i = 0; i < nintr; i+=icells) {
 		resource_list_add(&dinfo->udi_resources, SYS_RES_IRQ,
-		    dinfo->udi_ninterrupts, intr[i], intr[i], 1);
+		    dinfo->udi_ninterrupts, INTR_VEC(iparent, intr[i]),
+		    INTR_VEC(iparent, intr[i]), 1);
 
-		dinfo->udi_interrupts[dinfo->udi_ninterrupts] = intr[i];
+		if (icells > 1) {
+			powerpc_config_intr(INTR_VEC(iparent, intr[i]),
+			    (intr[i+1] & 1) ? INTR_TRIGGER_LEVEL :
+			    INTR_TRIGGER_EDGE, INTR_POLARITY_LOW);
+		}
+
+		dinfo->udi_interrupts[dinfo->udi_ninterrupts] =
+		    INTR_VEC(iparent, intr[i]);
 		dinfo->udi_ninterrupts++;
 	}
 }

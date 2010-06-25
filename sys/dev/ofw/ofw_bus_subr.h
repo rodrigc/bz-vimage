@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ofw/ofw_bus_subr.h,v 1.4 2010/05/28 10:43:56 raj Exp $
+ * $FreeBSD: src/sys/dev/ofw/ofw_bus_subr.h,v 1.5 2010/06/18 14:06:27 nwhitehorn Exp $
  */
 
 #ifndef	_DEV_OFW_OFW_BUS_SUBR_H_
@@ -63,9 +63,12 @@ bus_child_pnpinfo_str_t	ofw_bus_gen_child_pnpinfo_str;
 /* Routines for processing firmware interrupt maps */
 void	ofw_bus_setup_iinfo(phandle_t, struct ofw_bus_iinfo *, int);
 int	ofw_bus_lookup_imap(phandle_t, struct ofw_bus_iinfo *, void *, int,
-	    void *, int, void *, int, void *);
+	    void *, int, void *, int, phandle_t *, void *);
 int	ofw_bus_search_intrmap(void *, int, void *, int, void *, int, void *,
-	    void *, void *, int);
+	    void *, void *, int, phandle_t *);
+
+/* Helper to get node's interrupt parent */
+void	ofw_bus_find_iparent(phandle_t);
 
 /* Helper routine for checking compat prop */
 int ofw_bus_is_compatible(device_t, const char *);

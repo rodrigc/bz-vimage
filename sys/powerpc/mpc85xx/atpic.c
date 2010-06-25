@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/mpc85xx/atpic.c,v 1.2 2009/05/31 01:56:06 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/mpc85xx/atpic.c,v 1.4 2010/06/24 05:05:18 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -37,6 +37,7 @@ __FBSDID("$FreeBSD: src/sys/powerpc/mpc85xx/atpic.c,v 1.2 2009/05/31 01:56:06 ma
 #include <machine/bus.h>
 #include <machine/intr.h>
 #include <machine/intr_machdep.h>
+#include <machine/ocpbus.h>
 #include <machine/pio.h>
 
 #include <powerpc/mpc85xx/ocpbus.h>
@@ -79,6 +80,7 @@ static void atpic_eoi(device_t, u_int);
 static void atpic_ipi(device_t, u_int);
 static void atpic_mask(device_t, u_int);
 static void atpic_unmask(device_t, u_int);
+static uint32_t atpic_id (device_t dev);
 
 static device_method_t atpic_isa_methods[] = {
 	/* Device interface */
@@ -94,6 +96,7 @@ static device_method_t atpic_isa_methods[] = {
 	DEVMETHOD(pic_ipi,		atpic_ipi),
 	DEVMETHOD(pic_mask,		atpic_mask),
 	DEVMETHOD(pic_unmask,		atpic_unmask),
+	DEVMETHOD(pic_id,		atpic_id),
 
 	{ 0, 0 },
 };
@@ -135,7 +138,7 @@ static void
 atpic_intr(void *arg)
 {
 
-	atpic_dispatch(pic8259, arg);
+	atpic_dispatch(arg, NULL);
 }
 
 static void
@@ -212,14 +215,14 @@ atpic_isa_attach(device_t dev)
 		goto fail;
 
 	error = bus_setup_intr(dev, sc->sc_ires, INTR_TYPE_MISC | INTR_MPSAFE,
-	    NULL, atpic_intr, NULL, &sc->sc_icookie);
+	    NULL, atpic_intr, dev, &sc->sc_icookie);
 	if (error)
 		goto fail;
 
 	atpic_init(sc, ATPIC_SLAVE);
 	atpic_init(sc, ATPIC_MASTER);
 
-	powerpc_register_8259(dev);
+	powerpc_register_pic(dev, 0x10);
 	return (0);
 
  fail:
@@ -328,3 +331,11 @@ atpic_unmask(device_t dev, u_int irq)
 		atpic_write(sc, ATPIC_MASTER, 1, sc->sc_mask[ATPIC_MASTER]);
 	}
 }
+
+static uint32_t
+atpic_id (device_t dev)
+{
+
+	return (ATPIC_ID);
+}
+

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/smbfs/smbfs_io.c,v 1.55 2010/05/07 15:49:43 alc Exp $
+ * $FreeBSD: src/sys/fs/smbfs/smbfs_io.c,v 1.56 2010/06/18 22:12:12 alc Exp $
  *
  */
 #include <sys/param.h>
@@ -641,12 +641,10 @@ smbfs_putpages(ap)
 
 	if (!error) {
 		int nwritten = round_page(count - uio.uio_resid) / PAGE_SIZE;
-		vm_page_lock_queues();
 		for (i = 0; i < nwritten; i++) {
 			rtvals[i] = VM_PAGER_OK;
 			vm_page_undirty(pages[i]);
 		}
-		vm_page_unlock_queues();
 	}
 	return rtvals[0];
 #endif /* SMBFS_RWGENERIC */

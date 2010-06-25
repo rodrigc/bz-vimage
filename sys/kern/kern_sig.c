@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.390 2010/05/23 18:32:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.391 2010/06/21 09:51:25 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -2953,7 +2953,8 @@ sysctl_debug_num_cores_check (SYSCTL_HANDLER_ARGS)
 {
 	int error;
 	int new_val;
-	
+
+	new_val = num_cores;
 	error = sysctl_handle_int(oidp, &new_val, 0, req);
 	if (error != 0 || req->newptr == NULL)
 		return (error);

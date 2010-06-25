@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/5/93
-# $FreeBSD: src/share/man/man7/Makefile,v 1.34 2009/01/30 15:14:58 gabor Exp $
+# $FreeBSD: src/share/man/man7/Makefile,v 1.36 2010/06/17 13:59:41 gabor Exp $
 
 #MISSING: eqnchar.7 ms.7 term.7
 MAN=	adding_user.7 \
@@ -7,6 +7,7 @@ MAN=	adding_user.7 \
 	bsd.snmpmod.mk.7 \
 	build.7 \
 	clocks.7 \
+	c99.7 \
 	development.7 \
 	environ.7 \
 	ffs.7 \
@@ -27,5 +28,9 @@ MAN=	adding_user.7 \
 
 MLINKS=	intro.7 miscellaneous.7
 MLINKS+= security.7 securelevel.7
+MLINKS+= c99.7 c.7
+MLINKS+= c99.7 c78.7
+MLINKS+= c99.7 c89.7
+MLINKS+= c99.7 c90.7
 
 .include <bsd.prog.mk>

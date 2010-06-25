@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/csu/Makefile,v 1.32 2009/02/21 15:04:31 ru Exp $
+# $FreeBSD: src/gnu/lib/csu/Makefile,v 1.33 2010/06/18 11:09:51 kib Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -17,7 +17,8 @@ CSTD?=		gnu89
 CFLAGS+=	-DIN_GCC -DHAVE_LD_EH_FRAME_HDR -DDT_CONFIG -D__GLIBC__=3
 CFLAGS+=	-finhibit-size-directive -fno-inline-functions \
 		-fno-exceptions -fno-zero-initialized-in-bss \
-		-fno-zero-initialized-in-bss -fno-toplevel-reorder
+		-fno-zero-initialized-in-bss -fno-toplevel-reorder \
+		-fno-asynchronous-unwind-tables -fno-omit-frame-pointer
 CFLAGS+=	-I${GCCLIB}/include -I${GCCDIR}/config -I${GCCDIR} -I. \
 		-I${CCDIR}/cc_tools
 CRTS_CFLAGS=	-DCRTSTUFFS_O -DSHARED ${PICFLAG}

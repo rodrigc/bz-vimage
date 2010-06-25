@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/cpufreq/est.c,v 1.1 2010/02/25 14:13:39 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/cpufreq/est.c,v 1.2 2010/06/19 13:09:42 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -1123,16 +1123,12 @@ est_acpi_info(device_t dev, freq_info **freqs)
 		 * Confirm id16 value is correct.
 		 */
 		if (sets[i].freq > 0) {
-			error = est_set_id16(dev, sets[i].spec[0], 1);
-			if (error != 0 && strict) {
+			error = est_set_id16(dev, sets[i].spec[0], strict);
+			if (error != 0) {
 				if (bootverbose) 
 					device_printf(dev, "Invalid freq %u, "
 					    "ignored.\n", sets[i].freq);
 				continue;
-			} else if (error != 0 && bootverbose) {
-				device_printf(dev, "Can't check freq %u, "
-				    "it may be invalid\n",
-				    sets[i].freq);
 			}
 			table[j].freq = sets[i].freq;
 			table[j].volts = sets[i].volts;

@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.186 2010/05/01 18:34:50 zec Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.187 2010/06/21 09:55:56 ed Exp $");
 
 #include "opt_param.h"
 #include "opt_mbuf_stress_test.h"
@@ -2027,7 +2027,7 @@ mbprof_textify(void)
 {
 	int offset;
 	char *c;
-	u_int64_t *p;
+	uint64_t *p;
 	
 
 	p = &mbprof.wasted[0];

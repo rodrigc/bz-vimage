@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.1 2009/12/02 16:34:20 kib Exp $
+ * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.2 2010/06/18 11:10:39 kib Exp $
  */
 
 
@@ -30,15 +30,22 @@
 	.align	4
 	.globl	_start
 	.type	_start, @function
-_start:	xorl	%ebp,%ebp
+_start:
+	.cfi_startproc
+	xorl	%ebp,%ebp
 	pushl	%ebp
+	.cfi_def_cfa_offset 4
 	movl	%esp,%ebp
+	.cfi_offset %ebp,-8
+	.cfi_def_cfa_register %ebp
 	andl	$0xfffffff0,%esp # align stack
 	leal	8(%ebp),%eax
 	pushl	%eax		# argv
 	pushl	4(%ebp)		# argc
 	pushl	%edx		# rtld cleanup
 	call	_start1
+	int3
+	.cfi_endproc
 	.size	_start, . - _start
 
-	.ident	"$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.1 2009/12/02 16:34:20 kib Exp $"
+	.ident	"$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.2 2010/06/18 11:10:39 kib Exp $"

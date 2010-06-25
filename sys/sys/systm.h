@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)systm.h	8.7 (Berkeley) 3/29/95
- * $FreeBSD: src/sys/sys/systm.h,v 1.286 2010/05/24 11:40:49 mav Exp $
+ * $FreeBSD: src/sys/sys/systm.h,v 1.287 2010/06/20 21:33:29 mav Exp $
  */
 
 #ifndef _SYS_SYSTM_H_
@@ -280,6 +280,8 @@ void	adjust_timeout_calltodo(struct timeval *time_change);
 /* Initialize the world */
 void	consinit(void);
 void	cpu_initclocks(void);
+void	cpu_initclocks_bsp(void);
+void	cpu_initclocks_ap(void);
 void	usrinfoinit(void);
 
 /* Finalize the world */

@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.209 2010/05/05 21:07:47 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.210 2010/06/23 10:40:28 kib Exp $");
 
 #include "opt_cpu.h"
 
@@ -634,7 +634,6 @@ printcpuinfo(void)
 #if defined(I486_CPU)
 	case CPUCLASS_486:
 		printf("486");
-		bzero_vector = i486_bzero;
 		break;
 #endif
 #if defined(I586_CPU)

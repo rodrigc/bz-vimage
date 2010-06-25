@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.38 2010/05/12 22:55:45 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.39 2010/06/22 20:57:48 thompsa Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -3792,9 +3792,7 @@ ehci_ep_init(struct usb_device *udev, struct usb_endpoint_descriptor *edesc,
 			}
 			break;
 		case UE_BULK:
-			if (udev->speed != USB_SPEED_LOW) {
-				ep->methods = &ehci_device_bulk_methods;
-			}
+			ep->methods = &ehci_device_bulk_methods;
 			break;
 		default:
 			/* do nothing */

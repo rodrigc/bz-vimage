@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/apicvar.h,v 1.36 2010/05/24 15:45:05 jhb Exp $
+ * $FreeBSD: src/sys/amd64/include/apicvar.h,v 1.37 2010/06/20 21:33:29 mav Exp $
  */
 
 #ifndef _MACHINE_APICVAR_H_
@@ -158,12 +158,6 @@
 #define	APIC_BUS_PCI		2
 #define	APIC_BUS_MAX		APIC_BUS_PCI
 
-enum lapic_clock {
-	LAPIC_CLOCK_NONE,
-	LAPIC_CLOCK_HARDCLOCK,
-	LAPIC_CLOCK_ALL
-};
-
 /*
  * An APIC enumerator is a psuedo bus driver that enumerates APIC's including
  * CPU's and I/O APIC's.
@@ -234,7 +228,6 @@ int	lapic_set_lvt_triggermode(u_int apic_id, u_int lvt,
 	    enum intr_trigger trigger);
 void	lapic_set_tpr(u_int vector);
 void	lapic_setup(int boot);
-enum lapic_clock	lapic_setup_clock(enum lapic_clock srcsdes);
 
 #endif /* !LOCORE */
 #endif /* _MACHINE_APICVAR_H_ */

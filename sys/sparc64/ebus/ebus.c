@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/ebus/ebus.c,v 1.31 2009/12/22 21:49:53 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/ebus/ebus.c,v 1.32 2010/06/18 14:06:27 nwhitehorn Exp $");
 
 /*
  * Driver for JBus to EBus and PCI to EBus bridges
@@ -619,7 +619,7 @@ ebus_setup_dinfo(device_t dev, struct ebus_softc *sc, phandle_t node)
 			intr = intrs[i];
 			rv = ofw_bus_lookup_imap(node, &sc->sc_iinfo, &reg,
 			    sizeof(reg), &intr, sizeof(intr), &rintr,
-			    sizeof(rintr), maskbuf);
+			    sizeof(rintr), NULL, maskbuf);
 #ifndef SUN4V
 			if (rv != 0)
 				rintr = INTMAP_VEC(sc->sc_ign, rintr);

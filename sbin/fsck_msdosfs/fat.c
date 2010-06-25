@@ -28,7 +28,7 @@
 #ifndef lint
 __RCSID("$NetBSD: fat.c,v 1.12 2000/10/10 20:24:52 is Exp $");
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/fsck_msdosfs/fat.c,v 1.12 2010/02/14 12:31:28 kib Exp $";
+  "$FreeBSD: src/sbin/fsck_msdosfs/fat.c,v 1.13 2010/06/20 09:40:54 brian Exp $";
 #endif /* not lint */
 
 #include <stdlib.h>
@@ -87,7 +87,8 @@ checkdirty(int fs, struct bootblock *boot)
 		goto err;
 	}
 
-	if (read(fs, buffer, boot->bpbBytesPerSec) != boot->bpbBytesPerSec) {
+	if ((size_t)read(fs, buffer, boot->bpbBytesPerSec) !=
+	    boot->bpbBytesPerSec) {
 		perror("Unable to read FAT");
 		goto err;
 	}

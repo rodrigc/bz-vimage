@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)kvm_proc.c	8.3 (Berkeley) 9/23/93";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm_proc.c,v 1.102 2009/12/10 21:16:16 brooks Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm_proc.c,v 1.103 2010/06/18 01:17:16 sbruno Exp $");
 
 /*
  * Proc traversal interface for kvm.  ps and w are (probably) the exclusive
@@ -323,7 +323,12 @@ nopgrp:
 		(void)kvm_read(kd, (u_long)proc.p_vmspace,
 		    (char *)&vmspace, sizeof(vmspace));
 		kp->ki_size = vmspace.vm_map.size;
-		kp->ki_rssize = vmspace.vm_swrss; /* XXX */
+		/*
+		 * Approximate the kernel's method of calculating
+		 * this field.
+		 */
+#define		pmap_resident_count(pm) ((pm)->pm_stats.resident_count)
+		kp->ki_rssize = pmap_resident_count(&vmspace.vm_pmap); 
 		kp->ki_swrss = vmspace.vm_swrss;
 		kp->ki_tsize = vmspace.vm_tsize;
 		kp->ki_dsize = vmspace.vm_dsize;

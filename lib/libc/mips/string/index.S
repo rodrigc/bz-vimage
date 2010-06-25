@@ -33,7 +33,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/mips/string/index.S,v 1.3 2008/04/26 12:08:01 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/mips/string/index.S,v 1.4 2010/06/16 12:55:14 jchandra Exp $");
 
 #if defined(LIBC_SCCS) && !defined(lint)
 	ASMSTR("from: @(#)index.s	8.1 (Berkeley) 6/4/93")
@@ -46,14 +46,14 @@ __FBSDID("$FreeBSD: src/lib/libc/mips/string/index.S,v 1.3 2008/04/26 12:08:01 i
 
 LEAF(index)
 1:
-	lbu	a2, 0(a0)		# get a byte
-	addu	a0, a0, 1
-	beq	a2, a1, fnd
-	bne	a2, zero, 1b
+	lbu		a2, 0(a0)		# get a byte
+	PTR_ADDU	a0, a0, 1
+	beq		a2, a1, fnd
+	bne		a2, zero, 1b
 notfnd:
-	move	v0, zero
-	j	ra
+	move		v0, zero
+	j		ra
 fnd:
-	subu	v0, a0, 1
-	j	ra
+	PTR_SUBU	v0, a0, 1
+	j		ra
 END(index)
