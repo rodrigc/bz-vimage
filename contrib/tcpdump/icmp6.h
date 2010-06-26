@@ -127,6 +127,9 @@ struct icmp6_hdr {
 #define ICMP6_MOBILEPREFIX_SOLICIT	146
 #define ICMP6_MOBILEPREFIX_ADVERT	147
 
+#define ICMP6_SEND_CERT_PATH_SOLICT	148	/* SeND Certification Path Solicitation */
+#define ICMP6_SEND_CERT_PATH_ADVERT	149	/* SeND Certification Path Advertisement */
+
 #define MLD6_MTRACE_RESP		200	/* mtrace response(to sender) */
 #define MLD6_MTRACE			201	/* mtrace messages */
 
@@ -275,8 +278,14 @@ struct nd_opt_hdr {		/* Neighbor discovery option header */
 #define ND_OPT_MTU			5
 #define ND_OPT_ADVINTERVAL		7
 #define ND_OPT_HOMEAGENT_INFO		8
-#define ND_OPT_ROUTE_INFO		9	/* draft-ietf-ipngwg-router-preference, not officially assigned yet */
-
+#define ND_OPT_SOURCE_ADDR_LIST		9
+#define ND_OPT_TARGET_ADDR_LIST		10
+#define ND_OPT_CGA			11
+#define ND_OPT_RSA_SIGNATURE		12
+#define ND_OPT_TIMESTAMP		13
+#define ND_OPT_NONCE			14
+#define ND_OPT_TRUST_ANCHOR		15
+#define ND_OPT_CERTIFICATE		16
 
 struct nd_opt_prefix_info {	/* prefix information */
 	u_int8_t	nd_opt_pi_type;

@@ -85,6 +85,8 @@ static struct tok icmp6_type_values[] = {
     { ICMP6_HADISCOV_REPLY, "ha discovery reply"},
     { ICMP6_MOBILEPREFIX_SOLICIT, "mobile router solicitation"},
     { ICMP6_MOBILEPREFIX_ADVERT, "mobile router advertisement"},
+    { ICMP6_SEND_CERT_PATH_SOLICT, "SeND certification path solicitation"},
+    { ICMP6_SEND_CERT_PATH_ADVERT, "SeND certification path advertisement"},
     { ICMP6_WRUREQUEST, "who-are-you request"},
     { ICMP6_WRUREPLY, "who-are-you reply"},
     { ICMP6_NI_QUERY, "node information query"},
@@ -133,7 +135,14 @@ static struct tok icmp6_opt_values[] = {
    { ND_OPT_MTU, "mtu"},
    { ND_OPT_ADVINTERVAL, "advertisement interval"},
    { ND_OPT_HOMEAGENT_INFO, "homeagent information"},
-   { ND_OPT_ROUTE_INFO, "route info"},
+   { ND_OPT_SOURCE_ADDR_LIST, "source address list"},
+   { ND_OPT_TARGET_ADDR_LIST, "target address list"},
+   { ND_OPT_CGA, "cga"},
+   { ND_OPT_RSA_SIGNATURE, "rsa signature"},
+   { ND_OPT_TIMESTAMP, "timestamp"},
+   { ND_OPT_NONCE, "nonce"},
+   { ND_OPT_TRUST_ANCHOR, "trust anchor"},
+   { ND_OPT_CERTIFICATE, "certificate"},
    { 0,	NULL }
 };
 
@@ -273,7 +282,9 @@ icmp6_print(const u_char *bp, u_int length, const u_char *bp2, int fragmented)
                       ND_NEIGHBOR_SOLICIT ||
                       ND_REDIRECT ||
                       ICMP6_HADISCOV_REPLY ||
-                      ICMP6_MOBILEPREFIX_ADVERT ))
+                      ICMP6_MOBILEPREFIX_ADVERT ||
+                      ICMP6_SEND_CERT_PATH_SOLICT ||
+                      ICMP6_SEND_CERT_PATH_ADVERT ))
             printf(", length %u", length);
                       
 	switch (dp->icmp6_type) {
@@ -505,6 +516,12 @@ icmp6_print(const u_char *bp, u_int length, const u_char *bp2, int fragmented)
 					length - MPADVLEN);
 		}
 		break;
+	case ICMP6_SEND_CERT_PATH_SOLICT:
+		printf("XXX-BZ-ANCHIE\n");
+		break;
+	case ICMP6_SEND_CERT_PATH_ADVERT:
+		printf("XXX-BZ-ANCHIE\n");
+		break;
 	default:
                 printf(", length %u", length);
                 if (vflag <= 1)
@@ -602,9 +619,14 @@ icmp6_opt_print(const u_char *bp, int resid)
 	const struct nd_opt_mtu *opm;
 	const struct nd_opt_advinterval *opa;
 	const struct nd_opt_homeagent_info *oph;
+#if 0
 	const struct nd_opt_route_info *opri;
+#endif
+	const struct nd_opt_cga *opcga;
 	const u_char *cp, *ep;
+#if 0
 	struct in6_addr in6, *in6p;
+#endif
 	size_t l;
 
 #define ECHECK(var) if ((u_char *)&(var) > ep - sizeof(var)) return
@@ -676,6 +698,7 @@ icmp6_opt_print(const u_char *bp, int resid)
                                EXTRACT_16BITS(&oph->nd_opt_hai_preference),
                                EXTRACT_16BITS(&oph->nd_opt_hai_lifetime));
 			break;
+#if 0
 		case ND_OPT_ROUTE_INFO:
 			opri = (struct nd_opt_route_info *)op;
 			TCHECK(opri->nd_opt_rti_lifetime);
@@ -701,6 +724,7 @@ icmp6_opt_print(const u_char *bp, int resid)
 			printf(", lifetime=%s",
 			    get_lifetime(EXTRACT_32BITS(&opri->nd_opt_rti_lifetime)));
 			break;
+#endif
 		default:
                         if (vflag <= 1) {
                             print_unknown_data(cp+2,"\n\t  ", (op->nd_opt_len << 3) - 2); /* skip option header */
