@@ -855,6 +855,16 @@ vimage_deregister_sysuninit(void *arg)
 	VIMAGE_SYSINIT_WUNLOCK();
 }
 
+void
+vimage_register_sysuninit_macro(void *arg __unused)
+{
+}
+
+void
+vimage_deregister_sysuninit_macro(void *arg __unused)
+{
+}
+
 /*
  * EVENTHANDLER(9) extensions.
  *
