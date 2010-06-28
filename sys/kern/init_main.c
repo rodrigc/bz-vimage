@@ -821,3 +821,40 @@ kick_init(const void *udata __unused)
 	thread_unlock(td);
 }
 SYSINIT(kickinit, SI_SUB_KTHREAD_INIT, SI_ORDER_FIRST, kick_init, NULL);
+
+#ifdef DDB
+static void
+db_show_print_sysinit_entry(struct sysinit *s)
+{
+	const char *sname, *funcname;
+	c_db_sym_t sym;
+	db_expr_t  offset;
+
+	sym = db_search_symbol((vm_offset_t)s, DB_STGY_ANY, &offset);
+	db_symbol_values(sym, &sname, NULL);
+	sym = db_search_symbol((vm_offset_t)s->func, DB_STGY_PROC, &offset);
+	db_symbol_values(sym, &funcname, NULL);
+	db_printf("%s(%p)\n", (sname != NULL) ? sname : "", s);
+	db_printf("  0x%08x 0x%08x\n", s->subsystem, s->order);
+	db_printf("  %p(%s)(%p)\n",
+	    s->func, (funcname != NULL) ? funcname : "", s->udata);
+}
+
+DB_SHOW_COMMAND(sysinit, db_show_sysinit)
+{
+	struct sysinit **sipp;
+
+	db_printf("SYSINIT Name(Ptr)\n");
+	db_printf("  Subsystem  Order\n");
+	db_printf("  Function(Name)(Udata)\n");
+
+	if (sysinit == NULL)
+		return;
+
+	for (sipp = sysinit; sipp < sysinit_end; sipp++) {
+		db_show_print_sysinit_entry(*sipp);
+		if (db_pager_quit)
+			break;
+	}
+}
+#endif
