@@ -344,10 +344,8 @@ vnet_if_init(const void *unused __unused)
 	TAILQ_INIT(&V_ifnet);
 	TAILQ_INIT(&V_ifg_head);
 	if_grow();				/* create initial table */
-	vnet_if_clone_init();
 }
-VNET_SYSINIT(vnet_if_init, SI_SUB_INIT_IF, SI_ORDER_THIRD, vnet_if_init,
-    NULL);
+VNET_SYSINIT(vnet_if_init, SI_SUB_INIT_IF, SI_ORDER_SECOND, vnet_if_init, NULL);
 
 /* ARGSUSED*/
 static void
@@ -355,10 +353,8 @@ if_init(void *dummy __unused)
 {
 
 	IFNET_LOCK_INIT();
-	if_clone_init();
 }
-SYSINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_SECOND, if_init, NULL);
-
+SYSINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_FIRST, if_init, NULL);
 
 #ifdef VIMAGE
 static void

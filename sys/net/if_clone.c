@@ -67,7 +67,8 @@ static int	if_clone_createif(struct if_clone *ifc, char *name, size_t len,
 static struct mtx	if_cloners_mtx;
 static struct sx	if_cloners_master_sx;
 static int		if_cloners_count;
-static LIST_HEAD(, if_clone)	if_cloners_master;
+static LIST_HEAD(, if_clone)	if_cloners_master =
+    LIST_HEAD_INITIALIZER(if_cloners_master);
 static VNET_DEFINE(LIST_HEAD(, if_clone_instance), if_cloners);
 #define	V_if_cloners		VNET(if_cloners)
 
@@ -81,15 +82,13 @@ v_ifci_assert(void)
 	(v_ifci_assert(), (struct if_clone_instance *)			\
 	    (curvnet->v.v_data_base + (uintptr_t)ifc->ifc_data))
 
-#define	IF_CLONERS_MASTER_INIT()	\
-    sx_init(&if_cloners_master_sx, "if_cloners_master_sx")
+SX_SYSINIT(if_cloners_master_sx, &if_cloners_master_sx, "if_cloners_master_sx");
 #define	IF_CLONERS_MASTER_WLOCK()	sx_xlock(&if_cloners_master_sx)
 #define	IF_CLONERS_MASTER_WUNLOCK()	sx_xunlock(&if_cloners_master_sx)
 #define	IF_CLONERS_MASTER_RLOCK()	sx_slock(&if_cloners_master_sx)
 #define	IF_CLONERS_MASTER_RUNLOCK()	sx_sunlock(&if_cloners_master_sx)
 
-#define IF_CLONERS_LOCK_INIT()		\
-    mtx_init(&if_cloners_mtx, "if_cloners lock", NULL, MTX_DEF)
+MTX_SYSINIT(if_cloners_mtx, &if_cloners_mtx, "if_cloners lock", MTX_DEF);
 #define IF_CLONERS_LOCK_ASSERT()	mtx_assert(&if_cloners_mtx, MA_OWNED)
 #define IF_CLONERS_LOCK()		mtx_lock(&if_cloners_mtx)
 #define IF_CLONERS_UNLOCK()		mtx_unlock(&if_cloners_mtx)
@@ -146,15 +145,8 @@ vnet_if_clone_init(void)
 
 	LIST_INIT(&V_if_cloners);
 }
-
-void
-if_clone_init(void)
-{
-
-	IF_CLONERS_MASTER_INIT();
-	IF_CLONERS_LOCK_INIT();
-	LIST_INIT(&if_cloners_master);
-}
+VNET_SYSINIT(vnet_if_clone_init, SI_SUB_INIT_IF, SI_ORDER_THIRD,
+    vnet_if_clone_init, NULL);
 
 /*
  * Lookup and create a clone network interface.
