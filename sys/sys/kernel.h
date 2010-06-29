@@ -133,6 +133,7 @@ enum sysinit_sub_id {
 	SI_SUB_ACL		= 0x2900000,	/* start for filesystem ACLs */
 	SI_SUB_DEVFS		= 0x2F00000,	/* devfs ready for devices */
 	SI_SUB_INIT_IF		= 0x3000000,	/* prep for net interfaces */
+	SI_SUB_INIT_LLA		= 0x3000100,	/* Initialize llatbl. */
 	SI_SUB_NETGRAPH		= 0x3010000,	/* Let Netgraph initialize */
 	SI_SUB_DTRACE		= 0x3020000,	/* DTrace subsystem */
 	SI_SUB_DTRACE_PROVIDER	= 0x3048000,	/* DTrace providers */
@@ -149,6 +150,8 @@ enum sysinit_sub_id {
 	SI_SUB_PSEUDO		= 0x7000000,	/* pseudo devices*/
 	SI_SUB_EXEC		= 0x7400000,	/* execve() handlers */
 	SI_SUB_PROTO_BEGIN	= 0x8000000,	/* XXX: set splimp (kludge)*/
+	SI_SUB_PROTO_PFIL	= 0x8100000,	/* Intialize pfil before firewalls*/
+		/* XXX-BZ where go firewalls? Is this _FW isntead of _PFIL? */
 	SI_SUB_PROTO_IF		= 0x8400000,	/* interfaces*/
 	SI_SUB_PROTO_DOMAININIT	= 0x8600000,	/* domain registration system */
 	SI_SUB_PROTO_DOMAIN	= 0x8800000,	/* domains (address families?)*/
