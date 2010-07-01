@@ -72,6 +72,7 @@ __FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.134 2010/04/29 11:52:42 bz Exp $"
 #include <netinet6/nd6.h>
 #include <netinet6/in6_ifattach.h>
 #include <netinet/icmp6.h>
+#include <netinet6/send.h>
 
 #include <sys/limits.h>
 
@@ -120,6 +121,8 @@ VNET_DEFINE(int, nd6_recalc_reachtm_interval) = ND6_RECALC_REACHTM_INTERVAL;
 #define	V_nd6_recalc_reachtm_interval	VNET(nd6_recalc_reachtm_interval)
 
 static struct sockaddr_in6 all1_sa;
+
+int	(*send_sendso_input_hook)(struct mbuf *, int, int);
 
 static int nd6_is_new_addr_neighbor __P((struct sockaddr_in6 *,
 	struct ifnet *));
@@ -1766,9 +1769,17 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 	struct mbuf **chain)
 {
 	struct mbuf *m = m0;
+	struct m_tag *mtag;
 	struct llentry *ln = lle;
-	int error = 0;
+	struct ip6_hdr *ip6;
+	int error = -1;
 	int flags = 0;
+	int ip6len;
+	int  skip = 0;
+	unsigned short *nd_type;
+
+	ip6 = mtod(m, struct ip6_hdr *);
+	ip6len = sizeof(struct ip6_hdr) + ntohs(ip6->ip6_plen);	
 
 #ifdef INVARIANTS
 	if (lle != NULL) {
@@ -1943,12 +1954,33 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 #ifdef MAC
 	mac_netinet6_nd6_send(ifp, m);
 #endif
+
+	skip = 0;
+	/* send outgoing NS/NA/REDIRECT packet to sendd. */
+	if (send_sendso_input_hook != NULL) {
+		mtag = m_tag_find(m, PACKET_TAG_ND_OUTGOING, NULL);
+		if (mtag != NULL) {
+			skip = 1;
+			nd_type = (unsigned short *)(mtag + 1);
+			/* Use the SEND socket */
+			error = send_sendso_input_hook(m, SND_OUT, 
+			    ip6len); 
+			/* -1 == no app on SEND socket */
+			if (error == 0 && error != -1)
+			    return (error);
+		}
+	}
+
 	/*
 	 * We were passed in a pointer to an lle with the lock held 
 	 * this means that we can't call if_output as we will
 	 * recurse on the lle lock - so what we do is we create
 	 * a list of mbufs to send and transmit them in the caller
 	 * after the lock is dropped
+	 */
+
+	/* XXX-AK: In case of SeND loaded, this should be added to 
+	 * the input hook. 
 	 */
 	if (lle != NULL) {
 		if (*chain == NULL)
@@ -1965,6 +1997,17 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 		}
 		return (error);
 	}
+
+	/* 
+	 * In case of NS, NA and Redirect, we end-up here after calling 
+	 * nd6_ns_output()/nd6_na_output()/icmp6_redirect_output(). 
+	 * RS and RA do not have such output 
+	 * routines. They are handled instead by rtadvd and rtsol daemons. 
+	 *
+	 * if_output() routines together with previous chaining will be called 
+	 * from input hook. 
+	 */
+
 	if ((ifp->if_flags & IFF_LOOPBACK) != 0) {
 		return ((*ifp->if_output)(origifp, m, (struct sockaddr *)dst,
 		    NULL));
@@ -1983,8 +2026,10 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 		else
 			LLE_RUNLOCK(ln);
 	}
-	if (m)
-		m_freem(m);
+	if (skip) {
+		if (m)
+			m_freem(m);
+	}
 	return (error);
 }
 #undef senderr
