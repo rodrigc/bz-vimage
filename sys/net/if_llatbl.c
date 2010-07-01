@@ -69,8 +69,6 @@ static VNET_DEFINE(SLIST_HEAD(, lltable), lltables) =
 extern void arprequest(struct ifnet *, struct in_addr *, struct in_addr *,
 	u_char *);
 
-static void vnet_lltable_init(void);
-
 struct rwlock lltable_rwlock;
 RW_SYSINIT(lltable_rwlock, &lltable_rwlock, "lltable_rwlock");
 
