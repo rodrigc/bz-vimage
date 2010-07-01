@@ -62,7 +62,8 @@ __FBSDID("$FreeBSD: src/sys/net/if_llatbl.c,v 1.18 2010/04/11 16:04:08 bz Exp $"
 
 MALLOC_DEFINE(M_LLTABLE, "lltable", "link level address tables");
 
-static VNET_DEFINE(SLIST_HEAD(, lltable), lltables);
+static VNET_DEFINE(SLIST_HEAD(, lltable), lltables) =
+    SLIST_HEAD_INITIALIZER(lltables);
 #define	V_lltables	VNET(lltables)
 
 extern void arprequest(struct ifnet *, struct in_addr *, struct in_addr *,
@@ -380,15 +381,6 @@ lla_rt_output(struct rt_msghdr *rtm, struct rt_addrinfo *info)
 
 	return (error);
 }
-
-static void
-vnet_lltable_init()
-{
-
-	SLIST_INIT(&V_lltables);
-}
-VNET_SYSINIT(vnet_lltable_init, SI_SUB_INIT_LLA, SI_ORDER_FIRST,
-    vnet_lltable_init, NULL);
 
 #ifdef DDB
 struct llentry_sa {
