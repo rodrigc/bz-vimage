@@ -182,7 +182,7 @@ static moduledata_t enc_mod = {
 	0
 };
 
-DECLARE_MODULE(enc, enc_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_THIRD);
+DECLARE_MODULE(enc, enc_mod, SI_SUB_PSEUDO, SI_ORDER_ANY);
 
 static int
 enc_output(struct ifnet *ifp, struct mbuf *m, struct sockaddr *dst,
