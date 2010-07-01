@@ -599,7 +599,7 @@ static moduledata_t ipfw_nat_mod = {
 	0
 };
 
-DECLARE_MODULE(ipfw_nat, ipfw_nat_mod, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY);
+DECLARE_MODULE(ipfw_nat, ipfw_nat_mod, SI_SUB_FW, SI_ORDER_ANY);
 MODULE_DEPEND(ipfw_nat, libalias, 1, 1, 1);
 MODULE_DEPEND(ipfw_nat, ipfw, 2, 2, 2);
 MODULE_VERSION(ipfw_nat, 1);

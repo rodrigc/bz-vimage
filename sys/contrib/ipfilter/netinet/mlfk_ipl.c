@@ -279,7 +279,7 @@ static moduledata_t ipfiltermod = {
 };
 
 
-DECLARE_MODULE(ipfilter, ipfiltermod, SI_SUB_PROTO_DOMAIN, SI_ORDER_ANY);
+DECLARE_MODULE(ipfilter, ipfiltermod, SI_SUB_FW, SI_ORDER_FIRST);
 #ifdef	MODULE_VERSION
 MODULE_VERSION(ipfilter, 1);
 #endif
