@@ -40,6 +40,7 @@ int in6_get_tmpifid __P((struct ifnet *, u_int8_t *, const u_int8_t *, int));
 void in6_tmpaddrtimer __P((void *));
 int in6_get_hw_ifid __P((struct ifnet *, struct in6_addr *));
 int in6_nigroup __P((struct ifnet *, const char *, int, struct in6_addr *));
+void in6_ifattach_destroy(void);
 #endif /* _KERNEL */
 
 #endif /* _NETINET6_IN6_IFATTACH_H_ */

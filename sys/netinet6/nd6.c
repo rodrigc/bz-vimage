@@ -134,6 +134,7 @@ static VNET_DEFINE(struct callout, nd6_slowtimo_ch);
 #define	V_nd6_slowtimo_ch		VNET(nd6_slowtimo_ch)
 
 VNET_DEFINE(struct callout, nd6_timer_ch);
+#define	V_nd6_timer_ch			VNET(nd6_timer_ch)
 
 void
 nd6_init(void)
@@ -154,6 +155,8 @@ nd6_init(void)
 	callout_init(&V_nd6_slowtimo_ch, 0);
 	callout_reset(&V_nd6_slowtimo_ch, ND6_SLOWTIMER_INTERVAL * hz,
 	    nd6_slowtimo, curvnet);
+	callout_init(&V_nd6_timer_ch, 0);
+	callout_reset(&V_nd6_timer_ch, hz, nd6_timer, curvnet);
 }
 
 #ifdef VIMAGE
