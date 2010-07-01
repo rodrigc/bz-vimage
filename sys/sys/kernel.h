@@ -151,11 +151,12 @@ enum sysinit_sub_id {
 	SI_SUB_EXEC		= 0x7400000,	/* execve() handlers */
 	SI_SUB_PROTO_BEGIN	= 0x8000000,	/* XXX: set splimp (kludge)*/
 	SI_SUB_PROTO_PFIL	= 0x8100000,	/* Intialize pfil before firewalls*/
-		/* XXX-BZ where go firewalls? Is this _FW isntead of _PFIL? */
 	SI_SUB_PROTO_IF		= 0x8400000,	/* interfaces*/
 	SI_SUB_PROTO_DOMAININIT	= 0x8600000,	/* domain registration system */
 	SI_SUB_PROTO_DOMAIN	= 0x8800000,	/* domains (address families?)*/
-	SI_SUB_PROTO_IFATTACHDOMAIN	= 0x8800001,	/* domain dependent data init*/
+	SI_SUB_PROTO_MC		= 0x8804000,	/* Multicast */
+	SI_SUB_FW		= 0x8806000,	/* Firewalls */
+SI_SUB_PROTO_IFATTACHDOMAIN	= 0x8808000,	/* domain dependent data init*/
 	SI_SUB_PROTO_END	= 0x8ffffff,	/* XXX: set splx (kludge)*/
 	SI_SUB_KPROF		= 0x9000000,	/* kernel profiling*/
 	SI_SUB_KICK_SCHEDULER	= 0xa000000,	/* start the timeout events*/
