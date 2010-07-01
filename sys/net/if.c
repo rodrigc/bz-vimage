@@ -368,7 +368,7 @@ vnet_if_uninit(const void *unused __unused)
 
 	free((caddr_t)V_ifindex_table, M_IFNET);
 }
-VNET_SYSUNINIT(vnet_if_uninit, SI_SUB_INIT_IF, SI_ORDER_FIRST,
+VNET_SYSUNINIT(vnet_if_uninit, SI_SUB_INIT_IF, SI_ORDER_ANY,
     vnet_if_uninit, NULL);
 
 static void
@@ -382,7 +382,7 @@ vnet_if_return(const void *unused __unused)
 			if_vmove(ifp, ifp->if_home_vnet);
 	}
 }
-VNET_SYSUNINIT(vnet_if_return, SI_SUB_VNET_DONE, SI_ORDER_ANY,
+VNET_SYSUNINIT(vnet_if_return, SI_SUB_INIT_IF, SI_ORDER_FIRST,
     vnet_if_return, NULL);
 #endif
 
