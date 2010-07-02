@@ -52,8 +52,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_nat.c,v 1.12 2010/01/04 19:01:22 
 
 #include <machine/in_cksum.h>	/* XXX for in_cksum */
 
-static VNET_DEFINE(eventhandler_tag, ifaddr_event_tag);
-#define	V_ifaddr_event_tag	VNET(ifaddr_event_tag)
+static eventhandler_tag ifaddr_event_tag;
 
 static void
 ifaddr_change(void *arg __unused, struct ifnet *ifp)
@@ -532,6 +531,11 @@ static void
 ipfw_nat_init(void)
 {
 
+	/*
+	 * XXX-BZ this is just a bandadit to make it loadable
+	 * but access is still not properly syncronized,
+	 */
+	CURVNET_SET_QUIET(vnet0);
 	IPFW_WLOCK(&V_layer3_chain);
 	/* init ipfw hooks */
 	ipfw_nat_ptr = ipfw_nat;
@@ -541,7 +545,8 @@ ipfw_nat_init(void)
 	ipfw_nat_get_cfg_ptr = ipfw_nat_get_cfg;
 	ipfw_nat_get_log_ptr = ipfw_nat_get_log;
 	IPFW_WUNLOCK(&V_layer3_chain);
-	V_ifaddr_event_tag = EVENTHANDLER_REGISTER(
+	CURVNET_RESTORE();
+	VNET_GLOBAL_EVENTHANDLER_REGISTER_TAG(ifaddr_event_tag,
 	    ifaddr_event, ifaddr_change,
 	    NULL, EVENTHANDLER_PRI_ANY);
 }
@@ -549,19 +554,31 @@ ipfw_nat_init(void)
 static void
 ipfw_nat_destroy(void)
 {
+	VNET_ITERATOR_DECL(vnet_iter);
 	struct cfg_nat *ptr, *ptr_temp;
 	struct ip_fw_chain *chain;
 
-	chain = &V_layer3_chain;
-	IPFW_WLOCK(chain);
-	LIST_FOREACH_SAFE(ptr, &chain->nat, _next, ptr_temp) {
-		LIST_REMOVE(ptr, _next);
-		del_redir_spool_cfg(ptr, &ptr->redir_chain);
-		LibAliasUninit(ptr->lib);
-		free(ptr, M_IPFW);
+	EVENTHANDLER_DEREGISTER(ifaddr_event, ifaddr_event_tag);
+
+	VNET_FOREACH(vnet_iter) {
+		chain = &V_layer3_chain;
+		IPFW_WLOCK(chain);
+		LIST_FOREACH_SAFE(ptr, &chain->nat, _next, ptr_temp) {
+			LIST_REMOVE(ptr, _next);
+			del_redir_spool_cfg(ptr, &ptr->redir_chain);
+			LibAliasUninit(ptr->lib);
+			free(ptr, M_IPFW);
+		}
+		flush_nat_ptrs(chain, -1 /* flush all */);
+		IPFW_WUNLOCK(chain);
 	}
-	EVENTHANDLER_DEREGISTER(ifaddr_event, V_ifaddr_event_tag);
-	flush_nat_ptrs(chain, -1 /* flush all */);
+	/*
+	 * XXX-BZ racy still.  See comment in ipfw_nat_init() for further
+	 * problems.
+	 */
+	CURVNET_SET_QUIET(vnet0);
+	IPFW_WLOCK(&V_layer3_chain);
+	chain = &V_layer3_chain;
 	/* deregister ipfw_nat */
 	ipfw_nat_ptr = NULL;
 	lookup_nat_ptr = NULL;
@@ -570,6 +587,7 @@ ipfw_nat_destroy(void)
 	ipfw_nat_get_cfg_ptr = NULL;
 	ipfw_nat_get_log_ptr = NULL;
 	IPFW_WUNLOCK(chain);
+	CURVNET_RESTORE();
 }
 
 static int

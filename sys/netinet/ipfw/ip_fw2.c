@@ -2261,12 +2261,12 @@ ipfw_init(void)
 		default_to_accept ? "accept" : "deny");
 
 	/*
-	 * Note: V_xxx variables can be accessed here but the vnet specific
-	 * initializer may not have been called yet for the VIMAGE case.
-	 * Tuneables will have been processed. We will print out values for
-	 * the default vnet. 
-	 * XXX This should all be rationalized AFTER 8.0
+	 * We have to explicitly set the vnet here as on kldload it would not
+	 * be set otherwise in a non VNET_SYSINIT function.  This will print
+	 * the base system defaults, which is ok until we will have a per-jail
+	 * console.
 	 */
+	CURVNET_SET_QUIET(vnet0);
 	if (V_fw_verbose == 0)
 		printf("disabled\n");
 	else if (V_verbose_limit == 0)
@@ -2274,6 +2274,7 @@ ipfw_init(void)
 	else
 		printf("limited to %d packets/entry by default\n",
 		    V_verbose_limit);
+	CURVNET_RESTORE();
 
 	ipfw_log_bpf(1); /* init */
 	return (error);
