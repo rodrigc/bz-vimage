@@ -1380,6 +1380,9 @@ key_newsp(const char* where, int tag)
 static void
 _key_delsp(struct secpolicy *sp)
 {
+
+	IPSEC_ASSERT(sp != &V_ip4_def_policy, ("%s: destroying default "
+	    "policy %p lock", __func__, sp));
 	SECPOLICY_LOCK_DESTROY(sp);
 	free(sp, M_IPSEC_SP);
 }
