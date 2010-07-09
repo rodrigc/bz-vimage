@@ -193,9 +193,9 @@ _mtx_lock_flags(struct mtx *m, int opts, const char *file, int line)
 
 	MPASS(curthread != NULL);
 	KASSERT(m->mtx_lock != MTX_DESTROYED,
-	    ("mtx_lock() of destroyed mutex @ %s:%d", file, line));
+	    ("mtx_lock() of destroyed mutex %p @ %s:%d", m, file, line));
 	KASSERT(LOCK_CLASS(&m->lock_object) == &lock_class_mtx_sleep,
-	    ("mtx_lock() of spin mutex %s @ %s:%d", m->lock_object.lo_name,
+	    ("mtx_lock() of spin mutex %p %s @ %s:%d", m, m->lock_object.lo_name,
 	    file, line));
 	WITNESS_CHECKORDER(&m->lock_object, opts | LOP_NEWORDER | LOP_EXCLUSIVE,
 	    file, line, NULL);
