@@ -282,6 +282,12 @@ do {									\
     VIMAGE_SYSINIT(ident, subsystem, order, func, arg, vnet, &vnet_data)
 #define	VNET_SYSUNINIT(ident, subsystem, order, func, arg)		\
     VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vnet, &vnet_data)
+#define	VNET_SYSUNINIT_REG(ident, func)					\
+	if (IS_DEFAULT_VNET(curvnet))					\
+	    VIMAGE_SYSUNINIT_REG(ident, func, vnet)
+#define	VNET_SYSUNINIT_REG_SO(ident, func, subsystem, order)		\
+	if (IS_DEFAULT_VNET(curvnet))					\
+	    VIMAGE_SYSUNINIT_REG_SO(ident, func, vnet, subsystem, order)
 
 #endif /* _KERNEL */
 

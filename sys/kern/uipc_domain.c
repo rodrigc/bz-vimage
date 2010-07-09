@@ -193,8 +193,9 @@ vnet_domain_init(void *arg)
 void
 vnet_domain_uninit(void *arg)
 {
-	struct domain *dp = arg;
-	struct protosw *pr;
+	struct vimage_sysuninit *vs = arg;
+	const struct domain *dp = vs->arg;
+	const struct protosw *pr;
 
 	for (pr = dp->dom_protosw; pr < dp->dom_protoswNPROTOSW; pr++)
 		if (pr->pr_destroy)
