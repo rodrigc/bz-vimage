@@ -1606,7 +1606,7 @@ flowtable_init_vnet(const void *unused __unused)
 	uma_zone_set_max(V_flow_ipv6_zone, V_flowtable_nmbflows);
 	V_flowtable_ready = 1;
 }
-VNET_SYSINIT(flowtable_init_vnet, SI_SUB_SMP, SI_ORDER_ANY,
+VNET_SYSINIT(flowtable, SI_SUB_SMP, SI_ORDER_ANY,
     flowtable_init_vnet, NULL);
 
 static void
@@ -1633,7 +1633,7 @@ flowtable_uninit(const void *unused __unused)
 	uma_zdestroy(V_flow_ipv6_zone);
 }
 
-VNET_SYSUNINIT(flowtable_uninit, SI_SUB_KTHREAD_INIT, SI_ORDER_ANY,
+VNET_SYSUNINIT(flowtable, SI_SUB_KTHREAD_INIT, SI_ORDER_ANY,
     flowtable_uninit, NULL);
 #endif
 
