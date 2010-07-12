@@ -3102,7 +3102,7 @@ vnet_netgraph_uninit(const void *unused __unused)
 		}
 	} while (node != NULL);
 }
-VNET_SYSUNINIT(vnet_netgraph_uninit, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
+VNET_SYSUNINIT(netgraph, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
     vnet_netgraph_uninit, NULL);
 #endif /* VIMAGE */
 

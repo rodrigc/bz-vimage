@@ -851,7 +851,7 @@ vnet_ng_iface_init(const void *unused)
 
 	V_ng_iface_unit = new_unrhdr(0, 0xffff, NULL);
 }
-VNET_SYSINIT(vnet_ng_iface_init, SI_SUB_PSEUDO, SI_ORDER_ANY,
+VNET_SYSINIT(ng_iface, SI_SUB_PSEUDO, SI_ORDER_ANY,
     vnet_ng_iface_init, NULL);
 
 static void
@@ -860,5 +860,5 @@ vnet_ng_iface_uninit(const void *unused)
 
 	delete_unrhdr(V_ng_iface_unit);
 }
-VNET_SYSUNINIT(vnet_ng_iface_uninit, SI_SUB_PSEUDO, SI_ORDER_ANY,
+VNET_SYSUNINIT(ng_iface, SI_SUB_PSEUDO, SI_ORDER_ANY,
     vnet_ng_iface_uninit, NULL);
