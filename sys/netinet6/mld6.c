@@ -609,9 +609,10 @@ mli_delete_locked(const struct ifnet *ifp)
 			return;
 		}
 	}
-#ifdef INVARIANTS
-	panic("%s: mld_ifinfo not found for ifp %p\n", __func__,  ifp);
-#endif
+
+	/* This can happen if we shutdown the network stack. */
+	CTR3(KTR_MLD, "%s: mld_ifinfo not found for ifp %p(%s)",
+	    __func__, ifp, ifp->if_xname);
 }
 
 /*
@@ -3272,7 +3273,7 @@ vnet_mld_init(const void *unused __unused)
 
 	LIST_INIT(&V_mli_head);
 }
-VNET_SYSINIT(vnet_mld_init, SI_SUB_PROTO_MC, SI_ORDER_ANY, vnet_mld_init,
+VNET_SYSINIT(mld, SI_SUB_PROTO_MC, SI_ORDER_ANY, vnet_mld_init,
     NULL);
 
 static void
@@ -3284,7 +3285,7 @@ vnet_mld_uninit(const void *unused __unused)
 	KASSERT(LIST_EMPTY(&V_mli_head),
 	    ("%s: mli list not empty; ifnets not detached?", __func__));
 }
-VNET_SYSUNINIT(vnet_mld_uninit, SI_SUB_PROTO_MC, SI_ORDER_ANY, vnet_mld_uninit,
+VNET_SYSUNINIT(mld, SI_SUB_PROTO_MC, SI_ORDER_ANY, vnet_mld_uninit,
     NULL);
 
 static int
