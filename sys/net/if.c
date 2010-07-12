@@ -160,7 +160,10 @@ static int	if_getgroup(struct ifgroupreq *, struct ifnet *);
 static int	if_getgroupmembers(struct ifgroupreq *);
 static void	if_delgroups(struct ifnet *);
 static void	if_attach_internal(struct ifnet *, int);
-static void	if_detach_internal(struct ifnet *, int);
+static void	if_detach_internal(struct ifnet *, int, int);
+#ifdef VIMAGE
+static void 	if_vmove(struct ifnet *, struct vnet *, int);
+#endif
 
 #ifdef INET6
 /*
@@ -345,7 +348,7 @@ vnet_if_init(const void *unused __unused)
 	TAILQ_INIT(&V_ifg_head);
 	if_grow();				/* create initial table */
 }
-VNET_SYSINIT(vnet_if_init, SI_SUB_INIT_IF, SI_ORDER_SECOND, vnet_if_init, NULL);
+VNET_SYSINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_SECOND, vnet_if_init, NULL);
 
 /* ARGSUSED*/
 static void
@@ -368,7 +371,7 @@ vnet_if_uninit(const void *unused __unused)
 
 	free((caddr_t)V_ifindex_table, M_IFNET);
 }
-VNET_SYSUNINIT(vnet_if_uninit, SI_SUB_INIT_IF, SI_ORDER_ANY,
+VNET_SYSUNINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_FIRST,
     vnet_if_uninit, NULL);
 
 static void
@@ -379,10 +382,10 @@ vnet_if_return(const void *unused __unused)
 	/* Return all inherited interfaces to their parent vnets. */
 	TAILQ_FOREACH_SAFE(ifp, &V_ifnet, if_link, nifp) {
 		if (ifp->if_home_vnet != ifp->if_vnet)
-			if_vmove(ifp, ifp->if_home_vnet);
+			if_vmove(ifp, ifp->if_home_vnet, 1);
 	}
 }
-VNET_SYSUNINIT(vnet_if_return, SI_SUB_INIT_IF, SI_ORDER_FIRST,
+VNET_SYSUNINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_ANY,
     vnet_if_return, NULL);
 #endif
 
@@ -839,11 +842,11 @@ void
 if_detach(struct ifnet *ifp)
 {
 
-	if_detach_internal(ifp, 0);
+	if_detach_internal(ifp, 0, 0);
 }
 
 static void
-if_detach_internal(struct ifnet *ifp, int vmove)
+if_detach_internal(struct ifnet *ifp, int vmove, int shutdown)
 {
 	struct ifaddr *ifa;
 	struct radix_node_head	*rnh;
@@ -891,7 +894,7 @@ if_detach_internal(struct ifnet *ifp, int vmove)
 	if_purgeaddrs(ifp);
 
 #ifdef INET
-	in_ifdetach(ifp);
+	in_ifdetach(ifp, !shutdown);
 #endif
 
 #ifdef INET6
@@ -901,7 +904,7 @@ if_detach_internal(struct ifnet *ifp, int vmove)
 	 * routes are expected to be removed by the IPv6-specific kernel API.
 	 * Otherwise, the kernel will detect some inconsistency and bark it.
 	 */
-	in6_ifdetach(ifp);
+	in6_ifdetach(ifp, !shutdown);
 #endif
 	if_purgemaddrs(ifp);
 
@@ -973,8 +976,8 @@ if_detach_internal(struct ifnet *ifp, int vmove)
  * unused if_index in target vnet and calls if_grow() if necessary,
  * and finally find an unused if_xname for the target vnet.
  */
-void
-if_vmove(struct ifnet *ifp, struct vnet *new_vnet)
+static void
+if_vmove(struct ifnet *ifp, struct vnet *new_vnet, int shutdown)
 {
 	u_short idx;
 
@@ -982,7 +985,7 @@ if_vmove(struct ifnet *ifp, struct vnet *new_vnet)
 	 * Detach from current vnet, but preserve LLADDR info, do not
 	 * mark as dead etc. so that the ifnet can be reattached later.
 	 */
-	if_detach_internal(ifp, 1);
+	if_detach_internal(ifp, 1, shutdown);
 
 	/*
 	 * Unlink the ifnet from ifindex_table[] in current vnet, and shrink
@@ -1048,7 +1051,7 @@ if_vmove_loan(struct thread *td, struct ifnet *ifp, char *ifname, int jid)
 	}
 
 	/* Move the interface into the child jail/vnet. */
-	if_vmove(ifp, pr->pr_vnet);
+	if_vmove(ifp, pr->pr_vnet, 0);
 
 	/* Report the new if_xname back to the userland. */
 	sprintf(ifname, "%s", ifp->if_xname);
@@ -1091,7 +1094,7 @@ if_vmove_reclaim(struct thread *td, char *ifname, int jid)
 	}
 
 	/* Get interface back from child jail/vnet. */
-	if_vmove(ifp, vnet_dst);
+	if_vmove(ifp, vnet_dst, 0);
 	CURVNET_RESTORE();
 
 	/* Report the new if_xname back to the userland. */
