@@ -5676,6 +5676,7 @@ sctp_pcb_finish(void)
 	struct sctp_laddr *wi;
 	int i;
 
+	SCTP_BASE_VAR(sctp_pcb_initialized) = 0;
 	/*
 	 * Free BSD the it thread never exits but we do clean up. The only
 	 * way freebsd reaches here if we have VRF's but we still add the
