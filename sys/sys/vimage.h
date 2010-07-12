@@ -234,30 +234,6 @@ extern struct rwlock		vimage_subsys_rwlock;
 	SYSUNINIT(vname ## _init_ ## ident ## _ ## func, subsystem, order, \
 	    vimage_deregister_sysinit, &vname ## _ ## ident ## _ ## func ## _init)
 
-#ifdef __VIMAGE_REG__
-#define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
-	static struct vimage_sysuninit vname ## _ ## ident ## _ ## func ## _uninit = {\
-		subsystem,						\
-		order,							\
-		(sysinit_cfunc_t)(sysinit_nfunc_t)func,			\
-		(arg),							\
-		(v_subsys)						\
-	};								\
-	SYSUNINIT(vname ## _uninit_ ## ident ## _ ## func, subsystem, order, \
-	    vimage_deregister_sysuninit, &vname ## _ ## ident ## _ ## func ## _uninit)
-	/*
-	 * XXX-BZ this SYSUNINIT needs to go away or we need to check
-	 * for a previous reg, do not forget about modules.
-	 */
-#define	VIMAGE_SYSUNINIT_REG(ident, func, vname)			\
-	vimage_register_sysuninit(&vname ## _ ## ident ## _ ## func ## _uninit)
-#define	VIMAGE_SYSUNINIT_REG_SO(ident, func, vname, _subsystem, _order)	\
-do {									\
-	vname ## _ ## ident ## _ ## func ## _uninit.subsystem = (_subsystem); \
-	vname ## _ ## ident ## _ ## func ## _uninit.order = (_order);	\
-	vimage_register_sysuninit(&vname ## _ ## ident ## _ ## func ## _uninit); \
-} while (0)
-#else
 #define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
 	static struct vimage_sysuninit vname ## _ ## ident ## _ ## func ## _uninit = {\
 		subsystem,						\
@@ -270,9 +246,6 @@ do {									\
 	    vimage_register_sysuninit, &vname ## _ ## ident ## _ ## func ## _uninit); \
 	SYSUNINIT(vname ## _uninit_ ## ident ## _ ## func, subsystem, order, \
 	    vimage_deregister_sysuninit, &vname ## _ ## ident ## _ ## func ## _uninit)
-#define	VIMAGE_SYSUNINIT_REG(ident, func, vname)
-#define	VIMAGE_SYSUNINIT_REG_SO(ident, func, vname, _subsystem, _order)
-#endif
 #else /* !VIMAGE */
 /*
  * When VIMAGE isn't compiled into the kernel, <SUBSYS>_SYSINIT/
@@ -280,10 +253,9 @@ do {									\
  * ordering properties.
  */
 #define	VIMAGE_SYSINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
-	SYSINIT(ident, subsystem, order, func, arg)
-#define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys)
-#define	VIMAGE_SYSUNINIT_REG(ident, func, vname)
-#define	VIMAGE_SYSUNINIT_REG_SO(ident, func, vname, _subsystem, _order)
+	SYSINIT(ident ## func, subsystem, order, func, arg)
+#define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
+	SYSUNINIT(ident ## func, subsystem, order, func, arg)
 #endif /* VIMAGE */
 
 #ifdef VIMAGE
