@@ -91,11 +91,13 @@ sctp_init(void)
 
 }
 
-void
-sctp_finish(void)
+static void
+sctp_finish(void *unused __unused)
 {
+
 	sctp_pcb_finish();
 }
+VNET_SYSUNINIT(sctp, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH, sctp_finish, NULL);
 
 
 

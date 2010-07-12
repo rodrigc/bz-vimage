@@ -304,8 +304,6 @@ void sctp_pathmtu_adjustment __P((struct sctp_inpcb *, struct sctp_tcb *, struct
 void sctp_drain __P((void));
 void sctp_init __P((void));
 
-void sctp_finish(void);
-
 int sctp_flush(struct socket *, int);
 int sctp_shutdown __P((struct socket *));
 void sctp_notify 
