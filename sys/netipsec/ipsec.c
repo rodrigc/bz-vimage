@@ -1708,7 +1708,7 @@ ipsec_init(const void *unused __unused)
 	SECPOLICY_LOCK_INIT(&V_ip4_def_policy);
 	V_ip4_def_policy.refcnt = 1;			/* NB: disallow free. */
 }
-VNET_SYSINIT(ipsec_init, SI_SUB_PROTO_DOMAIN, SI_ORDER_FIRST, ipsec_init,
+VNET_SYSINIT(ipsec, SI_SUB_PROTO_DOMAIN, SI_ORDER_FIRST, ipsec_init,
     NULL);
 
 static void
@@ -1717,7 +1717,7 @@ ipsec_uninit(const void *unused __unused)
 
 	SECPOLICY_LOCK_DESTROY(&V_ip4_def_policy);
 }
-VNET_SYSUNINIT(ipsec_uninit, SI_SUB_PROTO_DOMAIN, SI_ORDER_FIRST, ipsec_uninit,
+VNET_SYSUNINIT(ipsec, SI_SUB_PROTO_DOMAIN, SI_ORDER_FIRST, ipsec_uninit,
     NULL);
 
 
