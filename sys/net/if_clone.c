@@ -69,9 +69,11 @@ static struct sx	if_cloners_master_sx;
 static int		if_cloners_count;
 static LIST_HEAD(, if_clone)	if_cloners_master =
     LIST_HEAD_INITIALIZER(if_cloners_master);
-static VNET_DEFINE(LIST_HEAD(, if_clone_instance), if_cloners);
+static VNET_DEFINE(LIST_HEAD(, if_clone_instance), if_cloners) =
+    LIST_HEAD_INITIALIZER(if_cloners);
 #define	V_if_cloners		VNET(if_cloners)
 
+#ifdef VIMAGE
 static void
 v_ifci_assert(void)
 {
@@ -81,6 +83,9 @@ v_ifci_assert(void)
 #define	V_IFCI(ifc)							\
 	(v_ifci_assert(), (struct if_clone_instance *)			\
 	    (curvnet->v.v_data_base + (uintptr_t)ifc->ifc_data))
+#else
+#define	V_IFCI(ifc)		ifc->ifc_data
+#endif
 
 SX_SYSINIT(if_cloners_master_sx, &if_cloners_master_sx, "if_cloners_master_sx");
 #define	IF_CLONERS_MASTER_WLOCK()	sx_xlock(&if_cloners_master_sx)
@@ -138,15 +143,6 @@ MTX_SYSINIT(if_cloners_mtx, &if_cloners_mtx, "if_cloners lock", MTX_DEF);
 	LIST_REMOVE(_ifp, if_clones)
 
 static MALLOC_DEFINE(M_CLONE, "clone", "interface cloning framework");
-
-void
-vnet_if_clone_init(void)
-{
-
-	LIST_INIT(&V_if_cloners);
-}
-VNET_SYSINIT(vnet_if_clone_init, SI_SUB_INIT_IF, SI_ORDER_THIRD,
-    vnet_if_clone_init, NULL);
 
 /*
  * Lookup and create a clone network interface.
@@ -337,7 +333,7 @@ vnet_if_clone_attach(const void *unused __unused)
 	}
 	IF_CLONERS_MASTER_WUNLOCK();
 }
-VNET_SYSINIT(vnet_if_clone_attach, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
+VNET_SYSINIT(if_clone, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
     vnet_if_clone_attach, NULL);
 
 void
@@ -404,7 +400,7 @@ vnet_if_clone_detach(const void *unused __unused)
 	}
 	IF_CLONERS_MASTER_WUNLOCK();
 }
-VNET_SYSUNINIT(vnet_if_clone_detach, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
+VNET_SYSUNINIT(if_clone, SI_SUB_PROTO_IFATTACHDOMAIN, SI_ORDER_ANY,
     vnet_if_clone_detach, NULL);
 
 void
@@ -756,7 +752,7 @@ DB_SHOW_ALL_COMMAND(ifci, db_show_all_ifci)
 		CURVNET_RESTORE();
 		db_printf("\n");
 		if (db_pager_quit) 
-			break;
+			return;
 	}
 }
 
