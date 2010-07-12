@@ -226,7 +226,7 @@ vnet_route_init(const void *unused __unused)
 		}
 	}
 }
-VNET_SYSINIT(vnet_route_init, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH,
+VNET_SYSINIT(route, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH,
     vnet_route_init, NULL);
 
 #ifdef VIMAGE
@@ -256,7 +256,7 @@ vnet_route_uninit(const void *unused __unused)
 		}
 	}
 }
-VNET_SYSUNINIT(vnet_route_uninit, SI_SUB_PROTO_DOMAIN, SI_ORDER_THIRD,
+VNET_SYSUNINIT(route, SI_SUB_PROTO_DOMAIN, SI_ORDER_THIRD,
     vnet_route_uninit, NULL);
 #endif
 

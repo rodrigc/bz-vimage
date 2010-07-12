@@ -313,7 +313,7 @@ vnet_pfil_uninit(const void *unused __unused)
  *
  * VNET_SYSINIT is called for each existing vnet and each new vnet.
  */
-VNET_SYSINIT(vnet_pfil_init, SI_SUB_PROTO_PFIL, SI_ORDER_FIRST,
+VNET_SYSINIT(pfil, SI_SUB_PROTO_PFIL, SI_ORDER_FIRST,
     vnet_pfil_init, NULL);
  
 /*
@@ -321,5 +321,5 @@ VNET_SYSINIT(vnet_pfil_init, SI_SUB_PROTO_PFIL, SI_ORDER_FIRST,
  *
  * VNET_SYSUNINIT is called for each exiting vnet as it exits.
  */
-VNET_SYSUNINIT(vnet_pfil_uninit, SI_SUB_PROTO_PFIL, SI_ORDER_FIRST,
+VNET_SYSUNINIT(pfil, SI_SUB_PROTO_PFIL, SI_ORDER_FIRST,
     vnet_pfil_uninit, NULL);
