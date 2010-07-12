@@ -253,9 +253,9 @@ extern struct rwlock		vimage_subsys_rwlock;
  * ordering properties.
  */
 #define	VIMAGE_SYSINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
-	SYSINIT(ident ## func, subsystem, order, func, arg)
+	SYSINIT(ident ## _ ## func, subsystem, order, func, arg)
 #define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
-	SYSUNINIT(ident ## func, subsystem, order, func, arg)
+	SYSUNINIT(ident ## _ ## func, subsystem, order, func, arg)
 #endif /* VIMAGE */
 
 #ifdef VIMAGE
