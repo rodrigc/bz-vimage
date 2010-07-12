@@ -275,7 +275,7 @@ void vimage_log_recursion(struct vimage_subsys *,
     void *, const char *, int, void *, const char *);
 #endif /* VIMAGE */
 
-#if defined(INVARIANTS) || defined(VIMAGE_DEBUG)
+#if defined(VIMAGE) && (defined(INVARIANTS) || defined(VIMAGE_DEBUG))
 #define	VIMAGE_ASSERT(exp, msg)	KASSERT(exp, msg)
 #else
 #define	VIMAGE_ASSERT(exp, msg)	do { } while (0)
