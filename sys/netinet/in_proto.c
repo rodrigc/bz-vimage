@@ -114,9 +114,6 @@ struct protosw inetsw[] = {
 	.pr_domain =		&inetdomain,
 	.pr_protocol =		IPPROTO_IP,
 	.pr_init =		ip_init,
-#ifdef VIMAGE
-	.pr_destroy =		ip_destroy,
-#endif
 	.pr_slowtimo =		ip_slowtimo,
 	.pr_drain =		ip_drain,
 	.pr_usrreqs =		&nousrreqs
@@ -130,9 +127,6 @@ struct protosw inetsw[] = {
 	.pr_ctlinput =		udp_ctlinput,
 	.pr_ctloutput =		udp_ctloutput,
 	.pr_init =		udp_init,
-#ifdef VIMAGE
-	.pr_destroy =		udp_destroy,
-#endif
 	.pr_usrreqs =		&udp_usrreqs
 },
 {
@@ -144,9 +138,6 @@ struct protosw inetsw[] = {
 	.pr_ctlinput =		tcp_ctlinput,
 	.pr_ctloutput =		tcp_ctloutput,
 	.pr_init =		tcp_init,
-#ifdef VIMAGE
-	.pr_destroy =		tcp_destroy,
-#endif
 	.pr_slowtimo =		tcp_slowtimo,
 	.pr_drain =		tcp_drain,
 	.pr_usrreqs =		&tcp_usrreqs
@@ -161,9 +152,6 @@ struct protosw inetsw[] = {
 	.pr_ctlinput =		sctp_ctlinput,
 	.pr_ctloutput =		sctp_ctloutput,
 	.pr_init =		sctp_init,
-#ifdef VIMAGE
-	.pr_destroy =		sctp_finish,
-#endif
 	.pr_drain =		sctp_drain,
 	.pr_usrreqs =		&sctp_usrreqs
 },
@@ -359,9 +347,6 @@ IPPROTOSPACER,
 	.pr_input =		rip_input,
 	.pr_ctloutput =		rip_ctloutput,
 	.pr_init =		rip_init,
-#ifdef VIMAGE
-	.pr_destroy =		rip_destroy,
-#endif
 	.pr_usrreqs =		&rip_usrreqs
 },
 };
