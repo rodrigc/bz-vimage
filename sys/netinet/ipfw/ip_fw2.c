@@ -2296,7 +2296,7 @@ ipfw_destroy(void)
  * Stuff that must be initialized for every instance
  * (including the first of course).
  */
-static int
+static void
 vnet_ipfw_init(const void *unused)
 {
 	int error;
@@ -2329,7 +2329,7 @@ vnet_ipfw_init(const void *unused)
 			free(chain->map, M_IPFW);
 		printf("ipfw2: ENOSPC initializing default rule "
 			"(support disabled)\n");
-		return (ENOSPC);
+		return;
 	}
 	error = ipfw_init_tables(chain);
 	if (error) {
@@ -2369,7 +2369,10 @@ vnet_ipfw_init(const void *unused)
 	V_ip_fw_ctl_ptr = ipfw_ctl;
 	V_ip_fw_chk_ptr = ipfw_chk;
 	error = ipfw_attach_hooks(1);
-	return (error);
+	if (error)
+		panic("init_tables"); /* XXX fix this ! */
+
+	return;
 }
 
 /*
@@ -2475,7 +2478,7 @@ MODULE_VERSION(ipfw, 2);
  */
 SYSINIT(ipfw_init, IPFW_SI_SUB_FIREWALL, IPFW_MODULE_ORDER,
 	    ipfw_init, NULL);
-VNET_SYSINIT(vnet_ipfw_init, IPFW_SI_SUB_FIREWALL, IPFW_VNET_ORDER,
+VNET_SYSINIT(ipfw, IPFW_SI_SUB_FIREWALL, IPFW_VNET_ORDER,
 	    vnet_ipfw_init, NULL);
  
 /*
@@ -2486,6 +2489,6 @@ VNET_SYSINIT(vnet_ipfw_init, IPFW_SI_SUB_FIREWALL, IPFW_VNET_ORDER,
  */
 SYSUNINIT(ipfw_destroy, IPFW_SI_SUB_FIREWALL, IPFW_MODULE_ORDER,
 	    ipfw_destroy, NULL);
-VNET_SYSUNINIT(vnet_ipfw_uninit, IPFW_SI_SUB_FIREWALL, IPFW_VNET_ORDER,
+VNET_SYSUNINIT(ipfw, IPFW_SI_SUB_FIREWALL, IPFW_VNET_ORDER,
 	    vnet_ipfw_uninit, NULL);
 /* end of file */
