@@ -2822,7 +2822,7 @@ vnet_mroute_init(const void *unused __unused)
 	callout_init(&V_bw_meter_ch, CALLOUT_MPSAFE);
 }
 
-VNET_SYSINIT(vnet_mroute_init, SI_SUB_PROTO_MC, SI_ORDER_MIDDLE, vnet_mroute_init,
+VNET_SYSINIT(mroute, SI_SUB_PROTO_MC, SI_ORDER_MIDDLE, vnet_mroute_init,
 	NULL);
 
 static void
@@ -2833,7 +2833,7 @@ vnet_mroute_uninit(const void *unused __unused)
 	V_nexpire = NULL;
 }
 
-VNET_SYSUNINIT(vnet_mroute_uninit, SI_SUB_PROTO_MC, SI_ORDER_MIDDLE, 
+VNET_SYSUNINIT(mroute, SI_SUB_PROTO_MC, SI_ORDER_MIDDLE,
 	vnet_mroute_uninit, NULL);
 
 static int
