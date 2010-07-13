@@ -393,7 +393,7 @@ tcp_init(void)
 }
 
 #ifdef VIMAGE
-void
+static void
 tcp_destroy(void)
 {
 
@@ -405,6 +405,8 @@ tcp_destroy(void)
 	uma_zdestroy(V_sack_hole_zone);
 	uma_zdestroy(V_tcpcb_zone);
 }
+
+VNET_SYSUNINIT(tcp, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH, tcp_destroy, NULL);
 #endif
 
 void
