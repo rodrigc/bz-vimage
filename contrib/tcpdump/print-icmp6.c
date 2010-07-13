@@ -621,8 +621,8 @@ icmp6_opt_print(const u_char *bp, int resid)
 	const struct nd_opt_homeagent_info *oph;
 #if 0
 	const struct nd_opt_route_info *opri;
-#endif
 	const struct nd_opt_cga *opcga;
+#endif
 	const u_char *cp, *ep;
 #if 0
 	struct in6_addr in6, *in6p;
