@@ -162,6 +162,8 @@ div_destroy(void)
 
 	in_pcbinfo_destroy(&V_divcbinfo);
 }
+VNET_SYSUNINIT(divert, SI_SUB_PROTO_DOMAININIT, SI_ORDER_ANY,
+    div_destroy, NULL);
 
 /*
  * IPPROTO_DIVERT is not in the real IP protocol number space; this
@@ -710,9 +712,6 @@ struct protosw div_protosw = {
 	.pr_ctlinput =		div_ctlinput,
 	.pr_ctloutput =		ip_ctloutput,
 	.pr_init =		div_init,
-#ifdef VIMAGE
-	.pr_destroy =		div_destroy,
-#endif
 	.pr_usrreqs =		&div_usrreqs
 };
 
@@ -720,9 +719,7 @@ static int
 div_modevent(module_t mod, int type, void *unused)
 {
 	int err = 0;
-#ifndef VIMAGE
 	int n;
-#endif
 
 	switch (type) {
 	case MOD_LOAD:
@@ -747,10 +744,6 @@ div_modevent(module_t mod, int type, void *unused)
 		err = EPERM;
 		break;
 	case MOD_UNLOAD:
-#ifdef VIMAGE
-		err = EPERM;
-		break;
-#else
 		/*
 		 * Forced unload.
 		 *
@@ -775,7 +768,6 @@ div_modevent(module_t mod, int type, void *unused)
 		div_destroy();
 		EVENTHANDLER_DEREGISTER(maxsockets_change, ip_divert_event_tag);
 		break;
-#endif /* !VIMAGE */
 	default:
 		err = EOPNOTSUPP;
 		break;
