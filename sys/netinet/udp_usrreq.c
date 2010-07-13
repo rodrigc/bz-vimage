@@ -220,13 +220,14 @@ udp_discardcb(struct udpcb *up)
 }
 
 #ifdef VIMAGE
-void
-udp_destroy(void)
+static void
+udp_destroy(void *unused __unused)
 {
 
 	in_pcbinfo_destroy(&V_udbinfo);
 	uma_zdestroy(V_udpcb_zone);
 }
+VNET_SYSUNINIT(udp, SI_SUB_PROTO_DOMAIN, SI_ORDER_FOURTH, udp_destroy, NULL);
 #endif
 
 /*
