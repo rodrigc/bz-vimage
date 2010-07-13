@@ -104,6 +104,7 @@ __FBSDID("$FreeBSD: src/sys/netinet6/ip6_input.c,v 1.142 2010/05/16 21:48:39 kma
 #include <netinet/icmp6.h>
 #include <netinet6/scope6_var.h>
 #include <netinet6/in6_ifattach.h>
+#include <netinet6/mld6_var.h>
 #include <netinet6/nd6.h>
 
 #ifdef IPSEC
@@ -224,13 +225,36 @@ ip6_init(void)
 }
 
 #ifdef VIMAGE
-void
-ip6_destroy()
+static void
+ip6_destroy(void *unused __unused)
 {
+	struct ifnet *ifp;
+	struct ifaddr *ifa, *nifa;
 
+	/* Stop timers. */
 	nd6_destroy();
 	in6_ifattach_destroy();
+
+	IFNET_RLOCK();
+	TAILQ_FOREACH(ifp, &V_ifnet, if_link) {
+		/* Cannot lock here - lock recursion. */
+		/* IF_ADDR_LOCK(ifp); */
+		TAILQ_FOREACH_SAFE(ifa, &ifp->if_addrhead, ifa_link, nifa) {
+			if (ifa->ifa_addr->sa_family != AF_INET6)
+				continue;
+			in6_purgeaddr(ifa);
+		}
+		/* IF_ADDR_UNLOCK(ifp); */
+		in6_ifdetach(ifp, 0);
+		mld_domifdetach(ifp);
+	}
+	IFNET_RUNLOCK();
+
+	pfil_head_unregister(&V_inet6_pfil_hook);
 }
+
+VNET_SYSUNINIT(inet6, SI_SUB_PROTO_DOMAIN, SI_ORDER_THIRD,
+    ip6_destroy, NULL);
 #endif
 
 void
