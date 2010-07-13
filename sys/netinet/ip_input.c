@@ -371,19 +371,25 @@ ip_init(void)
 }
 
 #ifdef VIMAGE
-void
-ip_destroy(void)
+static void
+ip_destroy(void *unused __unused)
 {
 
-	/* Cleanup in_ifaddr hash table; should be empty. */
-	hashdestroy(V_in_ifaddrhashtbl, M_IFADDR, V_in_ifaddrhmask);
+	/* Remove the IPv4 addresses from all interfaces. */
+	in_ifscrub_all();
 
 	IPQ_LOCK();
 	ip_drain_locked();
 	IPQ_UNLOCK();
 
+	pfil_head_unregister(&V_inet_pfil_hook);
+
+	/* Cleanup in_ifaddr hash table; should be empty. */
+	hashdestroy(V_in_ifaddrhashtbl, M_IFADDR, V_in_ifaddrhmask);
+
 	uma_zdestroy(V_ipq_zone);
 }
+VNET_SYSUNINIT(ip, SI_SUB_PROTO_DOMAIN, SI_ORDER_THIRD, ip_destroy, NULL);
 #endif
 
 void
