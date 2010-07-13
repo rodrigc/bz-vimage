@@ -1459,7 +1459,7 @@ in6_purgeif(struct ifnet *ifp)
 		in6_purgeaddr(ifa);
 	}
 
-	in6_ifdetach(ifp);
+	in6_ifdetach(ifp, 1);
 }
 
 /*
