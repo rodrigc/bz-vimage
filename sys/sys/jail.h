@@ -380,6 +380,10 @@ int prison_if(struct ucred *cred, struct sockaddr *sa);
 char *prison_name(struct prison *, struct prison *);
 int prison_priv_check(struct ucred *cred, int priv);
 int sysctl_jail_param(struct sysctl_oid *, void *, int , struct sysctl_req *);
+#ifdef VIMAGE
+void jail_vimage_teardown_hold(struct prison *);
+void jail_vimage_teardown_free(struct prison *);
+#endif
 
 #endif /* _KERNEL */
 #endif /* !_SYS_JAIL_H_ */

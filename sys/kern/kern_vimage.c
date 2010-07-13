@@ -41,16 +41,18 @@ __FBSDID("$FreeBSD$");
 #include <sys/jail.h>
 #include <sys/kdb.h>
 #include <sys/kernel.h>
+#include <sys/kthread.h>
 #include <sys/libkern.h>
 #include <sys/lock.h>
 #include <sys/malloc.h>
 #include <sys/proc.h>
+#include <sys/queue.h>
 #include <sys/refcount.h>
 #include <sys/rwlock.h>
 #include <sys/sdt.h>
 #include <sys/sx.h>
 #include <sys/systm.h>
-#include <sys/queue.h>
+#include <sys/unistd.h>
 #include <sys/vimage.h>
 
 #ifdef DDB
@@ -173,6 +175,9 @@ SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int",
     "struct vimage *");
 SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int",
     "struct vimage *");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy_thread, entry, "int",
+    "struct vimage *");
+SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy_thread, return, "int");
 SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "int",
     "struct vimage *");
 SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy, return, "int");
@@ -196,6 +201,8 @@ static void vimage_data_free_notsupp(struct vimage_subsys * __unused,
     void * __unused, size_t __unused);
 static void vimage_data_copy_notsupp(struct vimage_subsys * __unused,
     void * __unused, size_t __unused);
+
+static void vimage_sysuninit(struct vimage_subsys *, int);
 
 /*
  * Boot time intialization of the VIMAGE framework.
@@ -515,22 +522,32 @@ err:
 	return (v);
 }
 
-/*
- * Destroy a virtual instance.
- */
-void
-vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
+struct vdt {
+	struct vimage_subsys *vse;
+	struct vimage *v;
+	struct prison *pr;
+};
+
+static void
+vimage_destroy_thread(void *arg) 
 {
+	struct vdt *vdt;
+	struct vimage_subsys *vse;
+	struct vimage *v;
+	struct prison *pr;
 
-	SDT_PROBE2(vimage, functions, vimage_destroy, entry, __LINE__, v);
+	vdt = arg;
+	vse = vdt->vse;
+	v = vdt->v;
+	pr = vdt->pr;
+	free(arg, M_VIMAGE);
 
-	VIMAGE_LIST_WLOCK();
-	LIST_REMOVE(v, v_le);
-	VIMAGE_LIST_WUNLOCK();
+	SDT_PROBE2(vimage, functions, vimage_destroy_thread, entry,
+	    __LINE__, v);
 
-	CURVIMAGE_SET_QUIET(vse, __func__, v);
-	vimage_sysuninit(vse);
-	CURVIMAGE_RESTORE(vse, __func__);
+	vimage_sysuninit(vse, 1);
+
+	/* We do not restore the vnet context here as the thread will die. */
 
 	/*
 	 * Release storage for the virtual instance (module) data allocator.
@@ -542,6 +559,74 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v)
 	 * Release the reference borrowed from the vimage subsystem.
 	 */
 	vimage_subsys_free(vse);
+
+	/*
+	 * Free the struct prison (if this is the last vse to go).
+	 */
+	jail_vimage_teardown_free(vdt->pr);
+
+	SDT_PROBE1(vimage, functions, vimage_destroy_thread, return, __LINE__);
+}
+
+/*
+ * Destroy a virtual instance.  In case we will do a defered (asynchronous)
+ * shutdown, we need to take a ref on the prison and release it once done
+ * to avoid the prison to be freed.
+ */
+void
+vimage_destroy(struct vimage_subsys *vse, struct vimage *v, struct prison *pr)
+{
+	int rc;
+	struct vdt *vdt;
+
+	SDT_PROBE2(vimage, functions, vimage_destroy, entry, __LINE__, v);
+
+	VIMAGE_LIST_WLOCK();
+	LIST_REMOVE(v, v_le);
+	VIMAGE_LIST_WUNLOCK();
+
+	/*
+	 * Start the kproc that will teardown and be able to wait if
+	 * needed.  In case process creation fails we cannot signal
+	 * failure back, so run synchronously but set the flag to not
+	 * wait.
+	 */
+	CURVIMAGE_SET_QUIET(vse, __func__, v);
+	if (vse->flags & VSE_FLAG_ASYNC_SHUTDOWN) {
+
+		jail_vimage_teardown_hold(pr);
+		
+		vdt = malloc(sizeof(*vdt), M_VIMAGE, M_WAITOK | M_ZERO);
+		vdt->vse = vse;
+		vdt->v = v;
+		vdt->pr = pr;
+		rc = kproc_create(vimage_destroy_thread, vdt,
+		    NULL, RFCFDG|RFNOWAIT|RFPROC, 0, "vimage_destroy %s",
+		    vse->name);
+		if (rc != 0) {
+			free(vdt, M_VIMAGE);
+			jail_vimage_teardown_free(pr);
+			goto sync;
+		}
+		CURVIMAGE_RESTORE(vse, __func__);
+	} else {
+sync:
+		/* Synchronous shutdown. */
+		vimage_sysuninit(vse, 0);
+		CURVIMAGE_RESTORE(vse, __func__);
+
+		/*
+		 * Release storage for the virtual instance (module) data allocator.
+		 */
+		free(v->v_data_mem, M_VIMAGE_DATA);
+		free(v, M_VIMAGE);
+
+		/*
+		 * Release the reference borrowed from the vimage subsystem.
+		 */
+		vimage_subsys_free(vse);
+	}
+
 	SDT_PROBE1(vimage, functions, vimage_destroy, return, __LINE__);
 }
 
@@ -770,8 +855,8 @@ vimage_sysinit(struct vimage_subsys *vse)
  * during subsystem destruction.  The caller is responsible for ensuring the
  * dying subsystem instance is the current subsystem instance.
  */
-void
-vimage_sysuninit(struct vimage_subsys *vse)
+static void
+vimage_sysuninit(struct vimage_subsys *vse, int wait)
 {
 	struct vimage_sysuninit *vs;
 

@@ -154,6 +154,9 @@ struct vimage_subsys {
 	const char			*name;		/* printfs */
 	const char			*NAME;		/* printfs */
 
+	uint16_t			flags;
+#define	VSE_FLAG_ASYNC_SHUTDOWN		0x0001
+
 	/* VIMAGE allocator framework. */
 	const char			*setname;	/* set_subsys */
 	const char			*setname_s;	/* subsys */
@@ -208,7 +211,8 @@ int vimage_subsys_deregister(struct vimage_subsys *);
 struct vimage_subsys *vimage_subsys_get(const char *);
 
 struct vimage *vimage_alloc(struct vimage_subsys *);
-void vimage_destroy(struct vimage_subsys *, struct vimage *);
+struct prison;
+void vimage_destroy(struct vimage_subsys *, struct vimage *, struct prison *);
 
 /*
  * Support for special SYSINIT handlers registered via VIMAGE_SYSINIT()
@@ -260,7 +264,6 @@ extern struct rwlock		vimage_subsys_rwlock;
 
 #ifdef VIMAGE
 void vimage_sysinit(struct vimage_subsys *);
-void vimage_sysuninit(struct vimage_subsys *);
 void vimage_register_sysinit(void *);
 void vimage_deregister_sysinit(void *);
 void vimage_register_sysuninit(void *);

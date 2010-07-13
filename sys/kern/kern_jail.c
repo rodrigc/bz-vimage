@@ -54,6 +54,7 @@ __FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.135 2010/06/04 14:38:24 cperciv
 #include <sys/namei.h>
 #include <sys/mount.h>
 #include <sys/queue.h>
+#include <sys/refcount.h>
 #include <sys/socket.h>
 #include <sys/syscallsubr.h>
 #include <sys/sysctl.h>
@@ -2508,8 +2509,12 @@ prison_deref(struct prison *pr, int flags)
 		sx_xunlock(&allprison_lock);
 
 #ifdef VIMAGE
+		/* Make sure pr_ref is really exactly 0 as we will re-use it. */
+		KASSERT(pr->pr_ref == 0, ("%s: pr_ref %d != 0",
+		    __func__, pr->pr_ref));
+		pr->pr_ref = 1;
 		if (pr->pr_vnet != ppr->pr_vnet)
-			vnet_destroy(pr->pr_vnet);
+			vnet_destroy(pr);
 #endif
 		if (pr->pr_root != NULL) {
 			vfslocked = VFS_LOCK_GIANT(pr->pr_root->v_mount);
@@ -2526,7 +2531,18 @@ prison_deref(struct prison *pr, int flags)
 		if (pr->pr_cpuset != NULL)
 			cpuset_rel(pr->pr_cpuset);
 		osd_jail_exit(pr);
-		free(pr, M_PRISON);
+#ifdef VIMAGE
+		/*
+		 * Only free the prison itself if all virtualized subsystems
+		 * returned a clean destroy.  In case of defered/async teardowns
+		 * they have re-added a "ref" and will call back once done.
+		 * The last one will do the free.  We will not have any locks
+		 * or anything else left to cleanup and thus just use refcounts
+		 * to synchronize.
+		 */
+		if (refcount_release(&pr->pr_ref))
+#endif
+			free(pr, M_PRISON);
 
 		/* Removing a prison frees a reference on its parent. */
 		pr = ppr;
@@ -2534,6 +2550,27 @@ prison_deref(struct prison *pr, int flags)
 		flags = PD_DEREF;
 	}
 }
+
+#ifdef VIMAGE
+/*
+ * As the lock on the pr is destroyed and we may be called with other locks
+ * held, atomics are the easiest to synchronize the vimage subsystem calls.
+ */
+void
+jail_vimage_teardown_hold(struct prison *pr)
+{
+
+	refcount_acquire(&pr->pr_ref);
+}
+
+void
+jail_vimage_teardown_free(struct prison *pr)
+{
+
+	if (refcount_release(&pr->pr_ref))
+		free(pr, M_PRISON);
+}
+#endif
 
 void
 prison_hold_locked(struct prison *pr)

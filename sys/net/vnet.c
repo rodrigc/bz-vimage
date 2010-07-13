@@ -92,6 +92,8 @@ struct vimage_subsys vnet_data =
 	.name			= "vnet",
 	.NAME			= "VNET",
 
+	.flags			= VSE_FLAG_ASYNC_SHUTDOWN,
+
 	.setname		= VNET_SETNAME,
 	.v_symprefix		= VNET_SYMPREFIX,
 
@@ -130,13 +132,15 @@ vnet_alloc(void)
  * Destroy a virtual network stack instance.
  */
 void
-vnet_destroy(struct vnet *vnet)
+vnet_destroy(struct prison *pr)
 {
+	struct vnet *vnet;
 
+	vnet = pr->pr_vnet;
 	KASSERT(vnet->vnet_sockcnt == 0,
 	    ("%s: vnet %p still has sockets", __func__, vnet));
 
-	vimage_destroy(&vnet_data, &vnet->v);
+	vimage_destroy(&vnet_data, &vnet->v, pr);
 }
 
 /*

@@ -111,7 +111,7 @@ extern struct vnet *vnet0;
  * the kernel jail framework.
  */
 struct vnet *vnet_alloc(void);
-void	vnet_destroy(struct vnet *vnet);
+void	vnet_destroy(struct prison *);
 
 /*
  * The current virtual network stack.
