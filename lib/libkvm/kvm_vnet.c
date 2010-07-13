@@ -247,7 +247,7 @@ _kvm_vnet_selectjid(kvm_t *kd, int jid)
 		return (-1);
 	}
 
-	allpp = nl[NLIST_ALLPROC].n_value;
+	allpp = nl[NLIST_ALLPRISON].n_value;
 	if (allpp == 0) {
 		_kvm_err(kd, kd->program, "%s: no allprison", __func__);
 		return (-1);
