@@ -83,6 +83,7 @@ static void nd6_rtmsg(int, struct rtentry *);
 static int in6_init_prefix_ltimes(struct nd_prefix *);
 static void in6_init_address_ltimes __P((struct nd_prefix *,
 	struct in6_addrlifetime *));
+static int nd6_prefix_offlink (struct nd_prefix *);
 
 static int rt6_deleteroute(struct radix_node *, void *);
 
@@ -1673,7 +1674,7 @@ nd6_prefix_onlink(struct nd_prefix *pr)
 	return (error);
 }
 
-int
+static int
 nd6_prefix_offlink(struct nd_prefix *pr)
 {
 	int error = 0;

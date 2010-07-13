@@ -440,7 +440,6 @@ void prelist_remove __P((struct nd_prefix *));
 int nd6_prelist_add __P((struct nd_prefixctl *, struct nd_defrouter *,
 	struct nd_prefix **));
 int nd6_prefix_onlink __P((struct nd_prefix *));
-int nd6_prefix_offlink __P((struct nd_prefix *));
 void pfxlist_onlink_check __P((void));
 struct nd_defrouter *defrouter_lookup __P((struct in6_addr *, struct ifnet *));
 struct nd_prefix *nd6_prefix_lookup __P((struct nd_prefixctl *));
