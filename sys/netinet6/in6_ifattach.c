@@ -788,7 +788,7 @@ statinit:
  * from the ifnet list in bsdi.
  */
 void
-in6_ifdetach(struct ifnet *ifp)
+in6_ifdetach(struct ifnet *ifp, int purgeulp)
 {
 	struct in6_ifaddr *ia;
 	struct ifaddr *ifa, *next;
@@ -848,8 +848,10 @@ in6_ifdetach(struct ifnet *ifp)
 		ifa_free(ifa);
 	}
 
-	in6_pcbpurgeif0(&V_udbinfo, ifp);
-	in6_pcbpurgeif0(&V_ripcbinfo, ifp);
+	if (purgeulp) {
+		in6_pcbpurgeif0(&V_udbinfo, ifp);
+		in6_pcbpurgeif0(&V_ripcbinfo, ifp);
+	}
 	/* leave from all multicast groups joined */
 	in6_purgemaddrs(ifp);
 

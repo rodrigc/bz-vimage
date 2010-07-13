@@ -35,7 +35,7 @@
 
 #ifdef _KERNEL
 void in6_ifattach __P((struct ifnet *, struct ifnet *));
-void in6_ifdetach __P((struct ifnet *));
+void in6_ifdetach __P((struct ifnet *, int));
 int in6_get_tmpifid __P((struct ifnet *, u_int8_t *, const u_int8_t *, int));
 void in6_tmpaddrtimer __P((void *));
 int in6_get_hw_ifid __P((struct ifnet *, struct in6_addr *));
