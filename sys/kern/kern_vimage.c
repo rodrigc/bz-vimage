@@ -545,7 +545,9 @@ vimage_destroy_thread(void *arg)
 	SDT_PROBE2(vimage, functions, vimage_destroy_thread, entry,
 	    __LINE__, v);
 
+	CURVIMAGE_SET_QUIET(vse, __func__, v);
 	vimage_sysuninit(vse, 1);
+	CURVIMAGE_RESTORE(vse, __func__);
 
 	/* We do not restore the vnet context here as the thread will die. */
 
@@ -563,9 +565,12 @@ vimage_destroy_thread(void *arg)
 	/*
 	 * Free the struct prison (if this is the last vse to go).
 	 */
-	jail_vimage_teardown_free(vdt->pr);
+	jail_vimage_teardown_free(pr);
 
 	SDT_PROBE1(vimage, functions, vimage_destroy_thread, return, __LINE__);
+
+	/* 1-2-3-4 vanish! */
+	kproc_exit(0);
 }
 
 /*
@@ -591,7 +596,6 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v, struct prison *pr)
 	 * failure back, so run synchronously but set the flag to not
 	 * wait.
 	 */
-	CURVIMAGE_SET_QUIET(vse, __func__, v);
 	if (vse->flags & VSE_FLAG_ASYNC_SHUTDOWN) {
 
 		jail_vimage_teardown_hold(pr);
@@ -601,17 +605,17 @@ vimage_destroy(struct vimage_subsys *vse, struct vimage *v, struct prison *pr)
 		vdt->v = v;
 		vdt->pr = pr;
 		rc = kproc_create(vimage_destroy_thread, vdt,
-		    NULL, RFCFDG|RFNOWAIT|RFPROC, 0, "vimage_destroy %s",
+		    NULL, RFPROC|RFNOWAIT, 0, "vimage_destroy %s",
 		    vse->name);
 		if (rc != 0) {
 			free(vdt, M_VIMAGE);
 			jail_vimage_teardown_free(pr);
 			goto sync;
 		}
-		CURVIMAGE_RESTORE(vse, __func__);
 	} else {
 sync:
 		/* Synchronous shutdown. */
+		CURVIMAGE_SET_QUIET(vse, __func__, v);
 		vimage_sysuninit(vse, 0);
 		CURVIMAGE_RESTORE(vse, __func__);
 
