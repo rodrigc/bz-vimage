@@ -97,11 +97,8 @@ void		vnet_domain_uninit(void *);
 	VNET_SYSUNINIT(domain_uninit_ ## name,				\
 	    SI_SUB_PROTO_DOMAIN, SI_ORDER_SECOND, vnet_domain_uninit,	\
 	    & name ## domain)
-#define	VNET_DOMAIN_SYSUNIT_REG(name)					\
-	VNET_SYSUNINIT_REG(domain_uninit_ ## name, vnet_domain_uninit)
 #else /* !VIMAGE */
 #define	VNET_DOMAIN_SET(name)	DOMAIN_SET(name)
-#define	VNET_DOMAIN_SYSUNIT_REG(name)
 #endif /* VIMAGE */
 
 #endif /* _KERNEL */
