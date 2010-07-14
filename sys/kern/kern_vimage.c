@@ -820,7 +820,7 @@ vimage_sysinit_iterator(struct vimage_subsys *vse, struct vimage_sysinit *vs)
 
 static void
 vimage_sysuninit_iterator(struct vimage_subsys *vse,
-    struct vimage_sysuninit *vs)
+    struct vimage_sysinit *vs)
 {
 	struct vimage *v;
 
@@ -831,7 +831,7 @@ vimage_sysuninit_iterator(struct vimage_subsys *vse,
 	VIMAGE_LIST_RLOCK();
 	VIMAGE_FOREACH(vse, v) {
 		CURVIMAGE_SET_QUIET(vse, __func__, v);
-		vs->func(vs);
+		vs->func(VIMAGE_SYSUNINIT_ARG(vse, vs->arg));
 		CURVIMAGE_RESTORE(vse, __func__);
 	}
 	VIMAGE_LIST_RUNLOCK();
@@ -862,12 +862,12 @@ vimage_sysinit(struct vimage_subsys *vse)
 static void
 vimage_sysuninit(struct vimage_subsys *vse, int wait)
 {
-	struct vimage_sysuninit *vs;
+	struct vimage_sysinit *vs;
 
 	VIMAGE_SYSUNINIT_RLOCK();
 	TAILQ_FOREACH_REVERSE(vs, &vse->v_sysint_destructors,
 	    vimage_sysuninit_head, link) {
-		vs->func(vs);
+		vs->func(VIMAGE_SYSUNINIT_ARG(vse, vs->arg));
 	}
 	VIMAGE_SYSUNINIT_RUNLOCK();
 }
@@ -926,7 +926,7 @@ vimage_deregister_sysinit(void *arg)
 void
 vimage_register_sysuninit(void *arg)
 {
-	struct vimage_sysuninit *vs, *vs2;
+	struct vimage_sysinit *vs, *vs2;
 	struct vimage_subsys *vse;
 
 	vs = arg;
@@ -950,7 +950,7 @@ vimage_register_sysuninit(void *arg)
 void
 vimage_deregister_sysuninit(void *arg)
 {
-	struct vimage_sysuninit *vs;
+	struct vimage_sysinit *vs;
 	struct vimage_subsys *vse;
 
 	vs = arg;
@@ -1193,8 +1193,9 @@ DB_SHOW_VIMAGE_COMMAND_FLAGS(sysinit, db_show_vimage_sysinit, CS_OWN)
 }
 
 static void
-db_show_vimage_print_sysuninit(struct vimage_sysuninit *vs)
+db_show_vimage_print_sysuninit(struct vimage_sysinit *vs)
 {
+	const struct vimage_sysuninit_args *vargs;
 	const char *vsname, *funcname;
 	c_db_sym_t sym;
 	db_expr_t  offset;
@@ -1212,12 +1213,16 @@ db_show_vimage_print_sysuninit(struct vimage_sysuninit *vs)
 	db_printf("  0x%08x 0x%08x\n", vs->subsystem, vs->order);
 	db_printf("  %p(%s)(%p)\n",
 	    vs->func, (funcname != NULL) ? funcname : "", vs->arg);
+	if (vs->arg != NULL) {
+		vargs = vs->arg;
+		db_printf("  { .arg = %p }\n", vargs->arg);
+	}
 }
 
 DB_SHOW_VIMAGE_COMMAND_FLAGS(sysuninit, db_show_vimage_sysuninit, CS_OWN)
 {
 	struct vimage_subsys *vse;
-	struct vimage_sysuninit *vs;
+	struct vimage_sysinit *vs;
 
 	vse = db_get_vse(addr, have_addr, count, modif);
 	if (vse == NULL) {

@@ -90,13 +90,18 @@ void		vnet_domain_uninit(void *);
 	    SI_ORDER_SECOND, domain_init, & name ## domain);
 #ifdef VIMAGE
 #define	VNET_DOMAIN_SET(name)						\
+static VNET_DEFINE(struct vimage_sysuninit_args,			\
+	name##_vimage_sysuninit_args) =					\
+	{								\
+		.arg = & name ## domain,				\
+	};								\
 	SYSINIT(domain_add_ ## name, SI_SUB_PROTO_DOMAIN,		\
 	    SI_ORDER_FIRST, domain_add, & name ## domain);		\
 	VNET_SYSINIT(domain_init_ ## name, SI_SUB_PROTO_DOMAIN,	\
 	    SI_ORDER_SECOND, vnet_domain_init, & name ## domain);	\
 	VNET_SYSUNINIT(domain_uninit_ ## name,				\
 	    SI_SUB_PROTO_DOMAIN, SI_ORDER_SECOND, vnet_domain_uninit,	\
-	    & name ## domain)
+	    &VNET_NAME(name##_vimage_sysuninit_args))
 #else /* !VIMAGE */
 #define	VNET_DOMAIN_SET(name)	DOMAIN_SET(name)
 #endif /* VIMAGE */

@@ -68,16 +68,12 @@ struct vimage_sysinit {
 	TAILQ_ENTRY(vimage_sysinit)	link;
 };
 TAILQ_HEAD(vimage_sysinit_head, vimage_sysinit);
+TAILQ_HEAD(vimage_sysuninit_head, vimage_sysinit);
 
-struct vimage_sysuninit {
-	enum sysinit_sub_id		subsystem;
-	enum sysinit_elem_order		order;
-	sysinit_cfunc_t			func;
+struct vimage_sysuninit_args {
+	unsigned int			rr;		/* Reserved. */
 	const void			*arg;
-	struct vimage_subsys		*v_subsys;
-	TAILQ_ENTRY(vimage_sysuninit)	link;
 };
-TAILQ_HEAD(vimage_sysuninit_head, vimage_sysuninit);
 
 /*
  * Tracking recursive set operations of subsystem instances.
@@ -239,7 +235,7 @@ extern struct rwlock		vimage_subsys_rwlock;
 	    vimage_deregister_sysinit, &vname ## _ ## ident ## _ ## func ## _init)
 
 #define	VIMAGE_SYSUNINIT(ident, subsystem, order, func, arg, vname, v_subsys) \
-	static struct vimage_sysuninit vname ## _ ## ident ## _ ## func ## _uninit = {\
+	static struct vimage_sysinit vname ## _ ## ident ## _ ## func ## _uninit = {\
 		subsystem,						\
 		order,							\
 		(sysinit_cfunc_t)(sysinit_nfunc_t)func,			\
@@ -250,6 +246,10 @@ extern struct rwlock		vimage_subsys_rwlock;
 	    vimage_register_sysuninit, &vname ## _ ## ident ## _ ## func ## _uninit); \
 	SYSUNINIT(vname ## _uninit_ ## ident ## _ ## func, subsystem, order, \
 	    vimage_deregister_sysuninit, &vname ## _ ## ident ## _ ## func ## _uninit)
+#define	VIMAGE_SYSUNINIT_ARG(vse, arg)					\
+	((arg) == NULL) ? NULL :					\
+	    (void *)(((struct vimage *)(*((void **)((uintptr_t)curthread + \
+		(vse)->v_curvar))))->v_data_base + (uintptr_t)(arg))
 #else /* !VIMAGE */
 /*
  * When VIMAGE isn't compiled into the kernel, <SUBSYS>_SYSINIT/
