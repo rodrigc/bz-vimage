@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_lookup.c,v 1.104 2010/06/20 13:35:16 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_lookup.c,v 1.105 2010/07/06 07:11:04 jeff Exp $");
 
 #include "opt_ffs_broken_fixme.h"
 #include "opt_ufs.h"
@@ -248,6 +248,8 @@ ufs_lookup_ino(struct vnode *vdp, struct vnode **vpp, struct componentname *cnp,
 		*vpp = NULL;
 
 	dp = VTOI(vdp);
+	if (dp->i_effnlink == 0)
+		return (ENOENT);
 
 	/*
 	 * Create a vm object if vmiodirenable is enabled.

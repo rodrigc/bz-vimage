@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/timeet.h,v 1.1 2010/06/20 21:33:29 mav Exp $
+ * $FreeBSD: src/sys/sys/timeet.h,v 1.2 2010/07/20 10:58:56 mav Exp $
  */
 
 #ifndef _SYS_TIMEEC_H_
@@ -61,6 +61,7 @@ struct eventtimer {
 #define ET_FLAGS_ONESHOT	2
 #define ET_FLAGS_PERCPU		4
 #define ET_FLAGS_C3STOP		8
+#define ET_FLAGS_POW2DIV	16
 	int			et_quality;
 		/*
 		 * Used to determine if this timecounter is better than
@@ -69,6 +70,8 @@ struct eventtimer {
 	int			et_active;
 	u_int64_t		et_frequency;
 		/* Base frequency in Hz. */
+	struct bintime		et_min_period;
+	struct bintime		et_max_period;
 	et_start_t		*et_start;
 	et_stop_t		*et_stop;
 	et_event_cb_t		*et_event_cb;

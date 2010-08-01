@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/i386/conf/GENERIC.hints,v 1.22 2009/05/14 21:53:35 jhb Exp $
+# $FreeBSD: src/sys/i386/conf/GENERIC.hints,v 1.23 2010/07/16 23:21:46 mav Exp $
 hint.fdc.0.at="isa"
 hint.fdc.0.port="0x3F0"
 hint.fdc.0.irq="6"
@@ -35,3 +35,6 @@ hint.ppc.0.irq="7"
 hint.atrtc.0.at="isa"
 hint.atrtc.0.port="0x70"
 hint.atrtc.0.irq="8"
+hint.attimer.0.at="isa"
+hint.attimer.0.port="0x40"
+hint.attimer.0.irq="0"

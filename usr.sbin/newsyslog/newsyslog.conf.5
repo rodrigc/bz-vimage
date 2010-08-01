@@ -5,7 +5,7 @@
 .\" This file contains changes from the Open Software Foundation.
 .\"
 .\"     from: @(#)newsyslog.8
-.\" $FreeBSD: src/usr.sbin/newsyslog/newsyslog.conf.5,v 1.9 2010/05/29 22:55:59 gordon Exp $
+.\" $FreeBSD: src/usr.sbin/newsyslog/newsyslog.conf.5,v 1.10 2010/07/23 09:11:47 brian Exp $
 .\"
 .\" Copyright 1988, 1989 by the Massachusetts Institute of Technology
 .\"
@@ -21,7 +21,7 @@
 .\" the suitability of this software for any purpose.  It is
 .\" provided "as is" without express or implied warranty.
 .\"
-.Dd November 27, 2006
+.Dd July 23, 2010
 .Dt NEWSYSLOG.CONF 5
 .Os
 .Sh NAME
@@ -320,14 +320,17 @@ process ID or to find a group process ID if the
 flag was specified.
 If this field is present, a
 .Ar signal_number
-is sent the process ID contained in this file.
-If this field is not present, then a
+is sent to the process ID contained in this file.
+If this field is not present and the
+.Cm N
+flag has not been specified, then a
 .Dv SIGHUP
 signal will be sent to
-.Xr syslogd 8 ,
-unless the
-.Cm N
-flag has been specified.
+.Xr syslogd 8
+or to the process id found in the file specified by
+.Xr newsyslog 8 Ns 's
+.Fl S
+switch.
 This field must start with
 .Ql /
 in order to be recognized properly.

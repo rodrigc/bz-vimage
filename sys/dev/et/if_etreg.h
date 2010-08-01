@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2007 The DragonFly Project.  All rights reserved.
+ * Copyright (c) 2007 Sepherosa Ziehau.  All rights reserved.
  *
  * This code is derived from software contributed to The DragonFly Project
  * by Sepherosa Ziehau <sepherosa@gmail.com>
@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  * $DragonFly: src/sys/dev/netif/et/if_etreg.h,v 1.3 2007/10/23 14:28:42 sephe Exp $
- * $FreeBSD: src/sys/dev/et/if_etreg.h,v 1.3 2009/11/19 21:46:58 yongari Exp $
+ * $FreeBSD: src/sys/dev/et/if_etreg.h,v 1.4 2010/07/30 17:51:22 delphij Exp $
  */
 /*-
  * Portions of this code is derived from NetBSD which is covered by

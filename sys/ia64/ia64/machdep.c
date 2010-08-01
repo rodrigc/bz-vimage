@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/machdep.c,v 1.262 2010/03/26 00:53:13 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/machdep.c,v 1.263 2010/06/30 18:03:42 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -59,6 +59,7 @@ __FBSDID("$FreeBSD: src/sys/ia64/ia64/machdep.c,v 1.262 2010/03/26 00:53:13 nwhi
 #include <sys/sched.h>
 #include <sys/signalvar.h>
 #include <sys/syscall.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysctl.h>
 #include <sys/sysproto.h>
 #include <sys/ucontext.h>

@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libelf/libelf_ehdr.c,v 1.2 2006/12/25 02:22:22 jkoshy Exp $
+ * $FreeBSD: src/lib/libelf/libelf_ehdr.c,v 1.3 2010/07/21 10:25:02 kaiw Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libelf/libelf_ehdr.c,v 1.2 2006/12/25 02:22:22 jkoshy Exp $");
+__FBSDID("$FreeBSD: src/lib/libelf/libelf_ehdr.c,v 1.3 2010/07/21 10:25:02 kaiw Exp $");
 
 #include <assert.h>
 #include <gelf.h>
@@ -46,7 +46,7 @@ _libelf_load_extended(Elf *e, int ec, uint64_t shoff, uint16_t phnum,
 {
 	Elf_Scn *scn;
 	size_t fsz;
-	void (*xlator)(char *_d, char *_s, size_t _c, int _swap);
+	int (*xlator)(char *_d, size_t _dsz, char *_s, size_t _c, int _swap);
 	uint32_t shtype;
 
 	assert(STAILQ_EMPTY(&e->e_u.e_elf.e_scn));
@@ -63,7 +63,8 @@ _libelf_load_extended(Elf *e, int ec, uint64_t shoff, uint16_t phnum,
 		return (0);
 
 	xlator = _libelf_get_translator(ELF_T_SHDR, ELF_TOMEMORY, ec);
-	(*xlator)((char *) &scn->s_shdr, e->e_rawfile + shoff, (size_t) 1,
+	(*xlator)((char *) &scn->s_shdr, sizeof(scn->s_shdr),
+	    e->e_rawfile + shoff, (size_t) 1,
 	    e->e_byteorder != LIBELF_PRIVATE(byteorder));
 
 #define	GET_SHDR_MEMBER(M) ((ec == ELFCLASS32) ? scn->s_shdr.s_shdr32.M : \
@@ -105,7 +106,7 @@ _libelf_ehdr(Elf *e, int ec, int allocate)
 	size_t fsz, msz;
 	uint16_t phnum, shnum, strndx;
 	uint64_t shoff;
-	void (*xlator)(char *_d, char *_s, size_t _c, int _swap);
+	int (*xlator)(char *_d, size_t _dsz, char *_s, size_t _c, int _swap);
 
 	assert(ec == ELFCLASS32 || ec == ELFCLASS64);
 
@@ -167,7 +168,7 @@ _libelf_ehdr(Elf *e, int ec, int allocate)
 		return (ehdr);
 
 	xlator = _libelf_get_translator(ELF_T_EHDR, ELF_TOMEMORY, ec);
-	(*xlator)(ehdr, e->e_rawfile, (size_t) 1,
+	(*xlator)(ehdr, msz, e->e_rawfile, (size_t) 1,
 	    e->e_byteorder != LIBELF_PRIVATE(byteorder));
 
 	/*

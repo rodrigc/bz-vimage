@@ -30,7 +30,7 @@
 #include "opt_hwpmc_hooks.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.293 2010/05/24 10:23:49 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_thread.c,v 1.294 2010/07/15 20:24:37 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -96,7 +96,6 @@ thread_ctor(void *mem, int size, void *arg, int flags)
 	td->td_oncpu = NOCPU;
 
 	td->td_tid = alloc_unr(tid_unrhdr);
-	td->td_syscalls = 0;
 
 	/*
 	 * Note that td_critnest begins life as 1 because the thread is not

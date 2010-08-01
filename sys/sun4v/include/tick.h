@@ -23,14 +23,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/tick.h,v 1.1 2006/10/05 06:14:26 kmacy Exp $
+ * $FreeBSD: src/sys/sun4v/include/tick.h,v 1.2 2010/07/29 12:08:46 mav Exp $
  */
 
 #ifndef _MACHINE_TICK_H_
 #define	_MACHINE_TICK_H_
 
 void	tick_init(u_long clock);
-void	tick_start(void);
-void	tick_stop(void);
 
 #endif

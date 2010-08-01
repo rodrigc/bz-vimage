@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ktrace.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/sys/sys/ktrace.h,v 1.36 2009/10/23 15:10:41 jhb Exp $
+ * $FreeBSD: src/sys/sys/ktrace.h,v 1.37 2010/07/14 17:38:01 jhb Exp $
  */
 
 #ifndef _SYS_KTRACE_H_
@@ -154,6 +154,10 @@ struct ktr_csw {
  * KTR_STRUCT - misc. structs
  */
 #define KTR_STRUCT	8
+	/*
+	 * record contains null-terminated struct name followed by
+	 * struct contents
+	 */
 struct sockaddr;
 struct stat;
 
@@ -202,11 +206,11 @@ void	ktrsysctl(int *name, u_int namelen);
 void	ktrsysret(int, int, register_t);
 void	ktrprocexit(struct thread *);
 void	ktruserret(struct thread *);
-void	ktrstruct(const char *, size_t, void *, size_t);
+void	ktrstruct(const char *, void *, size_t);
 #define ktrsockaddr(s) \
-	ktrstruct("sockaddr", 8, (s), ((struct sockaddr *)(s))->sa_len)
+	ktrstruct("sockaddr", (s), ((struct sockaddr *)(s))->sa_len)
 #define ktrstat(s) \
-	ktrstruct("stat", 4, (s), sizeof(struct stat))
+	ktrstruct("stat", (s), sizeof(struct stat))
 
 #else
 

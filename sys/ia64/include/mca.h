@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/mca.h,v 1.9 2010/04/13 22:20:12 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/mca.h,v 1.10 2010/07/03 20:19:20 marcel Exp $
  */
 
 #ifndef _MACHINE_MCA_H_
@@ -240,6 +240,7 @@ struct mca_pcidev_reg {
 #ifdef _KERNEL
 
 void ia64_mca_init(void);
+void ia64_mca_init_ap(void);
 void ia64_mca_save_state(int);
 
 #endif /* _KERNEL */

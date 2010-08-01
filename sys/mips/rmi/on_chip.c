@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/on_chip.c,v 1.4 2010/05/21 05:34:19 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/on_chip.c,v 1.5 2010/07/08 15:05:23 jchandra Exp $");
 #include <sys/types.h>
 #include <sys/systm.h>
 #include <sys/param.h>
@@ -210,8 +210,8 @@ xlr_msgring_handler(struct trapframe *tf)
 
 			if (!tx_stn_handlers[tx_stid].action) {
 				printf("[%s]: No Handler for message from stn_id=%d, bucket=%d, "
-				    "size=%d, msg0=%llx, dropping message\n",
-				    __FUNCTION__, tx_stid, bucket, size, msg.msg0);
+				    "size=%d, msg0=%jx, dropping message\n",
+				    __FUNCTION__, tx_stid, bucket, size, (uintmax_t)msg.msg0);
 			} else {
 				//printf("[%s]: rx_stid = %d\n", __FUNCTION__, rx_stid);
 				msgrng_flags_restore(mflags);

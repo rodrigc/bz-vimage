@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/posix1e/acl_from_text.c,v 1.13 2009/11/16 09:28:22 brueffer Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/posix1e/acl_from_text.c,v 1.15 2010/07/06 17:20:08 trasz Exp $");
 
 #include <sys/types.h>
 #include "namespace.h"
@@ -44,7 +44,6 @@ __FBSDID("$FreeBSD: src/lib/libc/posix1e/acl_from_text.c,v 1.13 2009/11/16 09:28
 
 #include "acl_support.h"
 
-static int _posix1e_acl_name_to_id(acl_tag_t tag, char *name, uid_t *id);
 static acl_tag_t acl_string_to_tag(char *tag, char *qualifier);
 
 int _nfs4_acl_entry_from_text(acl_t aclp, char *entry);
@@ -148,8 +147,7 @@ _posix1e_acl_entry_from_text(acl_t aclp, char *entry)
 
 		case ACL_USER:
 		case ACL_GROUP:
-			error = _posix1e_acl_name_to_id(t, qualifier,
-					&id);
+			error = _acl_name_to_id(t, qualifier, &id);
 			if (error == -1)
 				return (-1);
 			break;
@@ -271,12 +269,9 @@ error_label:
  * XXX NOT THREAD SAFE, RELIES ON GETPWNAM, GETGRNAM
  * XXX USES *PW* AND *GR* WHICH ARE STATEFUL AND THEREFORE THIS ROUTINE
  * MAY HAVE SIDE-EFFECTS
- *
- * XXX currently doesn't deal correctly with a numeric uid being passed
- * instead of a username.  What is correct behavior here?  Check chown.
  */
-static int
-_posix1e_acl_name_to_id(acl_tag_t tag, char *name, uid_t *id)
+int
+_acl_name_to_id(acl_tag_t tag, char *name, uid_t *id)
 {
 	struct group	*g;
 	struct passwd	*p;

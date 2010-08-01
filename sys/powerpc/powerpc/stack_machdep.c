@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/stack_machdep.c,v 1.2 2009/10/30 16:00:34 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/stack_machdep.c,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/proc.h>
@@ -42,6 +42,12 @@ __FBSDID("$FreeBSD: src/sys/powerpc/powerpc/stack_machdep.c,v 1.2 2009/10/30 16:
 #include <machine/stack.h>
 #include <machine/trap.h>
 
+#ifdef __powerpc64__
+#define CALLOFFSET 8 /* Account for the TOC reload slot */
+#else
+#define CALLOFFSET 4
+#endif
+
 static void
 stack_capture(struct stack *st, vm_offset_t frame)
 {
@@ -51,10 +57,15 @@ stack_capture(struct stack *st, vm_offset_t frame)
 	if (frame < PAGE_SIZE)
 		return;
 	while (1) {
-		frame = *(register_t *)frame;
+		frame = *(vm_offset_t *)frame;
 		if (frame < PAGE_SIZE)
 			break;
+
+	    #ifdef __powerpc64__
+		callpc = *(vm_offset_t *)(frame + 16) - 4;
+	    #else
 		callpc = *(vm_offset_t *)(frame + 4) - 4;
+	    #endif
 		if ((callpc & 3) || (callpc < 0x100))
 			break;
 
@@ -64,8 +75,8 @@ stack_capture(struct stack *st, vm_offset_t frame)
 		 * things are going wrong. Plus, prevents this shortened
 		 * version of code from accessing user-space frames
 		 */
-		if (callpc + 4 == (register_t) &trapexit ||
-		    callpc + 4 == (register_t) &asttrapexit)
+		if (callpc + CALLOFFSET == (vm_offset_t) &trapexit ||
+		    callpc + CALLOFFSET == (vm_offset_t) &asttrapexit)
 			break;
 
 		if (stack_put(st, callpc) == -1)

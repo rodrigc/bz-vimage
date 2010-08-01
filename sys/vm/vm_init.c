@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_init.c,v 1.50 2010/02/21 22:23:13 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_init.c,v 1.52 2010/07/27 17:31:03 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -194,7 +194,7 @@ again:
 	    (long)nswbuf * MAXPHYS, FALSE);
 	pager_map->system_map = 1;
 	exec_map = kmem_suballoc(kernel_map, &minaddr, &maxaddr,
-	    exec_map_entries * (ARG_MAX + (PAGE_SIZE * 3)), FALSE);
+	    exec_map_entries * round_page(PATH_MAX + ARG_MAX), FALSE);
 	pipe_map = kmem_suballoc(kernel_map, &minaddr, &maxaddr, maxpipekva,
 	    FALSE);
 

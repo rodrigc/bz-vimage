@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.2 2010/05/16 15:21:13 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -108,15 +108,20 @@ static void
 write_scom(register_t address, uint64_t value)
 {
 	register_t msr;
+	#ifndef __powerpc64__
 	register_t hi, lo, scratch;
-
-	hi = (value >> 32) & 0xffffffff;
-	lo = value & 0xffffffff;
+	#endif
 
 	msr = mfmsr();
 	mtmsr(msr & ~PSL_EE); isync();
 
+	#ifdef __powerpc64__
+	mtspr(SPR_SCOMD, value);
+	#else
+	hi = (value >> 32) & 0xffffffff;
+	lo = value & 0xffffffff;
 	mtspr64(SPR_SCOMD, hi, lo, scratch); 
+	#endif
 	isync();
 	mtspr(SPR_SCOMC, address | SCOMC_WRITE);
 	isync();

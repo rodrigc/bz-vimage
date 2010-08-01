@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)disklabel.h	8.2 (Berkeley) 7/10/94
- * $FreeBSD: src/sys/sys/diskmbr.h,v 1.100 2005/01/07 02:29:23 imp Exp $
+ * $FreeBSD: src/sys/sys/diskmbr.h,v 1.101 2010/06/26 13:20:40 rpaulo Exp $
  */
 
 #ifndef _SYS_DISKMBR_H_
@@ -49,6 +49,7 @@
 #define	DOSPTYP_PMBR	0xee	/* GPT Protective MBR */
 #define	DOSPTYP_EXT	5	/* DOS extended partition */
 #define	DOSPTYP_EXTLBA	15	/* DOS extended partition */
+#define	DOSPTYP_NTFS	0x07	/* NTFS partition */
 
 struct dos_partition {
 	unsigned char	dp_flag;	/* bootstrap flags */

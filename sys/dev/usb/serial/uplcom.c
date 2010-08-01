@@ -1,7 +1,7 @@
 /*	$NetBSD: uplcom.c,v 1.21 2001/11/13 06:24:56 lukem Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.17 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.20 2010/07/28 16:29:10 gavin Exp $");
 
 /*-
  * Copyright (c) 2001-2003, 2005 Shunsuke Akiyama <akiyama@jp.FreeBSD.org>.
@@ -256,6 +256,8 @@ static const struct usb_device_id uplcom_devs[] = {
 	UPLCOM_DEV(PROLIFIC, RSAQ2, 0, 0xFFFF, PL2303),
 	/* I/O DATA USB-RSAQ3 */
 	UPLCOM_DEV(PROLIFIC, RSAQ3, 0, 0xFFFF, PL2303X),
+	/* I/O DATA USB-RSAQ5 */
+	UPLCOM_DEV(IODATA, USBRSAQ5, 0, 0xFFFF, PL2303X),
 	/* PLANEX USB-RS232 URS-03 */
 	UPLCOM_DEV(ATEN, UC232A, 0, 0xFFFF, PL2303),
 	/* TrendNet TU-S9 */
@@ -292,6 +294,8 @@ static const struct usb_device_id uplcom_devs[] = {
 	UPLCOM_DEV(PROLIFIC2, WSIM, 0, 0xFFFF, PL2303X),
 	/* Mobile Action MA-620 Infrared Adapter */
 	UPLCOM_DEV(MOBILEACTION, MA620, 0, 0xFFFF, PL2303X),
+	/* Corega CG-USBRS232R */
+	UPLCOM_DEV(COREGA, CGUSBRS232R, 0, 0xFFFF, PL2303X),
 };
 #undef UPLCOM_DEV
 

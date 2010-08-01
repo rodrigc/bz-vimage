@@ -26,7 +26,7 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 .\" THE POSSIBILITY OF SUCH DAMAGES.
 .\"
-.\" $FreeBSD: src/share/man/man4/ath.4,v 1.52 2010/03/21 17:53:54 sam Exp $
+.\" $FreeBSD: src/share/man/man4/ath.4,v 1.53 2010/07/13 16:16:41 maxim Exp $
 .\"/
 .Dd March 21, 2010
 .Dt ATH 4
@@ -198,7 +198,7 @@ ifconfig wlan0 create wlandev ath0 wlanmode tdma \e
 The Atheros Hardware Access Layer was unable to configure the hardware
 as requested.
 The status code is explained in the HAL include file
-.Pa sys/contrib/dev/ath/ah.h .
+.Pa sys/dev/ath/ath_hal/ah.h .
 .It "ath%d: failed to allocate descriptors: %d"
 The driver was unable to allocate contiguous memory for the transmit
 and receive descriptors.
@@ -227,7 +227,7 @@ The driver will reset the hardware and continue.
 The Atheros Hardware Access Layer was unable to reset the hardware
 as requested.
 The status code is explained in the HAL include file
-.Pa sys/contrib/dev/ath/ah.h .
+.Pa sys/dev/ath/ath_hal/ah.h .
 This should not happen.
 .It "ath%d: unable to start recv logic"
 The driver was unable to restart frame reception.

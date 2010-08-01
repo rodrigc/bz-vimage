@@ -1,10 +1,10 @@
-# $FreeBSD: src/sys/modules/nfsclient/Makefile,v 1.42 2010/02/16 20:00:21 marius Exp $
+# $FreeBSD: src/sys/modules/nfsclient/Makefile,v 1.43 2010/07/24 22:11:11 rmacklem Exp $
 
 .PATH: ${.CURDIR}/../../nfsclient ${.CURDIR}/../../rpc
 
 KMOD=	nfsclient
 SRCS=	vnode_if.h \
-	nfs_bio.c nfs_lock.c nfs_node.c nfs_subs.c nfs_nfsiod.c \
+	nfs_bio.c nfs_node.c nfs_subs.c nfs_nfsiod.c \
 	nfs_vfsops.c nfs_vnops.c nfs_krpc.c \
 	opt_inet.h opt_nfs.h opt_bootp.h opt_nfsroot.h
 SRCS+=	opt_inet6.h opt_kdtrace.h opt_kgssapi.h

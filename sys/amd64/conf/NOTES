@@ -4,7 +4,7 @@
 # This file contains machine dependent kernel configuration notes.  For
 # machine independent notes, look in /sys/conf/NOTES.
 #
-# $FreeBSD: src/sys/amd64/conf/NOTES,v 1.104 2010/06/18 18:51:09 kib Exp $
+# $FreeBSD: src/sys/amd64/conf/NOTES,v 1.105 2010/07/15 11:26:07 bschmidt Exp $
 #
 
 #
@@ -328,6 +328,7 @@ device		wpi
 #   iwn5000fw:		Specific module for the 5000 only
 #   iwn5150fw:		Specific module for the 5150 only
 #   iwn6000fw:		Specific module for the 6000 only
+#   iwn6050fw:		Specific module for the 6050 only
 # mwlfw:	Marvell 88W8363 firmware
 # wpifw:	Intel 3945ABG Wireless LAN Controller firmware
 
@@ -345,6 +346,7 @@ device		iwn1000fw
 device		iwn5000fw
 device		iwn5150fw
 device		iwn6000fw
+device		iwn6050fw
 device		mwlfw
 device		wpifw
 

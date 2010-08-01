@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uipaq.c,v 1.14 2010/03/03 10:18:03 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uipaq.c,v 1.15 2010/07/25 15:14:42 gavin Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -683,14 +683,14 @@ static const struct usb_device_id uipaq_devs[] = {
 	{USB_VPI(USB_VENDOR_HTC, 0x0a9e, 0)},
 	/* SmartPhone USB Sync */
 	{USB_VPI(USB_VENDOR_HTC, 0x0a9f, 0)},
-	/* "High Tech Computer Corp" */
-	{USB_VPI(USB_VENDOR_HTC, 0x0bce, 0)},
 	/**/
 	{USB_VPI(USB_VENDOR_HTC, USB_PRODUCT_HTC_PPC6700MODEM, 0)},
 	/**/
 	{USB_VPI(USB_VENDOR_HTC, USB_PRODUCT_HTC_SMARTPHONE, 0)},
 	/**/
 	{USB_VPI(USB_VENDOR_HTC, USB_PRODUCT_HTC_WINMOBILE, 0)},
+	/* High Tech Computer Wizard Smartphone */
+	{USB_VPI(USB_VENDOR_HTC, USB_PRODUCT_HTC_WIZARD, 0)},
 	/* JVC USB Sync */
 	{USB_VPI(USB_VENDOR_JVC, 0x3011, 0)},
 	/* JVC USB Sync */

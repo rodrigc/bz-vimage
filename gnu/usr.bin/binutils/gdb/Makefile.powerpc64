@@ -1,0 +1,5 @@
+# $FreeBSD: src/gnu/usr.bin/binutils/gdb/Makefile.powerpc64,v 1.1 2010/07/10 02:29:22 nwhitehorn Exp $
+
+XSRCS+=	ppcnbsd-nat.c ppc-tdep.c \
+	core-regset.c
+CFLAGS+= -DDEFAULT_BFD_VEC=bfd_elf64_powerpc_vec

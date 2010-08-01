@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.218 2010/06/21 09:55:56 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.220 2010/07/07 12:00:11 attilio Exp $");
 
 #include "opt_kdb.h"
 #include "opt_device_polling.h"
@@ -202,8 +202,14 @@ deadlkres(void)
 		FOREACH_PROC_IN_SYSTEM(p) {
 			PROC_LOCK(p);
 			FOREACH_THREAD_IN_PROC(p, td) {
+
+				/*
+				 * Once a thread is found in "interesting"
+				 * state a possible ticks wrap-up needs to be
+				 * checked.
+				 */
 				thread_lock(td);
-				if (TD_ON_LOCK(td)) {
+				if (TD_ON_LOCK(td) && ticks < td->td_blktick) {
 
 					/*
 					 * The thread should be blocked on a
@@ -212,9 +218,6 @@ deadlkres(void)
 					 */
 					MPASS(td->td_blocked != NULL);
 
-					/* Handle ticks wrap-up. */
-					if (ticks < td->td_blktick)
-						continue;
 					tticks = ticks - td->td_blktick;
 					thread_unlock(td);
 					if (tticks > blkticks) {
@@ -230,11 +233,9 @@ deadlkres(void)
 	panic("%s: possible deadlock detected for %p, blocked for %d ticks\n",
 						    __func__, td, tticks);
 					}
-				} else if (TD_IS_SLEEPING(td)) {
-
-					/* Handle ticks wrap-up. */
-					if (ticks < td->td_blktick)
-						continue;
+				} else if (TD_IS_SLEEPING(td) &&
+				    TD_ON_SLEEPQ(td) &&
+				    ticks < td->td_blktick) {
 
 					/*
 					 * Check if the thread is sleeping on a

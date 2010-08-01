@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_extattr.c,v 1.441 2009/06/27 13:58:44 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_extattr.c,v 1.443 2010/07/18 20:57:53 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>

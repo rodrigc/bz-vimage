@@ -53,7 +53,7 @@
  * SUCH DAMAGE.
  *
  *
- *      $FreeBSD: src/sys/dev/amr/amrvar.h,v 1.36 2008/11/03 00:53:54 scottl Exp $
+ *      $FreeBSD: src/sys/dev/amr/amrvar.h,v 1.37 2010/07/28 16:24:11 mdf Exp $
  */
 
 #include <geom/geom_disk.h>
@@ -66,8 +66,8 @@
 # define debug(level, fmt, args...)	do {if (level <= AMR_DEBUG) printf("%s: " fmt "\n", __func__ , ##args);} while(0)
 # define debug_called(level)		do {if (level <= AMR_DEBUG) printf("%s: called\n", __func__);} while(0)
 #else
-# define debug(level, fmt, args...)
-# define debug_called(level)
+# define debug(level, fmt, args...)	do {} while (0)
+# define debug_called(level)		do {} while (0)
 #endif
 #define xdebug(fmt, args...)	printf("%s: " fmt "\n", __func__ , ##args)
 

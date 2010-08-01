@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vnops.c,v 1.194 2010/05/06 18:58:32 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vnops.c,v 1.195 2010/07/06 07:11:04 jeff Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -1035,9 +1035,6 @@ ffs_extwrite(struct vnode *vp, struct uio *uio, int ioflag, struct ucred *ucred)
 	ip = VTOI(vp);
 	fs = ip->i_fs;
 	dp = ip->i_din2;
-
-	KASSERT(!(ip->i_flag & IN_SPACECOUNTED), ("inode %u: inode is dead",
-	    ip->i_number));
 
 #ifdef INVARIANTS
 	if (uio->uio_rw != UIO_WRITE || fs->fs_magic != FS_UFS2_MAGIC)

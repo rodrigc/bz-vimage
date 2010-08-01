@@ -25,13 +25,14 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_context.c,v 1.10 2009/10/27 10:47:58 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_context.c,v 1.11 2010/06/30 18:03:42 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
 #include <sys/proc.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysent.h>
 #include <sys/systm.h>
 #include <sys/sysproto.h>

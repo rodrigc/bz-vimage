@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libc/posix1e/acl_support.h,v 1.8 2010/06/03 14:29:17 trasz Exp $
+ * $FreeBSD: src/lib/libc/posix1e/acl_support.h,v 1.9 2010/07/06 17:20:08 trasz Exp $
  */
 /*
  * Support functionality for the POSIX.1e ACL interface
@@ -61,5 +61,6 @@ int	_posix1e_acl_add_entry(acl_t acl, acl_tag_t tag, uid_t id,
 	    acl_perm_t perm);
 char	*string_skip_whitespace(char *string);
 void	string_trim_trailing_whitespace(char *string);
+int	_acl_name_to_id(acl_tag_t tag, char *name, uid_t *id);
 
 #endif

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)limits.h	8.3 (Berkeley) 1/4/94
- * $FreeBSD: src/sys/powerpc/include/_limits.h,v 1.29 2005/08/20 16:44:41 stefanf Exp $
+ * $FreeBSD: src/sys/powerpc/include/_limits.h,v 1.30 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE__LIMITS_H_
@@ -59,8 +59,7 @@
 #define	__INT_MAX	0x7fffffff	/* max value for an int */
 #define	__INT_MIN	(-0x7fffffff - 1)	/* min value for an int */
 
-/* Bad hack for gcc configured to give 64-bit longs. */
-#ifdef _LARGE_LONG
+#if defined(_LARGE_LONG) || defined(__LP64__)
 #define	__ULONG_MAX	0xffffffffffffffffUL
 #define	__LONG_MAX	0x7fffffffffffffffL
 #define	__LONG_MIN	(-0x7fffffffffffffffL - 1)
@@ -74,9 +73,13 @@
 #define	__LLONG_MAX	0x7fffffffffffffffLL	/* max value for a long long */
 #define	__LLONG_MIN	(-0x7fffffffffffffffLL - 1)  /* min for a long long */
 
+#ifdef __powerpc64__
+#define	__SSIZE_MAX	__LONG_MAX	/* max value for a ssize_t */
+#define	__SIZE_T_MAX	__ULONG_MAX	/* max value for a size_t */
+#else
 #define	__SSIZE_MAX	__INT_MAX	/* max value for a ssize_t */
-
 #define	__SIZE_T_MAX	__UINT_MAX	/* max value for a size_t */
+#endif
 
 #define	__OFF_MAX	__LLONG_MAX	/* max value for an off_t */
 #define	__OFF_MIN	__LLONG_MIN	/* min value for an off_t */
@@ -86,7 +89,7 @@
 #define	__QUAD_MAX	__LLONG_MAX	/* max value for a quad_t */
 #define	__QUAD_MIN	__LLONG_MIN	/* min value for a quad_t */
 
-#ifdef _LARGE_LONG
+#if defined(_LARGE_LONG) || defined(__LP64__)
 #define	__LONG_BIT	64
 #else
 #define	__LONG_BIT	32

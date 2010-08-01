@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi.c,v 1.12 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi.c,v 1.14 2010/06/29 21:56:42 weongyo Exp $");
 
 #include "opt_inet.h"
 #include "opt_bwi.h"
@@ -1769,12 +1769,12 @@ static int
 bwi_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 {
 	struct bwi_vap *bvp = BWI_VAP(vap);
+	const struct ieee80211_txparam *tp;
 	struct ieee80211com *ic= vap->iv_ic;
 	struct ifnet *ifp = ic->ic_ifp;
 	enum ieee80211_state ostate = vap->iv_state;
 	struct bwi_softc *sc = ifp->if_softc;
 	struct bwi_mac *mac;
-	struct ieee80211_node *ni = vap->iv_bss;
 	int error;
 
 	BWI_LOCK(sc);
@@ -1822,10 +1822,11 @@ bwi_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 #else
 		sc->sc_txpwrcb_type = BWI_TXPWR_CALIB;
 #endif
-		if (vap->iv_opmode == IEEE80211_M_STA) {
-			/* fake a join to init the tx rate */
-			ic->ic_newassoc(ni, 1);
-		}
+
+		/* Initializes ratectl for a node. */
+		tp = &vap->iv_txparms[ieee80211_chan2mode(ic->ic_curchan)];
+		if (tp->ucastrate == IEEE80211_FIXED_RATE_NONE)
+			ieee80211_ratectl_node_init(vap->iv_bss);
 
 		callout_reset(&sc->sc_calib_ch, hz, bwi_calibrate, sc);
 	}

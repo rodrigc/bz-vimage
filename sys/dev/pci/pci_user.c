@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pci/pci_user.c,v 1.28 2009/09/11 18:48:49 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pci/pci_user.c,v 1.29 2010/07/29 06:27:41 neel Exp $");
 
 #include "opt_bus.h"	/* XXX trim includes */
 #include "opt_compat.h"
@@ -734,6 +734,16 @@ getconfexit:
 		else
 			bio->pbi_enabled = (value & PCIM_CMD_PORTEN) != 0;
 		error = 0;
+		break;
+	case PCIOCATTACHED:
+		error = 0;
+		io = (struct pci_io *)data;
+		pcidev = pci_find_dbsf(io->pi_sel.pc_domain, io->pi_sel.pc_bus,
+				       io->pi_sel.pc_dev, io->pi_sel.pc_func);
+		if (pcidev != NULL)
+			io->pi_data = device_is_attached(pcidev);
+		else
+			error = ENODEV;
 		break;
 	default:
 		error = ENOTTY;

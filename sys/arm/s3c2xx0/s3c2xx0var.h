@@ -31,7 +31,7 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/s3c2xx0/s3c2xx0var.h,v 1.1 2010/03/20 03:39:35 imp Exp $
+ * $FreeBSD: src/sys/arm/s3c2xx0/s3c2xx0var.h,v 1.2 2010/07/22 23:12:19 andrew Exp $
  */
 
 #ifndef _ARM_S3C2XX0VAR_H_
@@ -53,13 +53,8 @@ struct s3c2xx0_softc {
 	bus_space_tag_t  	sc_iot;
 
 	bus_space_handle_t	sc_intctl_ioh;
-	bus_space_handle_t	sc_clkman_ioh; 	/* Clock manager */
 	bus_space_handle_t	sc_gpio_ioh;  	/* GPIO */
-	bus_space_handle_t	sc_lcd_ioh; 	/* LCD */
-	bus_space_handle_t	sc_rtc_ioh; 	/* real time clock */
-	bus_space_handle_t	sc_mci_ioh; 	/* MMC/SD */
-	bus_space_handle_t	sc_iic_ioh; 	/* IIC */
-	bus_space_handle_t	sc_ohci_ioh; 	/* USB/OHCI */
+	bus_space_handle_t	sc_clkman_ioh; 	/* Clock manager */
 	bus_space_handle_t	sc_wdt_ioh; 	/* Watchdog Timer */
 
 	bus_dma_tag_t  		sc_dmat;

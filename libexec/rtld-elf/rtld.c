@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.149 2010/06/03 00:25:43 kan Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.151 2010/06/28 01:40:56 nwhitehorn Exp $
  */
 
 /*

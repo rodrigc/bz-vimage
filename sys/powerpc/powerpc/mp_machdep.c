@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.27 2010/06/18 14:06:27 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.28 2010/07/13 05:32:19 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -187,7 +187,7 @@ cpu_mp_announce(void)
 		pc = pcpu_find(i);
 		if (pc == NULL)
 			continue;
-		printf("cpu%d: dev=%x", i, pc->pc_hwref);
+		printf("cpu%d: dev=%x", i, (int)pc->pc_hwref);
 		if (pc->pc_bsp)
 			printf(" (BSP)");
 		printf("\n");
@@ -211,7 +211,7 @@ cpu_mp_unleash(void *dummy)
 		if (!pc->pc_bsp) {
 			if (bootverbose)
 				printf("Waking up CPU %d (dev=%x)\n",
-				    pc->pc_cpuid, pc->pc_hwref);
+				    pc->pc_cpuid, (int)pc->pc_hwref);
 
 			platform_smp_start_cpu(pc);
 			

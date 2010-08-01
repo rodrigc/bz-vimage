@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/cc/include/Makefile,v 1.10 2010/05/12 19:59:32 obrien Exp $
+# $FreeBSD: src/gnu/usr.bin/cc/include/Makefile,v 1.11 2010/07/10 02:29:22 nwhitehorn Exp $
 
 .include "../Makefile.inc"
 
@@ -12,7 +12,7 @@ INCS=	emmintrin.h mmintrin.h pmmintrin.h xmmintrin.h mm_malloc.h
 INCS=	ia64intrin.h
 .elif ${TARGET_ARCH} == "arm"
 INCS=	mmintrin.h
-.elif ${TARGET_ARCH} == "powerpc"
+.elif ${TARGET_ARCH} == "powerpc" || ${TARGET_ARCH} == "powerpc64"
 INCS=	ppc-asm.h altivec.h spe.h
 .endif
 

@@ -1,4 +1,4 @@
-# $FreeBSD: src/cddl/usr.sbin/lockstat/Makefile,v 1.3 2010/03/02 19:04:07 uqs Exp $
+# $FreeBSD: src/cddl/usr.sbin/lockstat/Makefile,v 1.4 2010/07/31 17:58:44 rpaulo Exp $
 
 .PATH: ${.CURDIR}/../../../cddl/contrib/opensolaris/cmd/lockstat
 
@@ -22,7 +22,10 @@ CFLAGS+=	-DNEED_ERRLOC -g
 
 #YFLAGS+=	-d
 
-DPADD=		${LIBPTHREAD} ${LIBDTRACE} ${LIBY} ${LIBL} ${LIBPROC} ${LIBCTF} ${LIBELF} ${LIBZ} ${LIBRT}
-LDADD=		-lpthread -ldtrace -ly -ll -lproc -lctf -lelf -lz -lrt
+DPADD=		${LIBPTHREAD} ${LIBDTRACE} ${LIBY} ${LIBL} ${LIBPROC} \
+		${LIBCTF} ${LIBELF} ${LIBZ} ${LIBRT} ${LIBUTIL} \
+		${LIBRTLD_DB}
+LDADD=		-lpthread -ldtrace -ly -ll -lproc -lctf -lelf -lz -lrt -lutil \
+		-lrtld_db
 
 .include <bsd.prog.mk>

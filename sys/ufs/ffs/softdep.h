@@ -36,7 +36,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)softdep.h	9.7 (McKusick) 6/21/00
- * $FreeBSD: src/sys/ufs/ffs/softdep.h,v 1.21 2010/05/19 06:18:01 jeff Exp $
+ * $FreeBSD: src/sys/ufs/ffs/softdep.h,v 1.22 2010/07/06 07:11:04 jeff Exp $
  */
 
 #include <sys/queue.h>
@@ -118,7 +118,7 @@
 #define	DIRCHG		0x000080 /* diradd, dirrem only */
 #define	GOINGAWAY	0x000100 /* indirdep, jremref only */
 #define	IOSTARTED	0x000200 /* inodedep, pagedep, bmsafemap only */
-#define	SPACECOUNTED	0x000400 /* inodedep only */
+#define	UNUSED400	0x000400 /* currently available. */
 #define	NEWBLOCK	0x000800 /* pagedep, jaddref only */
 #define	INPROGRESS	0x001000 /* dirrem, freeblks, freefrag, freefile only */
 #define	UFS1FMT		0x002000 /* indirdep only */

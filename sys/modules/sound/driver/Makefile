@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/sound/driver/Makefile,v 1.27 2009/01/25 18:20:15 nwhitehorn Exp $
+# $FreeBSD: src/sys/modules/sound/driver/Makefile,v 1.28 2010/07/13 12:47:31 nwhitehorn Exp $
 
 SUBDIR=		ad1816 als4000 atiixp cs4281 csa ds1 emu10k1 emu10kx
 SUBDIR+=	envy24 envy24ht es137x ess fm801 hda ich maestro maestro3
@@ -15,7 +15,7 @@ SUBDIR+=	audiocs
 .endif
 .endif
 
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 SUBDIR+=	ai2s davbus
 .endif
 

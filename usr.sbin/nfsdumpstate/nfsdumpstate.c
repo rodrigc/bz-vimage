@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/nfsdumpstate/nfsdumpstate.c,v 1.2 2009/05/29 22:19:45 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/nfsdumpstate/nfsdumpstate.c,v 1.3 2010/07/20 00:32:11 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -76,7 +76,7 @@ main(int argc, char **argv)
 		errx(1, "nfsd not loaded - self terminating");
 	openstate = 0;
 	lockfile = NULL;
-	while ((ch = getopt(argc, argv, "ol")) != -1)
+	while ((ch = getopt(argc, argv, "ol:")) != -1)
 		switch (ch) {
 		case 'o':
 			openstate = 1;

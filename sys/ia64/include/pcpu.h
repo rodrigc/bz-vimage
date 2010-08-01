@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/pcpu.h,v 1.27 2010/03/26 02:29:15 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/pcpu.h,v 1.28 2010/07/29 18:44:10 jhb Exp $
  */
 
 #ifndef	_MACHINE_PCPU_H_
@@ -70,12 +70,12 @@ struct pcpu;
 
 register struct pcpu *pcpup __asm__("r13");
 
-static __inline struct thread *
+static __inline __pure2 struct thread *
 __curthread(void)
 {
 	struct thread *td;
 
-	__asm __volatile("ld8.acq %0=[r13]" : "=r"(td));
+	__asm("ld8.acq %0=[r13]" : "=r"(td));
 	return (td);
 }
 #define	curthread	(__curthread())

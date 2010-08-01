@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/periodic/security/Makefile,v 1.7 2008/09/21 22:02:26 sam Exp $
+# $FreeBSD: src/etc/periodic/security/Makefile,v 1.8 2010/07/19 20:19:14 gabor Exp $
 
 .include <bsd.own.mk>
 
@@ -7,6 +7,7 @@ FILES=	100.chksetuid \
 	300.chkuid0 \
 	400.passwdless \
 	410.logincheck \
+	460.chkportsum \
 	700.kernelmsg \
 	800.loginfail \
 	900.tcpwrap \

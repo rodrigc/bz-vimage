@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/freebsd32/freebsd32_util.h,v 1.17 2010/04/21 19:28:01 kib Exp $
+ * $FreeBSD: src/sys/compat/freebsd32/freebsd32_util.h,v 1.19 2010/07/26 12:52:44 kib Exp $
  */
 
 #ifndef _COMPAT_FREEBSD32_FREEBSD32_UTIL_H_
@@ -34,6 +34,7 @@
 #include <sys/cdefs.h>
 #include <sys/exec.h>
 #include <sys/sysent.h>
+#include <sys/uio.h>
 
 #include <vm/vm.h>
 #include <vm/vm_param.h>
@@ -101,5 +102,8 @@ int	freebsd32_copyiniov(struct iovec32 *iovp, u_int iovcnt,
 	    struct iovec **iov, int error);
 void	freebsd32_rusage_out(const struct rusage *s, struct rusage32 *s32);
 
+struct image_args;
+int freebsd32_exec_copyin_args(struct image_args *args, char *fname,
+	    enum uio_seg segflg, u_int32_t *argv, u_int32_t *envv);
 
 #endif /* !_COMPAT_FREEBSD32_FREEBSD32_UTIL_H_ */

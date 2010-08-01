@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/make/str.c,v 1.47 2009/12/11 23:20:02 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/make/str.c,v 1.48 2010/07/12 17:18:58 emaste Exp $");
 
 #include <stdlib.h>
 #include <string.h>
@@ -150,7 +150,7 @@ brk_string(ArgArray *aa, const char str[], Boolean expand)
 
 	ArgArray_Init(aa);
 
-	aa->buffer = estrdup(str);;
+	aa->buffer = estrdup(str);
 
 	arg = aa->buffer;
 	start = arg;

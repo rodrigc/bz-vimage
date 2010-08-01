@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sys_generic.c,v 1.180 2010/05/21 10:36:29 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sys_generic.c,v 1.181 2010/06/29 20:44:19 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_ktrace.h"
@@ -532,7 +532,7 @@ dofilewrite(td, fd, fp, auio, offset, flags)
 		/* Socket layer is responsible for issuing SIGPIPE. */
 		if (fp->f_type != DTYPE_SOCKET && error == EPIPE) {
 			PROC_LOCK(td->td_proc);
-			psignal(td->td_proc, SIGPIPE);
+			tdsignal(td, SIGPIPE);
 			PROC_UNLOCK(td->td_proc);
 		}
 	}

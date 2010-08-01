@@ -54,7 +54,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ofw/openfirm.h,v 1.21 2010/05/28 10:43:56 raj Exp $
+ * $FreeBSD: src/sys/dev/ofw/openfirm.h,v 1.22 2010/07/08 18:15:06 nwhitehorn Exp $
  */
 
 #ifndef _DEV_OPENFIRM_H_
@@ -91,6 +91,7 @@ int		OF_init(void *cookie);
 
 #define	OFW_STD_DIRECT	"ofw_std"	/* Standard OF interface */
 #define	OFW_STD_REAL	"ofw_real"	/* Real-mode OF interface */
+#define	OFW_STD_32BIT	"ofw_32bit"	/* 32-bit OF interface */
 #define	OFW_FDT		"ofw_fdt"	/* Flattened Device Tree */
 
 /* Generic functions */

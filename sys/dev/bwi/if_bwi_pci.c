@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi_pci.c,v 1.3 2009/05/18 01:00:11 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwi/if_bwi_pci.c,v 1.4 2010/07/10 22:37:23 weongyo Exp $");
 
 /*
  * PCI/Cardbus front-end for the Broadcom Wireless LAN controller driver.
@@ -91,7 +91,8 @@ static const struct bwi_dev {
 	{ PCI_VENDOR_BROADCOM, 0x4324,"Broadcom BCM4309 802.11a/b/g Wireless Lan" },
 	{ PCI_VENDOR_BROADCOM, 0x4318,"Broadcom BCM4318 802.11b/g Wireless Lan" },
 	{ PCI_VENDOR_BROADCOM, 0x4319,"Broadcom BCM4318 802.11a/b/g Wireless Lan" },
-	{ PCI_VENDOR_BROADCOM, 0x431a,"Broadcom BCM4318 802.11a Wireless Lan" }
+	{ PCI_VENDOR_BROADCOM, 0x431a,"Broadcom BCM4318 802.11a Wireless Lan" },
+	{ 0, 0, NULL }
 };
 
 static int

@@ -55,7 +55,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * from $NetBSD: cpu_subr.c,v 1.1 2003/02/03 17:10:09 matt Exp $
- * $FreeBSD: src/sys/powerpc/powerpc/cpu.c,v 1.25 2010/03/23 19:30:56 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/cpu.c,v 1.26 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -220,7 +220,7 @@ cpu_setup(u_int cpuid)
 	}
 
 	if (cpu_est_clockrate(0, &cps) == 0)
-		printf(", %lld.%02lld MHz", cps / 1000000, (cps / 10000) % 100);
+		printf(", %jd.%02jd MHz", cps / 1000000, (cps / 10000) % 100);
 	printf("\n");
 
 	cpu_features |= cp->features;

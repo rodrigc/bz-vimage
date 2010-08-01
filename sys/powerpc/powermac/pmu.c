@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/pmu.c,v 1.8 2010/03/23 03:14:44 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/pmu.c,v 1.9 2010/07/02 02:17:39 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -43,7 +43,6 @@ __FBSDID("$FreeBSD: src/sys/powerpc/powermac/pmu.c,v 1.8 2010/03/23 03:14:44 nwh
 #include <dev/led/led.h>
 
 #include <machine/bus.h>
-#include <machine/intr.h>
 #include <machine/intr_machdep.h>
 #include <machine/md_var.h>
 #include <machine/pio.h>

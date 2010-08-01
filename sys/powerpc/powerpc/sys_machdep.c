@@ -24,12 +24,25 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/sys_machdep.c,v 1.5 2005/01/07 02:29:20 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/sys_machdep.c,v 1.6 2010/07/13 05:32:19 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/errno.h>
 #include <sys/sysproto.h>
+
+#include "opt_compat.h"
+
+#ifdef COMPAT_FREEBSD32
+#include <compat/freebsd32/freebsd32_proto.h>
+
+int
+freebsd32_sysarch(struct thread *td, struct freebsd32_sysarch_args *uap)
+{
+
+	return (EINVAL);
+}
+#endif
 
 int
 sysarch(struct thread *td, struct sysarch_args *uap)
@@ -37,3 +50,4 @@ sysarch(struct thread *td, struct sysarch_args *uap)
 
 	return (EINVAL);
 }
+

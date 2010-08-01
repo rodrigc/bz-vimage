@@ -1,5 +1,5 @@
 #	@(#)Makefile.inc	8.6 (Berkeley) 5/4/95
-# $FreeBSD: src/lib/libc/gen/Makefile.inc,v 1.152 2010/01/14 05:37:43 ed Exp $
+# $FreeBSD: src/lib/libc/gen/Makefile.inc,v 1.153 2010/07/21 08:51:38 ed Exp $
 
 # machine-independent gen sources
 .PATH: ${.CURDIR}/${MACHINE_ARCH}/gen ${.CURDIR}/gen
@@ -129,7 +129,7 @@ MLINKS+=getusershell.3 endusershell.3 getusershell.3 setusershell.3
 MLINKS+=getutxent.3 endutxent.3 getutxent.3 getutxid.3 \
 	getutxent.3 getutxline.3 getutxent.3 getutxuser.3 \
 	getutxent.3 pututxline.3 getutxent.3 setutxdb.3 \
-	getutxent.3 setutxent.3
+	getutxent.3 setutxent.3 getutxent.3 utmpx.3
 MLINKS+=glob.3 globfree.3
 MLINKS+=isgreater.3 isgreaterequal.3 isgreater.3 isless.3 \
 	isgreater.3 islessequal.3 isgreater.3 islessgreater.3 \

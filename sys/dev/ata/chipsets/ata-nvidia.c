@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-nvidia.c,v 1.12 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-nvidia.c,v 1.13 2010/07/10 15:36:27 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -296,8 +296,12 @@ ata_nvidia_status(device_t dev)
 static void
 ata_nvidia_reset(device_t dev)
 {
+    struct ata_channel *ch = device_get_softc(dev);
+
     if (ata_sata_phy_reset(dev, -1, 1))
 	ata_generic_reset(dev);
+    else
+	ch->devices = 0;
 }
 
 static int

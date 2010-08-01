@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/gettytab,v 1.26 2009/10/19 11:10:44 ed Exp $
+# $FreeBSD: src/etc/gettytab,v 1.27 2010/07/12 19:09:18 bcr Exp $
 #	from: @(#)gettytab	5.14 (Berkeley) 3/27/91
 #
 # Most of the table entries here are just copies of the old getty table,
@@ -165,7 +165,7 @@ P|Pc|Pc console:\
 	:ht:np:sp#9600:
 
 #
-# Wierdo special case for fast crt's with hardcopy devices
+# Weirdo special case for fast crt's with hardcopy devices
 #
 8|T9600|CRT with hardcopy:\
 	:nx=T300:tc=9600-baud:

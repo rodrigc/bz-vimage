@@ -23,13 +23,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/clock.h,v 1.3 2008/03/26 20:28:52 phk Exp $
+ * $FreeBSD: src/sys/sun4v/include/clock.h,v 1.4 2010/07/29 12:08:46 mav Exp $
  */
 
 #ifndef	_MACHINE_CLOCK_H_
 #define	_MACHINE_CLOCK_H_
 
-extern u_long tick_increment;
 extern u_long tick_freq;
 extern u_long tick_MHz;
 

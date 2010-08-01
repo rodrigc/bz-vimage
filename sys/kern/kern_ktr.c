@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_ktr.c,v 1.56 2010/04/14 21:42:29 julian Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_ktr.c,v 1.57 2010/07/21 10:14:04 attilio Exp $");
 
 #include "opt_ddb.h"
 #include "opt_ktr.h"
@@ -65,7 +65,7 @@ __FBSDID("$FreeBSD: src/sys/kern/kern_ktr.c,v 1.56 2010/04/14 21:42:29 julian Ex
 #endif
 
 #ifndef KTR_MASK
-#define	KTR_MASK	(KTR_GEN)
+#define	KTR_MASK	(0)
 #endif
 
 #ifndef KTR_CPUMASK

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/intr_machdep.c,v 1.5 2010/05/16 19:43:48 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/intr_machdep.c,v 1.6 2010/07/27 09:22:41 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -144,11 +144,11 @@ cpu_intr(struct trapframe *tf)
 		return;
 	}
 	/*
-	 * No need to clear the EIRR here. the handler is gonna write to
-	 * compare which clears eirr also
+	 * No need to clear the EIRR here as the handler writes to
+	 * compare which ACKs the interrupt.
 	 */
 	if (eirr & (1 << IRQ_TIMER)) {
-		count_compare_clockhandler(tf);
+		intr_event_handle(mips_intr_events[IRQ_TIMER], tf);
 		critical_exit();
 		return;
 	}

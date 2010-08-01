@@ -37,7 +37,7 @@
  *	from: Utah Hdr: vmparam.h 1.16 91/01/18
  *	@(#)vmparam.h	8.2 (Berkeley) 4/22/94
  *	JNPR: vmparam.h,v 1.3.2.1 2007/09/10 06:01:28 girish
- * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.5 2010/06/24 08:08:43 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.9 2010/07/29 20:02:56 jchandra Exp $
  */
 
 #ifndef _MACHINE_VMPARAM_H_
@@ -51,12 +51,6 @@
  * is the top (end) of the user stack.
  */
 #define	USRTEXT		(1*PAGE_SIZE)
-/*
- * USRSTACK needs to start a little below 0x8000000 because the R8000
- * and some QED CPUs perform some virtual address checks before the
- * offset is calculated.
- */
-#define	USRSTACK	0x7ffff000	/* Start of user stack */
 
 /*
  * Virtual memory related constants, all in bytes
@@ -103,18 +97,28 @@
 #define	VM_MAX_MMAP_ADDR	VM_MAXUSER_ADDRESS
 
 #if defined(__mips_n64)
-#define	VM_MAXUSER_ADDRESS	(VM_MINUSER_ADDRESS + (NPDEPG * NPTEPG * PAGE_SIZE))
+#define	VM_MAXUSER_ADDRESS	(VM_MINUSER_ADDRESS + (NPDEPG * NBSEG))
 #define	VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xc000000000000000)
-#define	VM_MAX_KERNEL_ADDRESS	(VM_MIN_KERNEL_ADDRESS + (NPDEPG * NPTEPG * PAGE_SIZE))
+#define	VM_MAX_KERNEL_ADDRESS	(VM_MIN_KERNEL_ADDRESS + (NPDEPG * NBSEG))
 #else
 #define	VM_MAXUSER_ADDRESS	((vm_offset_t)0x80000000)
 #define	VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xC0000000)
 #define	VM_MAX_KERNEL_ADDRESS	((vm_offset_t)0xFFFFC000)
 #endif
-#if 0
-#define	KERNBASE		(VM_MIN_KERNEL_ADDRESS)
-#else
+
 #define	KERNBASE		((vm_offset_t)(intptr_t)(int32_t)0x80000000)
+/*
+ * USRSTACK needs to start a little below 0x8000000 because the R8000
+ * and some QED CPUs perform some virtual address checks before the
+ * offset is calculated.
+ */
+#define	USRSTACK		(VM_MAXUSER_ADDRESS - PAGE_SIZE)
+ 
+/*
+ * Only one memory domain.
+ */
+#ifndef VM_NDOMAIN
+#define	VM_NDOMAIN		1
 #endif
 
 /*
@@ -124,7 +128,6 @@
 #ifndef	VM_NRESERVLEVEL
 #define	VM_NRESERVLEVEL		0
 #endif
-
 
 /* virtual sizes (bytes) for various kernel submaps */
 #ifndef VM_KMEM_SIZE
@@ -174,21 +177,29 @@
 #define	VM_FREEPOOL_DIRECT	1
 
 /*
- * we support 1 free list:
+ * we support 2 free lists:
  *
- *	- DEFAULT for all systems
+ *	- DEFAULT for direct mapped (KSEG0) pages.
+ *	  Note: This usage of DEFAULT may be misleading because we use
+ *	  DEFAULT for allocating direct mapped pages. The normal page
+ *	  allocations use HIGHMEM if available, and then DEFAULT. 
+ *	- HIGHMEM for other pages 
  */
-
+#ifdef __mips_n64
 #define	VM_NFREELIST		1
 #define	VM_FREELIST_DEFAULT	0
+#define	VM_FREELIST_DIRECT	VM_FREELIST_DEFAULT
+#else
+#define	VM_NFREELIST		2
+#define	VM_FREELIST_DEFAULT	1
+#define	VM_FREELIST_HIGHMEM	0
+#define	VM_FREELIST_DIRECT	VM_FREELIST_DEFAULT
+#define	VM_HIGHMEM_ADDRESS	((vm_paddr_t)0x20000000)
+#endif
 
 /*
  * The largest allocation size is 1MB.
  */
 #define	VM_NFREEORDER		9
-
-#define SEGSHIFT	22		/* LOG2(NBSEG) */
-#define NBSEG		(1 << SEGSHIFT)	/* bytes/segment */
-#define SEGOFSET	(NBSEG-1)	/* byte offset into segment */
 
 #endif /* !_MACHINE_VMPARAM_H_ */

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ddb/db_command.c,v 1.82 2010/05/24 16:41:05 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/ddb/db_command.c,v 1.83 2010/07/12 10:18:10 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/linker_set.h>
@@ -647,7 +647,7 @@ db_kill(dummy1, dummy2, dummy3, dummy4)
 	if (!db_expression(&pid))
 		DB_ERROR(("Missing process ID\n"));
 	db_skip_to_eol();
-	if (sig < 1 || sig > _SIG_MAXSIG)
+	if (!_SIG_VALID(sig))
 		DB_ERROR(("Signal number out of range\n"));
 
 	/*

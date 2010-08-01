@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)kill.c	8.4 (Berkeley) 4/28/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/kill/kill.c,v 1.21 2010/02/25 13:53:09 kib Exp $");
+__FBSDID("$FreeBSD: src/bin/kill/kill.c,v 1.22 2010/07/29 16:40:45 jilles Exp $");
 
 #include <ctype.h>
 #include <err.h>
@@ -123,10 +123,9 @@ main(int argc, char *argv[])
 
 	for (errors = 0; argc; argc--, argv++) {
 		pid = strtol(*argv, &ep, 10);
-		if (!**argv || *ep) {
-			warnx("illegal process id: %s", *argv);
-			errors = 1;
-		} else if (kill(pid, numsig) == -1) {
+		if (!**argv || *ep)
+			errx(1, "illegal process id: %s", *argv);
+		else if (kill(pid, numsig) == -1) {
 			warn("%s", *argv);
 			errors = 1;
 		}

@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/pmap.c,v 1.200 2010/06/11 15:49:39 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/pmap.c,v 1.201 2010/07/21 10:05:07 attilio Exp $");
 
 /*
  * Manages physical address maps.
@@ -899,7 +899,7 @@ pmap_kenter(vm_offset_t va, vm_page_t m)
 	CTR4(KTR_PMAP, "pmap_kenter: va=%#lx pa=%#lx tp=%p data=%#lx",
 	    va, VM_PAGE_TO_PHYS(m), tp, tp->tte_data);
 	if (DCACHE_COLOR(VM_PAGE_TO_PHYS(m)) != DCACHE_COLOR(va)) {
-		CTR5(KTR_CT2,
+		CTR5(KTR_SPARE2,
 	"pmap_kenter: off colour va=%#lx pa=%#lx o=%p ot=%d pi=%#lx",
 		    va, VM_PAGE_TO_PHYS(m), m->object,
 		    m->object ? m->object->type : -1,

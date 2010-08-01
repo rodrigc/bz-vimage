@@ -23,7 +23,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/booke/locore.S,v 1.10 2009/05/21 12:05:15 raj Exp $
+ * $FreeBSD: src/sys/powerpc/booke/locore.S,v 1.12 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #include "assym.s"
@@ -34,12 +34,10 @@
 #include <machine/hid.h>
 #include <machine/param.h>
 #include <machine/spr.h>
-#include <machine/psl.h>
 #include <machine/pte.h>
 #include <machine/trap.h>
 #include <machine/vmparam.h>
 #include <machine/tlb.h>
-#include <machine/bootinfo.h>
 
 #define TMPSTACKSZ	16384
 

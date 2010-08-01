@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.333 2009/12/19 18:42:12 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.334 2010/06/29 20:41:52 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -732,7 +732,7 @@ proc_reap(struct thread *td, struct proc *p, int *status, int options,
 		p->p_oppid = 0;
 		proc_reparent(p, t);
 		PROC_UNLOCK(p);
-		tdsignal(t, NULL, SIGCHLD, p->p_ksi);
+		pksignal(t, SIGCHLD, p->p_ksi);
 		wakeup(t);
 		cv_broadcast(&p->p_pwait);
 		PROC_UNLOCK(t);

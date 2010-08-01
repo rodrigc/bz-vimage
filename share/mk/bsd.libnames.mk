@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.libnames.mk,v 1.116 2010/05/10 06:59:50 mm Exp $
+# $FreeBSD: src/share/mk/bsd.libnames.mk,v 1.117 2010/07/31 14:32:54 rpaulo Exp $
 
 # The include file <bsd.libnames.mk> define library names.
 # Other include files (e.g. bsd.prog.mk, bsd.lib.mk) include this
@@ -139,6 +139,7 @@ LIBROKEN?=	${DESTDIR}${LIBDIR}/libroken.a
 LIBRPCSVC?=	${DESTDIR}${LIBDIR}/librpcsvc.a
 LIBRPCSEC_GSS?=	${DESTDIR}${LIBDIR}/librpcsec_gss.a
 LIBRT?=		${DESTDIR}${LIBDIR}/librt.a
+LIBRTLD_DB?=	${DESTDIR}${LIBDIR}/librtld_db.a
 LIBSBUF?=	${DESTDIR}${LIBDIR}/libsbuf.a
 LIBSDP?=	${DESTDIR}${LIBDIR}/libsdp.a
 LIBSMB?=	${DESTDIR}${LIBDIR}/libsmb.a

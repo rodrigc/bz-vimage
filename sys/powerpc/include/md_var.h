@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/md_var.h,v 1.37 2009/11/28 17:33:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/md_var.h,v 1.38 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -33,9 +33,14 @@
  * Miscellaneous machine-dependent declarations.
  */
 
-extern	char	sigcode[];
-extern	char	esigcode[];
-extern	int	szsigcode;
+extern	char	sigcode32[];
+extern	int	szsigcode32;
+
+#ifdef __powerpc64__
+extern	char	sigcode64[];
+extern	int	szsigcode64;
+#endif
+
 extern	long	Maxmem;
 extern	int	busdma_swi_pending;
 

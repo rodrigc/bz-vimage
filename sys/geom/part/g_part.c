@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.47 2010/04/25 01:56:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.49 2010/07/23 06:30:01 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -91,6 +91,7 @@ struct g_part_alias_list {
 	{ "ms-ldm-data", G_PART_ALIAS_MS_LDM_DATA },
 	{ "ms-ldm-metadata", G_PART_ALIAS_MS_LDM_METADATA },
 	{ "ms-reserved", G_PART_ALIAS_MS_RESERVED },
+	{ "ntfs", G_PART_ALIAS_MS_NTFS },
 	{ "netbsd-ccd", G_PART_ALIAS_NETBSD_CCD },
 	{ "netbsd-cgd", G_PART_ALIAS_NETBSD_CGD },
 	{ "netbsd-ffs", G_PART_ALIAS_NETBSD_FFS },
@@ -829,14 +830,6 @@ g_part_ctl_delete(struct gctl_req *req, struct g_part_parms *gpp)
 		entry->gpe_pp = NULL;
 	}
 
-	if (entry->gpe_created) {
-		LIST_REMOVE(entry, gpe_entry);
-		g_free(entry);
-	} else {
-		entry->gpe_modified = 0;
-		entry->gpe_deleted = 1;
-	}
-
 	if (pp != NULL)
 		g_wither_provider(pp, ENXIO);
 
@@ -848,6 +841,14 @@ g_part_ctl_delete(struct gctl_req *req, struct g_part_parms *gpp)
 		sbuf_finish(sb);
 		gctl_set_param(req, "output", sbuf_data(sb), sbuf_len(sb) + 1);
 		sbuf_delete(sb);
+	}
+
+	if (entry->gpe_created) {
+		LIST_REMOVE(entry, gpe_entry);
+		g_free(entry);
+	} else {
+		entry->gpe_modified = 0;
+		entry->gpe_deleted = 1;
 	}
 	return (0);
 }

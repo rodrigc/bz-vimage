@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * Author: Ed Maste <emaste@phaedrus.sandvine.ca>
+ * Author: Ed Maste <emaste@FreeBSD.org>
  */
 
 /*
@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/tools/ncpus/biosmptable.c,v 1.2 2006/03/06 21:51:27 sam Exp $");
+__FBSDID("$FreeBSD: src/tools/tools/ncpus/biosmptable.c,v 1.4 2010/07/06 19:43:40 emaste Exp $");
 
 #include <sys/types.h>
 #include <machine/mptable.h>

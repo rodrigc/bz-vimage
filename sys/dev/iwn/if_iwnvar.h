@@ -1,5 +1,5 @@
-/*	$FreeBSD: src/sys/dev/iwn/if_iwnvar.h,v 1.8 2010/04/10 06:58:24 bschmidt Exp $	*/
-/*	$OpenBSD: if_iwnvar.h,v 1.17 2010/02/17 18:23:00 damien Exp $	*/
+/*	$FreeBSD: src/sys/dev/iwn/if_iwnvar.h,v 1.10 2010/07/15 10:37:49 bschmidt Exp $	*/
+/*	$OpenBSD: if_iwnvar.h,v 1.18 2010/04/30 16:06:46 damien Exp $	*/
 
 /*-
  * Copyright (c) 2007, 2008
@@ -150,7 +150,8 @@ struct iwn_fw_part {
 };
 
 struct iwn_fw_info {
-	u_char			*data;
+	const uint8_t		*data;
+	size_t			size;
 	struct iwn_fw_part	init;
 	struct iwn_fw_part	main;
 	struct iwn_fw_part	boot;
@@ -307,7 +308,7 @@ struct iwn_softc {
 
 #define IWN_LOCK_INIT(_sc) \
 	mtx_init(&(_sc)->sc_mtx, device_get_nameunit((_sc)->sc_dev), \
-	     MTX_NETWORK_LOCK, MTX_DEF)
+	    MTX_NETWORK_LOCK, MTX_DEF)
 #define IWN_LOCK(_sc)			mtx_lock(&(_sc)->sc_mtx)
 #define IWN_LOCK_ASSERT(_sc)		mtx_assert(&(_sc)->sc_mtx, MA_OWNED)
 #define IWN_UNLOCK(_sc)			mtx_unlock(&(_sc)->sc_mtx)

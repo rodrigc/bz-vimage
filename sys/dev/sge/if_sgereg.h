@@ -32,7 +32,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/sge/if_sgereg.h,v 1.6 2010/05/10 17:14:14 yongari Exp $
+ * $FreeBSD: src/sys/dev/sge/if_sgereg.h,v 1.7 2010/07/08 18:22:49 yongari Exp $
  */
 
 #ifndef _IF_SGEREG_H
@@ -140,6 +140,7 @@
 #define	RXMAC_STRIP_VLAN	0x0020
 #define	RXMAC_STRIP_FCS		0x0010
 #define	RXMAC_PAD_ENB		0x0004
+#define	RXMAC_CSUM_ENB		0x0002
 
 #define	SGE_RX_PAD_BYTES	10
 

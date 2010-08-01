@@ -5,7 +5,7 @@
  *
  *	JNPR: clock.h,v 1.6.2.1 2007/08/29 09:36:05 girish
  *	from: src/sys/alpha/include/clock.h,v 1.5 1999/12/29 04:27:55 peter
- * $FreeBSD: src/sys/mips/include/clock.h,v 1.2 2010/03/20 05:49:06 neel Exp $
+ * $FreeBSD: src/sys/mips/include/clock.h,v 1.3 2010/07/15 01:58:20 imp Exp $
  */
 
 #ifndef _MACHINE_CLOCK_H_
@@ -17,7 +17,7 @@
 
 extern int cpu_clock;
 
-extern uint32_t clockintr(uint32_t, struct clockframe *);
+extern uint32_t clockintr(uint32_t, struct trapframe *);
 
 #define wall_cmos_clock 0
 #define adjkerntz 0

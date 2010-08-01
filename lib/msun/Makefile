@@ -1,5 +1,5 @@
 #  @(#)Makefile 5.1beta 93/09/24
-# $FreeBSD: src/lib/msun/Makefile,v 1.98 2008/08/07 15:07:48 das Exp $
+# $FreeBSD: src/lib/msun/Makefile,v 1.99 2010/07/10 14:40:57 nwhitehorn Exp $
 #
 #  ====================================================
 #  Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
@@ -14,6 +14,8 @@
 
 .if ${MACHINE_ARCH} == "i386"
 ARCH_SUBDIR= i387
+.elif ${MACHINE_ARCH} == "powerpc64"
+ARCH_SUBDIR= powerpc
 .else
 ARCH_SUBDIR= ${MACHINE_ARCH}
 .endif

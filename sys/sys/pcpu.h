@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/pcpu.h,v 1.40 2010/06/19 02:30:10 lstewart Exp $
+ * $FreeBSD: src/sys/sys/pcpu.h,v 1.45 2010/07/27 20:33:50 jhb Exp $
  */
 
 #ifndef _SYS_PCPU_H_
@@ -109,7 +109,19 @@ extern uintptr_t dpcpu_off[];
 /*
  * Utility macros.
  */
-#define	DPCPU_SUM(n, var) __extension__					\
+#define	DPCPU_SUM(n) __extension__					\
+({									\
+	u_int _i;							\
+	__typeof(*DPCPU_PTR(n)) sum;					\
+									\
+	sum = 0;							\
+	CPU_FOREACH(_i) {						\
+		sum += *DPCPU_ID_PTR(_i, n);				\
+	}								\
+	sum;								\
+})
+
+#define	DPCPU_VARSUM(n, var) __extension__				\
 ({									\
 	u_int _i;							\
 	__typeof((DPCPU_PTR(n))->var) sum;				\
@@ -120,6 +132,14 @@ extern uintptr_t dpcpu_off[];
 	}								\
 	sum;								\
 })
+
+#define	DPCPU_ZERO(n) do {						\
+	u_int _i;							\
+									\
+	CPU_FOREACH(_i) {						\
+		bzero(DPCPU_ID_PTR(_i, n), sizeof(*DPCPU_PTR(n)));	\
+	}								\
+} while(0)
 
 /* 
  * XXXUPS remove as soon as we have per cpu variable
@@ -159,6 +179,7 @@ struct pcpu {
 	struct device	*pc_device;
 	void		*pc_netisr;		/* netisr SWI cookie */
 	int		pc_dnweight;		/* vm_page_dontneed() */
+	int		pc_domain;		/* Memory domain. */
 
 	/*
 	 * Stuff for read mostly lock

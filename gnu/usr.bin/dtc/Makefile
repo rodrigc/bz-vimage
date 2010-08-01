@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/dtc/Makefile,v 1.3 2010/05/25 13:27:55 raj Exp $
+# $FreeBSD: src/gnu/usr.bin/dtc/Makefile,v 1.4 2010/07/15 02:22:50 marcel Exp $
 
 .include <bsd.own.mk>
 
@@ -13,7 +13,7 @@ SRCS=	dtc.c checks.c fstree.c livetree.c treesource.c data.c \
 	fdt.c fdt_ro.c fdt_rw.c fdt_strerror.c \
 	fdt_sw.c fdt_wip.c ${DTCVERSIONFILE}
 
-CFLAGS = -Wall -g -Os -fPIC -Wpointer-arith -Wcast-qual
+WARNS?=	2
 CFLAGS+= -I. -I${.CURDIR} -I${DTCDIR} -I${LIBFDTDIR}
 
 VERSIONMAJ!= awk '/^VERSION =/ { print $$3 }' ${DTCDIR}/Makefile

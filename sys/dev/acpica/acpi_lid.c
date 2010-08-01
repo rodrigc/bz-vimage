@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_lid.c,v 1.31 2010/04/02 23:04:31 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_lid.c,v 1.32 2010/07/06 20:57:28 jkim Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -98,6 +98,7 @@ acpi_lid_probe(device_t dev)
 static int
 acpi_lid_attach(device_t dev)
 {
+    struct acpi_prw_data	prw;
     struct acpi_lid_softc	*sc;
 
     ACPI_FUNCTION_TRACE((char *)(uintptr_t)__func__);
@@ -116,6 +117,8 @@ acpi_lid_attach(device_t dev)
 
     /* Enable the GPE for wake/runtime. */
     acpi_wake_set_enable(dev, 1);
+    if (acpi_parse_prw(sc->lid_handle, &prw) == 0)
+	AcpiEnableGpe(prw.gpe_handle, prw.gpe_bit);
 
     return (0);
 }

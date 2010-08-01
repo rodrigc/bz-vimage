@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/trap.c,v 1.345 2010/06/05 15:59:59 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/trap.c,v 1.346 2010/07/12 20:45:37 jhb Exp $");
 
 /*
  * AMD64 Trap and System call handling
@@ -268,9 +268,9 @@ trap(struct trapframe *frame)
 
 			/*
 			 * We shouldn't enable interrupts while holding a
-			 * spin lock or servicing an NMI.
+			 * spin lock.
 			 */
-			if (type != T_NMI && td->td_md.md_spinlock_count == 0)
+			if (td->td_md.md_spinlock_count == 0)
 				enable_intr();
 		}
 	}

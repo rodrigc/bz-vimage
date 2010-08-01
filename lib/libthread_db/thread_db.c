@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libthread_db/thread_db.c,v 1.9 2008/09/14 16:52:42 marcel Exp $");
+__FBSDID("$FreeBSD: src/lib/libthread_db/thread_db.c,v 1.10 2010/07/04 12:08:04 kib Exp $");
 
 #include <proc_service.h>
 #include <stddef.h>
@@ -174,6 +174,14 @@ td_thr_event_getmsg(const td_thrhandle_t *th, td_event_msg_t *msg)
 	const td_thragent_t *ta = th->th_ta;
 	return (ta->ta_ops->to_thr_event_getmsg(th, msg));
 }
+
+td_err_e
+td_thr_old_get_info(const td_thrhandle_t *th, td_old_thrinfo_t *info)
+{
+	const td_thragent_t *ta = th->th_ta;
+	return (ta->ta_ops->to_thr_old_get_info(th, info));
+}
+__sym_compat(td_thr_get_info, td_thr_old_get_info, FBSD_1.0);
 
 td_err_e
 td_thr_get_info(const td_thrhandle_t *th, td_thrinfo_t *info)

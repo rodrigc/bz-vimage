@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)segments.h	7.1 (Berkeley) 5/9/91
- * $FreeBSD: src/sys/i386/include/segments.h,v 1.39 2008/08/15 20:51:31 kmacy Exp $
+ * $FreeBSD: src/sys/i386/include/segments.h,v 1.40 2010/07/21 18:47:52 rpaulo Exp $
  */
 
 #ifndef _MACHINE_SEGMENTS_H_
@@ -74,6 +74,13 @@ struct	segment_descriptor	{
 	unsigned sd_gran:1 ;		/* limit granularity (byte/page units)*/
 	unsigned sd_hibase:8 ;		/* segment base address  (msb) */
 } ;
+
+#define	USD_GETBASE(sd)		(((sd)->sd_lobase) | (sd)->sd_hibase << 24) 
+#define	USD_SETBASE(sd, b)	(sd)->sd_lobase = (b);  \
+				(sd)->sd_hibase = ((b) >> 24);
+#define	USD_GETLIMIT(sd)	(((sd)->sd_lolimit) | (sd)->sd_hilimit << 16)
+#define	USD_SETLIMIT(sd, l)	(sd)->sd_lolimit = (l); \
+				(sd)->sd_hilimit = ((l) >> 16);
 
 /*
  * Gate descriptors (e.g. indirect descriptors)

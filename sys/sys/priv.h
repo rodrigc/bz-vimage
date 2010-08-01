@@ -26,7 +26,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/priv.h,v 1.41 2010/01/27 00:30:07 delphij Exp $
+ * $FreeBSD: src/sys/sys/priv.h,v 1.42 2010/07/20 11:20:45 rpaulo Exp $
  */
 
 /*
@@ -497,7 +497,7 @@
 
 #ifdef _KERNEL
 /*
- * Privilege check interfaces, modeled after historic suser() interfacs, but
+ * Privilege check interfaces, modeled after historic suser() interfaces, but
  * with the addition of a specific privilege name.  No flags are currently
  * defined for the API.  Historically, flags specified using the real uid
  * instead of the effective uid, and whether or not the check should be

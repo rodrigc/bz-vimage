@@ -69,7 +69,7 @@
  *	and
  *	from: FreeBSD: src/sys/alpha/include/bus.h,v 1.9 2001/01/09
  *
- * $FreeBSD: src/sys/sparc64/include/bus.h,v 1.43 2008/05/08 21:10:39 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/bus.h,v 1.44 2010/07/21 10:05:07 attilio Exp $
  */
 
 #ifndef	_MACHINE_BUS_H_
@@ -194,7 +194,7 @@ bus_space_subregion(bus_space_tag_t t, bus_space_handle_t h, bus_size_t o,
 #define	BUS_SPACE_BARRIER_WRITE		0x02	/* force write barrier */
 
 #ifdef BUS_SPACE_DEBUG
-#define	KTR_BUS				KTR_CT2
+#define	KTR_BUS				KTR_SPARE2
 #define	__BUS_DEBUG_ACCESS(h, o, desc, sz) do {				\
 	CTR4(KTR_BUS, "bus space: %s %d: handle %#lx, offset %#lx",	\
 	    (desc), (sz), (h), (o));					\

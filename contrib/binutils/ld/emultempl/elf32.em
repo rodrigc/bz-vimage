@@ -1,4 +1,4 @@
-# $FreeBSD: src/contrib/binutils/ld/emultempl/elf32.em,v 1.14 2004/06/16 06:09:06 obrien Exp $
+# $FreeBSD: src/contrib/binutils/ld/emultempl/elf32.em,v 1.15 2010/07/19 18:20:44 avg Exp $
 
 
 # This shell script emits a C file. -*- C -*-
@@ -1314,26 +1314,6 @@ gld${EMULATION_NAME}_place_orphan (lang_input_statement_type *file, asection *s)
       lang_list_init (stat_ptr);
     }
 
-  if (config.build_constructors)
-    {
-      /* If the name of the section is representable in C, then create
-	 symbols to mark the start and the end of the section.  */
-      for (ps = secname; *ps != '\0'; ps++)
-	if (! ISALNUM (*ps) && *ps != '_')
-	  break;
-      if (*ps == '\0')
-	{
-	  char *symname;
-	  etree_type *e_align;
-
-	  symname = (char *) xmalloc (ps - secname + sizeof "__start_");
-	  sprintf (symname, "__start_%s", secname);
-	  e_align = exp_unop (ALIGN_K,
-			      exp_intop ((bfd_vma) 1 << s->alignment_power));
-	  lang_add_assignment (exp_assop ('=', symname, e_align));
-	}
-    }
-
   address = NULL;
   if (link_info.relocatable || (s->flags & (SEC_LOAD | SEC_ALLOC)) == 0)
     address = exp_intop ((bfd_vma) 0);
@@ -1353,6 +1333,26 @@ gld${EMULATION_NAME}_place_orphan (lang_input_statement_type *file, asection *s)
 					    (etree_type *) NULL,
 					    (etree_type *) NULL,
 					    load_base);
+
+  if (config.build_constructors)
+    {
+      /* If the name of the section is representable in C, then create
+	 symbols to mark the start and the end of the section.  */
+      for (ps = secname; *ps != '\0'; ps++)
+	if (! ISALNUM (*ps) && *ps != '_')
+	  break;
+      if (*ps == '\0')
+	{
+	  char *symname;
+	  etree_type *e_align;
+
+	  symname = (char *) xmalloc (ps - secname + sizeof "__start_");
+	  sprintf (symname, "__start_%s", secname);
+	  lang_add_assignment (exp_assop ('=', symname,
+					  exp_unop (ABSOLUTE,
+						    exp_nameop (NAME, "."))));
+	}
+    }
 
   lang_add_section (&os->children, s, os, file);
 

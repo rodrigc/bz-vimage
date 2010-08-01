@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/pcpu.h,v 1.55 2010/05/24 15:45:05 jhb Exp $
+ * $FreeBSD: src/sys/amd64/include/pcpu.h,v 1.56 2010/07/29 18:44:10 jhb Exp $
  */
 
 #ifndef _MACHINE_PCPU_H_
@@ -216,12 +216,12 @@ extern struct pcpu *pcpup;
 #define	PCPU_PTR(member)	__PCPU_PTR(pc_ ## member)
 #define	PCPU_SET(member, val)	__PCPU_SET(pc_ ## member, val)
 
-static __inline struct thread *
+static __inline __pure2 struct thread *
 __curthread(void)
 {
 	struct thread *td;
 
-	__asm __volatile("movq %%gs:0,%0" : "=r" (td));
+	__asm("movq %%gs:0,%0" : "=r" (td));
 	return (td);
 }
 #define	curthread		(__curthread())

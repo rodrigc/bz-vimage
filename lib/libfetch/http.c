@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libfetch/http.c,v 1.87 2010/01/19 10:19:55 des Exp $");
+__FBSDID("$FreeBSD: src/lib/libfetch/http.c,v 1.89 2010/07/28 15:29:18 des Exp $");
 
 /*
  * The following copyright applies to the base64 code:
@@ -1786,12 +1786,14 @@ http_request(struct url *URL, const char *op, struct url_stat *us,
 			case hdr_www_authenticate:
 				if (conn->err != HTTP_NEED_AUTH)
 					break;
-				http_parse_authenticate(p, &server_challenges);
+				if (http_parse_authenticate(p, &server_challenges) == 0)
+					++n;
 				break;
 			case hdr_proxy_authenticate:
 				if (conn->err != HTTP_NEED_PROXY_AUTH)
 					break;
-				http_parse_authenticate(p, &proxy_challenges);
+				if (http_parse_authenticate(p, &proxy_challenges) == 0)
+					++n;
 				break;
 			case hdr_end:
 				/* fall through */

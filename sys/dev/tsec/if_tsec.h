@@ -1,5 +1,5 @@
 /*-
- * Copyright (C) 2006-2007 Semihalf, Piotr Kruszynski <ppk@semihalf.com>
+ * Copyright (C) 2006-2007 Semihalf, Piotr Kruszynski
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,11 +22,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/tsec/if_tsec.h,v 1.7 2009/06/13 08:57:04 raj Exp $
+ * $FreeBSD: src/sys/dev/tsec/if_tsec.h,v 1.8 2010/07/11 21:08:29 raj Exp $
  */
 
 #ifndef _IF_TSEC_H
 #define _IF_TSEC_H
+
+#include <dev/ofw/openfirm.h>
 
 #define TSEC_RX_NUM_DESC	256
 #define TSEC_TX_NUM_DESC	256
@@ -49,6 +51,7 @@ struct tsec_softc {
 	struct mtx	transmit_lock;	/* transmitter lock */
 	struct mtx	receive_lock;	/* receiver lock */
 
+	phandle_t	node;
 	device_t	dev;
 	device_t	tsec_miibus;
 	struct mii_data	*tsec_mii;	/* MII media control */
@@ -128,6 +131,8 @@ struct tsec_softc {
 
 	/* currently received frame */
 	struct mbuf	*frame;
+
+	int		phyaddr;
 };
 
 /* interface to get/put generic objects */

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/machdep.c,v 1.23 2010/03/25 14:24:00 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/machdep.c,v 1.24 2010/06/30 18:03:42 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -68,6 +68,7 @@ __FBSDID("$FreeBSD: src/sys/sun4v/sun4v/machdep.c,v 1.23 2010/03/25 14:24:00 nwh
 #include <sys/reboot.h>
 #include <sys/signalvar.h>
 #include <sys/smp.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysent.h>
 #include <sys/sysproto.h>
 #include <sys/timetc.h>

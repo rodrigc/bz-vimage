@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/agp/agp.c,v 1.69 2010/05/05 03:45:46 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/agp/agp.c,v 1.70 2010/07/08 08:39:02 kib Exp $");
 
 #include "opt_agp.h"
 #include "opt_bus.h"
@@ -537,8 +537,8 @@ agp_generic_bind_memory(device_t dev, struct agp_memory *mem,
 
 	/*
 	 * Allocate the pages early, before acquiring the lock,
-	 * because vm_page_grab() used with VM_ALLOC_RETRY may
-	 * block and we can't hold a mutex while blocking.
+	 * because vm_page_grab() may sleep and we can't hold a mutex
+	 * while sleeping.
 	 */
 	VM_OBJECT_LOCK(mem->am_obj);
 	for (i = 0; i < mem->am_size; i += PAGE_SIZE) {

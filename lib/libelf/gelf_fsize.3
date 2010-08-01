@@ -21,7 +21,7 @@
 .\" out of the use of this software, even if advised of the possibility of
 .\" such damage.
 .\"
-.\" $FreeBSD: src/lib/libelf/gelf_fsize.3,v 1.4 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/lib/libelf/gelf_fsize.3,v 1.6 2010/07/21 10:39:29 kaiw Exp $
 .\"
 .Dd February 5, 2008
 .Dt GELF_FSIZE 3
@@ -47,6 +47,8 @@ These functions return the size in bytes of the file representation of
 .Ar count
 numbers of objects of ELF type
 .Ar type .
+For ELF types that are of variable length, these functions return a
+size of one byte.
 .Pp
 Functions
 .Fn elf32_fsize

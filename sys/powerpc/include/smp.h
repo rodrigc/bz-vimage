@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.7 2009/10/23 03:17:02 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.8 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_SMP_H_
@@ -48,6 +48,7 @@ struct cpuref {
 };
 
 void	pmap_cpu_bootstrap(int);
+void	cpudep_ap_early_bootstrap(void);
 uintptr_t cpudep_ap_bootstrap(void);
 void	cpudep_ap_setup(void);
 void	machdep_ap_bootstrap(void);

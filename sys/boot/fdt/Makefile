@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/fdt/Makefile,v 1.1 2010/05/25 15:21:39 raj Exp $
+# $FreeBSD: src/sys/boot/fdt/Makefile,v 1.2 2010/07/12 00:49:22 nwhitehorn Exp $
 
 .PATH:		${.CURDIR}/../../contrib/libfdt/
 
@@ -16,8 +16,12 @@ CFLAGS+=	-I${.CURDIR}/../../contrib/libfdt/ -I${.CURDIR}/../common/ \
 
 CFLAGS+=	-ffreestanding
 
-.if ${MACHINE_ARCH} == "powerpc" || ${MACHINE_ARCH} == "arm"
+.if ${MACHINE_CPUARCH} == "powerpc" || ${MACHINE_CPUARCH} == "arm"
 CFLAGS+=	-msoft-float
+.endif
+
+.if ${MACHINE_ARCH} == "powerpc64"
+CFLAGS+=	-m32
 .endif
 
 CFLAGS+=	-Wformat -Wall

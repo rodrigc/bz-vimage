@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/csu/Makefile,v 1.33 2010/06/18 11:09:51 kib Exp $
+# $FreeBSD: src/gnu/lib/csu/Makefile,v 1.34 2010/07/10 02:29:22 nwhitehorn Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -31,7 +31,7 @@ CFLAGS+=	-x assembler-with-cpp	# Ugly hack
 CFLAGS+=	-include osreldate.h
 .undef SRCS				# hack for 'make depend'
 .endif
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_ARCH} == "powerpc" || ${MACHINE_ARCH} == "powerpc64"
 TGTOBJS=	crtsavres.o
 SRCS+=		crtsavres.asm
 .endif

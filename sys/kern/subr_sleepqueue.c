@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.66 2010/01/09 01:46:38 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.67 2010/06/30 18:00:45 jhb Exp $");
 
 #include "opt_sleepqueue_profiling.h"
 #include "opt_ddb.h"
@@ -442,7 +442,7 @@ sleepq_catch_signals(void *wchan, int pri)
 	/*
 	 * Lock the per-process spinlock prior to dropping the PROC_LOCK
 	 * to avoid a signal delivery race.  PROC_LOCK, PROC_SLOCK, and
-	 * thread_lock() are currently held in tdsignal().
+	 * thread_lock() are currently held in tdsendsignal().
 	 */
 	PROC_SLOCK(p);
 	mtx_lock_spin(&sc->sc_lock);

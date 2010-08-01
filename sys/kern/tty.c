@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.336 2010/01/04 20:59:52 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.337 2010/07/06 08:56:34 ed Exp $");
 
 #include "opt_compat.h"
 
@@ -1040,7 +1040,8 @@ tty_rel_free(struct tty *tp)
 	tp->t_dev = NULL;
 	tty_unlock(tp);
 
-	destroy_dev_sched_cb(dev, tty_dealloc, tp);
+	if (dev != NULL)
+		destroy_dev_sched_cb(dev, tty_dealloc, tp);
 }
 
 void

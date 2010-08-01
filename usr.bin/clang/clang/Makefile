@@ -1,28 +1,68 @@
-# $FreeBSD: src/usr.bin/clang/clang/Makefile,v 1.1 2010/06/09 19:32:20 rdivacky Exp $
+# $FreeBSD: src/usr.bin/clang/clang/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
 
 .include <bsd.own.mk>
 
 PROG_CXX=clang
 
 SRCDIR=	tools/clang/tools/driver
-SRCS=	cc1_main.cpp cc1as_main.cpp driver.cpp
+SRCS=	cc1_main.cpp \
+	cc1as_main.cpp \
+	driver.cpp
 MAN=
 
 LINKS=	${BINDIR}/clang ${BINDIR}/clang++
 
-TGHDRS=	CC1AsOptions CC1Options DiagnosticCommonKinds \
-	DiagnosticDriverKinds DiagnosticFrontendKinds \
-	DiagnosticLexKinds DiagnosticSemaKinds Options
-LIBDEPS=clangfrontend clangdriver clangcodegen clangsema clangchecker \
-	clanganalysis clangrewrite clangast clangparse clanglex clangbasic \
-	\
-	llvminstcombine llvmipo llvmbitwriter llvmbitreader \
-	llvmpowerpccodegen llvmpowerpcasmprinter llvmpowerpcinfo \
-	llvmx86asmparser llvmx86asmprinter llvmx86codegen llvmx86info \
-	llvmmipsasmprinter llvmmipscodegen llvmmipsinfo \
-	llvmarmasmparser llvmarmasmprinter llvmarmcodegen \
-	llvmselectiondag llvmasmprinter llvmcodegen llvmscalaropts \
-	llvmtransformutils llvmmc llvmmcparser llvmipa llvmanalysis \
-	llvmtarget llvmmc llvmcore llvmarminfo llvmsupport llvmsystem
+TGHDRS=	CC1AsOptions \
+	CC1Options \
+	DiagnosticCommonKinds \
+	DiagnosticDriverKinds \
+	DiagnosticFrontendKinds \
+	DiagnosticLexKinds \
+	DiagnosticSemaKinds \
+	Options
+LIBDEPS=clangfrontend \
+	clangdriver \
+	clangcodegen \
+	clangsema \
+	clangchecker \
+	clanganalysis \
+	clangrewrite \
+	clangast \
+	clangparse \
+	clanglex \
+	clangbasic \
+	llvminstcombine \
+	llvmipo \
+	llvmbitwriter \
+	llvmbitreader \
+	llvmpowerpccodegen \
+	llvmpowerpcasmprinter \
+	llvmpowerpcinfo \
+	llvmx86asmparser \
+	llvmx86asmprinter \
+	llvmx86codegen \
+	llvmx86info \
+	llvmmipsasmprinter \
+	llvmmipscodegen \
+	llvmmipsinfo \
+	llvmarmasmparser \
+	llvmarmasmprinter \
+	llvmarmcodegen \
+	llvmasmparser \
+	llvmselectiondag \
+	llvmasmprinter \
+	llvmcodegen \
+	llvmscalaropts \
+	llvmtransformutils \
+	llvmmc \
+	llvmmcparser \
+	llvmipa \
+	llvmanalysis \
+	llvmtarget \
+	llvmmc \
+	llvmcore \
+	llvmarminfo \
+	llvmsupport \
+	llvmsystem
 
 .include "../clang.prog.mk"

@@ -91,7 +91,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.145 2010/06/20 16:56:48 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.146 2010/07/13 05:32:19 nwhitehorn Exp $");
 
 /*
  * Manages physical address maps.
@@ -193,8 +193,8 @@ struct ofw_map {
  */
 static struct	mem_region *regions;
 static struct	mem_region *pregions;
-u_int           phys_avail_count;
-int		regions_sz, pregions_sz;
+static u_int    phys_avail_count;
+static int	regions_sz, pregions_sz;
 static struct	ofw_map *translations;
 
 extern struct pmap ofw_pmap;

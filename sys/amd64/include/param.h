@@ -36,7 +36,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)param.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/amd64/include/param.h,v 1.34 2009/11/16 10:53:04 phk Exp $
+ * $FreeBSD: src/sys/amd64/include/param.h,v 1.35 2010/07/22 09:13:49 kib Exp $
  */
 
 
@@ -58,6 +58,9 @@
 #endif
 #ifndef MACHINE_ARCH
 #define	MACHINE_ARCH	"amd64"
+#endif
+#ifndef MACHINE_ARCH32
+#define	MACHINE_ARCH32	"i386"
 #endif
 
 #if defined(SMP) || defined(KLD_MODULE)

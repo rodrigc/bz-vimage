@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/Makefile,v 1.249 2010/06/21 19:44:29 ed Exp $
+# $FreeBSD: src/lib/Makefile,v 1.253 2010/07/31 16:12:47 rpaulo Exp $
 
 .include <bsd.own.mk>
 
@@ -88,8 +88,9 @@ SUBDIR=	${SUBDIR_ORDERED} \
 	libpcap \
 	${_libpkg} \
 	${_libpmc} \
-	libproc \
+	${_libproc} \
 	librt \
+	${_librtld_db} \
 	${_libsdp} \
 	${_libsm} \
 	${_libsmb} \
@@ -167,12 +168,14 @@ _libnetgraph=	libnetgraph
 _libypclnt=	libypclnt
 .endif
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_ARCH} == "i386" || ${MACHINE_ARCH} == "amd64"
 .if ${MK_NCP} != "no"
 _libncp=	libncp
 .endif
 _libsmb=	libsmb
 _libvgl=	libvgl
+_libproc=	libproc
+_librtld_db=	librtld_db
 .endif
 
 .if ${MACHINE_ARCH} == "ia64"
@@ -180,15 +183,7 @@ _libefi=	libefi
 _libsmb=	libsmb
 .endif
 
-.if ${MACHINE_ARCH} == "amd64"
-.if ${MK_NCP} != "no"
-_libncp=	libncp
-.endif
-_libsmb=	libsmb
-_libvgl=	libvgl
-.endif
-
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 _libsmb=	libsmb
 .endif
 

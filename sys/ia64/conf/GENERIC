@@ -18,7 +18,7 @@
 #
 # For hardware specific information check HARDWARE.TXT
 #
-# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.115 2010/04/22 21:31:34 thompsa Exp $
+# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.116 2010/07/28 15:36:12 mdf Exp $
 
 cpu		ITANIUM2
 ident		GENERIC
@@ -68,6 +68,7 @@ options 	UFS_GJOURNAL	# Enable gjournal-based UFS journaling
 options 	WITNESS		# Enable checks to detect deadlocks and cycles
 options 	WITNESS_SKIPSPIN # Don't run witness on spinlocks for speed
 options 	_KPOSIX_PRIORITY_SCHEDULING	# Posix P1003_1B RT extensions
+options 	MALLOC_DEBUG_MAXZONES=8	# Separate malloc(9) zones
 
 # Various "busses"
 device		firewire	# FireWire bus code

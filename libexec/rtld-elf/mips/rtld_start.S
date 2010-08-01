@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/mips/rtld_start.S,v 1.3 2010/06/16 16:39:01 jchandra Exp $
+ * $FreeBSD: src/libexec/rtld-elf/mips/rtld_start.S,v 1.4 2010/07/29 20:18:52 jchandra Exp $
  */
 
 #include <machine/asm.h>
@@ -130,11 +130,12 @@ _rtld_bind_start:
 					/* .got = $gp - 0x7ff0		*/
 					/* Simple math as you can see.	*/
 #if defined(__mips_n64)
-	ld	a0, 8(a0)		/* object = pltgot[1] & 0x7fffffff */
+	ld	a0, 8(a0)		/* object = pltgot[1] */
+	and	a0, a0, 0x7fffffffffffffff
 #else
 	lw	a0, 4(a0)		/* object = pltgot[1] & 0x7fffffff */
-#endif
 	and	a0, a0, 0x7fffffff
+#endif
 	move	a1, t8			/* symbol index */
 
 	PTR_LA	t9, _C_LABEL(_mips_rtld_bind)

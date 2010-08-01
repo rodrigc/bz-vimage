@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/part/g_part.h,v 1.16 2009/12/14 20:26:27 rpaulo Exp $
+ * $FreeBSD: src/sys/geom/part/g_part.h,v 1.17 2010/06/26 13:20:40 rpaulo Exp $
  */
 
 #ifndef _GEOM_PART_H_
@@ -59,6 +59,7 @@ enum g_part_alias {
 	G_PART_ALIAS_MS_LDM_DATA,	/* A Microsoft LDM Data part. entry. */
 	G_PART_ALIAS_MS_LDM_METADATA,	/* A Microsoft LDM Metadata entry. */
 	G_PART_ALIAS_MS_RESERVED,	/* A Microsoft Reserved part. entry. */
+	G_PART_ALIAS_MS_NTFS,		/* A Microsoft NTFS partition entry */
 	G_PART_ALIAS_NETBSD_CCD,	/* A NetBSD CCD partition entry. */
 	G_PART_ALIAS_NETBSD_CGD,	/* A NetBSD CGD partition entry. */
 	G_PART_ALIAS_NETBSD_FFS,	/* A NetBSD FFS partition entry. */

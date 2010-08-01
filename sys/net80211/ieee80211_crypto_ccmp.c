@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_crypto_ccmp.c,v 1.18 2010/04/10 13:54:00 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_crypto_ccmp.c,v 1.19 2010/07/01 20:50:12 bschmidt Exp $");
 
 /*
  * IEEE 802.11i AES-CCMP crypto support.
@@ -226,14 +226,8 @@ ccmp_decap(struct ieee80211_key *k, struct mbuf *m, int hdrlen)
 	}
 	tid = ieee80211_gettid(wh);
 	pn = READ_6(ivp[0], ivp[1], ivp[4], ivp[5], ivp[6], ivp[7]);
-	/*
-	 * NB: Multiple stations are using the same key in
-	 * IBSS mode, there is currently no way to sync keyrsc
-	 * counters without discarding too many frames.
-	 */
-	if (vap->iv_opmode != IEEE80211_M_IBSS &&
-	    vap->iv_opmode != IEEE80211_M_AHDEMO &&
-	    pn <= k->wk_keyrsc[tid]) {
+	if (pn <= k->wk_keyrsc[tid] &&
+	    (k->wk_flags & IEEE80211_KEY_NOREPLAY) == 0) {
 		/*
 		 * Replay violation.
 		 */

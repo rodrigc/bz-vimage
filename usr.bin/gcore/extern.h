@@ -31,11 +31,14 @@
  * SUCH DAMAGE.
  *
  *	@(#)extern.h	8.1 (Berkeley) 6/6/93
- * $FreeBSD: src/usr.bin/gcore/extern.h,v 1.5 2010/02/05 18:28:43 mjacob Exp $
+ * $FreeBSD: src/usr.bin/gcore/extern.h,v 1.6 2010/07/14 17:16:25 attilio Exp $
  */
+
+#define	PFLAGS_FULL	0x01
+#define	PFLAGS_RESUME	0x02
 
 struct dumpers {
 	int (*ident)(int efd, pid_t pid, char *binfile);
 	void (*dump)(int efd, int fd, pid_t pid);
 };
-extern int sflag;
+extern int pflags;

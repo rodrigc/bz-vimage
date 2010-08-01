@@ -25,22 +25,24 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/_bus.h,v 1.2 2007/12/19 18:00:49 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/include/_bus.h,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef POWERPC_INCLUDE__BUS_H
 #define POWERPC_INCLUDE__BUS_H
 
+#include <vm/vm_param.h>
+
 /*
  * Bus address and size types
  */
-typedef u_int32_t bus_addr_t;
-typedef u_int32_t bus_size_t;
+typedef vm_paddr_t bus_addr_t;
+typedef vm_size_t bus_size_t;
 
 /*
  * Access methods for bus resources and address space.
  */
 typedef struct bus_space *bus_space_tag_t;
-typedef u_int32_t bus_space_handle_t;
+typedef vm_offset_t bus_space_handle_t;
 
 #endif /* POWERPC_INCLUDE__BUS_H */

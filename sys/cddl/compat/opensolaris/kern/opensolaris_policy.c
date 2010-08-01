@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_policy.c,v 1.9 2009/10/08 16:05:17 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_policy.c,v 1.10 2010/07/12 23:49:04 mm Exp $");
 
 #include <sys/param.h>
 #include <sys/priv.h>
@@ -239,9 +239,8 @@ secpolicy_vnode_create_gid(struct ucred *cred)
 }
 
 int
-secpolicy_vnode_setids_setgids(struct vnode *vp, struct ucred *cred, gid_t gid)
+secpolicy_vnode_setids_setgids(vnode_t *vp, struct ucred *cred, gid_t gid)
 {
-
 	if (groupmember(gid, cred))
 		return (0);
 	if (secpolicy_fs_owner(vp->v_mount, cred) == 0)
@@ -365,4 +364,11 @@ secpolicy_xvattr(struct vnode *vp, xvattr_t *xvap, uid_t owner, cred_t *cr,
 	if (secpolicy_fs_owner(vp->v_mount, cr) == 0)
 		return (0);
 	return (priv_check_cred(cr, PRIV_VFS_SYSFLAGS, 0));
+}
+
+int
+secpolicy_smb(cred_t *cr)
+{
+
+	return (priv_check_cred(cr, PRIV_NETSMB, 0));
 }

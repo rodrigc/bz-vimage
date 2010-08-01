@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  *
  *	from: FreeBSD: src/sys/i386/include/globaldata.h,v 1.27 2001/04/27
- * $FreeBSD: src/sys/sun4v/include/pcpu.h,v 1.15 2009/06/23 22:42:39 jeff Exp $
+ * $FreeBSD: src/sys/sun4v/include/pcpu.h,v 1.16 2010/07/29 12:08:46 mav Exp $
  */
 
 #ifndef	_MACHINE_PCPU_H_
@@ -73,6 +73,7 @@ struct pmap;
 	uint64_t pc_nrq_size;                                           \
 	u_long	pc_tickref;						\
 	u_long	pc_tickadj;						\
+	u_long	pc_tickincrement;					\
 	struct rwindow pc_kwbuf;                                        \
 	u_long  pc_kwbuf_sp;                                            \
 	u_int   pc_kwbuf_full;                                          \

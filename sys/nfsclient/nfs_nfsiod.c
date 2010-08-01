@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_nfsiod.c,v 1.96 2010/01/27 15:22:20 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_nfsiod.c,v 1.97 2010/07/24 22:11:11 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -69,7 +69,7 @@ __FBSDID("$FreeBSD: src/sys/nfsclient/nfs_nfsiod.c,v 1.96 2010/01/27 15:22:20 rm
 #include <nfsclient/nfsm_subs.h>
 #include <nfsclient/nfsmount.h>
 #include <nfsclient/nfsnode.h>
-#include <nfsclient/nfs_lock.h>
+#include <nfs/nfs_lock.h>
 
 static MALLOC_DEFINE(M_NFSSVC, "nfsclient_srvsock", "Nfs server structure");
 

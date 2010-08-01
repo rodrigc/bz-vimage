@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/test-netup.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/test-netup.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
 
 
 # Script which tests "fetch" when using a network connection, and saves

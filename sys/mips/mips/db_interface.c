@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/db_interface.c,v 1.1 2008/04/13 07:27:37 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/db_interface.c,v 1.2 2010/07/12 10:22:58 jchandra Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -115,12 +115,12 @@ int (*do_db_log_stack_trace_cmd)(char *);
 static int
 db_frame(struct db_variable *vp, db_expr_t *valuep, int op)
 {
-	int *reg;
+	register_t *reg;
 
 	if (kdb_frame == NULL)
 		return (0);
 
-	reg = (int *)((uintptr_t)kdb_frame + (db_expr_t)vp->valuep);
+	reg = (register_t *)((uintptr_t)kdb_frame + (size_t)(intptr_t)vp->valuep);
 	if (op == DB_VAR_GET)
 		*valuep = *reg;
 	else

@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.377 2010/04/26 15:31:58 ume Exp $
+.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.380 2010/07/31 12:14:28 joel Exp $
 .\"
-.Dd April 27, 2010
+.Dd July 13, 2010
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -1151,9 +1151,10 @@ To create a vlan device named
 .Li em0.101
 on
 .Li em0
-with the vlan tag 101:
+with the vlan tag 101 and the optional the IPv4 address 192.0.2.1/24:
 .Bd -literal
 vlans_em0="101"
+ifconfig_em0_101="inet 192.0.2.1/24"
 .Ed
 .Pp
 To create a vlan device named
@@ -4232,14 +4233,14 @@ Must set properly if multiple profiles used in the same time.
 .Pq Vt bool
 Tells
 .Xr rfcomm_pppd 8
-if it should register Serial Port service on the speficied RFCOMM channel.
+if it should register Serial Port service on the specified RFCOMM channel.
 Default
 .Dq Li NO .
 .It Va rfcomm_pppd_server_ Ns Ao Ar profile Ac Ns _register_dun
 .Pq Vt bool
 Tells
 .Xr rfcomm_pppd 8
-if it should register Dial-Up Networking service on the speficied
+if it should register Dial-Up Networking service on the specified
 RFCOMM channel.
 Default
 .Dq Li NO .

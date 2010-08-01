@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)resourcevar.h	8.4 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/resourcevar.h,v 1.57 2010/05/24 10:23:49 kib Exp $
+ * $FreeBSD: src/sys/sys/resourcevar.h,v 1.60 2010/07/18 20:57:53 trasz Exp $
  */
 
 #ifndef	_SYS_RESOURCEVAR_H_
@@ -80,7 +80,9 @@ struct plimit {
 };
 
 /*-
- * Per uid resource consumption
+ * Per uid resource consumption.  This structure is used to track
+ * the total resource consumption (process count, socket buffer size,
+ * etc) for the uid and impose limits.
  *
  * Locking guide:
  * (a) Constant from inception

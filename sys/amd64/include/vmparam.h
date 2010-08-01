@@ -38,7 +38,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)vmparam.h	5.9 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.60 2010/04/30 00:46:43 kmacy Exp $
+ * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.61 2010/07/27 20:33:50 jhb Exp $
  */
 
 
@@ -130,6 +130,13 @@
  * page TLB misses and cache misses caused by 2MB page TLB misses.
  */
 #define	VM_NFREEORDER		13
+
+/*
+ * Only one memory domain.
+ */
+#ifndef VM_NDOMAIN
+#define	VM_NDOMAIN		1
+#endif
 
 /*
  * Enable superpage reservations: 1 level.

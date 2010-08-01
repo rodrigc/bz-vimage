@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libmagic/Makefile,v 1.15 2010/05/20 09:00:11 marius Exp $
+# $FreeBSD: src/lib/libmagic/Makefile,v 1.16 2010/08/01 12:10:32 rpaulo Exp $
 # Copyright (c) David E. O'Brien, 2000-2004
 
 CONTRDIR=	${.CURDIR}/../../contrib/file
@@ -40,8 +40,7 @@ magic.mgc: mkmagic magic
 CLEANFILES+=	mkmagic
 build-tools: mkmagic
 mkmagic: apprentice.c funcs.c magic.c print.c
-	${CC} -DHAVE_CONFIG_H -DCOMPILE_ONLY \
-	    -I${.CURDIR} -I${CONTRDIR} -o ${.TARGET} ${.ALLSRC}
+	${CC} ${CFLAGS} -DCOMPILE_ONLY ${LDFLAGS} -o ${.TARGET} ${.ALLSRC}
 
 FILEVER!= awk '$$1 == "\#define" && $$2 == "VERSION" { print $$3; exit }' \
 			${.CURDIR}/config.h

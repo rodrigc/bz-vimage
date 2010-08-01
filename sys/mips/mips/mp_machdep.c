@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.13 2010/06/17 05:03:01 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.14 2010/07/23 07:46:55 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -69,6 +69,13 @@ ipi_send(struct pcpu *pc, int ipi)
 	platform_ipi_send(pc->pc_cpuid);
 
 	CTR1(KTR_SMP, "%s: sent", __func__);
+}
+
+void
+ipi_all_but_self(int ipi)
+{
+
+	ipi_selected(PCPU_GET(other_cpus), ipi);
 }
 
 /* Send an IPI to a set of cpus. */
@@ -145,6 +152,14 @@ mips_ipi_handler(void *arg)
 		case IPI_PREEMPT:
 			CTR1(KTR_SMP, "%s: IPI_PREEMPT", __func__);
 			sched_preempt(curthread);
+			break;
+		case IPI_HARDCLOCK:
+			CTR1(KTR_SMP, "%s: IPI_HARDCLOCK", __func__);
+			hardclockintr(arg);;
+			break;
+		case IPI_STATCLOCK:
+			CTR1(KTR_SMP, "%s: IPI_STATCLOCK", __func__);
+			statclockintr(arg);;
 			break;
 		default:
 			panic("Unknown IPI 0x%0x on cpu %d", ipi, curcpu);
@@ -290,12 +305,10 @@ smp_init_secondary(u_int32_t cpuid)
 	while (smp_started == 0)
 		; /* nothing */
 
-	/*
-	 * Bootstrap the compare register.
-	 */
-	mips_wr_compare(mips_rd_count() + counter_freq / hz);
-
 	intr_enable();
+
+	/* Start per-CPU event timers. */
+	cpu_initclocks_ap();
 
 	/* enter the scheduler */
 	sched_throw(NULL);

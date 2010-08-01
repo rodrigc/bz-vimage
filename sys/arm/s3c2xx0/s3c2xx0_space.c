@@ -74,7 +74,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c2xx0_space.c,v 1.1 2010/03/20 03:39:35 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c2xx0_space.c,v 1.2 2010/07/22 23:12:19 andrew Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -182,9 +182,7 @@ s3c2xx0_bs_map(void *t, bus_addr_t bpa, bus_size_t size,
 	startpa = trunc_page(bpa);
 	endpa = round_page(bpa + size);
 
-	/* XXX use extent manager to check duplicate mapping */
-
-	va = kmem_alloc(kernel_map, endpa - startpa);
+	va = kmem_alloc_nofault(kernel_map, endpa - startpa);
 	if (!va)
 		return (ENOMEM);
 

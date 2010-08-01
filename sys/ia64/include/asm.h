@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/ia64/include/asm.h,v 1.14 2009/10/21 18:09:48 marcel Exp $ */
+/* $FreeBSD: src/sys/ia64/include/asm.h,v 1.15 2010/07/01 00:30:35 marcel Exp $ */
 /* From: NetBSD: asm.h,v 1.18 1997/11/03 04:22:06 ross Exp */
 
 /*-
@@ -43,7 +43,7 @@
 /*
  * MCOUNT
  */
-#if defined(GPROF)
+#if defined(PROF) || (defined(_KERNEL) && defined(GPROF))
 #define	MCOUNT					\
 	alloc	out0 = ar.pfs, 8, 0, 4, 0;	\
 	mov	out1 = r1;			\

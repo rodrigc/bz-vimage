@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.3 2010/07/31 19:25:51 imp Exp $
 
 # Functions which perform the final cleanup after an install
 
@@ -163,6 +163,14 @@ setup_fstab()
     # Unset EXT
     EXT=""
 
+    # Set mount options for file-systems
+    case $PARTFS in
+      UFS+J) MNTOPTS="rw,noatime,async" ;;
+       SWAP) MNTOPTS="sw" ;;
+          *) MNTOPTS="rw,noatime" ;;
+    esac
+
+
     # Figure out if we are using a glabel, or the raw name for this entry
     if [ ! -z "${PARTLABEL}" ]
     then
@@ -212,9 +220,9 @@ setup_fstab()
       # Echo out the fstab entry now
       if [ "${PARTFS}" = "SWAP" ]
       then
-        echo "/dev/${DEVICE}	none			swap		sw		0	0" >> ${FSTAB}
+        echo "/dev/${DEVICE}	none			swap		${MNTOPTS}		0	0" >> ${FSTAB}
       else
-        echo "/dev/${DEVICE}  	${PARTMNT}			ufs		rw,noatime	1	1" >> ${FSTAB}
+        echo "/dev/${DEVICE}  	${PARTMNT}			ufs		${MNTOPTS}	1	1" >> ${FSTAB}
       fi
 
     fi # End of ZFS Check

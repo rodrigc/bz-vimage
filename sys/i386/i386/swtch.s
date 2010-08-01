@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/i386/swtch.s,v 1.159 2010/06/05 15:59:59 kib Exp $
+ * $FreeBSD: src/sys/i386/i386/swtch.s,v 1.160 2010/07/29 17:00:41 jkim Exp $
  */
 
 #include "opt_npx.h"
@@ -416,7 +416,7 @@ ENTRY(savectx)
 	popl	%ecx
 
 	pushl	$PCB_SAVEFPU_SIZE
-	movl	PCB_SAVEFPU(%ecx),%ecx
+	leal	PCB_USERFPU(%ecx),%ecx
 	pushl	%ecx
 	pushl	%eax
 	call	bcopy

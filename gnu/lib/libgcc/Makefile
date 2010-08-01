@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libgcc/Makefile,v 1.70 2010/06/02 11:06:03 jmallett Exp $
+# $FreeBSD: src/gnu/lib/libgcc/Makefile,v 1.71 2010/07/10 02:29:22 nwhitehorn Exp $
 
 GCCDIR=	${.CURDIR}/../../../contrib/gcc
 GCCLIB=	${.CURDIR}/../../../contrib/gcclibs
@@ -141,6 +141,11 @@ LIB2ADDEH = unwind-ia64.c unwind-sjlj.c unwind-c.c
 #	from config/rs6000/t-ppccomm
 LIB2FUNCS_EXTRA = tramp.asm
 LIB2FUNCS_STATIC_EXTRA = eabi.asm
+.endif
+
+.if ${TARGET_ARCH} == "powerpc64"
+#	from config/rs6000/t-ppccomm
+LIB2FUNCS_EXTRA = tramp.asm
 .endif
 
 .if ${TARGET_ARCH} == "sparc64"

@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)nfsnode.h	8.9 (Berkeley) 5/14/95
- * $FreeBSD: src/sys/nfsclient/nfsnode.h,v 1.68 2010/01/27 15:22:20 rmacklem Exp $
+ * $FreeBSD: src/sys/nfsclient/nfsnode.h,v 1.69 2010/07/15 19:40:48 jhb Exp $
  */
 
 #ifndef _NFSCLIENT_NFSNODE_H_
@@ -73,16 +73,6 @@ struct nfsdmap {
 
 #define ndm_cookies	ndm_un1.ndmu3_cookies
 #define ndm4_cookies	ndm_un1.ndmu4_cookies
-
-#define n_ac_ts_tid		n_ac_ts.nfs_ac_ts_tid
-#define n_ac_ts_pid		n_ac_ts.nfs_ac_ts_pid
-#define n_ac_ts_syscalls	n_ac_ts.nfs_ac_ts_syscalls
-
-struct nfs_attrcache_timestamp {
-	lwpid_t		nfs_ac_ts_tid;
-	pid_t		nfs_ac_ts_pid;
-	unsigned long	nfs_ac_ts_syscalls;	
-};
 
 struct nfs_accesscache {
 	u_int32_t		mode;		/* ACCESS mode cache */
@@ -140,7 +130,6 @@ struct nfsnode {
 	uint32_t		n_namelen;
 	int			n_directio_opens;
 	int                     n_directio_asyncwr;
-	struct nfs_attrcache_timestamp n_ac_ts;
 };
 
 #define n_atim		n_un1.nf_atim

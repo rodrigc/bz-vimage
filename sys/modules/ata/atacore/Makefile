@@ -1,9 +1,9 @@
-# $FreeBSD: src/sys/modules/ata/atacore/Makefile,v 1.1 2008/10/09 12:56:57 sos Exp $
+# $FreeBSD: src/sys/modules/ata/atacore/Makefile,v 1.2 2010/07/31 00:08:18 rpaulo Exp $
 
 .PATH: ${.CURDIR}/../../../dev/ata
 
 KMOD=	ata
 SRCS=	ata-all.c ata-lowlevel.c ata-queue.c ata_if.c
-SRCS+=	opt_ata.h ata_if.h device_if.h bus_if.h
+SRCS+=	opt_ata.h ata_if.h device_if.h bus_if.h pci_if.h
 
 .include <bsd.kmod.mk>

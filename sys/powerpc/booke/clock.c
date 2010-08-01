@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/clock.c,v 1.9 2009/12/19 20:42:56 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/clock.c,v 1.10 2010/07/02 02:17:39 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -73,7 +73,6 @@ __FBSDID("$FreeBSD: src/sys/powerpc/booke/clock.c,v 1.9 2009/12/19 20:42:56 marc
 #include <machine/psl.h>
 #include <machine/spr.h>
 #include <machine/cpu.h>
-#include <machine/intr.h>
 #include <machine/md_var.h>
 
 /*

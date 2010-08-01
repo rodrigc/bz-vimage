@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/usr.sbin/acpi/acpidump/acpi_user.c,v 1.15 2009/08/25 20:35:57 jhb Exp $
+ *	$FreeBSD: src/usr.sbin/acpi/acpidump/acpi_user.c,v 1.16 2010/07/06 20:57:28 jkim Exp $
  */
 
 #include <sys/param.h>
@@ -119,7 +119,7 @@ acpi_get_rsdp(u_long addr)
 
 	/* If the revision is 0, assume a version 1 length. */
 	if (rsdp.Revision == 0)
-		len = ACPI_RSDP_REV0_SIZE;
+		len = sizeof(ACPI_RSDP_COMMON);
 	else
 		len = rsdp.Length;
 

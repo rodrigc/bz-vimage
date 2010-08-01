@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-amd.c,v 1.5 2009/12/21 21:47:33 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-amd.c,v 1.6 2010/07/10 13:46:14 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -119,7 +119,7 @@ ata_amd_setmode(device_t dev, int target, int mode)
 
 	mode = min(mode, ctlr->chip->max_dma);
 	if (ctlr->chip->cfg1 & AMD_CABLE) {
-		if (mode > ATA_UDMA2 &&
+		if (ata_dma_check_80pin && mode > ATA_UDMA2 &&
 		    !(pci_read_config(parent, 0x42, 1) & (1 << devno))) {
 			ata_print_cable(dev, "controller");
 			mode = ATA_UDMA2;

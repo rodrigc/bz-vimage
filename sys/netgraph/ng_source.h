@@ -34,9 +34,9 @@
  * THIS SOFTWARE, EVEN IF SANDVINE IS ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
- * Author: Dave Chapeskie <dchapeskie@sandvine.com>
+ * Author: Dave Chapeskie
  *
- * $FreeBSD: src/sys/netgraph/ng_source.h,v 1.9 2007/03/02 01:44:04 emaste Exp $
+ * $FreeBSD: src/sys/netgraph/ng_source.h,v 1.10 2010/07/06 16:55:39 emaste Exp $
  */
 
 #ifndef _NETGRAPH_NG_SOURCE_H_

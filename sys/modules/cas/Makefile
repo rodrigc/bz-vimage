@@ -1,11 +1,11 @@
-# $FreeBSD: src/sys/modules/cas/Makefile,v 1.2 2010/05/16 12:39:17 marius Exp $
+# $FreeBSD: src/sys/modules/cas/Makefile,v 1.3 2010/07/13 12:47:31 nwhitehorn Exp $
 
 .PATH: ${.CURDIR}/../../dev/cas
 
 KMOD=	if_cas
 SRCS=	bus_if.h device_if.h if_cas.c miibus_if.h pci_if.h ${ofw_bus_if}
 
-.if ${MACHINE_ARCH} == "powerpc" || ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "powerpc" || ${MACHINE_ARCH} == "sparc64"
 ofw_bus_if=	ofw_bus_if.h
 .endif
 

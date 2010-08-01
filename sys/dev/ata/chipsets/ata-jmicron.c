@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-jmicron.c,v 1.8 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-jmicron.c,v 1.9 2010/07/10 13:46:14 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -149,7 +149,8 @@ ata_jmicron_setmode(device_t dev, int target, int mode)
 
 	mode = min(mode, ctlr->chip->max_dma);
 	/* check for 80pin cable present */
-	if (mode > ATA_UDMA2 && pci_read_config(dev, 0x40, 1) & 0x08) {
+	if (ata_dma_check_80pin && mode > ATA_UDMA2 &&
+	    pci_read_config(dev, 0x40, 1) & 0x08) {
 		ata_print_cable(dev, "controller");
 		mode = ATA_UDMA2;
 	}

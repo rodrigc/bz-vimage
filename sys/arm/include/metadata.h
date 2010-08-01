@@ -23,18 +23,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/metadata.h,v 1.6 2010/06/14 16:05:21 raj Exp $
+ * $FreeBSD: src/sys/arm/include/metadata.h,v 1.7 2010/07/11 21:11:23 raj Exp $
  */
 
 #ifndef _MACHINE_METADATA_H_
 #define	_MACHINE_METADATA_H_
 
 #define	MODINFOMD_DTBP		0x1001
-
-/*
- * XXX this is for tinderbox compilation sake only and will go away once the
- * FDT transition is complete.
- */
-#define MODINFOMD_BOOTINFO	0x2000
 
 #endif /* !_MACHINE_METADATA_H_ */

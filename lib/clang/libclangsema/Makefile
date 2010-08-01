@@ -1,23 +1,50 @@
-# $FreeBSD: src/lib/clang/libclangsema/Makefile,v 1.1 2010/06/09 19:32:20 rdivacky Exp $
+# $FreeBSD: src/lib/clang/libclangsema/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
 
 LIB=	clangsema
 
 SRCDIR=	tools/clang/lib/Sema
-SRCS=	AnalysisBasedWarnings.cpp CodeCompleteConsumer.cpp \
-	IdentifierResolver.cpp IdentifierResolver.cpp \
-	JumpDiagnostics.cpp ParseAST.cpp Sema.cpp SemaAccess.cpp \
-	SemaAttr.cpp SemaCXXCast.cpp SemaCXXScopeSpec.cpp \
-	SemaChecking.cpp SemaCodeComplete.cpp SemaDecl.cpp \
-	SemaDeclAttr.cpp SemaDeclCXX.cpp SemaDeclObjC.cpp \
-	SemaExceptionSpec.cpp SemaExpr.cpp SemaExprCXX.cpp \
-	SemaExprObjC.cpp SemaInit.cpp SemaLookup.cpp \
-	SemaObjCProperty.cpp SemaOverload.cpp SemaStmt.cpp \
-	SemaTemplate.cpp SemaTemplateDeduction.cpp \
-	SemaTemplateInstantiate.cpp SemaTemplateInstantiate.cpp \
-	SemaTemplateInstantiateDecl.cpp SemaType.cpp \
+SRCS=	AnalysisBasedWarnings.cpp \
+	CodeCompleteConsumer.cpp \
+	IdentifierResolver.cpp \
+	IdentifierResolver.cpp \
+	JumpDiagnostics.cpp \
+	ParseAST.cpp \
+	Sema.cpp \
+	SemaAccess.cpp \
+	SemaAttr.cpp \
+	SemaCXXCast.cpp \
+	SemaCXXScopeSpec.cpp \
+	SemaChecking.cpp \
+	SemaCodeComplete.cpp \
+	SemaDecl.cpp \
+	SemaDeclAttr.cpp \
+	SemaDeclCXX.cpp \
+	SemaDeclObjC.cpp \
+	SemaExceptionSpec.cpp \
+	SemaExpr.cpp \
+	SemaExprCXX.cpp \
+	SemaExprObjC.cpp \
+	SemaInit.cpp \
+	SemaLookup.cpp \
+	SemaObjCProperty.cpp \
+	SemaOverload.cpp \
+	SemaStmt.cpp \
+	SemaTemplate.cpp \
+	SemaTemplateDeduction.cpp \
+	SemaTemplateInstantiate.cpp \
+	SemaTemplateInstantiate.cpp \
+	SemaTemplateInstantiateDecl.cpp \
+	SemaType.cpp \
 	TargetAttributesSema.cpp
 
-TGHDRS=	DiagnosticASTKinds DiagnosticCommonKinds DiagnosticParseKinds \
-	DiagnosticSemaKinds StmtNodes
+TGHDRS=	AttrList \
+	Attrs \
+	DeclNodes \
+	DiagnosticASTKinds \
+	DiagnosticCommonKinds \
+	DiagnosticParseKinds \
+	DiagnosticSemaKinds \
+	StmtNodes \
+	arm_neon
 
 .include "../clang.lib.mk"

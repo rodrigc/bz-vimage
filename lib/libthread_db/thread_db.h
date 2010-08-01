@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthread_db/thread_db.h,v 1.10 2009/06/09 12:32:10 des Exp $
+ * $FreeBSD: src/lib/libthread_db/thread_db.h,v 1.11 2010/07/04 12:08:04 kib Exp $
  */
 
 #ifndef _THREAD_DB_H_
@@ -191,6 +191,7 @@ typedef struct {
 	psaddr_t	ti_startfunc;
 	psaddr_t	ti_stkbase;
 	size_t		ti_stksize;
+	siginfo_t	ti_siginfo;
 } td_thrinfo_t;
 
 /*

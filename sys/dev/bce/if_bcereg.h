@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/bce/if_bcereg.h,v 1.31 2010/04/30 02:35:46 davidch Exp $
+ * $FreeBSD: src/sys/dev/bce/if_bcereg.h,v 1.32 2010/07/19 23:48:03 yongari Exp $
  */
 
 #ifndef	_BCEREG_H_DEFINED
@@ -6316,6 +6316,7 @@ struct fw_info {
 
 #define BCE_DMA_ALIGN		8
 #define BCE_DMA_BOUNDARY	0
+#define BCE_RX_BUF_ALIGN	16
 
 #define BCE_MAX_CONTEXT		4
 

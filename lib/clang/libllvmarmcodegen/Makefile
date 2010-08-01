@@ -1,23 +1,45 @@
-# $FreeBSD: src/lib/clang/libllvmarmcodegen/Makefile,v 1.1 2010/06/09 19:32:20 rdivacky Exp $
+# $FreeBSD: src/lib/clang/libllvmarmcodegen/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
 
 LIB=	llvmarmcodegen
 
 SRCDIR=	lib/Target/ARM
-SRCS=	ARMBaseInstrInfo.cpp ARMBaseRegisterInfo.cpp \
-	ARMCodeEmitter.cpp ARMConstantIslandPass.cpp \
-	ARMConstantPoolValue.cpp ARMExpandPseudoInsts.cpp \
-	ARMISelDAGToDAG.cpp ARMISelLowering.cpp ARMInstrInfo.cpp \
-	ARMJITInfo.cpp ARMLoadStoreOptimizer.cpp \
-	ARMLoadStoreOptimizer.cpp ARMMCAsmInfo.cpp ARMRegisterInfo.cpp \
-	ARMSelectionDAGInfo.cpp ARMSubtarget.cpp ARMTargetMachine.cpp \
-	ARMTargetObjectFile.cpp NEONMoveFix.cpp NEONPreAllocPass.cpp \
-	Thumb1InstrInfo.cpp Thumb1RegisterInfo.cpp \
-	Thumb2ITBlockPass.cpp Thumb2InstrInfo.cpp \
-	Thumb2RegisterInfo.cpp Thumb2SizeReduction.cpp
+SRCS=	ARMBaseInstrInfo.cpp \
+	ARMBaseRegisterInfo.cpp \
+	ARMCodeEmitter.cpp \
+	ARMConstantIslandPass.cpp \
+	ARMConstantPoolValue.cpp \
+	ARMExpandPseudoInsts.cpp \
+	ARMISelDAGToDAG.cpp \
+	ARMISelLowering.cpp \
+	ARMInstrInfo.cpp \
+	ARMJITInfo.cpp \
+	ARMLoadStoreOptimizer.cpp \
+	ARMLoadStoreOptimizer.cpp \
+	ARMMCAsmInfo.cpp \
+	ARMRegisterInfo.cpp \
+	ARMSelectionDAGInfo.cpp \
+	ARMSubtarget.cpp \
+	ARMTargetMachine.cpp \
+	ARMTargetObjectFile.cpp \
+	NEONMoveFix.cpp \
+	NEONPreAllocPass.cpp \
+	Thumb1InstrInfo.cpp \
+	Thumb1RegisterInfo.cpp \
+	Thumb2HazardRecognizer.cpp \
+	Thumb2ITBlockPass.cpp \
+	Thumb2InstrInfo.cpp \
+	Thumb2RegisterInfo.cpp \
+	Thumb2SizeReduction.cpp
 
-TGHDRS=	ARMGenCallingConv ARMGenCodeEmitter ARMGenDAGISel \
-	ARMGenInstrInfo ARMGenInstrNames ARMGenRegisterInfo.h \
-	ARMGenRegisterInfo ARMGenRegisterNames ARMGenSubtarget \
+TGHDRS=	ARMGenCallingConv \
+	ARMGenCodeEmitter \
+	ARMGenDAGISel \
+	ARMGenInstrInfo \
+	ARMGenInstrNames \
+	ARMGenRegisterInfo.h \
+	ARMGenRegisterInfo \
+	ARMGenRegisterNames \
+	ARMGenSubtarget \
 	Intrinsics
 
 .include "../clang.lib.mk"

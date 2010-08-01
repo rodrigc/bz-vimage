@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.11 2010/06/13 05:24:27 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.12 2010/07/13 23:14:39 rmacklem Exp $");
 
 /*
  * Rpc op calls, generally called from the vnode op calls or through the
@@ -268,6 +268,14 @@ else printf(" fhl=0\n");
 #else
 				NFSLOCKNODE(np);
 				np->n_flag &= ~NDELEGMOD;
+				/*
+				 * Invalidate the attribute cache, so that
+				 * attributes that pre-date the issue of a
+				 * delegation are not cached, since the
+				 * cached attributes will remain valid while
+				 * the delegation is held.
+				 */
+				NFSINVALATTRCACHE(np);
 				NFSUNLOCKNODE(np);
 #endif
 				(void) nfscl_deleg(nmp->nm_mountp,
@@ -1724,6 +1732,12 @@ nfsrpc_create(vnode_t dvp, char *name, int namelen, struct vattr *vap,
 		error = nfsrpc_createv4(dvp, name, namelen, vap, cverf, fmode,
 		  owp, &dp, cred, p, dnap, nnap, nfhpp, attrflagp, dattrflagp,
 		  dstuff, &unlocked);
+		/*
+		 * There is no need to invalidate cached attributes here,
+		 * since new post-delegation issue attributes are always
+		 * returned by nfsrpc_createv4() and these will update the
+		 * attribute cache.
+		 */
 		if (dp != NULL)
 			(void) nfscl_deleg(nmp->nm_mountp, owp->nfsow_clp,
 			    (*nfhpp)->nfh_fh, (*nfhpp)->nfh_len, cred, p, &dp);

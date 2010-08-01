@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/geom_disk.h,v 1.9 2009/04/10 04:08:34 thompsa Exp $
+ * $FreeBSD: src/sys/geom/geom_disk.h,v 1.10 2010/07/25 15:43:52 mav Exp $
  */
 
 #ifndef _GEOM_GEOM_DISK_H_
@@ -85,6 +85,10 @@ struct disk {
 	u_int			d_stripeoffset;
 	u_int			d_stripesize;
 	char			d_ident[DISK_IDENT_SIZE];
+	uint16_t		d_hba_vendor;
+	uint16_t		d_hba_device;
+	uint16_t		d_hba_subvendor;
+	uint16_t		d_hba_subdevice;
 
 	/* Fields private to the driver */
 	void			*d_drv1;

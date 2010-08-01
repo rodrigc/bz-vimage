@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/sbin/hastctl/hastctl.8,v 1.2 2010/05/13 12:08:11 uqs Exp $
+.\" $FreeBSD: src/sbin/hastctl/hastctl.8,v 1.3 2010/07/29 20:16:12 pjd Exp $
 .\"
 .Dd February 1, 2010
 .Dt HASTCTL 8
@@ -178,7 +178,7 @@ nodeB# hastctl create shared
 nodeB# hastd
 nodeB# hastctl role secondary shared
 
-nodeB# hastctl create shared
+nodeA# hastctl create shared
 nodeA# hastd
 nodeA# hastctl role primary shared
 nodeA# newfs -U /dev/hast/shared

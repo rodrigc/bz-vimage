@@ -31,7 +31,7 @@
 /* $KAME: sctp_structs.h,v 1.13 2005/03/06 16:04:18 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_structs.h,v 1.38 2010/05/16 17:03:56 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_structs.h,v 1.39 2010/07/29 11:37:04 rrs Exp $");
 
 #ifndef __sctp_structs_h__
 #define __sctp_structs_h__
@@ -869,6 +869,7 @@ struct sctp_association {
 
 	unsigned int size_on_reasm_queue;
 	unsigned int cnt_on_reasm_queue;
+	unsigned int fwd_tsn_cnt;
 	/* amount of data (bytes) currently in flight (on all destinations) */
 	unsigned int total_flight;
 	/* Total book size in flight */

@@ -29,18 +29,19 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: pcb.h,v 1.4 2000/06/04 11:57:17 tsubai Exp $
- * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.12 2009/02/27 12:08:24 raj Exp $
+ * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.13 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_PCB_H_
 #define	_MACHINE_PCB_H_
 
-typedef int faultbuf[25];
+typedef register_t faultbuf[25];
 
 struct pcb {
 	register_t	pcb_context[20];	/* non-volatile r14-r31 */
 	register_t	pcb_cr;			/* Condition register */
 	register_t	pcb_sp;			/* stack pointer */
+	register_t	pcb_toc;		/* toc pointer */
 	register_t	pcb_lr;			/* link register */
 	struct		pmap *pcb_pm;		/* pmap of our vmspace */
 	faultbuf	*pcb_onfault;		/* For use during
@@ -59,13 +60,14 @@ struct pcb {
 		register_t vrsave;
 		register_t spare[2];
 		register_t vscr;
-	} pcb_vec __attribute__((aligned(16)));	/* Vector processor */
+	} pcb_vec __aligned(16);	/* Vector processor */
 	unsigned int	pcb_veccpu;		/* which CPU had our vector
 							stuff. */
 
 	union {
 		struct {
-			register_t	usr;	/* USER_SR segment */
+			register_t	usr_esid;	/* USER_SR segment */
+			register_t	usr_vsid;	/* USER_SR segment */
 		} aim;
 		struct {
 			register_t	ctr;

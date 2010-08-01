@@ -32,7 +32,7 @@
  *
  *	from: @(#)profile.h	8.1 (Berkeley) 6/10/93
  *	JNPR: profile.h,v 1.4 2006/12/02 09:53:41 katta
- * $FreeBSD: src/sys/mips/include/profile.h,v 1.3 2010/04/17 01:17:31 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/profile.h,v 1.4 2010/07/29 14:04:29 jchandra Exp $
  */
 #ifndef _MACHINE_PROFILE_H_
 #define	_MACHINE_PROFILE_H_
@@ -115,7 +115,11 @@ void	stopguprof __P((struct gmonparam *p));
 
 #define	FUNCTION_ALIGNMENT	4
 
-typedef unsigned int	uintfptr_t;
+#ifdef __mips_n64
+typedef u_long	uintfptr_t;
+#else
+typedef u_int	uintfptr_t;
+#endif
 
 #endif /* _KERNEL */
 
@@ -123,7 +127,11 @@ typedef unsigned int	uintfptr_t;
  * An unsigned integral type that can hold non-negative difference between
  * function pointers.
  */
+#ifdef __mips_n64
+typedef u_long	fptrdiff_t;
+#else
 typedef u_int	fptrdiff_t;
+#endif
 
 #ifdef _KERNEL
 

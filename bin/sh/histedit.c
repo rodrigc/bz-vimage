@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)histedit.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.36 2010/06/15 21:58:40 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.37 2010/08/01 16:37:51 jilles Exp $");
 
 #include <sys/param.h>
 #include <limits.h>
@@ -168,6 +168,7 @@ sethistsize(hs)
 		   (histsize = atoi(hs)) < 0)
 			histsize = 100;
 		history(hist, &he, H_SETSIZE, histsize);
+		history(hist, &he, H_SETUNIQUE, 1);
 	}
 }
 

@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)expand.c	8.5 (Berkeley) 5/15/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.64 2010/05/11 23:19:28 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.65 2010/06/29 22:37:45 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -818,7 +818,7 @@ varisset(char *name, int nulok)
 {
 
 	if (*name == '!')
-		return backgndpid != -1;
+		return backgndpidset();
 	else if (*name == '@' || *name == '*') {
 		if (*shellparam.p == NULL)
 			return 0;
@@ -891,7 +891,7 @@ varvalue(char *name, int quoted, int subtype, int flag)
 		num = shellparam.nparam;
 		goto numvar;
 	case '!':
-		num = backgndpid;
+		num = backgndpidval();
 numvar:
 		expdest = cvtnum(num, expdest);
 		break;

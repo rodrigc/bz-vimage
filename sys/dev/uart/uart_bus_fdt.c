@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_bus_fdt.c,v 1.1 2010/06/02 17:20:00 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_bus_fdt.c,v 1.2 2010/07/19 18:47:18 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -188,7 +188,7 @@ uart_cpu_getdev(int devtype, struct uart_devinfo *di)
 	err = fdt_regsize(node, &start, &size);
 	if (err)
 		return (ENXIO);
-	start += FDT_IMMR_VA;
+	start += fdt_immr_va;
 
 	uart_bus_space_mem = fdtbus_bs_tag;
 	uart_bus_space_io = NULL;

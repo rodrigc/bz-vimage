@@ -39,7 +39,7 @@
  *
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/amd64/include/pmap.h,v 1.153 2010/04/30 00:46:43 kmacy Exp $
+ * $FreeBSD: src/sys/amd64/include/pmap.h,v 1.154 2010/07/09 20:05:56 kib Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -244,7 +244,7 @@ struct pmap {
 	struct mtx		pm_mtx;
 	pml4_entry_t		*pm_pml4;	/* KVA of level 4 page table */
 	TAILQ_HEAD(,pv_chunk)	pm_pvchunk;	/* list of mappings in pmap */
-	u_int			pm_active;	/* active on cpus */
+	cpumask_t		pm_active;	/* active on cpus */
 	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int			pm_retries;
 	/* spare u_int here due to padding */

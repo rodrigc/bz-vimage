@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)if.c	8.3 (Berkeley) 4/28/95";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/netstat/if.c,v 1.75 2010/01/11 03:00:17 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/netstat/if.c,v 1.76 2010/07/15 00:04:14 emaste Exp $");
 
 #include <sys/types.h>
 #include <sys/protosw.h>
@@ -562,7 +562,7 @@ sidewaysintpr(int interval1, u_long off)
 			interesting = ip;
 			interesting_off = off;
 		}
-		snprintf(ip->ift_name, sizeof(ip->ift_name), "(%s)", name);;
+		snprintf(ip->ift_name, sizeof(ip->ift_name), "(%s)", name);
 		if ((ipn = malloc(sizeof(struct iftot))) == NULL) {
 			printf("malloc failed\n");
 			exit(1);

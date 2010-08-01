@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.34 2009/07/19 17:25:24 kensmith Exp $
+# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.35 2010/07/22 18:49:27 rpaulo Exp $
 
 OBJCDIR=${.CURDIR}/../../../contrib/libobjc
 GCCDIR=	${.CURDIR}/../../../contrib/gcc
@@ -12,6 +12,9 @@ SHLIB_MAJOR=	4
 SRCS=	archive.c class.c encoding.c gc.c hash.c init.c linking.m misc.c \
 	nil_method.c NXConstStr.m Object.m objects.c Protocol.m sarray.c \
 	selector.c sendmsg.c thr.c thr-objc.c exception.c
+
+# XXX: clang cannot compile libobjc yet
+CC:=${CC:C/^cc|^clang/gcc/}
 
 INCS=	encoding.h hash.h objc-api.h objc-decls.h objc-list.h objc.h runtime.h \
 	sarray.h thr.h typedstream.h NXConstStr.h Object.h Protocol.h

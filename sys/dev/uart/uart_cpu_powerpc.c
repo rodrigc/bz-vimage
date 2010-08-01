@@ -25,9 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_powerpc.c,v 1.8 2009/07/23 12:51:27 nwhitehorn Exp $");
-
-#include "opt_platform.h"
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_powerpc.c,v 1.9 2010/07/11 21:08:29 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -35,49 +33,22 @@ __FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_powerpc.c,v 1.8 2009/07/23 12:51:2
 #include <vm/pmap.h>
 
 #include <machine/bus.h>
-
-#ifndef MPC85XX
-#include <dev/ofw/openfirm.h>
 #include <machine/ofw_machdep.h>
-#endif
 
+#include <dev/ofw/openfirm.h>
 #include <dev/uart/uart.h>
 #include <dev/uart/uart_cpu.h>
 
-#ifdef MPC85XX
-bus_space_tag_t uart_bus_space_io = &bs_be_tag;
-bus_space_tag_t uart_bus_space_mem = &bs_be_tag;
-#else
 bus_space_tag_t uart_bus_space_io = &bs_le_tag;
 bus_space_tag_t uart_bus_space_mem = &bs_le_tag;
-#endif
 
 int
 uart_cpu_eqres(struct uart_bas *b1, struct uart_bas *b2)
 {
-#ifdef MPC85XX
-	return ((b1->bsh == b2->bsh) ? 1 : 0);
-#else
+
 	return ((pmap_kextract(b1->bsh) == pmap_kextract(b2->bsh)) ? 1 : 0);
-#endif
 }
 
-#ifdef MPC85XX
-int
-uart_cpu_getdev(int devtype, struct uart_devinfo *di)
-{
-	struct uart_class *class;
-
-	class = &uart_ns8250_class;
-	if (class == NULL)
-		class = &uart_quicc_class;
-	if (class == NULL)
-		return (ENXIO);
-
-	/* Check the environment. */
-	return (uart_getenv(devtype, di, class));
-}
-#else
 static int
 ofw_get_uart_console(phandle_t opts, phandle_t *result, const char *inputdev,
     const char *outputdev)
@@ -174,4 +145,3 @@ uart_cpu_getdev(int devtype, struct uart_devinfo *di)
 	di->parity = UART_PARITY_NONE;
 	return (0);
 }
-#endif

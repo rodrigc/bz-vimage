@@ -53,7 +53,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	JNPR: cpufunc.h,v 1.5 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/cpufunc.h,v 1.6 2010/04/19 06:01:58 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/cpufunc.h,v 1.7 2010/07/20 19:25:11 jmallett Exp $
  */
 
 #ifndef _MACHINE_CPUFUNC_H_
@@ -186,7 +186,7 @@ mips_wr_ ## n(uint32_t a0)					\
 	mips_barrier();						\
 } struct __hack
 
-#ifdef TARGET_OCTEON
+#ifdef CPU_CNMIPS
 static __inline void mips_sync_icache (void)
 {
 	__asm __volatile (

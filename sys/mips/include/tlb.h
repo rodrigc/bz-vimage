@@ -23,11 +23,31 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/tlb.h,v 1.1 2010/06/17 05:03:01 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/tlb.h,v 1.3 2010/07/15 03:56:08 imp Exp $
  */
 
 #ifndef	_MACHINE_TLB_H_
 #define	_MACHINE_TLB_H_
+
+/*
+ * The first TLB entry that write random hits.
+ * TLB entry 0 maps the kernel stack of the currently running thread
+ * TLB entry 1 maps the pcpu area of processor (only for SMP builds)
+ */
+#define	KSTACK_TLB_ENTRY	0
+#ifdef SMP
+#define	PCPU_TLB_ENTRY		1
+#define	VMWIRED_ENTRIES		2
+#else
+#define	VMWIRED_ENTRIES		1
+#endif	/* SMP */
+
+/*
+ * The number of process id entries.
+ */
+#define	VMNUM_PIDS		256
+
+extern int num_tlbentries;
 
 void tlb_insert_wired(unsigned, vm_offset_t, pt_entry_t, pt_entry_t);
 void tlb_invalidate_address(struct pmap *, vm_offset_t);

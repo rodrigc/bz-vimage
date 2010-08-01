@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ofw/openfirm.c,v 1.28 2010/05/28 10:43:56 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ofw/openfirm.c,v 1.29 2010/07/08 14:29:23 nwhitehorn Exp $");
 
 #include "opt_platform.h"
 
@@ -328,14 +328,14 @@ OF_call_method(const char *method, ihandle_t instance, int nargs, int nreturns,
     ...)
 {
 	va_list ap;
-	unsigned long args_n_results[12];
+	cell_t args_n_results[12];
 	int n, status;
 
 	if (nargs > 6)
 		return (-1);
 	va_start(ap, nreturns);
 	for (n = 0; n < nargs; n++)
-		args_n_results[n] = va_arg(ap, unsigned long);
+		args_n_results[n] = va_arg(ap, cell_t);
 
 	status = OFW_CALL_METHOD(ofw_obj, instance, method, nargs, nreturns,
 	    args_n_results);
@@ -343,7 +343,7 @@ OF_call_method(const char *method, ihandle_t instance, int nargs, int nreturns,
 		return (status);
 
 	for (; n < nargs + nreturns; n++)
-		*va_arg(ap, unsigned long *) = args_n_results[n];
+		*va_arg(ap, cell_t *) = args_n_results[n];
 	va_end(ap);
 	return (0);
 }

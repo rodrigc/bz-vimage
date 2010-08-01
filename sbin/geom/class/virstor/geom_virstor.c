@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/class/virstor/geom_virstor.c,v 1.3 2008/08/09 16:47:30 ivoras Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/class/virstor/geom_virstor.c,v 1.4 2010/07/14 15:14:00 mav Exp $");
 
 #include <sys/param.h>
 #include <errno.h>
@@ -459,9 +459,9 @@ virstor_label(struct gctl_req *req)
 				strlcpy(md.provider, name, sizeof(md.provider));
 		}
 		sect = malloc(ssize);
-		bzero(sect, ssize);
 		if (sect == NULL)
 			err(1, "Cannot allocate sector of %zu bytes", ssize);
+		bzero(sect, ssize);
 		virstor_metadata_encode(&md, sect);
 		error = my_g_metadata_store(name, sect, ssize);
 		free(sect);

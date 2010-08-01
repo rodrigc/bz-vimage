@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.15 2010/06/23 22:33:03 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.16 2010/07/02 02:17:39 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -40,7 +40,6 @@ __FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.15 2010/06/23 2
 #include <dev/ofw/openfirm.h>
 
 #include <machine/bus.h>
-#include <machine/intr.h>
 #include <machine/intr_machdep.h>
 #include <machine/md_var.h>
 #include <machine/pio.h>

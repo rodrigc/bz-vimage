@@ -23,24 +23,33 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/runq.h,v 1.3 2005/01/07 02:29:19 imp Exp $
+ * $FreeBSD: src/sys/powerpc/include/runq.h,v 1.4 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_RUNQ_H_
 #define	_MACHINE_RUNQ_H_
 
+#ifdef __powerpc64__
+#define	RQB_LEN		(1UL)		/* Number of priority status words. */
+#define	RQB_L2BPW	(6UL)		/* Log2(sizeof(rqb_word_t) * NBBY)). */
+#else
 #define	RQB_LEN		(2)		/* Number of priority status words. */
 #define	RQB_L2BPW	(5)		/* Log2(sizeof(rqb_word_t) * NBBY)). */
-#define	RQB_BPW		(1<<RQB_L2BPW)	/* Bits in an rqb_word_t. */
+#endif
+#define	RQB_BPW		(1UL<<RQB_L2BPW) /* Bits in an rqb_word_t. */
 
-#define	RQB_BIT(pri)	(1 << ((pri) & (RQB_BPW - 1)))
+#define	RQB_BIT(pri)	(1UL << ((pri) & (RQB_BPW - 1)))
 #define	RQB_WORD(pri)	((pri) >> RQB_L2BPW)
 
-#define	RQB_FFS(word)	(ffs(word) - 1)
+#define	RQB_FFS(word)	(ffsl(word) - 1)
 
 /*
  * Type of run queue status word.
  */
+#ifdef __powerpc64__
+typedef	u_int64_t	rqb_word_t;
+#else
 typedef	u_int32_t	rqb_word_t;
+#endif
 
 #endif

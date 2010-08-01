@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/fdt.h,v 1.1 2010/06/13 13:12:52 raj Exp $
+ * $FreeBSD: src/sys/arm/include/fdt.h,v 1.2 2010/07/19 18:47:18 raj Exp $
  */
 
 #ifndef _MACHINE_FDT_H_
@@ -37,17 +37,9 @@
 #include <vm/vm.h>
 #include <vm/pmap.h>
 
+#include <machine/bus.h>
 #include <machine/pmap.h>
 #include <machine/intr.h>
-
-#include <arm/mv/mvvar.h>
-#include <arm/mv/mvwin.h>
-
-/*
- * This is the base virtual address the internal mem-mapped registers (IMMR)
- * range is available at.
- */
-#define FDT_IMMR_VA	MV_BASE
 
 /* Max interrupt number */
 #define FDT_INTR_MAX	NIRQ

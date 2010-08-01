@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.199 2010/06/21 09:55:56 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.202 2010/07/18 20:57:53 trasz Exp $");
 
 #include "opt_compat.h"
 
@@ -1169,11 +1169,6 @@ lim_rlimit(struct proc *p, int which, struct rlimit *rlp)
 		p->p_sysent->sv_fixlimit(rlp, which);
 }
 
-/*
- * Find the uidinfo structure for a uid.  This structure is used to
- * track the total resource consumption (process count, socket buffer
- * size, etc.) for the uid and impose limits.
- */
 void
 uihashinit()
 {

@@ -24,7 +24,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	From: @(#)style	1.14 (Berkeley) 4/28/95
-.\" $FreeBSD: src/share/man/man9/style.9,v 1.130 2008/12/17 13:01:19 des Exp $
+.\" $FreeBSD: src/share/man/man9/style.9,v 1.131 2010/06/27 02:30:19 cperciva Exp $
 .\"
 .Dd December 17, 2008
 .Dt STYLE 9
@@ -46,7 +46,7 @@ is silent on an issue.
  * Style guide for FreeBSD.  Based on the CSRG's KNF (Kernel Normal Form).
  *
  *	@(#)style	1.14 (Berkeley) 4/28/95
- * $FreeBSD: src/share/man/man9/style.9,v 1.130 2008/12/17 13:01:19 des Exp $
+ * $FreeBSD: src/share/man/man9/style.9,v 1.131 2010/06/27 02:30:19 cperciva Exp $
  */
 
 /*
@@ -111,7 +111,7 @@ static char sccsid[] = "@(#)style	1.14 (Berkeley) 4/28/95";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/share/man/man9/style.9,v 1.130 2008/12/17 13:01:19 des Exp $");
+__FBSDID("$FreeBSD: src/share/man/man9/style.9,v 1.131 2010/06/27 02:30:19 cperciva Exp $");
 .Ed
 .Pp
 Leave another blank line before the header files.
@@ -292,6 +292,9 @@ Enumeration values are all uppercase.
 .Bd -literal
 enum enumtype { ONE, TWO } et;
 .Ed
+.Pp
+The use of internal_underscores in identifiers is preferred over
+camelCase or TitleCase.
 .Pp
 In declarations, do not put any whitespace between asterisks and
 adjacent tokens, except for tokens that are identifiers related to

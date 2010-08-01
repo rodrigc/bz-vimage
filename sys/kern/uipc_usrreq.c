@@ -57,7 +57,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_usrreq.c,v 1.235 2009/10/05 22:23:12 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_usrreq.c,v 1.238 2010/07/22 05:42:29 trasz Exp $");
 
 #include "opt_ddb.h"
 
@@ -165,7 +165,7 @@ SYSCTL_ULONG(_net_local_seqpacket, OID_AUTO, recvspace, CTLFLAG_RW,
 SYSCTL_INT(_net_local, OID_AUTO, inflight, CTLFLAG_RD, &unp_rights, 0, 
     "File descriptors in flight.");
 
-/*-
+/*
  * Locking and synchronization:
  *
  * Three types of locks exit in the local domain socket implementation: a

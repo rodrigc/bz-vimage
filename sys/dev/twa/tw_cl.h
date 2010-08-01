@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/sys/dev/twa/tw_cl.h,v 1.4 2010/06/09 21:40:38 delphij Exp $
+ *	$FreeBSD: src/sys/dev/twa/tw_cl.h,v 1.5 2010/07/09 17:38:15 delphij Exp $
  */
 
 /*
@@ -74,7 +74,6 @@
 #define TW_CLI_PCI_CONFIG_STATUS_OFFSET		0x6 /* status register offset */
 #endif /* TW_OSL_PCI_CONFIG_ACCESSIBLE */
 
-#pragma pack(1)
 
 #ifdef TW_OSL_DEBUG
 struct tw_cli_q_stats {
@@ -206,7 +205,6 @@ struct tw_cli_ctlr_context {
 #endif /* TW_OSL_DEBUG */
 };
 
-#pragma pack()
 
 
 /*

@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/bus_machdep.c,v 1.4 2009/06/06 09:33:32 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/bus_machdep.c,v 1.5 2010/07/09 14:00:22 nwhitehorn Exp $");
 
 #define	KTR_BE_IO	0
 #define	KTR_LE_IO	0
@@ -99,11 +99,11 @@ bs_remap_earlyboot(void)
 	int i;
 	vm_offset_t pa, spa;
 
-	if (hw_direct_map)
-		return;
-
 	for (i = 0; i < earlyboot_map_idx; i++) {
 		spa = earlyboot_mappings[i].addr;
+		if (pmap_dev_direct_mapped(spa, earlyboot_mappings[i].size)
+		    == 0)
+			continue;
 
 		pa = trunc_page(spa);
 		while (pa < spa + earlyboot_mappings[i].size) {

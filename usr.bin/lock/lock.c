@@ -46,7 +46,7 @@ static char sccsid[] = "@(#)lock.c	8.1 (Berkeley) 6/6/93";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/lock/lock.c,v 1.20 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/lock/lock.c,v 1.21 2010/06/28 08:30:10 gavin Exp $");
 
 /*
  * Lock a terminal up until the given key is entered or the given
@@ -65,6 +65,7 @@ __FBSDID("$FreeBSD: src/usr.bin/lock/lock.c,v 1.20 2009/12/13 03:14:06 delphij E
 #include <ctype.h>
 #include <errno.h>
 #include <pwd.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -257,9 +258,9 @@ hi(int signo __unused)
 		if (no_timeout) {
 			(void)putchar('\n');
 		} else {
-			(void)printf("timeout in %ld:%ld minutes\n",
-			    (nexttime - timval.tv_sec) / 60,
-			    (nexttime - timval.tv_sec) % 60);
+			(void)printf("timeout in %jd:%jd minutes\n",
+			    (intmax_t)(nexttime - timval.tv_sec) / 60,
+			    (intmax_t)(nexttime - timval.tv_sec) % 60);
 		}
 	}
 }

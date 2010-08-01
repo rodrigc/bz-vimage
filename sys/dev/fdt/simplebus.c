@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fdt/simplebus.c,v 1.1 2010/06/02 17:17:45 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fdt/simplebus.c,v 1.2 2010/07/11 20:30:59 raj Exp $");
 
 #include "opt_platform.h"
 #include <sys/param.h>
@@ -187,16 +187,16 @@ simplebus_attach(device_t dev)
 		resource_list_init(&di->di_res);
 
 		if (fdt_reg_to_rl(dt_child, &di->di_res, sc->sc_start_va)) {
-			device_printf(dev, "could not process 'reg' "
-			    "property\n");
+			device_printf(dev, "%s: could not process 'reg' "
+			    "property\n", di->di_ofw.obd_name);
 			ofw_bus_gen_destroy_devinfo(&di->di_ofw);
 			free(di, M_SIMPLEBUS);
 			continue;
 		}
 
 		if (fdt_intr_to_rl(dt_child, &di->di_res, di->di_intr_sl)) {
-			device_printf(dev, "could not process 'interrupts' "
-			    "property\n");
+			device_printf(dev, "%s: could not process "
+			    "'interrupts' property\n", di->di_ofw.obd_name);
 			resource_list_free(&di->di_res);
 			ofw_bus_gen_destroy_devinfo(&di->di_ofw);
 			free(di, M_SIMPLEBUS);
@@ -213,6 +213,9 @@ simplebus_attach(device_t dev)
 			free(di, M_SIMPLEBUS);
 			continue;
 		}
+#ifdef DEBUG
+		device_printf(dev, "added child: %s\n\n", di->di_ofw.obd_name);
+#endif
 		device_set_ivars(dev_child, di);
 	}
 

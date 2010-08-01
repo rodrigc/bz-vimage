@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/net/pfil.h,v 1.21 2009/10/18 22:54:09 rwatson Exp $ */
+/*	$FreeBSD: src/sys/net/pfil.h,v 1.22 2010/07/15 14:41:06 luigi Exp $ */
 /*	$NetBSD: pfil.h,v 1.22 2003/06/23 12:57:08 martin Exp $	*/
 
 /*-
@@ -69,7 +69,11 @@ struct pfil_head {
 	pfil_list_t	ph_out;
 	int		ph_type;
 	int		ph_nhooks;
+#if defined( __linux__ ) || defined( _WIN32 )
+	rwlock_t	ph_mtx;
+#else
 	struct rmlock	ph_lock;
+#endif
 	union {
 		u_long		phu_val;
 		void		*phu_ptr;

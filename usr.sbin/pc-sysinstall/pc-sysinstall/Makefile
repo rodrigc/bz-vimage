@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/Makefile,v 1.1 2010/06/24 22:33:03 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/Makefile,v 1.3 2010/06/27 17:14:04 imp Exp $
 
 SCRIPTS=pc-sysinstall.sh
 MAN=	pc-sysinstall.8

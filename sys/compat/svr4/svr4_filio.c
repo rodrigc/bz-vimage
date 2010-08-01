@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/svr4/svr4_filio.c,v 1.35 2007/04/04 09:11:31 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/svr4/svr4_filio.c,v 1.37 2010/07/17 15:52:11 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/proc.h>
@@ -40,8 +40,6 @@ __FBSDID("$FreeBSD: src/sys/compat/svr4/svr4_filio.c,v 1.35 2007/04/04 09:11:31 
 #include <sys/poll.h>
 #include <sys/malloc.h>
 #include <sys/mutex.h>
-#include <sys/resource.h>
-#include <sys/resourcevar.h>
 
 #include <sys/sysproto.h>
 
@@ -66,13 +64,8 @@ svr4_sys_poll(td, uap)
      int idx = 0, cerr;
      u_long siz;
 
-     PROC_LOCK(td->td_proc);
-     if (uap->nfds > lim_cur(td->td_proc, RLIMIT_NOFILE) &&
-       uap->nfds > FD_SETSIZE) {
-       PROC_UNLOCK(td->td_proc);
+     if (uap->nfds > maxfilesperproc && uap->nfds > FD_SETSIZE)
        return (EINVAL);
-     }
-     PROC_UNLOCK(td->td_proc);
 
      pa.fds = uap->fds;
      pa.nfds = uap->nfds;

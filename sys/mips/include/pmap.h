@@ -40,7 +40,7 @@
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: src/sys/i386/include/pmap.h,v 1.65.2.2 2000/11/30 01:54:42 peter
  *	JNPR: pmap.h,v 1.7.2.1 2007/09/10 07:44:12 girish
- *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.15 2010/06/18 20:07:30 jchandra Exp $
+ *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.16 2010/07/08 14:49:55 jchandra Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -50,7 +50,6 @@
 #include <machine/pte.h>
 
 #define	NKPT		120	/* actual number of kernel page tables */
-#define	NUSERPGTBLS	(VM_MAXUSER_ADDRESS >> SEGSHIFT)
 
 #ifndef LOCORE
 
@@ -97,7 +96,6 @@ typedef struct pmap *pmap_t;
 #ifdef	_KERNEL
 
 pt_entry_t *pmap_pte(pmap_t, vm_offset_t);
-pd_entry_t pmap_segmap(pmap_t pmap, vm_offset_t va);
 vm_offset_t pmap_kextract(vm_offset_t va);
 
 #define	vtophys(va)	pmap_kextract(((vm_offset_t) (va)))

@@ -47,7 +47,7 @@ static char sccsid[] = "@(#)col.c	8.5 (Berkeley) 5/4/95";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/col/col.c,v 1.21 2006/07/18 07:16:25 stefanf Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/col/col.c,v 1.22 2010/07/15 00:04:14 emaste Exp $");
 
 #include <err.h>
 #include <locale.h>
@@ -461,7 +461,7 @@ flush_line(LINE *l)
 
 			if (compress_spaces && nspace > 1) {
 				while (1) {
-					int tab_col, tab_size;;
+					int tab_col, tab_size;
 
 					tab_col = (last_col + 8) & ~7;
 					if (tab_col > this_col)

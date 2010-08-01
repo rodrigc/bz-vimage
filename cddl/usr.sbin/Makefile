@@ -1,15 +1,20 @@
-# $FreeBSD: src/cddl/usr.sbin/Makefile,v 1.10 2009/05/27 01:30:23 sson Exp $
+# $FreeBSD: src/cddl/usr.sbin/Makefile,v 1.11 2010/07/31 17:13:14 rpaulo Exp $
 
 .include <bsd.own.mk>
 
-SUBDIR=	dtrace \
-	lockstat \
+SUBDIR=	${_dtrace} \
+	${_lockstat} \
 	${_zdb}
 
 .if ${MK_ZFS} != "no"
 .if ${MK_LIBTHR} != "no"
 _zdb=	zdb
 .endif
+.endif
+
+.if ${MACHINE_ARCH} == amd64 || ${MACHINE_ARCH} == i386
+_dtrace=	dtrace
+_lockstat=	lockstat
 .endif
 
 .include <bsd.subdir.mk>

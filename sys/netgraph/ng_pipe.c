@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_pipe.c,v 1.5 2010/04/30 07:09:13 trasz Exp $
+ * $FreeBSD: src/sys/netgraph/ng_pipe.c,v 1.6 2010/07/06 12:13:15 zec Exp $
  */
 
 /*
@@ -779,8 +779,9 @@ pipe_dequeue(struct hookinfo *hinfo, struct timeval *now) {
 		    random() % 100 <= hinfo->cfg.duplicate) {
 			ngp_h = uma_zalloc(ngp_zone, M_NOWAIT);
 			KASSERT(ngp_h != NULL, ("ngp_h zalloc failed (3)"));
-			ngp_h->m = m_dup(m, M_NOWAIT);
-			KASSERT(ngp_h->m != NULL, ("m_dup failed"));
+			m = m_dup(m, M_NOWAIT);
+			KASSERT(m != NULL, ("m_dup failed"));
+			ngp_h->m = m;
 		} else {
 			TAILQ_REMOVE(&ngp_f->packet_head, ngp_h, ngp_link);
 			hinfo->run.qin_frames--;

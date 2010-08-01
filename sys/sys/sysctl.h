@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)sysctl.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/sys/sys/sysctl.h,v 1.178 2010/02/21 13:57:02 ed Exp $
+ * $FreeBSD: src/sys/sys/sysctl.h,v 1.179 2010/07/10 14:34:37 nwhitehorn Exp $
  */
 
 #ifndef _SYS_SYSCTL_H_
@@ -123,7 +123,7 @@ struct ctlname {
 #define REQ_WIRED	2	/* locked and wired */
 
 /* definitions for sysctl_req 'flags' member */
-#if defined(__amd64__) || defined(__ia64__)
+#if defined(__amd64__) || defined(__ia64__) || defined(__powerpc64__)
 #define	SCTL_MASK32	1	/* 32 bit emulation */
 #endif
 

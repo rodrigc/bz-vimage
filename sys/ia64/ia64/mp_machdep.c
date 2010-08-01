@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/mp_machdep.c,v 1.85 2010/04/13 15:55:18 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/mp_machdep.c,v 1.86 2010/07/03 20:19:20 marcel Exp $");
 
 #include "opt_kstack_pages.h"
 
@@ -162,6 +162,8 @@ ia64_store_mca_state(void* arg)
 	thread_lock(td);
 	sched_bind(td, pc->pc_cpuid);
 	thread_unlock(td);
+
+	ia64_mca_init_ap();
 
 	/*
 	 * Get and save the CPU specific MCA records. Should we get the

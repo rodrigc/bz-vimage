@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.49 2010/06/14 07:38:53 mav Exp $
+ * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.51 2010/07/02 17:22:15 mav Exp $
  */
 
 /*

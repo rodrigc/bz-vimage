@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	5.20 (Berkeley) 6/12/93
-# $FreeBSD: src/usr.sbin/Makefile,v 1.426 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/Makefile,v 1.427 2010/07/20 07:27:36 nwhitehorn Exp $
 
 .include <bsd.own.mk>
 
@@ -512,7 +512,7 @@ _mount_smbfs=	mount_smbfs
 _zzz=		zzz
 .endif
 
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 _mount_smbfs=	mount_smbfs
 _nvram=		nvram
 _ofwdump=	ofwdump

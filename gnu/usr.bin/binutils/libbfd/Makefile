@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/libbfd/Makefile,v 1.34 2010/02/03 18:29:35 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/libbfd/Makefile,v 1.35 2010/07/10 02:29:22 nwhitehorn Exp $
 
 .include "../Makefile.inc0"
 
@@ -24,6 +24,8 @@ SELARCH=
 SELARCH= &bfd_i386_arch
 .elif ${TARGET_ARCH} == "sparc64"
 SELARCH= &bfd_sparc_arch
+.elif ${TARGET_ARCH} == "powerpc64"
+SELARCH= &bfd_powerpc_arch,&bfd_rs6000_arch
 .else
 .for _a in ${ARCHS}
 .if ${SELARCH} == ""

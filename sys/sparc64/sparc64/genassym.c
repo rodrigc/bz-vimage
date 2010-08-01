@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.78 2010/03/17 20:23:14 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.79 2010/07/16 22:09:29 mav Exp $");
 
 #include "opt_kstack_pages.h"
 
@@ -160,6 +160,7 @@ ASSYM(HASH_ENTRY_SHIFT, HASH_ENTRY_SHIFT);
 
 ASSYM(V_INTR, offsetof(struct vmmeter, v_intr));
 
+ASSYM(MAXCOMLEN, MAXCOMLEN);
 ASSYM(PC_CURTHREAD, offsetof(struct pcpu, pc_curthread));
 ASSYM(PC_CURPCB, offsetof(struct pcpu, pc_curpcb));
 ASSYM(PC_CPUID, offsetof(struct pcpu, pc_cpuid));

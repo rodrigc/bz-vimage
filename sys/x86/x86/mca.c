@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/mca.c,v 1.3 2010/06/15 18:51:41 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/mca.c,v 1.4 2010/07/28 21:52:09 jhb Exp $");
 
 #ifdef __amd64__
 #define	DEV_APIC
@@ -256,7 +256,7 @@ mca_log(const struct mca_record *rec)
 		printf("UNCOR ");
 	else {
 		printf("COR ");
-		if (rec->mr_mcg_cap & MCG_CAP_TES_P)
+		if (rec->mr_mcg_cap & MCG_CAP_CMCI_P)
 			printf("(%lld) ", ((long long)rec->mr_status &
 			    MC_STATUS_COR_COUNT) >> 38);
 	}

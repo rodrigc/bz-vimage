@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.653 2010/05/26 15:36:29 kib Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.658 2010/07/24 22:11:11 rmacklem Exp $
 
 .include <bsd.own.mk>
 
@@ -10,6 +10,7 @@ SUBDIR=	${_3dfx} \
 	accf_http \
 	${_acpi} \
 	ae \
+	${_aesni} \
 	age \
 	${_agp} \
 	aha \
@@ -204,6 +205,7 @@ SUBDIR=	${_3dfx} \
 	nfsclient \
 	nfscommon \
 	nfsd \
+	nfslock \
 	nfslockd \
 	nfsserver \
 	nfssvc \
@@ -258,6 +260,7 @@ SUBDIR=	${_3dfx} \
 	sf \
 	sge \
 	siba_bwn \
+	siftr \
 	siis \
 	sis \
 	sk \
@@ -318,7 +321,7 @@ SUBDIR=	${_3dfx} \
 	${_zfs} \
 	zlib \
 
-.if ${MACHINE_ARCH} != "powerpc" && ${MACHINE_ARCH} != "arm" && \
+.if ${MACHINE_CPUARCH} != "powerpc" && ${MACHINE_ARCH} != "arm" && \
 	${MACHINE_ARCH} != "mips"
 _syscons=	syscons
 _vpo=		vpo
@@ -439,6 +442,9 @@ _zfs=		zfs
 .if ${MACHINE} == "i386"
 _aac=		aac
 _acpi=		acpi
+.if ${MK_CRYPT} != "no" || defined(ALL_MODULES)
+_aesni=		aesni
+.endif
 _ahb=		ahb
 _amdsbwd=	amdsbwd
 _amdtemp=	amdtemp
@@ -494,6 +500,9 @@ _snc=		snc
 .if ${MACHINE_ARCH} == "amd64"
 _aac=		aac
 _acpi=		acpi
+.if ${MK_CRYPT} != "no" || defined(ALL_MODULES)
+_aesni=		aesni
+.endif
 _agp=		agp
 _an=		an
 _amdsbwd=	amdsbwd
@@ -615,13 +624,22 @@ _wi=		wi
 _xe=		xe
 .endif
 
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 _an=		an
 _bm=		bm
 _cpufreq=	cpufreq
 _nvram=		powermac_nvram
 _smbfs=		smbfs
 _sound=		sound
+.endif
+
+.if ${MACHINE_ARCH} == "powerpc64"
+.if ${MK_CDDL} != "no" || defined(ALL_MODULES)
+_opensolaris=	opensolaris
+.endif
+.if ${MK_ZFS} != "no" || defined(ALL_MODULES)
+_zfs=		zfs
+.endif
 .endif
 
 .if ${MACHINE_ARCH} == "sparc64"

@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)cdefs.h	8.8 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/cdefs.h,v 1.103 2010/01/19 15:31:18 ed Exp $
+ * $FreeBSD: src/sys/sys/cdefs.h,v 1.106 2010/07/18 20:57:53 trasz Exp $
  */
 
 #ifndef	_SYS_CDEFS_H_
@@ -356,7 +356,18 @@
 	extern __typeof (sym) aliassym __attribute__ ((__alias__ (#sym)))
 #endif
 #ifdef __STDC__
+#ifdef __powerpc64__
 #define	__weak_reference(sym,alias)	\
+	__asm__(".weak " #alias);	\
+	__asm__(".equ "  #alias ", " #sym); \
+	__asm__(".weak ." #alias);	\
+	__asm__(".equ ."  #alias ", ." #sym)
+#else
+#define	__weak_reference(sym,alias)	\
+	__asm__(".weak " #alias);	\
+	__asm__(".equ "  #alias ", " #sym)
+#endif
+#define	__weak_reference_data(sym,alias)\
 	__asm__(".weak " #alias);	\
 	__asm__(".equ "  #alias ", " #sym)
 #define	__warn_references(sym,msg)	\
@@ -398,7 +409,7 @@
  * Embed the rcs id of a source file in the resulting library.  Note that in
  * more recent ELF binutils, we use .ident allowing the ID to be stripped.
  * Usage:
- *	__FBSDID("$FreeBSD: src/sys/sys/cdefs.h,v 1.103 2010/01/19 15:31:18 ed Exp $");
+ *	__FBSDID("$FreeBSD: src/sys/sys/cdefs.h,v 1.106 2010/07/18 20:57:53 trasz Exp $");
  */
 #ifndef	__FBSDID
 #if !defined(lint) && !defined(STRIP_FBSDID)

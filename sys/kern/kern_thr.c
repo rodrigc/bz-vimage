@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_thr.c,v 1.81 2010/03/11 14:49:06 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_thr.c,v 1.82 2010/06/29 20:41:52 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_posix.h"
@@ -326,7 +326,7 @@ thr_kill(struct thread *td, struct thr_kill_args *uap)
 					error = 0;
 					if (uap->sig == 0)
 						break;
-					tdsignal(p, ttd, uap->sig, &ksi);
+					tdksignal(ttd, uap->sig, &ksi);
 				}
 			}
 		}
@@ -342,7 +342,7 @@ thr_kill(struct thread *td, struct thr_kill_args *uap)
 		else if (!_SIG_VALID(uap->sig))
 			error = EINVAL;
 		else
-			tdsignal(p, ttd, uap->sig, &ksi);
+			tdksignal(ttd, uap->sig, &ksi);
 	}
 	PROC_UNLOCK(p);
 	return (error);
@@ -384,8 +384,7 @@ thr_kill2(struct thread *td, struct thr_kill2_args *uap)
 						error = 0;
 						if (uap->sig == 0)
 							break;
-						tdsignal(p, ttd, uap->sig,
-						    &ksi);
+						tdksignal(ttd, uap->sig, &ksi);
 					}
 				}
 			}
@@ -401,7 +400,7 @@ thr_kill2(struct thread *td, struct thr_kill2_args *uap)
 			else if (!_SIG_VALID(uap->sig))
 				error = EINVAL;
 			else
-				tdsignal(p, ttd, uap->sig, &ksi);
+				tdksignal(ttd, uap->sig, &ksi);
 		}
 	}
 	PROC_UNLOCK(p);

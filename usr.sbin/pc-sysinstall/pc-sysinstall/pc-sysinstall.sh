@@ -6,7 +6,7 @@
 #  system installations, as well as calls which a front-end can use
 #  to retrive information about the system
 #####################################################################
-# Copyright 2010 iX Systems
+# Copyright 2010 iXsystems
 # All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.2 2010/06/24 22:47:50 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.6 2010/07/13 23:47:12 imp Exp $
 #####################################################################
 
 # User-editable configuration variables
@@ -42,6 +42,10 @@ export PROGDIR
 # Set this to the components location
 COMPDIR="${PROGDIR}/components"
 export COMPDIR
+
+# Set this to the packages location
+PKGDIR="${PROGDIR}/conf"
+export PKGDIR
 
 # End of user-editable configuration
 #####################################################################
@@ -124,8 +128,8 @@ case $1 in
   detect-nics) ${QUERYDIR}/detect-nics.sh
   ;;
   
-  # The user is wanting to check if we are in vmware
-  detect-vmware) ${QUERYDIR}/detect-vmware.sh
+  # The user is wanting to check if we are in emulation
+  detect-emulation) ${QUERYDIR}/detect-emulation.sh
   ;;
 
   # The user is wanting to query a disk's information
@@ -148,6 +152,18 @@ case $1 in
   list-components) ${QUERYDIR}/list-components.sh
   ;;
 
+  # Function which lists pc-sysinstall configuration
+  list-config) ${QUERYDIR}/list-config.sh
+  ;;
+
+  # Function which lists available FTP mirrors
+  list-mirrors) ${QUERYDIR}/list-mirrors.sh "${2}"
+  ;;
+
+  # Function which lists available packages
+  list-packages) ${QUERYDIR}/list-packages.sh "${2}" "${3}"
+  ;;
+
   # Function which lists available backups on a rsync/ssh server
   list-rsync-backups) ${QUERYDIR}/list-rsync-backups.sh "${2}" "${3}" "${4}"
   ;;
@@ -162,6 +178,10 @@ case $1 in
 
   # Function which creates a error report, and mails it to the specified address
   send-logs) ${QUERYDIR}/send-logs.sh ${2}
+  ;;
+
+  # Function to get package index
+  get-packages) ${QUERYDIR}/get-packages.sh "${2}"
   ;;
 
   # Function which allows setting up of SSH keys
@@ -201,4 +221,4 @@ case $1 in
 esac
 
 # Exit with success if we made it to the end
-exit 0
+exit $?

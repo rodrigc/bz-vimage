@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/kldload/kldload.c,v 1.12 2009/06/04 23:43:08 benno Exp $");
+__FBSDID("$FreeBSD: src/sbin/kldload/kldload.c,v 1.13 2010/07/13 04:13:31 maxim Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -129,7 +129,7 @@ path_check(const char *kldname, int quiet)
 static void
 usage(void)
 {
-	fprintf(stderr, "usage: kldload [-v] file ...\n");
+	fprintf(stderr, "usage: kldload [-v] [-q] file ...\n");
 	exit(1);
 }
 

@@ -54,7 +54,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/mpc85xx/nexus.c,v 1.2 2008/12/17 15:31:15 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/mpc85xx/nexus.c,v 1.3 2010/07/11 21:08:29 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -112,13 +112,10 @@ static int
 nexus_probe (device_t dev)
 {
 
-	/*
-	 * Add OCP (on-chip peripheral) bus
-	 */
-	device_add_child(dev, "ocpbus", 0);
+	device_add_child(dev, "fdtbus", 0);
+	device_quiet(dev);
 
-	device_set_desc(dev, "MPC85xx Nexus device");
-	return (0);
+	return (BUS_PROBE_DEFAULT);
 }
 
 static int

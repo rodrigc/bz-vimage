@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.234 2010/05/27 03:15:04 cperciva Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.235 2010/07/24 22:11:11 rmacklem Exp $");
 
 
 #include "opt_bootp.h"
@@ -148,6 +148,7 @@ MODULE_DEPEND(nfs, krpc, 1, 1, 1);
 MODULE_DEPEND(nfs, kgssapi, 1, 1, 1);
 #endif
 MODULE_DEPEND(nfs, nfs_common, 1, 1, 1);
+MODULE_DEPEND(nfs, nfslock, 1, 1, 1);
 
 static struct nfs_rpcops nfs_rpcops = {
 	nfs_readrpc,

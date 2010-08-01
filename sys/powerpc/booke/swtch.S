@@ -23,9 +23,9 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	from: $NetBSD: locore.S,v 1.24 2000/05/31 05:09:17 thorpej Exp $
- *	from: $FreeBSD: src/sys/powerpc/booke/swtch.S,v 1.4 2009/04/22 13:18:04 raj Exp $
+ *	from: $FreeBSD: src/sys/powerpc/booke/swtch.S,v 1.5 2010/07/13 05:32:19 nwhitehorn Exp $
  *
- * $FreeBSD: src/sys/powerpc/booke/swtch.S,v 1.4 2009/04/22 13:18:04 raj Exp $
+ * $FreeBSD: src/sys/powerpc/booke/swtch.S,v 1.5 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 /*-
  * Copyright (C) 1995, 1996 Wolfgang Solfrank.
@@ -64,7 +64,6 @@
 
 #include <machine/trap.h>
 #include <machine/param.h>
-#include <machine/psl.h>
 #include <machine/asm.h>
 #include <machine/spr.h>
 

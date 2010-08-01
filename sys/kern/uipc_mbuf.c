@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.187 2010/06/21 09:55:56 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_mbuf.c,v 1.190 2010/07/18 20:57:53 trasz Exp $");
 
 #include "opt_param.h"
 #include "opt_mbuf_stress_test.h"
@@ -302,6 +302,7 @@ mb_dupcl(struct mbuf *n, struct mbuf *m)
 	n->m_ext.ref_cnt = m->m_ext.ref_cnt;
 	n->m_ext.ext_type = m->m_ext.ext_type;
 	n->m_flags |= M_EXT;
+	n->m_flags |= m->m_flags & M_RDONLY;
 }
 
 /*

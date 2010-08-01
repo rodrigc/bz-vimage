@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * $NetBSD: hid.h,v 1.2 2001/08/22 21:05:25 matt Exp $
- * $FreeBSD: src/sys/powerpc/include/hid.h,v 1.9 2009/10/24 18:33:01 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/hid.h,v 1.10 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _POWERPC_HID_H_
@@ -161,6 +161,7 @@
 #define HID0_E500_DEFAULT_SET	(HID0_EMCP | HID0_E500_TBEN)
 #define HID1_E500_DEFAULT_SET	(HID1_E500_ABE | HID1_E500_ASTME)
 
-#define HID5_970_DCBZ_SIZE_HI	0x01000000	/* dcbz does a 32-byte store */
+#define HID5_970_DCBZ_SIZE_HI	0x00000080UL	/* dcbz does a 32-byte store */
+#define HID4_970_DISABLE_LG_PG	0x00000004ULL	/* disables large pages */
 
 #endif /* _POWERPC_HID_H_ */

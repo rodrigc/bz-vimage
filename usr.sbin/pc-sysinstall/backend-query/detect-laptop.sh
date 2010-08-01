@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,11 +23,10 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/detect-laptop.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/detect-laptop.sh,v 1.4 2010/07/07 00:03:06 imp Exp $
 
-dmesgLine=`dmesg | grep "acpi_acad0"`
-if test "${dmesgLine}" = ""; then
-  echo "laptop: NO"
-else
+if devinfo | grep -q acpi_acad0; then
   echo "laptop: YES"
-fi 
+else
+  echo "laptop: NO"
+fi

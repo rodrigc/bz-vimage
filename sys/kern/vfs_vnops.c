@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_vnops.c,v 1.298 2010/05/06 18:52:41 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_vnops.c,v 1.299 2010/06/26 21:44:45 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -506,8 +506,8 @@ vn_read(fp, uio, active_cred, flags, td)
 	struct file *fp;
 	struct uio *uio;
 	struct ucred *active_cred;
-	struct thread *td;
 	int flags;
+	struct thread *td;
 {
 	struct vnode *vp;
 	int error, ioflag;
@@ -572,8 +572,8 @@ vn_write(fp, uio, active_cred, flags, td)
 	struct file *fp;
 	struct uio *uio;
 	struct ucred *active_cred;
-	struct thread *td;
 	int flags;
+	struct thread *td;
 {
 	struct vnode *vp;
 	struct mount *mp;

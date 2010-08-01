@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonport.c,v 1.9 2010/04/24 22:52:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonport.c,v 1.10 2010/07/19 23:33:42 rmacklem Exp $");
 
 /*
  * Functions that need to be different for different versions of BSD
@@ -210,7 +210,8 @@ nfsrv_lookupfilename(struct nameidata *ndp, char *fname, NFSPROC_T *p)
 {
 	int error;
 
-	NDINIT(ndp, LOOKUP, FOLLOW | LOCKLEAF, UIO_USERSPACE, fname, p);
+	NDINIT(ndp, LOOKUP, FOLLOW | LOCKLEAF | MPSAFE, UIO_USERSPACE, fname,
+	    p);
 	error = namei(ndp);
 	if (!error) {
 		NDFREE(ndp, NDF_ONLY_PNBUF);

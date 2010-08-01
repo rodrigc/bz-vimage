@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.29 2008/04/29 03:58:18 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.30 2010/07/12 10:15:33 kib Exp $
  */
 
 #include "namespace.h"
@@ -194,7 +194,7 @@ int
 _sigaction(int sig, const struct sigaction * act, struct sigaction * oact)
 {
 	/* Check if the signal number is out of range: */
-	if (sig < 1 || sig > _SIG_MAXSIG || sig == SIGCANCEL) {
+	if (!_SIG_VALID(sig) || sig == SIGCANCEL) {
 		/* Return an invalid argument: */
 		errno = EINVAL;
 		return (-1);

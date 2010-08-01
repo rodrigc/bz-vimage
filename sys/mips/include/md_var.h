@@ -28,7 +28,7 @@
  *
  *	from: src/sys/i386/include/md_var.h,v 1.35 2000/02/20 20:51:23 bsd
  *	JNPR: md_var.h,v 1.4 2006/10/16 12:30:34 katta
- * $FreeBSD: src/sys/mips/include/md_var.h,v 1.4 2010/01/24 03:10:48 gonzo Exp $
+ * $FreeBSD: src/sys/mips/include/md_var.h,v 1.6 2010/07/15 01:58:20 imp Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -66,7 +66,6 @@ void	mips_generic_reset(void);
 #endif
 
 void	mips_vector_init(void);
-void	cpu_identify(void);
 void	mips_cpu_init(void);
 void	mips_pcpu0_init(void);
 void	mips_proc0_init(void);
@@ -77,5 +76,8 @@ void	platform_identify(void);
 
 extern int busdma_swi_pending;
 void busdma_swi(void);
+
+u_int32_t set_intr_mask(u_int32_t);
+u_int32_t get_intr_mask(void);
 
 #endif /* !_MACHINE_MD_VAR_H_ */

@@ -25,7 +25,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/dev/cxgb/common/cxgb_common.h,v 1.19 2010/03/31 00:27:49 np Exp $
+$FreeBSD: src/sys/dev/cxgb/common/cxgb_common.h,v 1.21 2010/07/09 00:38:00 np Exp $
 
 ***************************************************************************/
 #ifndef __CHELSIO_COMMON_H
@@ -60,7 +60,6 @@ enum {
 	/* skip 25 */
 	SUPPORTED_MISC_IRQ = 1 << 26,
 	SUPPORTED_IRQ      = (SUPPORTED_LINK_IRQ | SUPPORTED_MISC_IRQ),
-	POLL_LINK_1ST_TIME = 1 << 27
 };
 
 enum {                            /* adapter interrupt-maintained statistics */
@@ -701,7 +700,6 @@ void t3_port_intr_enable(adapter_t *adapter, int idx);
 void t3_port_intr_disable(adapter_t *adapter, int idx);
 void t3_port_intr_clear(adapter_t *adapter, int idx);
 int t3_slow_intr_handler(adapter_t *adapter);
-int t3_phy_intr_handler(adapter_t *adapter);
 
 void t3_link_changed(adapter_t *adapter, int port_id);
 int t3_link_start(struct cphy *phy, struct cmac *mac, struct link_config *lc);

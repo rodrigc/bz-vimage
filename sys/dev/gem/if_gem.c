@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/gem/if_gem.c,v 1.55 2010/02/22 21:01:08 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/gem/if_gem.c,v 1.56 2010/07/21 10:05:07 attilio Exp $");
 
 /*
  * Driver for Apple GMAC, Sun ERI and Sun GEM Ethernet controllers
@@ -136,7 +136,7 @@ MODULE_DEPEND(gem, miibus, 1, 1, 1);
 
 #ifdef GEM_DEBUG
 #include <sys/ktr.h>
-#define	KTR_GEM		KTR_CT2
+#define	KTR_GEM		KTR_SPARE2
 #endif
 
 #define	GEM_BANK1_BITWAIT(sc, r, clr, set)				\

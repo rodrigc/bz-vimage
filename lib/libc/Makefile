@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 2/3/94
-# $FreeBSD: src/lib/libc/Makefile,v 1.80 2010/06/16 14:13:36 jchandra Exp $
+# $FreeBSD: src/lib/libc/Makefile,v 1.82 2010/08/01 12:35:01 rpaulo Exp $
 
 SHLIBDIR?= /lib
 
@@ -51,6 +51,7 @@ NOASM=
 .include "${.CURDIR}/posix1e/Makefile.inc"
 .if ${MACHINE_ARCH} != "amd64" && \
     ${MACHINE_ARCH} != "ia64" && \
+    ${MACHINE_ARCH} != "powerpc64" && \
     ${MACHINE_ARCH} != "sparc64" && \
     ${MACHINE_ARCH} != "mips"
 .include "${.CURDIR}/quad/Makefile.inc"
@@ -127,7 +128,7 @@ libkern.${MACHINE_ARCH}:: ${KMSRCS}
 .include <bsd.lib.mk>
 
 # Disable warnings in contributed sources.
-CWARNFLAGS:=	${.IMPSRC:Ngdtoa_*.c:C/^.+$/${CWARNFLAGS}/}
+CWARNFLAGS:=	${.IMPSRC:Ngdtoa_*.c:C/^.+$/${CWARNFLAGS}/:C/^$/-w/}
 # XXX For now, we don't allow libc to be compiled with
 # -fstack-protector-all because it breaks rtld.  We may want to make a librtld
 # in the future to circumvent this.

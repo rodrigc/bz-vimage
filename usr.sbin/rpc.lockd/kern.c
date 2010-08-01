@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/rpc.lockd/kern.c,v 1.22 2009/06/24 18:42:21 dfr Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/rpc.lockd/kern.c,v 1.23 2010/07/24 22:16:14 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/mount.h>
@@ -54,7 +54,7 @@ __FBSDID("$FreeBSD: src/usr.sbin/rpc.lockd/kern.c,v 1.22 2009/06/24 18:42:21 dfr
 
 #include "nlm_prot.h"
 #include <nfs/nfsproto.h>
-#include <nfsclient/nfs_lock.h>
+#include <nfs/nfs_lock.h>
 
 #include "lockd.h"
 #include "lockd_lock.h"

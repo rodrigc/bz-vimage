@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-card.c,v 1.43 2009/03/12 06:30:59 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-card.c,v 1.44 2010/07/04 05:58:17 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -135,9 +135,9 @@ ata_pccard_attach(device_t dev)
     ch->unit = 0;
     ch->flags |= ATA_USE_16BIT;
     funce = 0;		/* Default to sane setting of FUNCE */
-    pccard_get_funce_disk(dev, &funce);
+    pccard_get_funce_disk(dev, &funce); 
     if (!(funce & PFD_I_D))
-	    ch-> flags |= ATA_NO_SLAVE;
+        ch-> flags |= ATA_NO_SLAVE;
     ata_generic_hw(dev);
     err = ata_probe(dev);
     if (err)

@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)union_subr.c	8.20 (Berkeley) 5/20/95
- * $FreeBSD: src/sys/fs/unionfs/union_subr.c,v 1.112 2009/07/31 13:40:06 jhb Exp $
+ * $FreeBSD: src/sys/fs/unionfs/union_subr.c,v 1.114 2010/07/18 07:55:22 trasz Exp $
  */
 
 #include <sys/param.h>
@@ -775,7 +775,6 @@ unionfs_mkshadowdir(struct unionfs_mount *ump, struct vnode *udvp,
 	/* Authority change to root */
 	rootinfo = uifind((uid_t)0);
 	cred = crdup(cnp->cn_cred);
-	chgproccnt(cred->cr_ruidinfo, 1, 0);
 	change_euid(cred, rootinfo);
 	change_ruid(cred, rootinfo);
 	change_svuid(cred, (uid_t)0);
@@ -825,7 +824,6 @@ unionfs_mkshadowdir_free_out:
 
 unionfs_mkshadowdir_abort:
 	cnp->cn_cred = credbk;
-	chgproccnt(cred->cr_ruidinfo, -1, 0);
 	crfree(cred);
 
 	return (error);

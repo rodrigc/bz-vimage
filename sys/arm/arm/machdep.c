@@ -46,7 +46,7 @@
 #include "opt_ddb.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/machdep.c,v 1.36 2010/03/25 14:24:00 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/machdep.c,v 1.37 2010/06/30 18:03:42 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/proc.h>
@@ -67,6 +67,7 @@ __FBSDID("$FreeBSD: src/sys/arm/arm/machdep.c,v 1.36 2010/03/25 14:24:00 nwhiteh
 #include <sys/pcpu.h>
 #include <sys/ptrace.h>
 #include <sys/signalvar.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysent.h>
 #include <sys/sysproto.h>
 #include <sys/uio.h>

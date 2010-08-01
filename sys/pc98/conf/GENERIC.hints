@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/pc98/conf/GENERIC.hints,v 1.28 2008/08/25 14:52:50 nyan Exp $
+# $FreeBSD: src/sys/pc98/conf/GENERIC.hints,v 1.29 2010/07/13 06:57:27 mav Exp $
 
 hint.atacbus.0.at="isa"
 hint.atacbus.0.port="0x640"
@@ -41,6 +41,10 @@ hint.ct.0.at="isa"
 # LOGITEC
 #hint.ct.0.at="isa"
 #hint.ct.0.flags="0x50000"
+
+hint.attimer.0.at="isa"
+hint.attimer.0.port="0x71"
+hint.attimer.0.irq="0"
 
 hint.pcrtc.0.at="isa"
 

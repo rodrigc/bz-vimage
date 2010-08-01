@@ -25,9 +25,9 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/ata.4,v 1.82 2010/03/03 19:44:43 mav Exp $
+.\" $FreeBSD: src/share/man/man4/ata.4,v 1.84 2010/07/31 12:14:28 joel Exp $
 .\"
-.Dd March 3, 2010
+.Dd July 3, 2010
 .Dt ATA 4
 .Os
 .Sh NAME
@@ -85,7 +85,7 @@ To turn
 .Xr ata 4
 subsystem controller drivers into cam(4) interface modules (disables all native
 .Xr ata 4
-APIs and periperal drivers):
+APIs and peripheral drivers):
 .Cd options ATA_CAM
 .Pp
 The following tunables are settable from the loader:
@@ -103,6 +103,10 @@ can cause data loss on power failures and crashes.
 .It Va hint.atapci.X.msi
 set to 1 to allow Message Signalled Interrupts (MSI) to be used by
 specified PCI ATA controller, if supported.
+.It Va hint.ata.X.devX.mode
+limits initial ATA mode for specified device on specified channel.
+.It Va hint.ata.X.mode
+limits initial ATA mode for every device on specified channel.
 .It Va hint.ata.X.pm_level
 controls SATA interface Power Management for specified channel,
 allowing to save some power by the cost of additional command latency.

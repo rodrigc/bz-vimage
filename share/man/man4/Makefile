@@ -1,9 +1,8 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/18/93
-# $FreeBSD: src/share/man/man4/Makefile,v 1.480 2010/06/09 12:25:57 ae Exp $
+# $FreeBSD: src/share/man/man4/Makefile,v 1.485 2010/07/25 17:55:57 rpaulo Exp $
 
 MAN=	aac.4 \
 	acpi.4 \
-	${_acpi_aiboost.4} \
 	${_acpi_asus.4} \
 	${_acpi_dock.4} \
 	${_acpi_fujitsu.4} \
@@ -26,6 +25,7 @@ MAN=	aac.4 \
 	ahc.4 \
 	ahci.4 \
 	ahd.4 \
+	${_aibs.4} \
 	aio.4 \
 	alc.4 \
 	ale.4 \
@@ -109,6 +109,8 @@ MAN=	aac.4 \
 	fatm.4 \
 	fd.4 \
 	fdc.4 \
+	fdt.4 \
+	fdtbus.4 \
 	firewire.4 \
 	fpa.4 \
 	fwe.4 \
@@ -355,8 +357,10 @@ MAN=	aac.4 \
 	sge.4 \
 	si.4 \
 	siba.4 \
-	sio.4 \
+	siftr.4 \
 	siis.4 \
+	simplebus.4 \
+	sio.4 \
 	sis.4 \
 	sk.4 \
 	smb.4 \
@@ -525,6 +529,7 @@ MLINKS+=fatm.4 if_fatm.4
 MLINKS+=fd.4 stderr.4 \
 	fd.4 stdin.4 \
 	fd.4 stdout.4
+MLINKS+=fdt.4 FDT.4
 MLINKS+=firewire.4 ieee1394.4
 MLINKS+=fpa.4 fea.4
 MLINKS+=fwe.4 if_fwe.4
@@ -623,7 +628,6 @@ MLINKS+=xl.4 if_xl.4
 MLINKS+=zyd.4 if_zyd.4
 
 .if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
-_acpi_aiboost.4=acpi_aiboost.4
 _acpi_asus.4=	acpi_asus.4
 _acpi_dock.4=	acpi_dock.4
 _acpi_fujitsu.4=acpi_fujitsu.4
@@ -633,6 +637,7 @@ _acpi_panasonic.4=acpi_panasonic.4
 _acpi_sony.4=	acpi_sony.4
 _acpi_toshiba.4=acpi_toshiba.4
 _acpi_wmi.4=	acpi_wmi.4
+_aibs.4=	aibs.4
 _amdsbwd.4=	amdsbwd.4
 _amdsmb.4=	amdsmb.4
 _amdtemp.4=	amdtemp.4
@@ -675,8 +680,8 @@ MLINKS+=lindev.4 full.4
 _atp.4=		atp.4
 .endif
 
-.if exists(${.CURDIR}/man4.${MACHINE_ARCH})
-SUBDIR=	man4.${MACHINE_ARCH}
+.if exists(${.CURDIR}/man4.${MACHINE_CPUARCH})
+SUBDIR=	man4.${MACHINE_CPUARCH}
 .endif
 
 .include <bsd.prog.mk>

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/jls/jls.c,v 1.16 2010/03/18 20:13:04 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/jls/jls.c,v 1.17 2010/07/08 19:22:52 jamie Exp $");
 
 #include <sys/param.h>
 #include <sys/jail.h>
@@ -87,8 +87,10 @@ main(int argc, char **argv)
 			break;
 		case 'j':
 			jid = strtoul(optarg, &ep, 10);
-			if (!*optarg || *ep)
+			if (!jid || *ep) {
+				jid = 0;
 				jname = optarg;
+			}
 			break;
 		case 'h':
 			pflags = (pflags & ~(PRINT_SKIP | PRINT_VERBOSE)) |

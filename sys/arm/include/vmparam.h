@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/vmparam.h,v 1.14 2009/04/04 23:12:14 alc Exp $
+ * $FreeBSD: src/sys/arm/include/vmparam.h,v 1.15 2010/07/27 20:33:50 jhb Exp $
  */
 
 #ifndef	_MACHINE_VMPARAM_H_
@@ -84,6 +84,13 @@
  * The largest allocation size is 1MB.
  */
 #define	VM_NFREEORDER		9
+
+/*
+ * Only one memory domain.
+ */
+#ifndef VM_NDOMAIN
+#define	VM_NDOMAIN		1
+#endif
 
 /*
  * Disable superpage reservations.

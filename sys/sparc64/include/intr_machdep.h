@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/include/intr_machdep.h,v 1.21 2009/12/24 15:43:37 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/intr_machdep.h,v 1.23 2010/07/29 12:08:46 mav Exp $
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
@@ -33,7 +33,6 @@
 
 #define	PIL_MAX		(1 << 4)
 #define	IV_MAX		(1 << 11)
-#define	IV_NAMLEN	1024
 
 #define	IR_FREE		(PIL_MAX * 2)
 
@@ -47,6 +46,8 @@
 #define	PIL_AST		4	/* ast ipi */
 #define	PIL_STOP	5	/* stop cpu ipi */
 #define	PIL_PREEMPT	6	/* preempt idle thread cpu ipi */
+#define	PIL_HARDCLOCK	7	/* hardclock broadcast */
+#define	PIL_STATCLOCK	8	/* statclock broadcast */
 #define	PIL_FILTER	12	/* filter interrupts */
 #define	PIL_FAST	13	/* fast interrupts */
 #define	PIL_TICK	14	/* tick interrupts */

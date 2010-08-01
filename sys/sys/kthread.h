@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/kthread.h,v 1.14 2010/05/21 17:14:36 jhb Exp $
+ * $FreeBSD: src/sys/sys/kthread.h,v 1.17 2010/07/22 05:42:29 trasz Exp $
  */
 
 #ifndef _SYS_KTHREAD_H_
@@ -31,7 +31,7 @@
 
 #include <sys/cdefs.h>
 
-/*-
+/*
  * A kernel process descriptor; used to start "internal" daemons.
  *
  * Note: global_procpp may be NULL for no global save area.

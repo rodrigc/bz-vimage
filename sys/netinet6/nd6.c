@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.134 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.135 2010/07/31 21:33:18 bz Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -452,14 +452,9 @@ nd6_llinfo_timer(void *arg)
 	struct ifnet *ifp;
 	struct nd_ifinfo *ndi = NULL;
 
+	KASSERT(arg != NULL, ("%s: arg NULL", __func__));
 	ln = (struct llentry *)arg;
-	if (ln == NULL) {
-		panic("%s: NULL entry!\n", __func__);
-		return;
-	}
-
-	if ((ifp = ((ln->lle_tbl != NULL) ? ln->lle_tbl->llt_ifp : NULL)) == NULL)
-		panic("ln ifp == NULL");
+	ifp = ln->lle_tbl->llt_ifp;
 
 	CURVNET_SET(ifp->if_vnet);
 

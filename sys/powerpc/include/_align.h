@@ -35,7 +35,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)param.h	5.8 (Berkeley) 6/28/91
- * $FreeBSD: src/sys/powerpc/include/_align.h,v 1.1 2009/09/08 20:45:40 phk Exp $
+ * $FreeBSD: src/sys/powerpc/include/_align.h,v 1.2 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _POWERPC_INCLUDE__ALIGN_H_
@@ -46,7 +46,7 @@
  * for all data types (int, long, ...).   The result is unsigned int
  * and must be cast to any desired pointer type.
  */
-#define	_ALIGNBYTES	(sizeof(int) - 1)
-#define	_ALIGN(p)	(((unsigned)(p) + _ALIGNBYTES) & ~_ALIGNBYTES)
+#define	_ALIGNBYTES	(sizeof(register_t) - 1)
+#define	_ALIGN(p)	(((uintptr_t)(p) + _ALIGNBYTES) & ~_ALIGNBYTES)
 
 #endif /* !_POWERPC_INCLUDE__ALIGN_H_ */

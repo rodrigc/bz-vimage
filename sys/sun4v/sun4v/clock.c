@@ -23,14 +23,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/sun4v/clock.c,v 1.4 2008/09/02 21:35:57 marius Exp $
+ * $FreeBSD: src/sys/sun4v/sun4v/clock.c,v 1.5 2010/07/29 12:08:46 mav Exp $
  */
 
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <machine/clock.h>
 
-u_long tick_increment;
 u_long tick_freq;
 u_long tick_MHz;
 
@@ -45,14 +44,4 @@ DELAY(int n)
 	end = start + (u_long)n * tick_MHz;
 	while (rd(tick) < end)
 		;
-}
-
-void
-cpu_startprofclock(void)
-{
-}
-
-void
-cpu_stopprofclock(void)
-{
 }

@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  *
  * from: src/sys/i386/include/_bus.h,v 1.1 2005/04/18 21:45:33 imp
- * $FreeBSD: src/sys/mips/include/_bus.h,v 1.2 2010/01/10 19:50:24 imp Exp $
+ * $FreeBSD: src/sys/mips/include/_bus.h,v 1.3 2010/07/20 19:25:11 jmallett Exp $
  */
 
 #ifndef MIPS_INCLUDE__BUS_H
@@ -35,7 +35,7 @@
  * Bus address and size types
  */
 #include "opt_cputype.h" 
-#if !(defined(TARGET_OCTEON) && defined(ISA_MIPS32))
+#if !(defined(CPU_CNMIPS) && defined(ISA_MIPS32))
 typedef uintptr_t bus_addr_t;
 #else
 typedef uint64_t bus_addr_t;

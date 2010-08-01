@@ -37,7 +37,7 @@
  *
  *	from: @(#)vmparam.h     5.9 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/vmparam.h,v 1.33 2000/03/30
- * $FreeBSD: src/sys/sun4v/include/vmparam.h,v 1.7 2009/02/11 07:50:07 marius Exp $
+ * $FreeBSD: src/sys/sun4v/include/vmparam.h,v 1.8 2010/07/27 20:33:50 jhb Exp $
  */
 
 #ifndef	_MACHINE_VMPARAM_H_
@@ -119,6 +119,13 @@
  * page TLB misses and cache misses caused by 4MB page TLB misses.
  */
 #define	VM_NFREEORDER		12
+
+/*
+ * Only one memory domain.
+ */
+#ifndef VM_NDOMAIN
+#define	VM_NDOMAIN		1
+#endif
 
 /*
  * Disable superpage reservations.

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_syscalls.c,v 1.498 2010/04/13 08:52:20 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_syscalls.c,v 1.499 2010/07/06 18:20:49 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -4215,7 +4215,7 @@ revoke(td, uap)
 	vfslocked = NDHASGIANT(&nd);
 	vp = nd.ni_vp;
 	NDFREE(&nd, NDF_ONLY_PNBUF);
-	if (vp->v_type != VCHR) {
+	if (vp->v_type != VCHR || vp->v_rdev == NULL) {
 		error = EINVAL;
 		goto out;
 	}

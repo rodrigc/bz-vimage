@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.5 2010/05/28 10:43:56 raj Exp $
+# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.6 2010/07/08 14:29:23 nwhitehorn Exp $
 #
 
 #include <dev/ofw/openfirm.h>
@@ -229,7 +229,7 @@ METHOD int call_method {
 	int		_nargs;
 	int		_nreturns;
 
-	unsigned long	*_args_and_returns;
+	cell_t		*_args_and_returns;
 };
 
 /**

@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)signal.h	8.4 (Berkeley) 5/4/95
- * $FreeBSD: src/sys/sys/signal.h,v 1.60 2009/11/26 13:49:37 kib Exp $
+ * $FreeBSD: src/sys/sys/signal.h,v 1.63 2010/07/22 05:42:29 trasz Exp $
  */
 
 #ifndef _SYS_SIGNAL_H_
@@ -122,7 +122,7 @@
 /* #define	SIG_CATCH	((__sighandler_t *)2) See signalvar.h */
 #define SIG_HOLD        ((__sighandler_t *)3)
 
-/*-
+/*
  * Type of a signal handling function.
  *
  * Language spec sez signal handlers take exactly one arg, even though we

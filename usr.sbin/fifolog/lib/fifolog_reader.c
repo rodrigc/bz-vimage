@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/fifolog/lib/fifolog_reader.c,v 1.4 2010/05/15 08:57:16 phk Exp $
+ * $FreeBSD: src/usr.sbin/fifolog/lib/fifolog_reader.c,v 1.5 2010/07/10 11:40:31 keramida Exp $
  */
 
 #include <stdio.h>
@@ -304,8 +304,10 @@ fifolog_reader_process(struct fifolog_reader *fr, off_t from, fifolog_reader_ren
 			if (i == Z_STREAM_END) {
 				i = inflateReset(zs);
 			}
-			if (i != Z_OK)
+			if (i != Z_OK) {
 				fprintf(stderr, "inflate = %d\n", i);
+				exit (250);
+			}
 			assert(i == Z_OK);
 			if (zs->avail_out != fr->olen) {
 				q = fr->obuf + (fr->olen - zs->avail_out);

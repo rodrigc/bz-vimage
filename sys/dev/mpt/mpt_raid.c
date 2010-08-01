@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_raid.c,v 1.26 2010/02/26 12:31:16 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_raid.c,v 1.27 2010/06/29 22:07:53 ken Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_raid.h>
@@ -646,7 +646,7 @@ mpt_terminate_raid_thread(struct mpt_softc *mpt)
 		return;
 	}
 	mpt->shutdwn_raid = 1;
-	wakeup(mpt->raid_volumes);
+	wakeup(&mpt->raid_volumes);
 	/*
 	 * Sleep on a slightly different location
 	 * for this interlock just for added safety.

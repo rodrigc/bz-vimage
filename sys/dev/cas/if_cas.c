@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cas/if_cas.c,v 1.6 2010/06/03 12:09:02 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cas/if_cas.c,v 1.7 2010/07/21 10:05:07 attilio Exp $");
 
 /*
  * driver for Sun Cassini/Cassini+ and National Semiconductor DP83065
@@ -176,7 +176,7 @@ MODULE_DEPEND(cas, miibus, 1, 1, 1);
 
 #ifdef CAS_DEBUG
 #include <sys/ktr.h>
-#define	KTR_CAS		KTR_CT2
+#define	KTR_CAS		KTR_SPARE2
 #endif
 
 static int

@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/bsnmpd/modules/Makefile,v 1.16 2008/10/02 14:26:56 bms Exp $
+# $FreeBSD: src/usr.sbin/bsnmpd/modules/Makefile,v 1.17 2010/07/26 16:26:26 syrinx Exp $
 
 .include <bsd.own.mk>
 
@@ -12,7 +12,8 @@ SUBDIR=	${_snmp_atm} \
 	snmp_bridge \
 	snmp_hostres \
 	snmp_mibII \
-	snmp_pf
+	snmp_pf \
+	snmp_wlan
 
 .if ${MK_NETGRAPH_SUPPORT} != "no"
 SUBDIR+=snmp_netgraph

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_inode.c,v 1.70 2008/09/16 10:59:35 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_inode.c,v 1.71 2010/07/06 07:11:04 jeff Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -76,6 +76,7 @@ ufs_inactive(ap)
 	struct thread *td = ap->a_td;
 	mode_t mode;
 	int error = 0;
+	int isize;
 	struct mount *mp;
 
 	mp = NULL;
@@ -118,18 +119,21 @@ ufs_inactive(ap)
 			}
 		}
 	}
-	if (ip->i_effnlink == 0 && DOINGSOFTDEP(vp))
-		softdep_releasefile(ip);
-	if (ip->i_nlink <= 0 && !UFS_RDONLY(ip)) {
+	isize = ip->i_size;
+	if (ip->i_ump->um_fstype == UFS2)
+		isize += ip->i_din2->di_extsize;
+	if (ip->i_effnlink <= 0 && isize && !UFS_RDONLY(ip)) {
 #ifdef QUOTA
 		if (!getinoquota(ip))
 			(void)chkiq(ip, -1, NOCRED, FORCE);
 #endif
+		error = UFS_TRUNCATE(vp, (off_t)0, IO_EXT | IO_NORMAL,
+		    NOCRED, td);
+	}
+	if (ip->i_nlink <= 0 && ip->i_mode && !UFS_RDONLY(ip)) {
 #ifdef UFS_EXTATTR
 		ufs_extattr_vnode_inactive(vp, td);
 #endif
-		error = UFS_TRUNCATE(vp, (off_t)0, IO_EXT | IO_NORMAL,
-		    NOCRED, td);
 		/*
 		 * Setting the mode to zero needs to wait for the inode
 		 * to be written just as does a change to the link count.

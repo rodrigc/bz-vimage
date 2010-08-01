@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/clock.c,v 1.13 2008/09/03 17:39:19 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/clock.c,v 1.14 2010/07/29 12:08:46 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -81,14 +81,3 @@ delay_tick(int usec)
 	sched_unpin();
 }
 
-void
-cpu_startprofclock(void)
-{
-
-}
-
-void
-cpu_stopprofclock(void)
-{
-
-}

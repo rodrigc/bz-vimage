@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.7 2010/04/19 06:01:58 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.8 2010/07/30 09:38:47 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -103,3 +103,4 @@ ASSYM(MAXCOMLEN, MAXCOMLEN);
 ASSYM(MIPS_KSEG0_START, MIPS_KSEG0_START);
 ASSYM(MIPS_KSEG1_START, MIPS_KSEG1_START);
 ASSYM(MIPS_KSEG2_START, MIPS_KSEG2_START);
+ASSYM(MIPS_XKSEG_START, MIPS_XKSEG_START);

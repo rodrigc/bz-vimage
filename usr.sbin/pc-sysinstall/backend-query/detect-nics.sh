@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,19 +23,14 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/detect-nics.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/detect-nics.sh,v 1.3 2010/07/06 23:29:55 imp Exp $
 
-rm /tmp/netCards 2>/dev/null
-touch /tmp/netCards
-
-config="`ifconfig -l`"
-
-for i in $config
-do
- echo "${i}" | grep -e "lo0" -e "^fwe" -e "^fwip" -e "lo1" -e "^plip" -e "^pfsync" -e "^pflog" -e "^tun" >/dev/null 2>/dev/null
- if [ "$?" != "0" ]
- then
-   IDENT="<`dmesg | grep ^${i} | grep -v "miibus" | grep '<' | cut -d '<' -f 2 | cut -d '>' -f 1 | head -1`>"
-   echo "${i}: $IDENT"
- fi
+for i in $(ifconfig -l); do
+  case "${i%%[0-9]*}" in
+  lo|fwe|fwip|plip|pfsync|pflog|tun)
+    continue
+    ;;
+  esac
+  IDENT=$(dmesg | sed -n "s/^$i: <\(.*\)>.*$/\1/p" | head -1)
+  echo "${i}: <$IDENT>"
 done

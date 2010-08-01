@@ -36,7 +36,7 @@
  *	from: Utah Hdr: machparam.h 1.11 89/08/14
  *	from: @(#)param.h	8.1 (Berkeley) 6/10/93
  *	JNPR: param.h,v 1.6.2.1 2007/09/10 07:49:36 girish
- * $FreeBSD: src/sys/mips/include/param.h,v 1.14 2010/05/16 19:43:48 rrs Exp $
+ * $FreeBSD: src/sys/mips/include/param.h,v 1.15 2010/07/29 20:02:56 jchandra Exp $
  */
 
 #ifndef _MIPS_INCLUDE_PARAM_H_
@@ -103,8 +103,13 @@
 #define	PAGE_SHIFT	12		/* LOG2(PAGE_SIZE) */
 #define	PAGE_SIZE	(1<<PAGE_SHIFT) /* bytes/page */
 #define	PAGE_MASK	(PAGE_SIZE-1)
+
 #define	NPTEPG		(PAGE_SIZE/(sizeof (pt_entry_t)))
 #define	NPDEPG		(PAGE_SIZE/(sizeof (pd_entry_t)))
+
+#define	SEGSHIFT	22		/* LOG2(NBSEG) */
+#define	NBSEG		(1 << SEGSHIFT)	/* bytes/segment */
+#define	SEGMASK		(NBSEG-1)	/* byte offset into segment */
 
 #define	MAXPAGESIZES	1		/* maximum number of supported page sizes */
 

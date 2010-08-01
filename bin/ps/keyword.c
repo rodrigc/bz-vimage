@@ -33,7 +33,7 @@ static char sccsid[] = "@(#)keyword.c	8.5 (Berkeley) 4/2/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/ps/keyword.c,v 1.82 2010/03/17 22:57:58 jmallett Exp $");
+__FBSDID("$FreeBSD: src/bin/ps/keyword.c,v 1.83 2010/07/24 15:37:36 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -90,7 +90,7 @@ static VAR var[] = {
 		NULL, 0},
 	{"etime", "ELAPSED", NULL, USER, elapsed, NULL, 12, 0, CHAR, NULL, 0},
 	{"etimes", "ELAPSED", NULL, USER, elapseds, NULL, 12, 0, CHAR, NULL, 0},
-	{"f", "F", NULL, 0, kvar, NULL, 7, KOFF(ki_flag), INT, "x", 0},
+	{"f", "F", NULL, 0, kvar, NULL, 8, KOFF(ki_flag), INT, "x", 0},
 	{"flags", "", "f", 0, NULL, NULL, 0, 0, CHAR, NULL, 0},
 	{"ignored", "", "sigignore", 0, NULL, NULL, 0, 0, CHAR, NULL, 0},
 	{"inblk", "INBLK", NULL, USER, rvar, NULL, 4, ROFF(ru_inblock), LONG,
@@ -187,7 +187,7 @@ static VAR var[] = {
 		UINT, UIDFMT, 0},
 	{"svuid", "SVUID", NULL, 0, kvar, NULL, UIDLEN, KOFF(ki_svuid),
 		UINT, UIDFMT, 0},
-	{"tdev", "TDEV", NULL, 0, tdev, NULL, 4, 0, CHAR, NULL, 0},
+	{"tdev", "TDEV", NULL, 0, tdev, NULL, 5, 0, CHAR, NULL, 0},
 	{"tdnam", "TDNAM", NULL, LJUST, tdnam, NULL, COMMLEN, 0, CHAR, NULL, 0},
 	{"time", "TIME", NULL, USER, cputime, NULL, 9, 0, CHAR, NULL, 0},
 	{"tpgid", "TPGID", NULL, 0, kvar, NULL, 4, KOFF(ki_tpgid), UINT,

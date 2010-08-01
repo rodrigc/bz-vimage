@@ -8,7 +8,7 @@
  *  Copyright (c) 1984, 1989, William LeFebvre, Rice University
  *  Copyright (c) 1989, 1990, 1992, William LeFebvre, Northwestern University
  *
- * $FreeBSD: src/contrib/top/screen.c,v 1.3 2000/09/16 19:36:18 peter Exp $
+ * $FreeBSD: src/contrib/top/screen.c,v 1.4 2010/07/22 18:52:29 rpaulo Exp $
  */
 
 /*  This file contains the routines that interface to termcap and stty/gtty.
@@ -96,6 +96,7 @@ static int new_lword;
 #define	STDOUT	1
 #define	STDERR	2
 
+void
 init_termcap(interactive)
 
 int interactive;

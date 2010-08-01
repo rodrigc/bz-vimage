@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * $NetBSD: trap.h,v 1.7 2002/02/22 13:51:40 kleink Exp $
- * $FreeBSD: src/sys/powerpc/include/trap_aim.h,v 1.2 2009/04/19 06:30:00 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/trap_aim.h,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef	_POWERPC_TRAP_H_
@@ -39,7 +39,9 @@
 #define	EXC_RST		0x0100		/* Reset; all but IBM4xx */
 #define	EXC_MCHK	0x0200		/* Machine Check */
 #define	EXC_DSI		0x0300		/* Data Storage Interrupt */
+#define	EXC_DSE		0x0380		/* Data Segment Interrupt */
 #define	EXC_ISI		0x0400		/* Instruction Storage Interrupt */
+#define	EXC_ISE		0x0480		/* Instruction Segment Interrupt */
 #define	EXC_EXI		0x0500		/* External Interrupt */
 #define	EXC_ALI		0x0600		/* Alignment Interrupt */
 #define	EXC_PGM		0x0700		/* Program Interrupt */

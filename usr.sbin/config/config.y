@@ -69,7 +69,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)config.y	8.1 (Berkeley) 6/6/93
- * $FreeBSD: src/usr.sbin/config/config.y,v 1.82 2010/03/30 13:46:40 ru Exp $
+ * $FreeBSD: src/usr.sbin/config/config.y,v 1.83 2010/07/15 22:28:19 imp Exp $
  */
 
 #include <assert.h>
@@ -365,7 +365,8 @@ newdev(char *name)
 	struct device *np;
 
 	if (finddev(&dtab, name)) {
-		printf("WARNING: duplicate device `%s' encountered.\n", name);
+		fprintf(stderr,
+		    "WARNING: duplicate device `%s' encountered.\n", name);
 		return;
 	}
 
@@ -425,7 +426,8 @@ newopt(struct opt_head *list, char *name, char *value, int append)
 
 	op2 = findopt(list, name);
 	if (op2 != NULL && !append) {
-		printf("WARNING: duplicate option `%s' encountered.\n", name);
+		fprintf(stderr,
+		    "WARNING: duplicate option `%s' encountered.\n", name);
 		return;
 	}
 

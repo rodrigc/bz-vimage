@@ -27,7 +27,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)fsck.8	8.4 (Berkeley) 5/9/95
-.\" $FreeBSD: src/sbin/fsck_ffs/fsck_ffs.8,v 1.40 2009/02/04 01:02:56 mckusick Exp $
+.\" $FreeBSD: src/sbin/fsck_ffs/fsck_ffs.8,v 1.41 2010/07/23 14:35:51 mckusick Exp $
 .\"
 .Dd January 25, 2009
 .Dt FSCK_FFS 8
@@ -315,6 +315,15 @@ If the
 .Pa lost+found
 directory does not exist, it is created.
 If there is insufficient space its size is increased.
+.Pp
+The full foreground
+.Nm
+checks for many more problems that may occur after an
+unrecoverable disk write error.
+Thus, it is recommended that you perform foreground
+.Nm
+on your systems periodically and whenever you encounter
+unrecoverable disk write errors or file-system\-related panics.
 .Sh FILES
 .Bl -tag -width /etc/fstab -compact
 .It Pa /etc/fstab

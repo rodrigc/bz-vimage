@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	8.3 (Berkeley) 1/7/94
-# $FreeBSD: src/usr.bin/Makefile,v 1.335 2010/06/09 19:57:20 rdivacky Exp $
+# $FreeBSD: src/usr.bin/Makefile,v 1.336 2010/07/22 19:11:57 gabor Exp $
 
 .include <bsd.own.mk>
 
@@ -79,6 +79,7 @@ SUBDIR=	alias \
 	getent \
 	getopt \
 	${_gprof} \
+	${_grep} \
 	gzip \
 	head \
 	${_hesinfo} \
@@ -282,6 +283,10 @@ _calendar=	calendar
 
 .if ${MK_CLANG} != "no"
 _clang=		clang
+.endif
+
+.if ${MK_GNU_GREP} != "yes"
+_grep=		grep
 .endif
 
 .if ${MK_HESIOD} != "no"

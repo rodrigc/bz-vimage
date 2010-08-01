@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  *
  *	from BSDI $Id$
- * $FreeBSD: src/sys/sys/ktr.h,v 1.40 2009/06/21 09:01:12 rdivacky Exp $
+ * $FreeBSD: src/sys/sys/ktr.h,v 1.42 2010/07/24 10:07:17 mav Exp $
  */
 
 /*
@@ -76,19 +76,6 @@
 #define	KTR_SCHED	0x20000000		/* Machine parsed sched info. */
 #define	KTR_BUF		0x40000000		/* Buffer cache */
 #define	KTR_ALL		0x7fffffff
-
-/*
- * Trace classes which can be assigned to particular use at compile time
- * These must remain in high 22 as some assembly code counts on it
- */
-#define KTR_CT1		0x01000000
-#define KTR_CT2		0x02000000
-#define KTR_CT3		0x04000000
-#define KTR_CT4		0x08000000
-#define KTR_CT5		0x10000000
-#define KTR_CT6		0x20000000
-#define KTR_CT7		0x40000000
-#define KTR_CT8		0x80000000
 
 /* Trace classes to compile in */
 #ifdef KTR
@@ -201,7 +188,7 @@ void	ktr_tracepoint(u_int mask, const char *file, int line,
 	    ident, edat, (v0), (v1), (v2))
 #define	KTR_EVENT4(m, egroup, ident, etype, edat,			\
 	    a0, v0, a1, v1, a2, v2, a3, v3)				\
-	CTR6(m,KTR_EFMT(egroup, ident, etype) a0 ", " a1 ", " a2, ", ", a3,\
+	CTR6(m,KTR_EFMT(egroup, ident, etype) a0 ", " a1 ", " a2 ", " a3,\
 	     ident, edat, (v0), (v1), (v2), (v3))
 
 /*

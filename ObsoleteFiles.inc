@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/ObsoleteFiles.inc,v 1.236 2010/05/14 20:40:37 delphij Exp $
+# $FreeBSD: src/ObsoleteFiles.inc,v 1.240 2010/07/27 14:26:38 rpaulo Exp $
 #
 # This file lists old files (OLD_FILES), libraries (OLD_LIBS) and
 # directories (OLD_DIRS) which should get removed at an update. Recently
@@ -14,6 +14,22 @@
 # The file is partitioned: OLD_FILES first, then OLD_LIBS and OLD_DIRS last.
 #
 
+# 20100725: acpi_aiboost(4) removal.
+OLD_FILES+=usr/share/man/man4/acpi_aiboost.4.gz
+# 20100720: new clang import which bumps version from 2.0 to 2.8
+OLD_FILES+=usr/include/clang/2.0/emmintrin.h
+OLD_FILES+=usr/include/clang/2.0/mm_malloc.h
+OLD_FILES+=usr/include/clang/2.0/mmintrin.h
+OLD_FILES+=usr/include/clang/2.0/pmmintrin.h
+OLD_FILES+=usr/include/clang/2.0/tmmintrin.h
+OLD_FILES+=usr/include/clang/2.0/xmmintrin.h
+OLD_DIRS+=usr/include/clang/2.0
+# 20100706: removed pc-sysinstall's detect-vmware.sh
+OLD_FILES+=usr/share/pc-sysinstall/backend-query/detect-vmware.sh
+# 20100701: [powerpc] removed <machine/intr.h>
+.if ${TARGET_ARCH} == "powerpc"
+OLD_FILES+=usr/include/machine/intr.h
+.endif
 # 20100514: library version bump for versioned symbols for liblzma
 OLD_LIBS+=usr/lib/liblzma.so.0
 .if ${TARGET_ARCH} == "amd64"

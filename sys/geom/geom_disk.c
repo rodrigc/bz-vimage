@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.111 2009/09/04 09:39:06 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.112 2010/07/25 15:43:52 mav Exp $");
 
 #include "opt_geom.h"
 
@@ -304,6 +304,18 @@ g_disk_start(struct bio *bp)
 		else if (g_handleattr_off_t(bp, "GEOM::frontstuff", 0))
 			break;
 		else if (g_handleattr_str(bp, "GEOM::ident", dp->d_ident))
+			break;
+		else if (g_handleattr(bp, "GEOM::hba_vendor",
+		    &dp->d_hba_vendor, 2))
+			break;
+		else if (g_handleattr(bp, "GEOM::hba_device",
+		    &dp->d_hba_device, 2))
+			break;
+		else if (g_handleattr(bp, "GEOM::hba_subvendor",
+		    &dp->d_hba_subvendor, 2))
+			break;
+		else if (g_handleattr(bp, "GEOM::hba_subdevice",
+		    &dp->d_hba_subdevice, 2))
 			break;
 		else if (!strcmp(bp->bio_attribute, "GEOM::kerneldump"))
 			g_disk_kerneldump(bp, dp);

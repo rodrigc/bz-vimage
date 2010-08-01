@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.4 2010/01/26 22:32:22 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.5 2010/06/30 21:05:51 jfv Exp $*/
 
 #ifndef _E1000_API_H_
 #define _E1000_API_H_
@@ -55,6 +55,7 @@ s32  e1000_setup_init_funcs(struct e1000_hw *hw, bool init_device);
 s32  e1000_init_mac_params(struct e1000_hw *hw);
 s32  e1000_init_nvm_params(struct e1000_hw *hw);
 s32  e1000_init_phy_params(struct e1000_hw *hw);
+s32  e1000_init_mbx_params(struct e1000_hw *hw);
 s32  e1000_get_bus_info(struct e1000_hw *hw);
 void e1000_clear_vfta(struct e1000_hw *hw);
 void e1000_write_vfta(struct e1000_hw *hw, u32 offset, u32 value);

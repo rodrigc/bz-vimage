@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnfsiod.c,v 1.3 2010/04/22 23:51:01 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnfsiod.c,v 1.4 2010/07/24 22:11:11 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -67,7 +67,6 @@ __FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnfsiod.c,v 1.3 2010/04/22 23:51:0
 #include <fs/nfsclient/nfsmount.h>
 #include <fs/nfsclient/nfs.h>
 #include <fs/nfsclient/nfsnode.h>
-#include <fs/nfsclient/nfs_lock.h>
 
 extern struct mtx ncl_iod_mutex;
 

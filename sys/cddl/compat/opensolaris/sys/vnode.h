@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/vnode.h,v 1.14 2009/10/30 23:33:06 pjd Exp $
+ * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/vnode.h,v 1.15 2010/07/12 23:49:04 mm Exp $
  */
 
 #ifndef _OPENSOLARIS_SYS_VNODE_H_
@@ -49,6 +49,7 @@ enum symfollow { NO_FOLLOW = NOFOLLOW };
 #include <sys/syscallsubr.h>
 
 typedef	struct vop_vector	vnodeops_t;
+#define	VOP_FID		VOP_VPTOFH
 #define	vop_fid		vop_vptofh
 #define	vop_fid_args	vop_vptofh_args
 #define	a_fid		a_fhp

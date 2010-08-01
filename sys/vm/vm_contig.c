@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_contig.c,v 1.82 2010/06/04 06:35:36 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_contig.c,v 1.83 2010/07/02 15:02:51 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -175,7 +175,7 @@ vm_contig_launder(int queue, vm_paddr_t low, vm_paddr_t high)
 			vm_page_unlock(m);
 			continue;
 		}
-		KASSERT(VM_PAGE_INQUEUE2(m, queue),
+		KASSERT(m->queue == queue,
 		    ("vm_contig_launder: page %p's queue is not %d", m, queue));
 		error = vm_contig_launder_page(m, &next);
 		vm_page_lock_assert(m, MA_NOTOWNED);

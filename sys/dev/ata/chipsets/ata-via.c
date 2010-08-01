@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-via.c,v 1.10 2009/12/20 16:23:11 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-via.c,v 1.11 2010/07/10 15:36:27 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -290,9 +290,12 @@ ata_via_reset(device_t dev)
 
     if ((ctlr->chip->cfg2 & VIABAR) && (ch->unit > 1))
         ata_generic_reset(dev);
-    else
+    else {
 	if (ata_sata_phy_reset(dev, -1, 1))
 	    ata_generic_reset(dev);
+	else
+	    ch->devices = 0;
+    }
 }
 
 static int

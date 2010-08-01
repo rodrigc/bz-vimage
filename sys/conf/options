@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options,v 1.705 2010/06/09 12:25:57 ae Exp $
+# $FreeBSD: src/sys/conf/options,v 1.706 2010/07/28 15:36:12 mdf Exp $
 #
 #        On the handling of kernel options
 #
@@ -586,6 +586,7 @@ VM_LEVEL_0_ORDER	opt_vm.h
 NO_SWAPPING		opt_vm.h
 MALLOC_MAKE_FAILURES	opt_vm.h
 MALLOC_PROFILE		opt_vm.h
+MALLOC_DEBUG_MAXZONES	opt_vm.h
 
 # The MemGuard replacement allocator used for tamper-after-free detection
 DEBUG_MEMGUARD		opt_vm.h

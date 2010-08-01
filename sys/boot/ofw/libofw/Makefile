@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/ofw/libofw/Makefile,v 1.13 2008/09/19 19:49:58 sobomax Exp $
+# $FreeBSD: src/sys/boot/ofw/libofw/Makefile,v 1.14 2010/07/12 00:49:22 nwhitehorn Exp $
 
 LIB=		ofw
 INTERNALLIB=
@@ -13,8 +13,9 @@ CFLAGS+=	-I${.CURDIR}/../../../../lib/libstand/
 CFLAGS+=	-I${.CURDIR}/../../common -I${.CURDIR}/../../.. -I.
 
 CFLAGS+=	-ffreestanding
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_ARCH} == "powerpc" || ${MACHINE_ARCH} == "powerpc64"
 CFLAGS+=	-msoft-float
+SRCS+=		ppc64_elf_freebsd.c
 .endif
 
 .ifdef(BOOT_DISK_DEBUG)

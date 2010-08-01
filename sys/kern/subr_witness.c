@@ -85,7 +85,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.275 2010/06/21 21:15:51 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.276 2010/07/29 16:13:26 rpaulo Exp $");
 
 #include "opt_ddb.h"
 #include "opt_hwpmc_hooks.h"
@@ -135,7 +135,7 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.275 2010/06/21 21:15:51 mav 
 #define	WITNESS_COUNT 		1024
 #define	WITNESS_CHILDCOUNT 	(WITNESS_COUNT * 4)
 #define	WITNESS_HASH_SIZE	251	/* Prime, gives load factor < 2 */
-#define	WITNESS_PENDLIST	512
+#define	WITNESS_PENDLIST	768
 
 /* Allocate 256 KB of stack data space */
 #define	WITNESS_LO_DATA_COUNT	2048

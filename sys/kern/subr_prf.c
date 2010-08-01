@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_prf.c,v 1.139 2009/11/03 21:06:19 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_prf.c,v 1.141 2010/07/12 15:32:45 jkim Exp $");
 
 #include "opt_ddb.h"
 #include "opt_printf.h"
@@ -800,7 +800,8 @@ number:
 				neg = 1;
 				num = -(intmax_t)num;
 			}
-			p = ksprintn(nbuf, num, base, &tmp, upper);
+			p = ksprintn(nbuf, num, base, &n, upper);
+			tmp = 0;
 			if (sharpflag && num != 0) {
 				if (base == 8)
 					tmp++;
@@ -810,10 +811,13 @@ number:
 			if (neg)
 				tmp++;
 
-			if (!ladjust && padc != '0' && width
-			    && (width -= tmp) > 0)
-				while (width--)
-					PCHAR(padc);
+			if (!ladjust && padc == '0')
+				dwidth = width - tmp;
+			width -= tmp + imax(dwidth, n);
+			dwidth -= n;
+			if (!ladjust)
+				while (width-- > 0)
+					PCHAR(' ');
 			if (neg)
 				PCHAR('-');
 			if (sharpflag && num != 0) {
@@ -824,16 +828,15 @@ number:
 					PCHAR('x');
 				}
 			}
-			if (!ladjust && width && (width -= tmp) > 0)
-				while (width--)
-					PCHAR(padc);
+			while (dwidth-- > 0)
+				PCHAR('0');
 
 			while (*p)
 				PCHAR(*p--);
 
-			if (ladjust && width && (width -= tmp) > 0)
-				while (width--)
-					PCHAR(padc);
+			if (ladjust)
+				while (width-- > 0)
+					PCHAR(' ');
 
 			break;
 		default:

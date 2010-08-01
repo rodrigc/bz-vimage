@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)radix.c	8.5 (Berkeley) 5/19/95
- * $FreeBSD: src/sys/net/radix.c,v 1.49 2010/03/09 01:11:45 qingli Exp $
+ * $FreeBSD: src/sys/net/radix.c,v 1.50 2010/07/15 14:41:59 luigi Exp $
  */
 
 /*
@@ -50,8 +50,8 @@
 #include <stdio.h>
 #include <strings.h>
 #include <stdlib.h>
-#define log(x, arg...)  fprintf(stderr, ## arg)
-#define panic(x)        fprintf(stderr, "PANIC: %s", x), exit(1)
+#define log(x, arg...)	fprintf(stderr, ## arg)
+#define panic(x)	fprintf(stderr, "PANIC: %s", x), exit(1)
 #define min(a, b) ((a) < (b) ? (a) : (b) )
 #include <net/radix.h>
 #endif /* !_KERNEL */

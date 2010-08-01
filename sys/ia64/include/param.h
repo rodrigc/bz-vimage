@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/ia64/include/param.h,v 1.34 2009/12/07 00:54:02 marcel Exp $ */
+/* $FreeBSD: src/sys/ia64/include/param.h,v 1.35 2010/07/22 09:13:49 kib Exp $ */
 /* From: NetBSD: param.h,v 1.20 1997/09/19 13:52:53 leo Exp */
 
 /*-
@@ -56,6 +56,9 @@
 #endif
 #ifndef MACHINE_ARCH
 #define	MACHINE_ARCH	"ia64"
+#endif
+#ifndef MACHINE_ARCH32
+#define	MACHINE_ARCH32	"i386"
 #endif
 
 #if defined(SMP) || defined(KLD_MODULE)

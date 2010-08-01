@@ -33,7 +33,7 @@
  *
  *	@(#)machAsmDefs.h	8.1 (Berkeley) 6/10/93
  *	JNPR: asm.h,v 1.10 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/asm.h,v 1.7 2010/06/24 08:08:43 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/asm.h,v 1.8 2010/07/16 06:35:17 imp Exp $
  */
 
 /*
@@ -843,4 +843,18 @@ _C_LABEL(x):
 
 #define _JB_SIGMASK		13
 
+/*
+ * Various macros for dealing with TLB hazards
+ * (a) why so many?
+ * (b) when to use?
+ * (c) why not used everywhere?
+ */
+/*
+ * Assume that w alaways need nops to escape CP0 hazard
+ * TODO: Make hazard delays configurable. Stuck with 5 cycles on the moment
+ * For more info on CP0 hazards see Chapter 7 (p.99) of "MIPS32 Architecture 
+ *    For Programmers Volume III: The MIPS32 Privileged Resource Architecture"
+ */
+#define	ITLBNOPFIX	nop;nop;nop;nop;nop;nop;nop;nop;nop;nop;
+#define	HAZARD_DELAY	nop;nop;nop;nop;nop;
 #endif /* !_MACHINE_ASM_H_ */

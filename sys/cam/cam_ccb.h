@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.46 2010/05/26 22:49:42 mjacob Exp $
+ * $FreeBSD: src/sys/cam/cam_ccb.h,v 1.47 2010/07/25 15:43:52 mav Exp $
  */
 
 #ifndef _CAM_CAM_CCB_H
@@ -596,6 +596,10 @@ struct ccb_pathinq {
 		char ccb_pathinq_settings_opaque[PATHINQ_SETTINGS_SIZE];
 	} xport_specific;
 	u_int		maxio;		/* Max supported I/O size, in bytes. */
+	u_int16_t	hba_vendor;	/* HBA vendor ID */
+	u_int16_t	hba_device;	/* HBA device ID */
+	u_int16_t	hba_subvendor;	/* HBA subvendor ID */
+	u_int16_t	hba_subdevice;	/* HBA subdevice ID */
 };
 
 /* Path Statistics CCB */

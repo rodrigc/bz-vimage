@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: asm.h,v 1.6.18.1 2000/07/25 08:37:14 kleink Exp $
- * $FreeBSD: src/sys/powerpc/include/asm.h,v 1.11 2008/04/03 17:40:20 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/include/asm.h,v 1.14 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_ASM_H_
@@ -53,17 +53,34 @@
 #define PIC_GOT(x)	x
 #endif
 
+#ifdef __powerpc64__
+#undef	PIC_PLT
+#define	PIC_PLT(x)	__CONCAT(.,x)
+#endif
+
 #define	CNAME(csym)		csym
 #define	ASMNAME(asmsym)		asmsym
+#ifdef __powerpc64__
+#define	HIDENAME(asmsym)	__CONCAT(_,asmsym)
+#else
 #define	HIDENAME(asmsym)	__CONCAT(.,asmsym)
+#endif
 
 #define	_GLOBAL(x) \
 	.data; .align 2; .globl x; x:
 
+#ifdef __powerpc64__ 
+#define _ENTRY(x) \
+	.text; .align 2; .globl x; .section ".opd","aw"; \
+	.align 3; x: \
+	    .quad .x,.TOC.@tocbase,0; .previous; \
+	.align 4; .globl .x; .type .x,@function; .x:
+#else
 #define	_ENTRY(x) \
 	.text; .align 4; .globl x; .type x,@function; x:
+#endif
 
-#ifdef GPROF
+#if defined(PROF) || (defined(_KERNEL) && defined(GPROF))
 # define	_PROF_PROLOGUE	mflr 0; stw 0,4(1); bl _mcount
 #else
 # define	_PROF_PROLOGUE

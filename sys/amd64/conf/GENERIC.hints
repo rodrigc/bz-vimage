@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/amd64/conf/GENERIC.hints,v 1.21 2009/06/15 21:55:29 ps Exp $
+# $FreeBSD: src/sys/amd64/conf/GENERIC.hints,v 1.22 2010/07/16 23:21:46 mav Exp $
 hint.fdc.0.at="isa"
 hint.fdc.0.port="0x3F0"
 hint.fdc.0.irq="6"
@@ -27,3 +27,6 @@ hint.ppc.0.irq="7"
 hint.atrtc.0.at="isa"
 hint.atrtc.0.port="0x70"
 hint.atrtc.0.irq="8"
+hint.attimer.0.at="isa"
+hint.attimer.0.port="0x40"
+hint.attimer.0.irq="0"

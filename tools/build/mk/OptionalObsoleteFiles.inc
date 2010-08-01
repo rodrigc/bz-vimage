@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/tools/build/mk/OptionalObsoleteFiles.inc,v 1.66 2010/06/17 12:37:50 netchild Exp $
+# $FreeBSD: src/tools/build/mk/OptionalObsoleteFiles.inc,v 1.67 2010/07/21 08:27:56 ed Exp $
 #
 # This file add support for the WITHOUT_* and WITH_* knobs in src.conf(5) to
 # the check-old and delete-old* targets.
@@ -630,12 +630,12 @@ OLD_FILES+=usr/share/man/man8/zpool.8.gz
 OLD_FILES+=usr/bin/clang
 OLD_FILES+=usr/bin/clang++
 OLD_FILES+=usr/bin/tblgen
-OLD_FILES+=usr/include/clang/2.0/emmintrin.h
-OLD_FILES+=usr/include/clang/2.0/mm_malloc.h
-OLD_FILES+=usr/include/clang/2.0/mmintrin.h
-OLD_FILES+=usr/include/clang/2.0/pmmintrin.h
-OLD_FILES+=usr/include/clang/2.0/tmmintrin.h
-OLD_FILES+=usr/include/clang/2.0/xmmintrin.h
+OLD_FILES+=usr/include/clang/2.8/emmintrin.h
+OLD_FILES+=usr/include/clang/2.8/mm_malloc.h
+OLD_FILES+=usr/include/clang/2.8/mmintrin.h
+OLD_FILES+=usr/include/clang/2.8/pmmintrin.h
+OLD_FILES+=usr/include/clang/2.8/tmmintrin.h
+OLD_FILES+=usr/include/clang/2.8/xmmintrin.h
 .endif
 
 .if ${MK_CPP} == no

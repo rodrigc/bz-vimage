@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/devd/devd.hh,v 1.5 2007/12/21 01:00:04 imp Exp $
+ * $FreeBSD: src/sbin/devd/devd.hh,v 1.6 2010/06/29 03:52:12 imp Exp $
  */
 
 #ifndef DEVD_HH
@@ -153,6 +153,7 @@ public:
 	void set_pidfile(const char *);
 	void reset();
 	void parse();
+	void close_pidfile();
 	void open_pidfile();
 	void write_pidfile();
 	void remove_pidfile();

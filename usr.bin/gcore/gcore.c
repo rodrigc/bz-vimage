@@ -43,7 +43,7 @@ static char sccsid[] = "@(#)gcore.c	8.2 (Berkeley) 9/23/93";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/gcore/gcore.c,v 1.35 2010/02/05 18:28:43 mjacob Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/gcore/gcore.c,v 1.36 2010/07/14 17:16:25 attilio Exp $");
 
 /*
  * Originally written by Eric Cooper in Fall 1981.
@@ -71,7 +71,7 @@ __FBSDID("$FreeBSD: src/usr.bin/gcore/gcore.c,v 1.35 2010/02/05 18:28:43 mjacob 
 #include <unistd.h>
 
 #include "extern.h"
-int sflag;
+int pflags;
 
 static void	killed(int);
 static void	usage(void) __dead2;
@@ -89,15 +89,18 @@ main(int argc, char *argv[])
 	struct dumpers **d, *dumper;
 	size_t len;
 
-	sflag = 0;
+	pflags = 0;
 	corefile = NULL;
-        while ((ch = getopt(argc, argv, "c:s")) != -1) {
+        while ((ch = getopt(argc, argv, "c:fs")) != -1) {
                 switch (ch) {
                 case 'c':
 			corefile = optarg;
                         break;
+		case 'f':
+			pflags |= PFLAGS_FULL;
+			break;
 		case 's':
-			sflag = 1;
+			pflags |= PFLAGS_RESUME;
 			break;
 		default:
 			usage();

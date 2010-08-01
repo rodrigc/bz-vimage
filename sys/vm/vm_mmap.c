@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.241 2010/05/26 18:00:44 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.242 2010/07/27 19:26:18 trasz Exp $");
 
 #include "opt_compat.h"
 #include "opt_hwpmc_hooks.h"
@@ -1082,8 +1082,7 @@ mlockall(td, uap)
 	 * a hard resource limit, return ENOMEM.
 	 */
 	PROC_LOCK(td->td_proc);
-	if (map->size - ptoa(pmap_wired_count(vm_map_pmap(map)) >
-		lim_cur(td->td_proc, RLIMIT_MEMLOCK))) {
+	if (map->size > lim_cur(td->td_proc, RLIMIT_MEMLOCK)) {
 		PROC_UNLOCK(td->td_proc);
 		return (ENOMEM);
 	}

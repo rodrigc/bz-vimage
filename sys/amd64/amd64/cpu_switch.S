@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.170 2010/06/05 15:59:59 kib Exp $
+ * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.175 2010/07/29 16:49:20 jkim Exp $
  */
 
 #include <machine/asmacros.h>
@@ -69,16 +69,13 @@
  * %rsi = newtd
  */
 ENTRY(cpu_throw)
+	movl	PCPU(CPUID),%eax
 	testq	%rdi,%rdi
-	jnz	1f
-	movq	PCPU(IDLETHREAD),%rdi
-1:
-	movq	TD_PCB(%rdi),%r8		/* Old pcb */
-	movl	PCPU(CPUID), %eax
+	jz	1f
 	/* release bit from old pm_active */
-	movq	TD_PROC(%rdi), %rdx		/* oldtd->td_proc */
-	movq	P_VMSPACE(%rdx), %rdx		/* proc->p_vmspace */
-	LK btrl	%eax, VM_PMAP+PM_ACTIVE(%rdx)	/* clear old */
+	movq	PCPU(CURPMAP),%rdx
+	LK btrl	%eax,PM_ACTIVE(%rdx)		/* clear old */
+1:
 	movq	TD_PCB(%rsi),%r8		/* newtd->td_proc */
 	movq	PCB_CR3(%r8),%rdx
 	movq	%rdx,%cr3			/* new address space */
@@ -140,15 +137,16 @@ swinact:
 	movq	%rcx,%cr3			/* new address space */
 	movl	PCPU(CPUID), %eax
 	/* Release bit from old pmap->pm_active */
-	movq	TD_PROC(%rdi), %rcx		/* oldproc */
-	movq	P_VMSPACE(%rcx), %rcx
-	LK btrl	%eax, VM_PMAP+PM_ACTIVE(%rcx)	/* clear old */
+	movq	PCPU(CURPMAP),%rcx
+	LK btrl	%eax,PM_ACTIVE(%rcx)		/* clear old */
 	SETLK	%rdx, TD_LOCK(%rdi)		/* Release the old thread */
 swact:
 	/* Set bit in new pmap->pm_active */
 	movq	TD_PROC(%rsi),%rdx		/* newproc */
 	movq	P_VMSPACE(%rdx), %rdx
-	LK btsl	%eax, VM_PMAP+PM_ACTIVE(%rdx)	/* set new */
+	addq	$VM_PMAP,%rdx
+	LK btsl	%eax,PM_ACTIVE(%rdx)		/* set new */
+	movq	%rdx,PCPU(CURPMAP)
 
 sw1:
 #if defined(SCHED_ULE) && defined(SMP)
@@ -245,13 +243,13 @@ store_dr:
 	movq	%dr2,%r13
 	movq	%dr3,%r12
 	movq	%dr6,%r11
-	andq	$0x0000fc00, %rax		/* disable all watchpoints */
 	movq	%r15,PCB_DR0(%r8)
 	movq	%r14,PCB_DR1(%r8)
 	movq	%r13,PCB_DR2(%r8)
 	movq	%r12,PCB_DR3(%r8)
 	movq	%r11,PCB_DR6(%r8)
 	movq	%rax,PCB_DR7(%r8)
+	andq	$0x0000fc00, %rax		/* disable all watchpoints */
 	movq	%rax,%dr7
 	jmp	done_store_dr
 
@@ -349,7 +347,7 @@ ENTRY(savectx)
 	lmsw	%ax
 
 	movq	$PCB_SAVEFPU_SIZE,%rdx	/* arg 3 */
-	movq	PCB_SAVEFPU(%rcx),%rsi	/* arg 2 */
+	leaq	PCB_USERFPU(%rcx),%rsi	/* arg 2 */
 	/* arg 1 (%rdi) already loaded */
 	call	bcopy
 1:
@@ -418,6 +416,13 @@ ENTRY(savectx2)
 	shlq	$32,%rdx
 	leaq	(%rax,%rdx),%rax
 	movq	%rax,XPCB_KGSBASE(%r8)
+
+	movq	PCPU(FPCURTHREAD),%rax
+	testq	%rax,%rax
+	je	1f
+	clts
+	fxsave	PCB_USERFPU(%r8)
+1:
 
 	movl	$1, %eax
 	ret

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iicbus/iicbus.c,v 1.29 2009/02/10 22:50:23 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iicbus/iicbus.c,v 1.30 2010/07/08 14:19:52 nwhitehorn Exp $");
 
 /*
  * Autoconfiguration and support routines for the Philips serial I2C bus
@@ -181,7 +181,7 @@ iicbus_read_ivar(device_t bus, device_t child, int which, uintptr_t *result)
 	default:
 		return (EINVAL);
 	case IICBUS_IVAR_ADDR:
-		*(uint32_t *)result = devi->addr;
+		*result = devi->addr;
 		break;
 	}
 	return (0);

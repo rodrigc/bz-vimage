@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.251 2010/06/08 16:17:25 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.252 2010/06/29 17:10:55 mjacob Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -2683,9 +2683,7 @@ xpt_action_default(union ccb *start_ccb)
 			xptedtmatch(cdm);
 			break;
 		case CAM_DEV_POS_PDRV:
-			xpt_lock_buses();
 			xptperiphlistmatch(cdm);
-			xpt_unlock_buses();
 			break;
 		default:
 			cdm->status = CAM_DEV_MATCH_ERROR;

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libjail/jail_getid.c,v 1.1 2009/06/24 18:18:35 jamie Exp $");
+__FBSDID("$FreeBSD: src/lib/libjail/jail_getid.c,v 1.2 2010/07/15 19:21:33 jamie Exp $");
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -94,11 +94,15 @@ jail_getname(int jid)
 	jiov[5].iov_len = JAIL_ERRMSGLEN;
 	jail_errmsg[0] = 0;
 	jid = jail_get(jiov, 6, 0);
-	if (jid < 0 && !jail_errmsg[0])
-		snprintf(jail_errmsg, JAIL_ERRMSGLEN, "jail_get: %s",
-		    strerror(errno));
-	name = strdup(namebuf);
-	if (name == NULL)
-		strerror_r(errno, jail_errmsg, JAIL_ERRMSGLEN);
+	if (jid < 0) {
+		if (!jail_errmsg[0])
+			snprintf(jail_errmsg, JAIL_ERRMSGLEN, "jail_get: %s",
+			    strerror(errno));
+		return NULL;
+	} else {
+		name = strdup(namebuf);
+		if (name == NULL)
+			strerror_r(errno, jail_errmsg, JAIL_ERRMSGLEN);
+	}
 	return name;
 }

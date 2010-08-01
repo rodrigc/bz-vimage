@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.219 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.220 2010/07/31 21:33:18 bz Exp $");
 
 #include "opt_inet.h"
 #include "opt_carp.h"
@@ -163,12 +163,10 @@ static void
 arptimer(void *arg)
 {
 	struct ifnet *ifp;
-	struct llentry   *lle = (struct llentry *)arg;
+	struct llentry   *lle;
 
-	if (lle == NULL) {
-		panic("%s: NULL entry!\n", __func__);
-		return;
-	}
+	KASSERT(arg != NULL, ("%s: arg NULL", __func__));
+	lle = (struct llentry *)arg;
 	ifp = lle->lle_tbl->llt_ifp;
 	CURVNET_SET(ifp->if_vnet);
 	IF_AFDATA_LOCK(ifp);

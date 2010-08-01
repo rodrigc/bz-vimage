@@ -1,9 +1,11 @@
-# $FreeBSD: src/lib/clang/libllvmbitwriter/Makefile,v 1.2 2010/06/15 17:08:03 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmbitwriter/Makefile,v 1.3 2010/07/20 17:16:57 ed Exp $
 
 LIB=	llvmbitwriter
 
 SRCDIR=	lib/Bitcode/Writer
-SRCS=	BitcodeWriter.cpp BitcodeWriterPass.cpp \
+SRCS=	BitWriter.cpp \
+	BitcodeWriter.cpp \
+	BitcodeWriterPass.cpp \
 	ValueEnumerator.cpp
 
 .include "../clang.lib.mk"

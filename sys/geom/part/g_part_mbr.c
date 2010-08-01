@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.14 2010/04/23 03:11:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.15 2010/06/26 13:20:40 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -125,6 +125,11 @@ mbr_parse_type(const char *type, u_char *dp_typ)
 	alias = g_part_alias_name(G_PART_ALIAS_FREEBSD);
 	if (!strcasecmp(type, alias)) {
 		*dp_typ = DOSPTYP_386BSD;
+		return (0);
+	}
+	alias = g_part_alias_name(G_PART_ALIAS_MS_NTFS);
+	if (!strcasecmp(type, alias)) {
+		*dp_typ = DOSPTYP_NTFS;
 		return (0);
 	}
 	return (EINVAL);
@@ -509,9 +514,14 @@ g_part_mbr_type(struct g_part_table *basetable, struct g_part_entry *baseentry,
 
 	entry = (struct g_part_mbr_entry *)baseentry;
 	type = entry->ent.dp_typ;
-	if (type == DOSPTYP_386BSD)
+	switch (type) {
+	case DOSPTYP_386BSD:
 		return (g_part_alias_name(G_PART_ALIAS_FREEBSD));
-	snprintf(buf, bufsz, "!%d", type);
+	case DOSPTYP_NTFS:
+		return (g_part_alias_name(G_PART_ALIAS_MS_NTFS));
+	default:
+		snprintf(buf, bufsz, "!%d", type);
+	}
 	return (buf);
 }
 

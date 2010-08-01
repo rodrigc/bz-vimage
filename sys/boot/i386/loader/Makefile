@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/loader/Makefile,v 1.91 2009/11/23 16:00:16 rnoland Exp $
+# $FreeBSD: src/sys/boot/i386/loader/Makefile,v 1.92 2010/07/22 18:57:47 rpaulo Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -115,7 +115,7 @@ FILES+=	loader.rc
 OBJS=	${BTXCRT} 
 
 DPADD=	${LIBFICL} ${LIBFIREWIRE} ${LIBZFS} ${LIBI386} ${LIBSTAND}
-LDADD=	${LIBFICL} ${LIBFIREWIRE} ${LIBZFS} ${LIBI386} -lstand
+LDADD=	${LIBFICL} ${LIBFIREWIRE} ${LIBZFS} ${LIBI386} ${LIBSTAND}
 
 .include <bsd.prog.mk>
 

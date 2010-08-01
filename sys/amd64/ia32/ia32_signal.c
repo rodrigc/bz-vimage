@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.29 2010/06/17 12:35:17 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.30 2010/06/30 18:03:42 jhb Exp $");
 
 #include "opt_compat.h"
 
@@ -55,6 +55,7 @@ __FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.29 2010/06/17 12:35:17 
 #include <sys/stat.h>
 #include <sys/sx.h>
 #include <sys/syscall.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysctl.h>
 #include <sys/sysent.h>
 #include <sys/vnode.h>

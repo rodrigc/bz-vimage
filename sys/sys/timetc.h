@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/sys/timetc.h,v 1.58 2003/08/16 08:23:52 phk Exp $
+ * $FreeBSD: src/sys/sys/timetc.h,v 1.60 2010/07/18 20:57:53 trasz Exp $
  */
 
 #ifndef _SYS_TIMETC_H_

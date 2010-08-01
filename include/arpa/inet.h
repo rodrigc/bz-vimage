@@ -52,13 +52,13 @@
 /*%
  *	@(#)inet.h	8.1 (Berkeley) 6/2/93
  *	$Id$
- * $FreeBSD: src/include/arpa/inet.h,v 1.32 2010/02/16 19:46:46 imp Exp $
+ * $FreeBSD: src/include/arpa/inet.h,v 1.33 2010/07/06 03:48:46 maxim Exp $
  */
 
 #ifndef _ARPA_INET_H_
 #define	_ARPA_INET_H_
 
-/* External definitions for functions in inet(3), addr2ascii(3) */
+/* External definitions for functions in inet(3). */
 
 #include <sys/cdefs.h>
 #include <sys/_types.h>

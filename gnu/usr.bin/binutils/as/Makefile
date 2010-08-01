@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/as/Makefile,v 1.19 2008/12/11 08:15:14 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/as/Makefile,v 1.20 2010/07/10 02:29:22 nwhitehorn Exp $
 
 
 # BINDIR
@@ -26,7 +26,7 @@ SRCS+=	itbl-ops.c itbl-parse.y itbl-lex.l
 
 .if ${TARGET_ARCH} == "amd64"
 SRCS+=	tc-i386.c
-.elif ${TARGET_ARCH} == "powerpc"
+.elif ${TARGET_ARCH} == "powerpc" || ${TARGET_ARCH} == "powerpc64"
 SRCS+=	tc-ppc.c
 .elif ${TARGET_ARCH} == "sparc64"
 # change back to tc-sparc.c when new binutils is imported

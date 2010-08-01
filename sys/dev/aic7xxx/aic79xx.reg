@@ -37,7 +37,7 @@
  * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/aic7xxx/aic79xx.reg,v 1.19 2005/01/06 01:42:26 imp Exp $
+ * $FreeBSD: src/sys/dev/aic7xxx/aic79xx.reg,v 1.20 2010/07/14 14:31:18 gibbs Exp $
  */
 VERSION = "$Id$"
 
@@ -3813,6 +3813,7 @@ scb {
 	SCB_RESIDUAL_SGPTR {
 		size	4
 		field	SG_ADDR_MASK		0xf8	/* In the last byte */
+		field   SG_ADDR_BIT		0x04
 		field	SG_OVERRUN_RESID	0x02	/* In the first byte */
 		field	SG_LIST_NULL		0x01	/* In the first byte */
 	}

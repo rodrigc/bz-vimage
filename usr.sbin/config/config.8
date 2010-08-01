@@ -26,7 +26,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)config.8	8.2 (Berkeley) 4/19/94
-.\" $FreeBSD: src/usr.sbin/config/config.8,v 1.47 2009/01/26 21:45:33 imp Exp $
+.\" $FreeBSD: src/usr.sbin/config/config.8,v 1.48 2010/07/13 04:08:08 nwhitehorn Exp $
 .\"
 .Dd May 8, 2007
 .Dt CONFIG 8
@@ -78,6 +78,9 @@ Note that
 does not append
 .Ar SYSTEM_NAME
 to the directory given.
+.It Fl m
+Print the MACHINE and MACHINE_ARCH values for this
+kernel and exit.
 .It Fl g
 Configure a system for debugging.
 .It Fl x Ar kernel

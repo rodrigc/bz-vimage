@@ -1,4 +1,4 @@
-#$FreeBSD: src/sys/conf/options.arm,v 1.28 2010/06/13 13:28:53 raj Exp $
+#$FreeBSD: src/sys/conf/options.arm,v 1.29 2010/07/19 19:19:33 raj Exp $
 ARM9_CACHE_WRITE_THROUGH	opt_global.h
 ARM_CACHE_LOCK_ENABLE	opt_global.h
 ARMFPE			opt_global.h
@@ -23,7 +23,6 @@ KERNPHYSADDR		opt_global.h
 KERNVIRTADDR		opt_global.h
 LOADERRAMADDR		opt_global.h
 PHYSADDR		opt_global.h
-PHYSMEM_SIZE		opt_global.h
 SKYEYE_WORKAROUNDS	opt_global.h
 SOC_MV_DISCOVERY	opt_global.h
 SOC_MV_KIRKWOOD		opt_global.h

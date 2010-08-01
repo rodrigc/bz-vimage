@@ -29,7 +29,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)malloc.h	8.5 (Berkeley) 5/3/95
- * $FreeBSD: src/sys/sys/malloc.h,v 1.89 2009/04/19 11:20:57 rwatson Exp $
+ * $FreeBSD: src/sys/sys/malloc.h,v 1.90 2010/07/28 15:36:12 mdf Exp $
  */
 
 #ifndef _SYS_MALLOC_H_
@@ -90,6 +90,7 @@ struct malloc_type_stats {
 struct malloc_type_internal {
 	uint32_t	mti_probes[DTMALLOC_PROBE_MAX];
 					/* DTrace probe ID array. */
+	u_char		mti_zone;
 	struct malloc_type_stats	mti_stats[MAXCPU];
 };
 

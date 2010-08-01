@@ -1,7 +1,8 @@
-# $FreeBSD: src/share/mk/Makefile,v 1.51 2007/06/01 15:32:23 pav Exp $
+# $FreeBSD: src/share/mk/Makefile,v 1.52 2010/07/06 18:07:56 bz Exp $
 #	@(#)Makefile	8.1 (Berkeley) 6/8/93
 
 FILES=	bsd.README
+FILES+=	bsd.arch.inc.mk
 FILES+=	bsd.compat.mk bsd.cpu.mk bsd.dep.mk bsd.doc.mk bsd.endian.mk
 FILES+=	bsd.files.mk bsd.incs.mk bsd.info.mk bsd.init.mk
 FILES+=	bsd.kmod.mk

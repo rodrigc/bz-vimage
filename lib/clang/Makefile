@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/Makefile,v 1.1 2010/06/09 19:32:20 rdivacky Exp $
+# $FreeBSD: src/lib/clang/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
 
 SUBDIR=	libclanganalysis \
 	libclangast \
@@ -13,6 +13,7 @@ SUBDIR=	libclanganalysis \
 	libclangsema \
 	\
 	libllvmanalysis \
+	libllvmasmparser \
 	libllvmasmprinter \
 	libllvmbitreader \
 	libllvmbitwriter \

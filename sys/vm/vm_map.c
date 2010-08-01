@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.430 2010/05/26 18:00:44 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.431 2010/07/04 11:13:33 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1750,13 +1750,7 @@ vm_map_pmap_enter(vm_map_t map, vm_offset_t addr, vm_prot_t prot,
 	start = 0;
 	p_start = NULL;
 
-	if ((p = TAILQ_FIRST(&object->memq)) != NULL) {
-		if (p->pindex < pindex) {
-			p = vm_page_splay(pindex, object->root);
-			if ((object->root = p)->pindex < pindex)
-				p = TAILQ_NEXT(p, listq);
-		}
-	}
+	p = vm_page_find_least(object, pindex);
 	/*
 	 * Assert: the variable p is either (1) the page with the
 	 * least pindex greater than or equal to the parameter pindex

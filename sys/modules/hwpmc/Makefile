@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/sys/modules/hwpmc/Makefile,v 1.8 2010/04/02 13:23:49 fabient Exp $
+# $FreeBSD: src/sys/modules/hwpmc/Makefile,v 1.9 2010/07/13 12:47:31 nwhitehorn Exp $
 #
 
 .PATH: ${.CURDIR}/../../dev/hwpmc
@@ -28,7 +28,7 @@ SRCS+=	device_if.h bus_if.h
 SRCS+=	hwpmc_ia64.c
 .endif
 
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 SRCS+=	hwpmc_powerpc.c
 .endif
 

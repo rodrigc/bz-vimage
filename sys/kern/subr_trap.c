@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.314 2010/06/23 11:12:58 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.318 2010/07/15 20:24:37 jhb Exp $");
 
 #include "opt_ktrace.h"
 #include "opt_kdtrace.h"
@@ -62,6 +62,7 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.314 2010/06/23 11:12:58 kib Exp
 #include <sys/sched.h>
 #include <sys/signalvar.h>
 #include <sys/syscall.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysent.h>
 #include <sys/systm.h>
 #include <sys/vmmeter.h>
@@ -255,10 +256,12 @@ const char *
 syscallname(struct proc *p, u_int code)
 {
 	static const char unknown[] = "unknown";
+	struct sysentvec *sv;
 
-	if (p->p_sysent->sv_syscallnames == NULL)
+	sv = p->p_sysent;
+	if (sv->sv_syscallnames == NULL || code >= sv->sv_size)
 		return (unknown);
-	return (p->p_sysent->sv_syscallnames[code]);
+	return (sv->sv_syscallnames[code]);
 }
 
 int
@@ -269,7 +272,6 @@ syscallenter(struct thread *td, struct syscall_args *sa)
 
 	PCPU_INC(cnt.v_syscall);
 	p = td->td_proc;
-	td->td_syscalls++;
 
 	td->td_pticks = 0;
 	if (td->td_ucred != p->p_ucred)
@@ -309,6 +311,9 @@ syscallenter(struct thread *td, struct syscall_args *sa)
 			if (error != 0)
 				goto retval;
 		}
+		error = syscall_thread_enter(td, sa->callp);
+		if (error != 0)
+			goto retval;
 
 #ifdef KDTRACE_HOOKS
 		/*
@@ -338,6 +343,7 @@ syscallenter(struct thread *td, struct syscall_args *sa)
 			(*systrace_probe_func)(sa->callp->sy_return, sa->code,
 			    sa->callp, sa->args);
 #endif
+		syscall_thread_exit(td, sa->callp);
 		CTR4(KTR_SYSC, "syscall: p=%p error=%d return %#lx %#lx",
 		    p, error, td->td_retval[0], td->td_retval[1]);
 	}

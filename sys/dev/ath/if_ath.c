@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.274 2010/06/14 08:24:00 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.275 2010/07/08 14:08:03 adrian Exp $");
 
 /*
  * Driver for the Atheros Wireless LAN controller.
@@ -324,7 +324,7 @@ TUNABLE_INT("hw.ath.debug", &ath_debug);
 	    (sc->sc_ifp->if_flags & (IFF_DEBUG|IFF_LINK2)) == (IFF_DEBUG|IFF_LINK2))
 #define	DPRINTF(sc, m, fmt, ...) do {				\
 	if (sc->sc_debug & (m))					\
-		printf(fmt, __VA_ARGS__);			\
+		device_printf(sc->sc_dev, fmt, __VA_ARGS__);		\
 } while (0)
 #define	KEYPRINTF(sc, ix, hk, mac) do {				\
 	if (sc->sc_debug & ATH_DEBUG_KEYCACHE)			\

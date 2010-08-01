@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/powerpc/powerpc/db_interface.c,v 1.8 2008/08/30 18:50:11 marcel Exp $ */
+/*	$FreeBSD: src/sys/powerpc/powerpc/db_interface.c,v 1.9 2010/07/13 05:32:19 nwhitehorn Exp $ */
 /*	$NetBSD: db_interface.c,v 1.20 2002/05/13 20:30:09 matt Exp $ */
 /*	$OpenBSD: db_interface.c,v 1.2 1996/12/28 06:21:50 rahnds Exp $	*/
 
@@ -79,7 +79,7 @@ void
 db_show_mdpcpu(struct pcpu *pc)
 {
 
-	db_printf("PPC: hwref   = %#x\n", pc->pc_hwref);
+	db_printf("PPC: hwref   = %#zx\n", pc->pc_hwref);
 	db_printf("PPC: ipimask = %#x\n", pc->pc_ipimask);
 	db_printf("PPC: pir     = %#x\n", pc->pc_pir);
 }

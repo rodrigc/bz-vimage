@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/include/profile.h,v 1.12 2005/01/06 22:18:23 imp Exp $
+ * $FreeBSD: src/sys/ia64/include/profile.h,v 1.13 2010/06/30 22:29:02 marcel Exp $
  */
 
 #ifndef _MACHINE_PROFILE_H_
@@ -32,7 +32,7 @@
 #define	_MCOUNT_DECL	void __mcount
 #define	MCOUNT
 
-#define	FUNCTION_ALIGNMENT	32
+#define	FUNCTION_ALIGNMENT	16
 
 typedef unsigned long	fptrdiff_t;
 

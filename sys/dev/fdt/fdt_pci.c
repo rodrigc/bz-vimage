@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fdt/fdt_pci.c,v 1.1 2010/06/02 17:17:45 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fdt/fdt_pci.c,v 1.2 2010/07/11 21:08:29 raj Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -325,8 +325,9 @@ fdt_pci_route_intr(int bus, int slot, int func, int pin,
 		debugf("decoded intr = %d, trig = %d, pol = %d\n", *interrupt,
 		    trig, pol);
 
-		/* XXX we should probably call powerpc_config() here... */
-
+#if defined(__powerpc__)
+		powerpc_config_intr(INTR_VEC(intr_par, *interrupt), trig, pol);
+#endif
 		return (0);
 
 next:

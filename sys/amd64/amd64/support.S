@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/support.S,v 1.130 2009/06/05 20:23:29 kib Exp $
+ * $FreeBSD: src/sys/amd64/amd64/support.S,v 1.131 2010/07/30 21:39:28 delphij Exp $
  */
 
 #include "opt_ddb.h"
@@ -729,7 +729,7 @@ ENTRY(rdmsr_safe)
 	rdmsr			/* Read MSR pointed by %ecx. Returns
 				   hi byte in edx, lo in %eax */
 	salq	$32,%rdx	/* sign-shift %rdx left */
-	cltq			/* sign-extend %eax -> %rax */
+	movl	%eax,%eax	/* zero-extend %eax -> %rax */
 	orq	%rdx,%rax
 	movq	%rax,(%rsi)
 	xorq	%rax,%rax

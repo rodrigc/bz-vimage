@@ -1,14 +1,35 @@
-# $FreeBSD: src/lib/clang/libllvmmc/Makefile,v 1.2 2010/06/15 17:08:03 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmmc/Makefile,v 1.3 2010/07/20 17:16:57 ed Exp $
 
 LIB=	llvmmc
 
 SRCDIR=	lib/MC
-SRCS=	MCAsmInfo.cpp MCAsmInfoCOFF.cpp MCAsmInfoDarwin.cpp \
-	MCAsmStreamer.cpp MCAssembler.cpp MCCodeEmitter.cpp \
-	MCContext.cpp MCExpr.cpp MCInst.cpp MCInstPrinter.cpp \
-	MCLoggingStreamer.cpp MCMachOStreamer.cpp MCNullStreamer.cpp \
-	MCObjectWriter.cpp MCSection.cpp MCSectionCOFF.cpp \
-	MCSectionELF.cpp MCSectionMachO.cpp MCStreamer.cpp \
-	MCSymbol.cpp MachObjectWriter.cpp TargetAsmBackend.cpp
+SRCS=	MCAsmInfo.cpp \
+	MCAsmInfoCOFF.cpp \
+	MCAsmInfoDarwin.cpp \
+	MCAsmStreamer.cpp \
+	MCAssembler.cpp \
+	MCCodeEmitter.cpp \
+	MCContext.cpp \
+	MCDisassembler.cpp \
+	MCExpr.cpp \
+	MCInst.cpp \
+	MCInstPrinter.cpp \
+	MCLabel.cpp \
+	MCLoggingStreamer.cpp \
+	MCMachOStreamer.cpp \
+	MCNullStreamer.cpp \
+	MCObjectStreamer.cpp \
+	MCObjectWriter.cpp \
+	MCSection.cpp \
+	MCSectionCOFF.cpp \
+	MCSectionELF.cpp \
+	MCSectionMachO.cpp \
+	MCStreamer.cpp \
+	MCSymbol.cpp \
+	MCValue.cpp \
+	MachObjectWriter.cpp \
+	TargetAsmBackend.cpp \
+	WinCOFFObjectWriter.cpp \
+	WinCOFFStreamer.cpp
 
 .include "../clang.lib.mk"

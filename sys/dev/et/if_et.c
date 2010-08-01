@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2007 The DragonFly Project.  All rights reserved.
+ * Copyright (c) 2007 Sepherosa Ziehau.  All rights reserved.
  *
  * This code is derived from software contributed to The DragonFly Project
  * by Sepherosa Ziehau <sepherosa@gmail.com>
@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/et/if_et.c,v 1.17 2009/11/20 20:43:16 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/et/if_et.c,v 1.18 2010/07/30 17:51:22 delphij Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/isa/syscons_isa.c,v 1.38 2010/05/26 16:37:54 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/isa/syscons_isa.c,v 1.39 2010/07/15 23:11:51 jkim Exp $");
 
 #include "opt_syscons.h"
 
@@ -141,10 +141,16 @@ scresume(device_t dev)
 
 	sc = &main_softc;
 
+	if (sc->cur_scp == NULL)
+		return (0);
+
 	sc->suspend_in_progress--;
-	if (sc->suspend_in_progress == 0)
+	if (sc->suspend_in_progress == 0) {
 		if (!sc_no_suspend_vtswitch && sc_cur_scr != 0)
 			sc_switch_scr(sc, sc_cur_scr);
+		else
+			mark_all(sc->cur_scp);
+	}
 
 	return (0);
 }

@@ -158,7 +158,7 @@
 #define	MALLOC_DSS
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/stdlib/malloc.c,v 1.193 2010/02/28 22:57:13 jasone Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/stdlib/malloc.c,v 1.194 2010/07/10 14:45:03 nwhitehorn Exp $");
 
 #include "libc_private.h"
 #ifdef MALLOC_DEBUG
@@ -249,8 +249,13 @@ __FBSDID("$FreeBSD: src/lib/libc/stdlib/malloc.c,v 1.193 2010/02/28 22:57:13 jas
 #  define LG_SIZEOF_PTR		2
 #  define NO_TLS
 #endif
-#ifdef __powerpc__
+#ifdef __powerpc64__
 #  define LG_QUANTUM		4
+#  define LG_SIZEOF_PTR		3
+#  define TLS_MODEL		/* default */
+#elif defined(__powerpc__)
+#  define LG_QUANTUM		4
+#  define LG_SIZEOF_PTR		2
 #  define TLS_MODEL		/* default */
 #endif
 #ifdef __s390x__

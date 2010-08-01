@@ -1,4 +1,4 @@
-# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.47 2010/01/02 09:50:19 ed Exp $
+# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.48 2010/07/10 17:43:24 nwhitehorn Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -11,7 +11,11 @@ MAN=		rtld.1
 CSTD?=		gnu99
 CFLAGS+=	-Wall -DFREEBSD_ELF -DIN_RTLD
 CFLAGS+=	-I${.CURDIR}/${MACHINE_ARCH} -I${.CURDIR}
+.if ${MACHINE_ARCH} == "powerpc64"
+LDFLAGS+=	-nostdlib -e _rtld_start
+.else
 LDFLAGS+=	-nostdlib -e .rtld_start
+.endif
 WARNS?=		2
 INSTALLFLAGS=	-C -b
 PRECIOUSPROG=

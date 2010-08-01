@@ -1,5 +1,5 @@
 # ex:ts=8
-# $FreeBSD: src/gnu/usr.bin/binutils/gdb/Makefile,v 1.82 2004/12/21 09:59:40 ru Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/gdb/Makefile,v 1.83 2010/07/10 02:29:22 nwhitehorn Exp $
 
 .include "../Makefile.inc0"
 
@@ -12,6 +12,8 @@ GDBDIR= ${.CURDIR}/../../../../contrib/gdb
 GDB_CPU=	sparc
 .elif ${TARGET_ARCH} == "amd64"
 GDB_CPU=	i386
+.elif ${TARGET_ARCH} == "powerpc64"
+GDB_CPU=        powerpc
 .else
 GDB_CPU=	${TARGET_ARCH}
 .endif

@@ -3,7 +3,7 @@
  * Garrett Wollman, September 1994.
  * This file is in the public domain.
  *
- * $FreeBSD: src/sys/i386/include/clock.h,v 1.66 2010/05/24 11:40:49 mav Exp $
+ * $FreeBSD: src/sys/i386/include/clock.h,v 1.67 2010/07/15 17:49:35 mav Exp $
  */
 
 #ifndef _MACHINE_CLOCK_H_
@@ -22,11 +22,6 @@ extern int	tsc_is_broken;
 extern int	tsc_is_invariant;
 
 void	i8254_init(void);
-
-struct trapframe;
- 
-int	hardclockintr(struct trapframe *frame);
-int	statclockintr(struct trapframe *frame);
 
 /*
  * Driver to clock driver interface.

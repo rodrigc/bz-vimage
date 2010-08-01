@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libelf/libelf_data.c,v 1.4 2008/05/23 07:32:19 jb Exp $");
+__FBSDID("$FreeBSD: src/lib/libelf/libelf_data.c,v 1.5 2010/07/21 10:39:29 kaiw Exp $");
 
 #include <libelf.h>
 #include <osreldate.h>
@@ -42,6 +42,10 @@ _libelf_xlate_shtype(uint32_t sht)
 		return (ELF_T_SYM);
 	case SHT_FINI_ARRAY:
 		return (ELF_T_ADDR);
+#if	__FreeBSD_version >= 800062
+	case SHT_GNU_HASH:
+		return (ELF_T_GNUHASH);
+#endif
 	case SHT_GROUP:
 		return (ELF_T_WORD);
 	case SHT_HASH:

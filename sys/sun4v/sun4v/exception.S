@@ -26,7 +26,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/exception.S,v 1.14 2007/01/19 11:15:34 marius Exp $")
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/exception.S,v 1.15 2010/07/16 22:09:29 mav Exp $")
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -1948,7 +1948,7 @@ END(fork_trampoline)
 
 
 
-	.comm	intrnames, IV_NAMLEN
+	.comm	intrnames, IV_MAX * (MAXCOMLEN + 1)
 	.comm	eintrnames, 0
 
 	.comm	intrcnt, IV_MAX * 8

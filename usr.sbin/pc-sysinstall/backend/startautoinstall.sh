@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -25,7 +25,7 @@
 #
 # Script which reads the pc-autoinstall.conf directive, and begins the install
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/startautoinstall.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/startautoinstall.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
 
 # Source our functions scripts
 . ${BACKEND}/functions.sh

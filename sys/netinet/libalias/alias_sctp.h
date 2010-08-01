@@ -49,7 +49,7 @@
  *
  */
 
-/* $FreeBSD: src/sys/netinet/libalias/alias_sctp.h,v 1.1 2009/02/07 18:49:42 piso Exp $ */
+/* $FreeBSD: src/sys/netinet/libalias/alias_sctp.h,v 1.2 2010/07/16 06:32:38 imp Exp $ */
 
 #ifndef _ALIAS_SCTP_H_
 #define _ALIAS_SCTP_H_
@@ -80,7 +80,6 @@
  * 
  */
 #include <machine/cpufunc.h>
-#include <machine/cpu.h>
 /* The packed define for 64 bit platforms */
 #ifndef SCTP_PACKED
 #define SCTP_PACKED __attribute__((packed))

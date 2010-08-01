@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)ktrace.1	8.1 (Berkeley) 6/6/93
-.\" $FreeBSD: src/usr.bin/ktrace/ktrace.1,v 1.21 2009/03/11 21:48:36 jhb Exp $
+.\" $FreeBSD: src/usr.bin/ktrace/ktrace.1,v 1.22 2010/07/14 18:28:46 jhb Exp $
 .\"
 .Dd February 23, 2008
 .Dt KTRACE 1
@@ -112,11 +112,11 @@ The following table equates the letters with the tracepoints:
 .Bl -tag -width flag -compact
 .It Cm c
 trace system calls
-.It Cm n
-trace namei translations
 .It Cm i
 trace
 .Tn I/O
+.It Cm n
+trace namei translations
 .It Cm s
 trace signal processing
 .It Cm t
@@ -131,7 +131,7 @@ trace
 requests
 .It Cm +
 trace the default set of trace points -
-.Cm c , n , i , s , t , u
+.Cm c , i , n , s , t , u , y
 .El
 .It Ar command
 Execute

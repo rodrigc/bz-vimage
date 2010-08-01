@@ -33,7 +33,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/sys/powerpc/powerpc/syncicache.c,v 1.7 2008/09/24 00:28:46 nwhitehorn Exp $";
+  "$FreeBSD: src/sys/powerpc/powerpc/syncicache.c,v 1.8 2010/07/13 05:32:19 nwhitehorn Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -50,10 +50,10 @@ static const char rcsid[] =
 void
 __syncicache(void *from, int len)
 {
-	int	l, off;
+	register_t l, off;
 	char	*p;
 
-	off = (u_int)from & (cacheline_size - 1);
+	off = (uintptr_t)from & (cacheline_size - 1);
 	l = len += off;
 	p = (char *)from - off;
 

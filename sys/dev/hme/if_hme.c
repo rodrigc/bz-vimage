@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/hme/if_hme.c,v 1.55 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/hme/if_hme.c,v 1.56 2010/07/21 10:05:07 attilio Exp $");
 
 /*
  * HME Ethernet module driver.
@@ -64,7 +64,7 @@ __FBSDID("$FreeBSD: src/sys/dev/hme/if_hme.c,v 1.55 2009/06/26 11:45:06 rwatson 
 #if 0
 #define HMEDEBUG
 #endif
-#define	KTR_HME		KTR_CT2		/* XXX */
+#define	KTR_HME		KTR_SPARE2	/* XXX */
 
 #include <sys/param.h>
 #include <sys/systm.h>

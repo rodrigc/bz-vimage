@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/mainbus.c,v 1.4 2010/01/10 20:29:20 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/mainbus.c,v 1.5 2010/07/20 19:25:11 jmallett Exp $");
 
 #include "opt_cputype.h"
 
@@ -251,7 +251,7 @@ mainbus_activate_resource(device_t bus, device_t child, int type, int rid,
 	/*
 	 * If this is a memory resource, map it into the kernel.
 	 */
-#ifdef TARGET_OCTEON
+#ifdef CPU_CNMIPS
          uint64_t temp;
 #endif  
 	if (rman_get_bustag(r) == MIPS_BUS_SPACE_MEM) {
@@ -267,7 +267,7 @@ mainbus_activate_resource(device_t bus, device_t child, int type, int rid,
 			    + poffs;
 		}
 		rman_set_virtual(r, vaddr);
-#ifdef TARGET_OCTEON
+#ifdef CPU_CNMIPS
 		temp = 0x0000000000000000;
 		temp |= (uint32_t)vaddr;
 		rman_set_bushandle(r, (bus_space_handle_t) temp);

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/cpufunc.h,v 1.30 2009/05/14 16:56:56 raj Exp $
+ * $FreeBSD: src/sys/powerpc/include/cpufunc.h,v 1.31 2010/07/13 05:32:19 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_CPUFUNC_H_
@@ -68,6 +68,15 @@ mtmsr(register_t value)
 	__asm __volatile ("mtmsr %0; isync" :: "r"(value));
 }
 
+#ifdef __powerpc64__
+static __inline void
+mtmsrd(register_t value)
+{
+
+	__asm __volatile ("mtmsrd %0; isync" :: "r"(value));
+}
+#endif
+
 static __inline register_t
 mfmsr(void)
 {
@@ -78,6 +87,7 @@ mfmsr(void)
 	return (value);
 }
 
+#ifndef __powerpc64__
 static __inline void
 mtsrin(vm_offset_t va, register_t value)
 {
@@ -94,6 +104,7 @@ mfsrin(vm_offset_t va)
 
 	return (value);
 }
+#endif
 
 static __inline void
 mtdec(register_t value)
@@ -126,6 +137,9 @@ static __inline u_quad_t
 mftb(void)
 {
 	u_quad_t tb;
+      #ifdef __powerpc64__
+	__asm __volatile ("mftb %0" : "=r"(tb));
+      #else
 	uint32_t *tbup = (uint32_t *)&tb;
 	uint32_t *tblp = tbup + 1;
 
@@ -133,6 +147,7 @@ mftb(void)
 		*tbup = mfspr(TBR_TBU);
 		*tblp = mfspr(TBR_TBL);
 	} while (*tbup != mfspr(TBR_TBU));
+      #endif
 
 	return (tb);
 }

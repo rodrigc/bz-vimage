@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.290 2010/06/20 04:14:49 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.293 2010/07/08 21:26:26 randi Exp $
  */
 
 #ifndef _SYSINSTALL_H_INCLUDE
@@ -183,6 +183,7 @@
 #define VAR_SERIAL_SPEED		"serialSpeed"
 #define VAR_SLOW_ETHER			"slowEthernetCard"
 #define VAR_SWAP_SIZE			"swapSize"
+#define VAR_SYSLOG_SERVER		"syslogdServer"
 #define VAR_TRY_DHCP			"tryDHCP"
 #define VAR_TRY_RTSOL			"tryRTSOL"
 #define VAR_UFS_PATH			"ufs"

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.14 2010/06/05 08:44:40 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-acerlabs.c,v 1.15 2010/07/10 13:46:14 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -286,7 +286,7 @@ ata_ali_setmode(device_t dev, int target, int mode)
         mode = min(mode, ctlr->chip->max_dma);
 
 	if (ctlr->chip->cfg2 & ALI_NEW && ctlr->chip->chiprev < 0xc7) {
-		if (mode > ATA_UDMA2 &&
+		if (ata_dma_check_80pin && mode > ATA_UDMA2 &&
 		    pci_read_config(parent, 0x4a, 1) & (1 << ch->unit)) {
 			ata_print_cable(dev, "controller");
 			mode = ATA_UDMA2;

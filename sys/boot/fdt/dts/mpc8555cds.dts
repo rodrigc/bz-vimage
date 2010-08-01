@@ -57,7 +57,7 @@
  * You may select the license of your choice.
  *------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/boot/fdt/dts/mpc8555cds.dts,v 1.1 2010/05/26 09:34:02 raj Exp $
+ * $FreeBSD: src/sys/boot/fdt/dts/mpc8555cds.dts,v 1.2 2010/07/11 20:29:34 raj Exp $
  */
 
 /dts-v1/;
@@ -343,6 +343,7 @@
 			compatible = "fsl,mpc8555-cpm", "fsl,cpm2";
 			reg = <0x80000 0x20000>;
 			interrupts = <46 2>;
+			interrupt-parent = <&mpic>;
 		};
 	};
 

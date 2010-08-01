@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.384 2010/05/25 20:42:35 qingli Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.385 2010/07/27 11:54:01 bz Exp $
  */
 
 #include "opt_compat.h"
@@ -1780,7 +1780,7 @@ ifaof_ifpforaddr(struct sockaddr *addr, struct ifnet *ifp)
 	u_int af = addr->sa_family;
 
 	if (af >= AF_MAX)
-		return (0);
+		return (NULL);
 	IF_ADDR_LOCK(ifp);
 	TAILQ_FOREACH(ifa, &ifp->if_addrhead, ifa_link) {
 		if (ifa->ifa_addr->sa_family != af)

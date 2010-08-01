@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- $ $FreeBSD: src/sys/cddl/compat/opensolaris/sys/policy.h,v 1.5 2009/10/08 16:05:17 pjd Exp $
+ $ $FreeBSD: src/sys/cddl/compat/opensolaris/sys/policy.h,v 1.6 2010/07/12 23:49:04 mm Exp $
  */
 
 #ifndef _OPENSOLARIS_SYS_POLICY_H_
@@ -72,6 +72,7 @@ int	secpolicy_fs_mount(cred_t *cr, vnode_t *mvp, struct mount *vfsp);
 void	secpolicy_fs_mount_clearopts(cred_t *cr, struct mount *vfsp);
 int	secpolicy_xvattr(struct vnode *vp, xvattr_t *xvap, uid_t owner,
 	    cred_t *cr, vtype_t vtype);
+int	secpolicy_smb(cred_t *cr);
 
 #endif	/* _KERNEL */
 

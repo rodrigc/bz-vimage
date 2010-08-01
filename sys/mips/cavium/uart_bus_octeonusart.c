@@ -35,7 +35,7 @@
 #include "opt_uart.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/uart_bus_octeonusart.c,v 1.3 2010/01/23 06:42:47 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/uart_bus_octeonusart.c,v 1.4 2010/07/20 19:25:11 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -54,6 +54,8 @@ __FBSDID("$FreeBSD: src/sys/mips/cavium/uart_bus_octeonusart.c,v 1.3 2010/01/23 
 #include <dev/uart/uart_cpu.h>
 
 #include <mips/cavium/octeon_pcmap_regs.h>
+
+#include <contrib/octeon-sdk/cvmx.h>
 
 #include "uart_if.h"
 
@@ -101,7 +103,12 @@ uart_octeon_probe(device_t dev)
 	sc->sc_sysdev = SLIST_FIRST(&uart_sysdevs);
 	bcopy(&sc->sc_sysdev->bas, &sc->sc_bas, sizeof(sc->sc_bas));
 	sc->sc_bas.bst = uart_bus_space_mem;
-	if (bus_space_map(sc->sc_bas.bst, OCTEON_MIO_UART0, OCTEON_MIO_UART_SIZE,
+	/*
+	 * XXX
+	 * RBR isn't really a great base address and it'd be great to not have
+	 * a hard-coded 1024.
+	 */
+	if (bus_space_map(sc->sc_bas.bst, CVMX_MIO_UARTX_RBR(0), 1024,
 	    0, &sc->sc_bas.bsh) != 0)
 		return (ENXIO);
 	return (uart_bus_probe(dev, sc->sc_bas.regshft, 0, 0, unit));

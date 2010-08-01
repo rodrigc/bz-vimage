@@ -1,6 +1,6 @@
 #!/bin/sh
 #-
-# Copyright (c) 2010 iX Systems, Inc.  All rights reserved.
+# Copyright (c) 2010 iXsystems, Inc.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-newfs.sh,v 1.1 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-newfs.sh,v 1.3 2010/07/31 19:27:43 imp Exp $
 
 # Functions related to disk operations using newfs
 
@@ -61,6 +61,7 @@ setup_zfs_filesystem()
     # Check if we ended up with needing a zfs bootable partition
     if [ "${i}" = "/" -o "${i}" = "/boot" ]
     then
+      if [ "$HAVEBOOT" = "YES" ] ; then continue ; fi
       if [ "${PARTGEOM}" = "MBR" ]
       then
         # Lets stamp the proper ZFS boot loader
@@ -129,6 +130,11 @@ setup_filesystems()
               rc_halt "sync"
               rc_halt "glabel label ${PARTLABEL} /dev/${PART}${EXT}"
               rc_halt "sync"
+
+	      # Set flag that we've found a boot partition
+	      if [ "$PARTMNT" = "/boot" -o "${PARTMNT}" = "/" ] ; then
+		HAVEBOOT="YES"
+  	      fi
               sleep 2
               ;;
        UFS+S) echo_log "NEWFS: /dev/${PART} - ${PARTFS}"
@@ -138,6 +144,10 @@ setup_filesystems()
               rc_halt "sync"
               rc_halt "glabel label ${PARTLABEL} /dev/${PART}${EXT}"
               rc_halt "sync"
+	      # Set flag that we've found a boot partition
+	      if [ "$PARTMNT" = "/boot" -o "${PARTMNT}" = "/" ] ; then
+		HAVEBOOT="YES"
+  	      fi
               sleep 2
               ;;
        UFS+J) echo_log "NEWFS: /dev/${PART} - ${PARTFS}"
@@ -151,6 +161,10 @@ setup_filesystems()
               rc_halt "sync"
               rc_halt "glabel label ${PARTLABEL} /dev/${PART}${EXT}.journal"
               rc_halt "sync"
+	      # Set flag that we've found a boot partition
+	      if [ "$PARTMNT" = "/boot" -o "${PARTMNT}" = "/" ] ; then
+		HAVEBOOT="YES"
+  	      fi
               sleep 2
               ;;
          ZFS) echo_log "NEWFS: /dev/${PART} - ${PARTFS}" 

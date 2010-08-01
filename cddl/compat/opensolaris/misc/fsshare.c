@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/cddl/compat/opensolaris/misc/fsshare.c,v 1.3 2008/03/28 22:16:05 jb Exp $");
+__FBSDID("$FreeBSD: src/cddl/compat/opensolaris/misc/fsshare.c,v 1.4 2010/07/07 07:09:33 mm Exp $");
 
 #include <sys/param.h>
 #include <stdio.h>
@@ -110,11 +110,11 @@ getline(FILE *fd, const char *skip)
  *
  * Recognized keywords:
  *
- *	ro, maproot, mapall, mask, network, alldirs, public, webnfs, index, quiet
+ *	ro, maproot, mapall, mask, network, sec, alldirs, public, webnfs, index, quiet
  *
  */
 static const char *known_opts[] = { "ro", "maproot", "mapall", "mask",
-    "network", "alldirs", "public", "webnfs", "index", "quiet", NULL };
+    "network", "sec", "alldirs", "public", "webnfs", "index", "quiet", NULL };
 static char *
 translate_opts(const char *shareopts)
 {

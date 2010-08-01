@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/grackle.c,v 1.17 2010/06/18 14:06:27 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/grackle.c,v 1.18 2010/07/12 21:09:55 grehan Exp $
  */
 
 #include <sys/param.h>
@@ -472,7 +472,7 @@ grackle_activate_resource(device_t bus, device_t child, int type, int rid,
 			start += sc->sc_iostart;
 
 		if (bootverbose)
-			printf("grackle mapdev: start %x, len %ld\n", start,
+			printf("grackle mapdev: start %zx, len %ld\n", start,
 			    rman_get_size(res));
 
 		p = pmap_mapdev(start, (vm_size_t)rman_get_size(res));

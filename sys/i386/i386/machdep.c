@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/machdep.c,v 1.702 2010/06/23 12:17:13 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/machdep.c,v 1.704 2010/07/20 12:36:36 tijl Exp $");
 
 #include "opt_apic.h"
 #include "opt_atalk.h"
@@ -81,6 +81,7 @@ __FBSDID("$FreeBSD: src/sys/i386/i386/machdep.c,v 1.702 2010/06/23 12:17:13 kib 
 #include <sys/reboot.h>
 #include <sys/sched.h>
 #include <sys/signalvar.h>
+#include <sys/syscallsubr.h>
 #include <sys/sysctl.h>
 #include <sys/sysent.h>
 #include <sys/sysproto.h>
@@ -644,10 +645,10 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	/*
 	 * Unconditionally fill the fsbase and gsbase into the mcontext.
 	 */
-	sdp = &td->td_pcb->pcb_gsd;
+	sdp = &td->td_pcb->pcb_fsd;
 	sf.sf_uc.uc_mcontext.mc_fsbase = sdp->sd_hibase << 24 |
 	    sdp->sd_lobase;
-	sdp = &td->td_pcb->pcb_fsd;
+	sdp = &td->td_pcb->pcb_gsd;
 	sf.sf_uc.uc_mcontext.mc_gsbase = sdp->sd_hibase << 24 |
 	    sdp->sd_lobase;
 
@@ -3254,9 +3255,9 @@ get_mcontext(struct thread *td, mcontext_t *mcp, int flags)
 	 * mcontext after mc_fpstate.
 	 */
 	get_fpcontext(td, mcp);
-	sdp = &td->td_pcb->pcb_gsd;
-	mcp->mc_fsbase = sdp->sd_hibase << 24 | sdp->sd_lobase;
 	sdp = &td->td_pcb->pcb_fsd;
+	mcp->mc_fsbase = sdp->sd_hibase << 24 | sdp->sd_lobase;
+	sdp = &td->td_pcb->pcb_gsd;
 	mcp->mc_gsbase = sdp->sd_hibase << 24 | sdp->sd_lobase;
 
 	return (0);

@@ -26,7 +26,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/DEVICE_PROBE.9,v 1.23 2010/02/27 01:17:44 delphij Exp $
+.\" $FreeBSD: src/share/man/man9/DEVICE_PROBE.9,v 1.24 2010/07/31 10:01:15 joel Exp $
 .\"
 .Dd March 3, 2008
 .Dt DEVICE_PROBE 9
@@ -114,7 +114,7 @@ return this value, while the one that supports the newer ones would
 return BUS_PROBE_DEFAULT.
 .It BUS_PROBE_GENERIC
 The driver matches the type of device generally.
-This allows drivers to match all serial ports generally, with sepcialized
+This allows drivers to match all serial ports generally, with specialized
 drivers matching particular types of serial ports that need special
 treatment for some reason.
 .It BUS_PROBE_HOOVER

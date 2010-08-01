@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.346 2010/06/24 22:21:47 imp Exp $
+# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.347 2010/06/28 08:05:30 pjd Exp $
 #
 # Please see the file src/etc/mtree/README before making changes to this file.
 #
@@ -1231,15 +1231,15 @@
         pc-sysinstall
             backend
             ..
-	    backend-partmanager
+            backend-partmanager
             ..
-	    backend-query
+            backend-query
             ..
-	    conf
+            conf
                 license
-		..
+                ..
             ..
-	    doc
+            doc
             ..
         ..
         security

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_syncache.c,v 1.178 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_syncache.c,v 1.179 2010/07/30 21:45:53 andre Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -804,8 +804,9 @@ syncache_socket(struct syncache *sc, struct socket *lso, struct mbuf *m)
 
 	/*
 	 * If the SYN,ACK was retransmitted, reset cwnd to 1 segment.
+	 * NB: sc_rxmits counts all SYN,ACK transmits, not just retransmits.
 	 */
-	if (sc->sc_rxmits)
+	if (sc->sc_rxmits > 1)
 		tp->snd_cwnd = tp->t_maxseg;
 	tcp_timer_activate(tp, TT_KEEP, tcp_keepinit);
 

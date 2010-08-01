@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgbe/ixgbe.h,v 1.14 2010/06/03 00:00:45 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/ixgbe/ixgbe.h,v 1.17 2010/07/01 05:03:24 kevlo Exp $*/
 
 
 #ifndef _IXGBE_H_
@@ -376,6 +376,7 @@ struct adapter {
 
 	/* Info about the board itself */
 	u32			optics;
+	int			advertise;  /* link speeds */
 	bool			link_active;
 	u16			max_frame_size;
 	u32			link_speed;

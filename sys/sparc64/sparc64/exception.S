@@ -54,7 +54,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/exception.S,v 1.81 2010/03/21 13:09:54 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/exception.S,v 1.82 2010/07/16 22:09:29 mav Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -365,7 +365,7 @@ ENTRY(rsf_fatal)
 	sir
 END(rsf_fatal)
 
-	.comm	intrnames, IV_NAMLEN
+	.comm	intrnames, IV_MAX * (MAXCOMLEN + 1)
 	.comm	eintrnames, 0
 
 	.comm	intrcnt, IV_MAX * 8

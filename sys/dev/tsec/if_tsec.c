@@ -1,6 +1,6 @@
 /*-
- * Copyright (C) 2007-2008 Semihalf, Rafal Jaworowski <raj@semihalf.com>
- * Copyright (C) 2006-2007 Semihalf, Piotr Kruszynski <ppk@semihalf.com>
+ * Copyright (C) 2007-2008 Semihalf, Rafal Jaworowski
+ * Copyright (C) 2006-2007 Semihalf, Piotr Kruszynski
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
  * Freescale integrated Three-Speed Ethernet Controller (TSEC) driver.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/tsec/if_tsec.c,v 1.15 2009/11/20 13:28:06 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/tsec/if_tsec.c,v 1.16 2010/07/11 21:08:29 raj Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -1563,7 +1563,7 @@ tsec_miibus_readreg(device_t dev, int phy, int reg)
 
 	sc = device_get_softc(dev);
 
-	if (device_get_unit(dev) != phy)
+	if (sc->phyaddr != phy)
 		return (0);
 
 	sc = tsec0_sc;
@@ -1591,9 +1591,8 @@ tsec_miibus_writereg(device_t dev, int phy, int reg, int value)
 
 	sc = device_get_softc(dev);
 
-	if (device_get_unit(dev) != phy)
-		device_printf(dev, "Trying to write to an alien PHY(%d)\n",
-		    phy);
+	if (sc->phyaddr != phy)
+		return (0);
 
 	sc = tsec0_sc;
 
