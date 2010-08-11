@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/pte.h,v 1.10 2010/07/12 07:42:42 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/pte.h,v 1.11 2010/08/07 01:49:44 neel Exp $
  */
 
 #ifndef	_MACHINE_PTE_H_
@@ -113,17 +113,8 @@ typedef	pt_entry_t *pd_entry_t;
  * 		it is matched.
  */
 #define	PTE_C(attr)	((attr & 0x07) << 3)
-#define	PTE_C_UNCACHED	(PTE_C(0x02))
-/*
- * The preferred cache attribute for cacheable pages, this can be 
- * implementation dependent. We will use the standard value 0x3 as 
- * default.
- */
-#if defined(CPU_SB1)
-#define	PTE_C_CACHE	(PTE_C(0x05))
-#else
-#define	PTE_C_CACHE	(PTE_C(0x03))
-#endif
+#define	PTE_C_UNCACHED	(PTE_C(MIPS_CCA_UNCACHED))
+#define	PTE_C_CACHE	(PTE_C(MIPS_CCA_CACHED))
 #define	PTE_D		0x04
 #define	PTE_V		0x02
 #define	PTE_G		0x01

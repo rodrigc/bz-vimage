@@ -28,7 +28,7 @@
  */ 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libproc/proc_rtld.c,v 1.1 2010/07/31 16:10:20 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/lib/libproc/proc_rtld.c,v 1.2 2010/08/11 17:33:26 rpaulo Exp $");
 
 #include <stdio.h>
 #include <string.h>
@@ -42,14 +42,13 @@ map_iter(const rd_loadobj_t *lop, void *arg)
 {
 	struct proc_handle *phdl = arg;
 
-	phdl->nobjs++;
 	if (phdl->nobjs >= phdl->rdobjsz) {
 		phdl->rdobjsz *= 2;
 		phdl->rdobjs = realloc(phdl->rdobjs, phdl->rdobjsz);
 		if (phdl->rdobjs == NULL)
 			return (-1);
 	}
-	memcpy(&phdl->rdobjs[phdl->nobjs++], lop, sizeof(*phdl->rdobjs));
+	memcpy(&phdl->rdobjs[phdl->nobjs++], lop, sizeof(*lop));
 
 	return (0);
 }
@@ -61,6 +60,7 @@ proc_rdagent(struct proc_handle *phdl)
 	    phdl->status != PS_IDLE) {
 		if ((phdl->rdap = rd_new(phdl)) != NULL) {
 			phdl->rdobjs = malloc(sizeof(*phdl->rdobjs) * 64);
+			phdl->rdobjsz = 64;
 			if (phdl->rdobjs == NULL)
 				return (phdl->rdap);
 			rd_loadobj_iter(phdl->rdap, map_iter, phdl);
@@ -73,7 +73,8 @@ proc_rdagent(struct proc_handle *phdl)
 void
 proc_updatesyms(struct proc_handle *phdl)
 {
-	memset(&phdl->rdobjs, 0, sizeof(*phdl->rdobjs) * phdl->rdobjsz);
+
+	memset(phdl->rdobjs, 0, sizeof(*phdl->rdobjs) * phdl->rdobjsz);
 	phdl->nobjs = 0;
 	rd_loadobj_iter(phdl->rdap, map_iter, phdl);
 }

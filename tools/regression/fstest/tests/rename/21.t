@@ -1,5 +1,5 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/fstest/tests/rename/21.t,v 1.6 2009/10/20 21:08:32 pjd Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/rename/21.t,v 1.7 2010/08/11 16:34:44 pjd Exp $
 
 desc="write access to subdirectory is required to move it to another directory"
 
@@ -37,7 +37,7 @@ expect ENOENT rmdir ${n3}/${n1}
 
 # Check that write permission on containing directory (${n2}) is enough
 # to move file (${n0}) from that directory.
-expect 0 create ${n2}/${n0} 0755
+expect 0 create ${n2}/${n0} 0644
 expect 0 -u 65534 -g 65534 rename ${n2}/${n0} ${n3}/${n1}
 
 expect 0 unlink ${n3}/${n1}

@@ -88,7 +88,7 @@
 
 #define HDA_DRV_TEST_REV	"20100226_0142"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.126 2010/06/09 05:49:02 mav Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.127 2010/08/04 07:49:40 gavin Exp $");
 
 #define HDA_BOOTVERBOSE(stmt)	do {			\
 	if (bootverbose != 0 || snd_verbose > 3) {	\
@@ -4314,7 +4314,6 @@ hdac_attach_fail:
 	hdac_dma_free(sc, &sc->corb_dma);
 	hdac_mem_free(sc);
 	snd_mtxfree(sc->lock);
-	free(sc, M_DEVBUF);
 
 	return (ENXIO);
 }

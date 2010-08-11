@@ -1,20 +1,15 @@
-# $FreeBSD: src/tools/regression/fstest/tests/misc.sh,v 1.6 2009/01/16 18:09:49 pjd Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/misc.sh,v 1.14 2010/08/11 17:33:32 pjd Exp $
 
 ntest=1
 
-name253="_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_123456789_12"
-name255="${name253}34"
-name256="${name255}5"
-path1021="${name255}/${name255}/${name255}/${name253}"
-path1023="${path1021}/x"
-path1024="${path1023}x"
-
-echo ${dir} | egrep '^/' >/dev/null 2>&1
-if [ $? -eq 0 ]; then
+case "${dir}" in
+/*)
 	maindir="${dir}/../.."
-else
+	;;
+*)
 	maindir="`pwd`/${dir}/../.."
-fi
+	;;
+esac
 fstest="${maindir}/fstest"
 . ${maindir}/tests/conf
 
@@ -23,7 +18,7 @@ expect()
 	e="${1}"
 	shift
 	r=`${fstest} $* 2>/dev/null | tail -1`
-	echo "${r}" | egrep '^'${e}'$' >/dev/null 2>&1
+	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
 			echo "ok ${ntest}"
@@ -38,7 +33,7 @@ expect()
 		fi
 	fi
 	todomsg=""
-	ntest=`expr $ntest + 1`
+	ntest=$((ntest+1))
 }
 
 jexpect()
@@ -48,7 +43,7 @@ jexpect()
 	e="${3}"
 	shift 3
 	r=`jail -s ${s} / fstest 127.0.0.1 /bin/sh -c "cd ${d} && ${fstest} $* 2>/dev/null" | tail -1`
-	echo "${r}" | egrep '^'${e}'$' >/dev/null 2>&1
+	echo "${r}" | ${GREP} -Eq '^'${e}'$'
 	if [ $? -eq 0 ]; then
 		if [ -z "${todomsg}" ]; then
 			echo "ok ${ntest}"
@@ -63,7 +58,7 @@ jexpect()
 		fi
 	fi
 	todomsg=""
-	ntest=`expr $ntest + 1`
+	ntest=$((ntest+1))
 }
 
 test_check()
@@ -82,13 +77,12 @@ test_check()
 		fi
 	fi
 	todomsg=""
-	ntest=`expr $ntest + 1`
+	ntest=$((ntest+1))
 }
 
 todo()
 {
-	echo "${os}" | $GREP -iq "${1}"
-	if [ $? -eq 0 ]; then
+	if [ "${os}" = "${1}" -o "${os}:${fs}" = "${1}" ]; then
 		todomsg="${2}"
 	fi
 }
@@ -96,6 +90,52 @@ todo()
 namegen()
 {
 	echo "fstest_`dd if=/dev/urandom bs=1k count=1 2>/dev/null | openssl md5`"
+}
+
+namegen_len()
+{
+	len="${1}"
+
+	name=""
+	while :; do
+		namepart="`dd if=/dev/urandom bs=64 count=1 2>/dev/null | openssl md5`"
+		name="${name}${namepart}"
+		curlen=`printf "%s" "${name}" | wc -c`
+		[ ${curlen} -lt ${len} ] || break
+	done
+	name=`echo "${name}" | cut -b -${len}`
+	printf "%s" "${name}"
+}
+
+# POSIX:
+# {NAME_MAX}
+#     Maximum number of bytes in a filename (not including terminating null).
+namegen_max()
+{
+	name_max=`${fstest} pathconf . _PC_NAME_MAX`
+	namegen_len ${name_max}
+}
+
+# POSIX:
+# {PATH_MAX}
+#     Maximum number of bytes in a pathname, including the terminating null character.
+dirgen_max()
+{
+	name_max=`${fstest} pathconf . _PC_NAME_MAX`
+	complen=$((name_max/2))
+	path_max=`${fstest} pathconf . _PC_PATH_MAX`
+	# "...including the terminating null character."
+	path_max=$((path_max-1))
+
+	name=""
+	while :; do
+		name="${name}`namegen_len ${complen}`/"
+		curlen=`printf "%s" "${name}" | wc -c`
+		[ ${curlen} -lt ${path_max} ] || break
+	done
+	name=`echo "${name}" | cut -b -${path_max}`
+	name=`echo "${name}" | sed -E 's@/$@x@'`
+	printf "%s" "${name}"
 }
 
 quick_exit()
@@ -133,4 +173,49 @@ require()
 		return
 	fi
 	quick_exit
+}
+
+# usage:
+#	create_file <type> <name>
+#	create_file <type> <name> <mode>
+#	create_file <type> <name> <uid> <gid>
+#	create_file <type> <name> <mode> <uid> <gid>
+create_file() {
+	type="${1}"
+	name="${2}"
+
+	case "${type}" in
+	none)
+		return
+		;;
+	regular)
+		expect 0 create ${name} 0644
+		;;
+	dir)
+		expect 0 mkdir ${name} 0755
+		;;
+	fifo)
+		expect 0 mkfifo ${name} 0644
+		;;
+	block)
+		expect 0 mknod ${name} b 0644 1 2
+		;;
+	char)
+		expect 0 mknod ${name} c 0644 1 2
+		;;
+	socket)
+		expect 0 bind ${name}
+		;;
+	symlink)
+		expect 0 symlink test ${name}
+		;;
+	esac
+	if [ -n "${3}" -a -n "${4}" -a -n "${5}" ]; then
+		expect 0 lchmod ${name} ${3}
+		expect 0 lchown ${name} ${4} ${5}
+	elif [ -n "${3}" -a -n "${4}" ]; then
+		expect 0 lchown ${name} ${3} ${4}
+	elif [ -n "${3}" ]; then
+		expect 0 lchmod ${name} ${3}
+	fi
 }

@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.53 2010/07/24 18:53:46 gnn Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.54 2010/08/06 20:55:49 jfv Exp $*/
 
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
@@ -2070,6 +2070,9 @@ igb_identify_hardware(struct adapter *adapter)
 	    pci_read_config(dev, PCIR_SUBVEND_0, 2);
 	adapter->hw.subsystem_device_id =
 	    pci_read_config(dev, PCIR_SUBDEV_0, 2);
+
+	/* Set MAC type early for PCI setup */
+	e1000_set_mac_type(&adapter->hw);
 }
 
 static int

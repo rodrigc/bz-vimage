@@ -33,7 +33,7 @@
  *	@(#)kernfs.h	8.6 (Berkeley) 3/29/95
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs.h 1.14
  *
- * $FreeBSD: src/sys/fs/devfs/devfs.h,v 1.33 2010/06/09 15:29:12 jh Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs.h,v 1.34 2010/08/06 09:23:47 kib Exp $
  */
 
 #ifndef _FS_DEVFS_DEVFS_H_
@@ -172,7 +172,7 @@ extern unsigned devfs_rule_depth;
 void devfs_rules_apply(struct devfs_mount *dm, struct devfs_dirent *de);
 void devfs_rules_cleanup (struct devfs_mount *dm);
 int devfs_rules_ioctl(struct devfs_mount *dm, u_long cmd, caddr_t data, struct thread *td);
-int devfs_allocv (struct devfs_dirent *de, struct mount *mp,
+int devfs_allocv(struct devfs_dirent *de, struct mount *mp, int lockmode,
     struct vnode **vpp);
 void devfs_delete(struct devfs_mount *dm, struct devfs_dirent *de, int vp_locked);
 void devfs_dirent_free(struct devfs_dirent *de);

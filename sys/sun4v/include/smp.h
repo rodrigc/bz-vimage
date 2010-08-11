@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.8 2010/07/29 12:08:46 mav Exp $
+ * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.9 2010/08/06 15:36:59 jhb Exp $
  */
 
 #ifndef	_MACHINE_SMP_H_
@@ -85,8 +85,9 @@ void cpu_ipi_preempt(struct trapframe *tf);
 void cpu_ipi_hardclock(struct trapframe *tf);
 void cpu_ipi_statclock(struct trapframe *tf);
 
-void	ipi_selected(u_int cpus, u_int ipi);
 void	ipi_all_but_self(u_int ipi);
+void	ipi_cpu(int cpu, u_int ipi);
+void	ipi_selected(u_int cpus, u_int ipi);
 
 vm_offset_t mp_tramp_alloc(void);
 void        mp_set_tsb_desc_ra(vm_paddr_t);

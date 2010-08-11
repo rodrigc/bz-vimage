@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.380 2010/07/31 12:14:28 joel Exp $
+.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.382 2010/08/03 19:25:58 bcr Exp $
 .\"
-.Dd July 13, 2010
+.Dd August 3, 2010
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -4257,12 +4257,12 @@ variables.
 .It Va ubthidhci_busnum
 Bus number where the USB Bluetooth controller is located.
 Check the output of
-.Xr usbconfig 1
+.Xr usbconfig 8
 on your system to find this information.
 .It Va ubthidhci_addr
 Bus address of the USB Bluetooth controller.
 Check the output of
-.Xr usbconfig 1
+.Xr usbconfig 8
 on your system to find this information.
 .El
 .Sh FILES
@@ -4279,7 +4279,6 @@ on your system to find this information.
 .Xr kbdcontrol 1 ,
 .Xr makewhatis 1 ,
 .Xr sh 1 ,
-.Xr usbconfig 1 ,
 .Xr vi 1 ,
 .Xr vidcontrol 1 ,
 .Xr bridge 4 ,
@@ -4355,6 +4354,7 @@ on your system to find this information.
 .Xr sysctl 8 ,
 .Xr syslogd 8 ,
 .Xr timed 8 ,
+.Xr usbconfig 8 ,
 .Xr wlandebug 8 ,
 .Xr yp 8 ,
 .Xr ypbind 8 ,

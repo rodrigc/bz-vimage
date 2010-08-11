@@ -30,12 +30,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.71 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.72 2010/08/11 00:51:50 will Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
-#include "opt_carp.h"
 #include "opt_mpath.h"
 
 #include <sys/param.h>
@@ -75,10 +74,6 @@ __FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.71 2010/04/29 11:52:42 bz Exp
 #include <netinet/icmp6.h>
 #include <netinet6/send.h>
 
-#ifdef DEV_CARP
-#include <netinet/ip_carp.h>
-#endif
-
 #define SDL(s) ((struct sockaddr_dl *)s)
 
 struct dadq;
@@ -89,6 +84,10 @@ static void nd6_dad_timer(struct dadq *);
 static void nd6_dad_ns_output(struct dadq *, struct ifaddr *);
 static void nd6_dad_ns_input(struct ifaddr *);
 static void nd6_dad_na_input(struct ifaddr *);
+
+struct ifaddr *(*carp_iamatch6_p)(struct ifnet *, struct in6_addr *);
+caddr_t (*carp_macmatch6_p)(struct ifnet *, struct mbuf *,
+    const struct in6_addr *);
 
 VNET_DEFINE(int, dad_ignore_ns) = 0;	/* ignore NS in DAD - specwise incorrect*/
 VNET_DEFINE(int, dad_maxtry) = 15;	/* max # of *tries* to transmit DAD packet */
@@ -223,14 +222,10 @@ nd6_ns_input(struct mbuf *m, int off, int icmp6len)
 	 * (3) "tentative" address on which DAD is being performed.
 	 */
 	/* (1) and (3) check. */
-#ifdef DEV_CARP
 	if (ifp->if_carp)
-		ifa = carp_iamatch6(ifp->if_carp, &taddr6);
+		ifa = (*carp_iamatch6_p)(ifp, &taddr6);
 	if (ifa == NULL)
 		ifa = (struct ifaddr *)in6ifa_ifpwithaddr(ifp, &taddr6);
-#else
-	ifa = (struct ifaddr *)in6ifa_ifpwithaddr(ifp, &taddr6);
-#endif
 
 	/* (2) check. */
 	if (ifa == NULL) {
@@ -1051,14 +1046,10 @@ nd6_na_output(struct ifnet *ifp, const struct in6_addr *daddr6_0,
 		 * my address) use lladdr configured for the interface.
 		 */
 		if (sdl0 == NULL) {
-#ifdef DEV_CARP
 			if (ifp->if_carp)
-				mac = carp_macmatch6(ifp->if_carp, m, taddr6);
+				mac = (*carp_macmatch6_p)(ifp, m, taddr6);
 			if (mac == NULL)
 				mac = nd6_ifptomac(ifp);
-#else
-			mac = nd6_ifptomac(ifp);
-#endif
 		} else if (sdl0->sa_family == AF_LINK) {
 			struct sockaddr_dl *sdl;
 			sdl = (struct sockaddr_dl *)sdl0;

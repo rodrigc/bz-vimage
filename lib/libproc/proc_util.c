@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libproc/proc_util.c,v 1.2 2010/07/31 16:10:20 rpaulo Exp $
+ * $FreeBSD: src/lib/libproc/proc_util.c,v 1.3 2010/08/11 17:33:26 rpaulo Exp $
  */
 
 #include <sys/types.h>
@@ -144,15 +144,17 @@ proc_wstatus(struct proc_handle *phdl)
 
 	if (phdl == NULL)
 		return (-1);
-	if (waitpid(phdl->pid, &status, WUNTRACED) < 0)
+	if (waitpid(phdl->pid, &status, WUNTRACED) < 0) {
+		warn("waitpid");
 		return (-1);
+	}
 	if (WIFSTOPPED(status))
 		phdl->status = PS_STOP;
 	if (WIFEXITED(status) || WIFSIGNALED(status))
 		phdl->status = PS_UNDEAD;
 	phdl->wstat = status;
 
-	return (status);
+	return (phdl->status);
 }
 
 int
@@ -175,7 +177,7 @@ proc_signame(int sig, char *name, size_t namesz)
 }
 
 int
-proc_read(struct proc_handle *phdl, char *buf, size_t size, size_t addr)
+proc_read(struct proc_handle *phdl, void *buf, size_t size, size_t addr)
 {
 	struct ptrace_io_desc piod;
 
@@ -200,7 +202,8 @@ proc_getlwpstatus(struct proc_handle *phdl)
 
 	if (phdl == NULL)
 		return (NULL);
-	if (ptrace(PT_LWPINFO, phdl->pid, (caddr_t)&lwpinfo,sizeof(lwpinfo)) < 0)
+	if (ptrace(PT_LWPINFO, phdl->pid, (caddr_t)&lwpinfo,
+	    sizeof(lwpinfo)) < 0)
 		return (NULL);
 	siginfo = &lwpinfo.pl_siginfo;
 	if (lwpinfo.pl_event == PL_EVENT_SIGNAL &&

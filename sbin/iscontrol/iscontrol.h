@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2005-2008 Daniel Braniss <danny@cs.huji.ac.il>
+ * Copyright (c) 2005-2010 Daniel Braniss <danny@cs.huji.ac.il>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/iscontrol/iscontrol.h,v 1.3 2010/02/03 23:58:00 delphij Exp $
+ * $FreeBSD: src/sbin/iscontrol/iscontrol.h,v 1.4 2010/08/09 12:36:36 des Exp $
  */
 /*
  | $Id$
@@ -154,7 +154,7 @@ void	parseArgs(int nargs, char **args, isc_opt_t *op);
 void	parseConfig(FILE *fd, char *key, isc_opt_t *op);
 
 char	*chapDigest(char *ap, char id, char *cp, char *chapSecret);
-char	*genChapChallenge(char *encoding, int len);
+char	*genChapChallenge(char *encoding, uint len);
 
 int	str2bin(char *str, char **rsp);
 char	*bin2str(char *fmt, unsigned char *md, int blen);

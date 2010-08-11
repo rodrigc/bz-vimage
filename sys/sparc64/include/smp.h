@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/include/smp.h,v 1.29 2010/07/29 12:08:46 mav Exp $
+ * $FreeBSD: src/sys/sparc64/include/smp.h,v 1.32 2010/08/08 14:00:21 marius Exp $
  */
 
 #ifndef	_MACHINE_SMP_H_
@@ -81,6 +81,11 @@ struct ipi_cache_args {
 	vm_paddr_t ica_pa;
 };
 
+struct ipi_rd_args {
+	u_int	ira_mask;
+	register_t *ira_val;
+};
+
 struct ipi_tlb_args {
 	u_int	ita_mask;
 	struct	pmap *ita_pmap;
@@ -98,11 +103,14 @@ void	cpu_mp_shutdown(void);
 
 typedef	void cpu_ipi_selected_t(u_int, u_long, u_long, u_long);
 extern	cpu_ipi_selected_t *cpu_ipi_selected;
+typedef	void cpu_ipi_single_t(u_int, u_long, u_long, u_long);
+extern	cpu_ipi_single_t *cpu_ipi_single;
 
 void	mp_init(u_int cpu_impl);
 
 extern	struct mtx ipi_mtx;
 extern	struct ipi_cache_args ipi_cache_args;
+extern	struct ipi_rd_args ipi_rd_args;
 extern	struct ipi_tlb_args ipi_tlb_args;
 
 extern	char *mp_tramp_code;
@@ -117,6 +125,10 @@ extern	char tl_ipi_spitfire_dcache_page_inval[];
 extern	char tl_ipi_spitfire_icache_page_inval[];
 
 extern	char tl_ipi_level[];
+
+extern	char tl_ipi_stick_rd[];
+extern	char tl_ipi_tick_rd[];
+
 extern	char tl_ipi_tlb_context_demap[];
 extern	char tl_ipi_tlb_page_demap[];
 extern	char tl_ipi_tlb_range_demap[];
@@ -133,6 +145,13 @@ ipi_selected(u_int cpus, u_int ipi)
 {
 
 	cpu_ipi_selected(cpus, 0, (u_long)tl_ipi_level, ipi);
+}
+
+static __inline void
+ipi_cpu(int cpu, u_int ipi)
+{
+
+	cpu_ipi_single(cpu, 0, (u_long)tl_ipi_level, ipi);
 }
 
 #if defined(_MACHINE_PMAP_H_) && defined(_SYS_MUTEX_H_)
@@ -167,6 +186,22 @@ ipi_icache_page_inval(void *func, vm_paddr_t pa)
 	ica->ica_pa = pa;
 	cpu_ipi_selected(PCPU_GET(other_cpus), 0, (u_long)func, (u_long)ica);
 	return (&ica->ica_mask);
+}
+
+static __inline void *
+ipi_rd(u_int cpu, void *func, u_long *val)
+{
+	struct ipi_rd_args *ira;
+
+	if (smp_cpus == 1)
+		return (NULL);
+	sched_pin();
+	ira = &ipi_rd_args;
+	mtx_lock_spin(&ipi_mtx);
+	ira->ira_mask = 1 << cpu | PCPU_GET(cpumask);
+	ira->ira_val = val;
+	cpu_ipi_single(cpu, 0, (u_long)func, (u_long)ira);
+	return (&ira->ira_mask);
 }
 
 static __inline void *
@@ -232,7 +267,8 @@ ipi_tlb_range_demap(struct pmap *pm, vm_offset_t start, vm_offset_t end)
 	ita->ita_pmap = pm;
 	ita->ita_start = start;
 	ita->ita_end = end;
-	cpu_ipi_selected(cpus, 0, (u_long)tl_ipi_tlb_range_demap, (u_long)ita);
+	cpu_ipi_selected(cpus, 0, (u_long)tl_ipi_tlb_range_demap,
+	    (u_long)ita);
 	return (&ita->ita_mask);
 }
 
@@ -267,6 +303,13 @@ ipi_dcache_page_inval(void *func __unused, vm_paddr_t pa __unused)
 
 static __inline void *
 ipi_icache_page_inval(void *func __unused, vm_paddr_t pa __unused)
+{
+
+	return (NULL);
+}
+
+static __inline void *
+ipi_rd(u_int cpu __unused, void *func __unused, u_long *val __unused)
 {
 
 	return (NULL);

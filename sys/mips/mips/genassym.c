@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.8 2010/07/30 09:38:47 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/genassym.c,v 1.9 2010/08/04 14:12:09 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -93,6 +93,7 @@ ASSYM(SIGFPE, SIGFPE);
 ASSYM(PAGE_SHIFT, PAGE_SHIFT);
 ASSYM(PAGE_SIZE, PAGE_SIZE);
 ASSYM(PAGE_MASK, PAGE_MASK);
+ASSYM(PDRSHIFT, PDRSHIFT);
 ASSYM(SEGSHIFT, SEGSHIFT);
 ASSYM(NPTEPG, NPTEPG);
 ASSYM(TDF_NEEDRESCHED, TDF_NEEDRESCHED);

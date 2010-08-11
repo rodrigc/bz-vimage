@@ -61,13 +61,12 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_proto.c,v 1.71 2010/05/09 20:32:00 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_proto.c,v 1.73 2010/08/11 00:51:50 will Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
 #include "opt_ipstealth.h"
-#include "opt_carp.h"
 #include "opt_sctp.h"
 #include "opt_mpath.h"
 #include "opt_route.h"
@@ -111,10 +110,6 @@ __FBSDID("$FreeBSD: src/sys/netinet6/in6_proto.c,v 1.71 2010/05/09 20:32:00 kmac
 #include <netinet6/udp6_var.h>
 #include <netinet6/pim6_var.h>
 #include <netinet6/nd6.h>
-
-#ifdef DEV_CARP
-#include <netinet/ip_carp.h>
-#endif
 
 #ifdef SCTP
 #include <netinet/in_pcb.h>
@@ -333,18 +328,6 @@ struct ip6protosw inet6sw[] = {
 	.pr_ctloutput =		rip6_ctloutput,
 	.pr_usrreqs =		&rip6_usrreqs
 },
-#ifdef DEV_CARP
-{
-	.pr_type =		SOCK_RAW,
-	.pr_domain =		&inet6domain,
-	.pr_protocol =		IPPROTO_CARP,
-	.pr_flags =		PR_ATOMIC|PR_ADDR,
-	.pr_input =		carp6_input,
-	.pr_output =		rip6_output,
-	.pr_ctloutput =		rip6_ctloutput,
-	.pr_usrreqs =		&rip6_usrreqs
-},
-#endif /* DEV_CARP */
 /* Spacer n-times for loadable protocols. */
 IP6PROTOSPACER,
 IP6PROTOSPACER,

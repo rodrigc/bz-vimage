@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/contrib/pf/pflogd/pflogd.c,v 1.13 2007/10/16 02:12:05 mlaier Exp $");
+__FBSDID("$FreeBSD: src/contrib/pf/pflogd/pflogd.c,v 1.14 2010/08/05 18:49:06 csjp Exp $");
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -583,11 +583,7 @@ main(int argc, char **argv)
 	pcap_handler phandler = dump_packet;
 	const char *errstr = NULL;
 
-#ifdef __FreeBSD__
-	/* another ?paranoid? safety measure we do not have */
-#else
 	closefrom(STDERR_FILENO + 1);
-#endif
 
 	while ((ch = getopt(argc, argv, "Dxd:f:i:s:")) != -1) {
 		switch (ch) {

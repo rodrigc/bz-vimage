@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/hast.h,v 1.2 2010/04/29 15:36:32 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/hast.h,v 1.3 2010/08/05 19:08:54 pjd Exp $
  */
 
 #ifndef	_HAST_H_
@@ -183,7 +183,7 @@ struct hast_resource {
 	TAILQ_ENTRY(hast_resource) hr_next;
 };
 
-struct hastd_config *yy_config_parse(const char *config);
+struct hastd_config *yy_config_parse(const char *config, bool exitonerror);
 void yy_config_free(struct hastd_config *config);
 
 void yyerror(const char *);

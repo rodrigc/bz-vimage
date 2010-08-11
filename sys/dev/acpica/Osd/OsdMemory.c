@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdMemory.c,v 1.18 2010/07/16 03:59:50 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdMemory.c,v 1.19 2010/08/06 23:11:19 jkim Exp $");
 
 #include <contrib/dev/acpica/include/acpi.h>
 
@@ -72,12 +72,6 @@ AcpiOsGetPhysicalAddress(void *LogicalAddress,
 {
     /* We can't necessarily do this, so cop out. */
     return (AE_BAD_ADDRESS);
-}
-
-ACPI_STATUS
-AcpiOsValidateInterface (char *Interface)
-{
-    return (AE_SUPPORT);
 }
 
 BOOLEAN

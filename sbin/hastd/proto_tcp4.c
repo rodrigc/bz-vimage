@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/proto_tcp4.c,v 1.2 2010/04/29 21:55:20 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/proto_tcp4.c,v 1.5 2010/08/05 18:27:41 pjd Exp $");
 
 #include <sys/param.h>	/* MAXHOSTNAMELEN */
 
@@ -126,11 +126,12 @@ tcp4_addr(const char *addr, struct sockaddr_in *sinp)
 		addr += 7;
 	else if (strncasecmp(addr, "tcp://", 6) == 0)
 		addr += 6;
-	else if (addr[0] != '/' &&	/* If this is not path... */
-	    strstr(addr, "://") == NULL)/* ...and has no prefix... */
-		;			/* ...tcp4 is the default. */
-	else
-		return (-1);
+	else {
+		/*
+		 * Because TCP4 is the default assume IP or host is given without
+		 * prefix.
+		 */
+	}
 
 	sinp->sin_family = AF_INET;
 	sinp->sin_len = sizeof(*sinp);
@@ -155,7 +156,8 @@ tcp4_addr(const char *addr, struct sockaddr_in *sinp)
 		size = (size_t)(pp - addr + 1);
 		if (size > sizeof(iporhost))
 			return (ENAMETOOLONG);
-		strlcpy(iporhost, addr, size);
+		if (strlcpy(iporhost, addr, size) >= size)
+			return (ENAMETOOLONG);
 	}
 	/* Convert string (IP address or host name) to in_addr_t. */
 	ip = str2ip(iporhost);
@@ -419,8 +421,9 @@ sin2str(struct sockaddr_in *sinp, char *addr, size_t size)
 
 	ip = ntohl(sinp->sin_addr.s_addr);
 	port = ntohs(sinp->sin_port);
-	snprintf(addr, size, "tcp4://%u.%u.%u.%u:%u", ((ip >> 24) & 0xff),
-	    ((ip >> 16) & 0xff), ((ip >> 8) & 0xff), (ip & 0xff), port);
+	PJDLOG_VERIFY(snprintf(addr, size, "tcp4://%u.%u.%u.%u:%u",
+	    ((ip >> 24) & 0xff), ((ip >> 16) & 0xff), ((ip >> 8) & 0xff),
+	    (ip & 0xff), port) < (ssize_t)size);
 }
 
 static bool
@@ -458,7 +461,7 @@ tcp4_local_address(const void *ctx, char *addr, size_t size)
 
 	sinlen = sizeof(sin);
 	if (getsockname(tctx->tc_fd, (struct sockaddr *)&sin, &sinlen) < 0) {
-		strlcpy(addr, "N/A", size);
+		PJDLOG_VERIFY(strlcpy(addr, "N/A", size) < size);
 		return;
 	}
 	sin2str(&sin, addr, size);
@@ -476,7 +479,7 @@ tcp4_remote_address(const void *ctx, char *addr, size_t size)
 
 	sinlen = sizeof(sin);
 	if (getpeername(tctx->tc_fd, (struct sockaddr *)&sin, &sinlen) < 0) {
-		strlcpy(addr, "N/A", size);
+		PJDLOG_VERIFY(strlcpy(addr, "N/A", size) < size);
 		return;
 	}
 	sin2str(&sin, addr, size);
@@ -515,5 +518,5 @@ static __constructor void
 tcp4_ctor(void)
 {
 
-	proto_register(&tcp4_proto);
+	proto_register(&tcp4_proto, true);
 }

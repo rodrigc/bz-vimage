@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/pci/pcib_private.h,v 1.15 2009/03/14 14:08:53 imp Exp $
+ * $FreeBSD: src/sys/dev/pci/pcib_private.h,v 1.16 2010/08/05 16:10:12 jhb Exp $
  */
 
 #ifndef __PCIB_PRIVATE_H__
@@ -37,6 +37,7 @@
  * Export portions of generic PCI:PCI bridge support so that it can be
  * used by subclasses.
  */
+DECLARE_CLASS(pcib_driver);
 
 /*
  * Bridge-specific data.

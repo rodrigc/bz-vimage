@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/proto_socketpair.c,v 1.2 2010/02/21 19:56:47 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/proto_socketpair.c,v 1.3 2010/08/05 17:56:41 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -271,5 +271,5 @@ static __constructor void
 sp_ctor(void)
 {
 
-	proto_register(&sp_proto);
+	proto_register(&sp_proto, false);
 }

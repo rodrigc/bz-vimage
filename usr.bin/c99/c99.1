@@ -24,7 +24,7 @@
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
 .\" From FreeBSD: src/usr.bin/c89/c89.1,v 1.11 2007/03/10 07:10:01 ru Exp
-.\" $FreeBSD: src/usr.bin/c99/c99.1,v 1.7 2010/06/17 14:37:47 gabor Exp $
+.\" $FreeBSD: src/usr.bin/c99/c99.1,v 1.8 2010/08/02 13:11:35 uqs Exp $
 .\"
 .Dd June 17, 2010
 .Dt C99 1
@@ -96,7 +96,7 @@ absolute pathnames to look in the directory named by the
 pathname before looking in the usual places.
 Thus, headers whose
 names are enclosed in double-quotes
-.Pq Qq
+.Pq Qq \&
 will be searched for first
 in the directory of the file with the
 .Ic #include
@@ -105,7 +105,7 @@ directories named in
 .Fl I
 options, and last in the usual places.
 For headers whose names are enclosed in angle brackets
-.Pq Aq ,
+.Pq Aq \& ,
 the header
 will be searched for only in directories named in
 .Fl I

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_target.c,v 1.81 2009/10/23 08:27:55 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_target.c,v 1.82 2010/08/02 18:06:49 bcr Exp $");
 
 
 #include <sys/param.h>
@@ -1174,7 +1174,7 @@ targcamstatus(cam_status status)
 		return (EINVAL);
 	case CAM_RESRC_UNAVAIL:	/* Resource Unavailable */
 		return (ENOMEM);
-	case CAM_BUSY:		/* CAM subsytem is busy */
+	case CAM_BUSY:		/* CAM subsystem is busy */
 	case CAM_UA_ABORT:	/* Unable to abort CCB request */
 		return (EBUSY);
 	default:

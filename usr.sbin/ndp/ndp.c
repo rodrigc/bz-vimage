@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/usr.sbin/ndp/ndp.c,v 1.27 2009/09/12 22:08:20 hrs Exp $	*/
+/*	$FreeBSD: src/usr.sbin/ndp/ndp.c,v 1.28 2010/08/06 15:09:21 jhb Exp $	*/
 /*	$KAME: ndp.c,v 1.104 2003/06/27 07:48:39 itojun Exp $	*/
 
 /*
@@ -437,6 +437,7 @@ set(argc, argv)
 			switch (sdl->sdl_type) {
 			case IFT_ETHER: case IFT_FDDI: case IFT_ISO88023:
 			case IFT_ISO88024: case IFT_ISO88025:
+			case IFT_L2VLAN: case IFT_BRIDGE:
 				goto overwrite;
 			}
 		}

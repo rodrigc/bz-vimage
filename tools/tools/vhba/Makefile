@@ -1,4 +1,4 @@
-# $FreeBSD: src/tools/tools/vhba/Makefile,v 1.1 2010/06/08 22:26:47 mjacob Exp $
+# $FreeBSD: src/tools/tools/vhba/Makefile,v 1.2 2010/08/09 00:36:22 mjacob Exp $
 #
 # Copyright (c) 2010 by Panasas Inc
 # All rights reserved.
@@ -24,6 +24,6 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-SUBDIR=	simple medium lots faulty rptluns
+SUBDIR=	simple medium lots faulty rptluns mptest
 
 .include <bsd.subdir.mk>

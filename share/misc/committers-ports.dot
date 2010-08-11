@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/misc/committers-ports.dot,v 1.94 2010/07/28 16:38:37 bapt Exp $
+# $FreeBSD: src/share/misc/committers-ports.dot,v 1.95 2010/08/02 16:18:41 glarkin Exp $
 
 # This file is meant to list all FreeBSD ports committers and describe the
 # mentor-mentee relationships between them.
@@ -84,7 +84,8 @@ flz [label="Florent Thoumie\nflz@FreeBSD.org\n2005/03/01"]
 gabor [label="Gabor Kovesdan\ngabor@FreeBSD.org\n2006/12/05"]
 gahr [label="Pietro Cerutti\ngahr@FreeBSD.org\n2008/02/20"]
 garga [label="Renato Botelho\ngarga@FreeBSD.org\n2005/07/11"]
-gerald [label="Gerald Pfeifer\gerald@FreeBSD.org\n2002/04/03"]
+gerald [label="Gerald Pfeifer\ngerald@FreeBSD.org\n2002/04/03"]
+glarkin [label="Greg Larkin\nglarkin@FreeBSD.org\n2008/07/17"]
 glewis [label="Greg Lewis\nglewis@FreeBSD.org\n2002/04/08"]
 hq [label="Herve Quiroz\nhq@FreeBSD.org\n2004/08/05"]
 ijliao [label="Ying-Chieh Liao\nijliao@FreeBSD.org\n2001/01/20"]

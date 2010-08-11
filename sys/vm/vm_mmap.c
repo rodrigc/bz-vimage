@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.242 2010/07/27 19:26:18 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.243 2010/08/06 09:42:15 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_hwpmc_hooks.h"
@@ -1292,15 +1292,15 @@ vm_mmap_cdev(struct thread *td, vm_size_t objsize,
 {
 	vm_object_t obj;
 	struct cdevsw *dsw;
-	int error, flags;
+	int error, flags, ref;
 
 	flags = *flagsp;
 
-	dsw = dev_refthread(cdev);
+	dsw = dev_refthread(cdev, &ref);
 	if (dsw == NULL)
 		return (ENXIO);
 	if (dsw->d_flags & D_MMAP_ANON) {
-		dev_relthread(cdev);
+		dev_relthread(cdev, ref);
 		*maxprotp = VM_PROT_ALL;
 		*flagsp |= MAP_ANON;
 		return (0);
@@ -1310,11 +1310,11 @@ vm_mmap_cdev(struct thread *td, vm_size_t objsize,
 	 */
 	if ((*maxprotp & VM_PROT_WRITE) == 0 &&
 	    (prot & PROT_WRITE) != 0) {
-		dev_relthread(cdev);
+		dev_relthread(cdev, ref);
 		return (EACCES);
 	}
 	if (flags & (MAP_PRIVATE|MAP_COPY)) {
-		dev_relthread(cdev);
+		dev_relthread(cdev, ref);
 		return (EINVAL);
 	}
 	/*
@@ -1324,7 +1324,7 @@ vm_mmap_cdev(struct thread *td, vm_size_t objsize,
 #ifdef MAC_XXX
 	error = mac_cdev_check_mmap(td->td_ucred, cdev, prot);
 	if (error != 0) {
-		dev_relthread(cdev);
+		dev_relthread(cdev, ref);
 		return (error);
 	}
 #endif
@@ -1338,7 +1338,7 @@ vm_mmap_cdev(struct thread *td, vm_size_t objsize,
 	 * XXX assumes VM_PROT_* == PROT_*
 	 */
 	error = dsw->d_mmap_single(cdev, foff, objsize, objp, (int)prot);
-	dev_relthread(cdev);
+	dev_relthread(cdev, ref);
 	if (error != ENODEV)
 		return (error);
 	obj = vm_pager_allocate(OBJT_DEVICE, cdev, objsize, prot, *foff,

@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/syscons/keymaps/Makefile,v 1.74 2009/06/12 22:53:49 edwin Exp $
+# $FreeBSD: src/share/syscons/keymaps/Makefile,v 1.75 2010/08/07 17:02:36 gavin Exp $
 
 FILES=	INDEX.keymaps \
 	be.iso.kbd be.iso.acc.kbd \
@@ -40,6 +40,7 @@ FILES=	INDEX.keymaps \
 	swedish.iso.kbd swedish.cp850.kbd \
 	swissfrench.iso.kbd swissfrench.iso.acc.kbd swissfrench.cp850.kbd \
 	swissgerman.iso.kbd swissgerman.iso.acc.kbd swissgerman.cp850.kbd \
+	swissgerman.macbook.acc.kbd \
 	tr.iso9.q.kbd \
 	ua.koi8-u.kbd ua.koi8-u.shift.alt.kbd ua.iso5.kbd \
 	uk.iso.kbd uk.iso-ctrl.kbd uk.cp850.kbd uk.cp850-ctrl.kbd \

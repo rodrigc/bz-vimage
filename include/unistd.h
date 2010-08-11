@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)unistd.h	8.12 (Berkeley) 4/27/95
- * $FreeBSD: src/include/unistd.h,v 1.97 2010/02/16 19:39:50 imp Exp $
+ * $FreeBSD: src/include/unistd.h,v 1.98 2010/08/11 09:29:33 kevlo Exp $
  */
 
 #ifndef _UNISTD_H_
@@ -74,7 +74,7 @@ typedef	__useconds_t	useconds_t;
 #define	_USECONDS_T_DECLARED
 #endif
 
-#define	 STDIN_FILENO	0	/* standard input file descriptor */
+#define	STDIN_FILENO	0	/* standard input file descriptor */
 #define	STDOUT_FILENO	1	/* standard output file descriptor */
 #define	STDERR_FILENO	2	/* standard error file descriptor */
 

@@ -40,7 +40,7 @@
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: src/sys/i386/include/pmap.h,v 1.65.2.2 2000/11/30 01:54:42 peter
  *	JNPR: pmap.h,v 1.7.2.1 2007/09/10 07:44:12 girish
- *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.16 2010/07/08 14:49:55 jchandra Exp $
+ *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.17 2010/08/06 07:32:33 jchandra Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -124,7 +124,6 @@ typedef struct pv_entry {
 	TAILQ_ENTRY(pv_entry) pv_list;
 	TAILQ_ENTRY(pv_entry) pv_plist;
 	vm_page_t pv_ptem;	/* VM page for pte */
-	boolean_t pv_wired;	/* whether this entry is wired */
 }       *pv_entry_t;
 
 

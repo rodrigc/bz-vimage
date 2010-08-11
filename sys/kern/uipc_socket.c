@@ -101,7 +101,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.348 2010/05/27 15:27:31 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.349 2010/08/07 17:57:58 tuexen Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2275,7 +2275,12 @@ soreceive_dgram(struct socket *so, struct sockaddr **psa, struct uio *uio,
 			m_freem(m);
 			return (error);
 		}
-		m = m_free(m);
+		if (len == m->m_len)
+			m = m_free(m);
+		else {
+			m->m_data += len;
+			m->m_len -= len;
+		}
 	}
 	if (m != NULL)
 		flags |= MSG_TRUNC;

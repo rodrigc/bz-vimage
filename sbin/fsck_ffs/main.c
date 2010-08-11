@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/14/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/fsck_ffs/main.c,v 1.60 2010/06/22 00:26:07 delphij Exp $");
+__FBSDID("$FreeBSD: src/sbin/fsck_ffs/main.c,v 1.61 2010/08/03 09:21:13 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -390,7 +390,7 @@ checkfilesys(char *filesys)
 	 */
 	if ((sblock.fs_flags & FS_SUJ) == FS_SUJ) {
 		if ((sblock.fs_flags & FS_NEEDSFSCK) != FS_NEEDSFSCK && skipclean) {
-			if (preen || reply("USE JOURNAL?")) {
+			if (preen || reply("USE JOURNAL")) {
 				if (suj_check(filesys) == 0) {
 					printf("\n***** FILE SYSTEM MARKED CLEAN *****\n");
 					if (chkdoreload(mntp) == 0)

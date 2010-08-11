@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/acpi/iasl/Makefile,v 1.13 2010/07/06 20:57:28 jkim Exp $
+# $FreeBSD: src/usr.sbin/acpi/iasl/Makefile,v 1.14 2010/08/06 23:11:19 jkim Exp $
 
 PROG=	iasl
 SRCS=	adfile.c adisasm.c adwalk.c
@@ -51,7 +51,8 @@ SRCS+=	tbfadt.c tbinstal.c tbutils.c tbxface.c
 # utilities
 SRCS+=	utalloc.c utcache.c utcopy.c utdebug.c utdelete.c	\
 	utglobal.c utinit.c utlock.c utmath.c utmisc.c		\
-	utmutex.c utobject.c utresrc.c utstate.c utxface.c
+	utmutex.c utobject.c utosi.c utresrc.c utstate.c	\
+	utxface.c
 
 WARNS?=	2
 

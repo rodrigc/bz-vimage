@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/libcompat/Makefile,v 1.28 2010/03/14 10:18:58 ed Exp $
+# $FreeBSD: src/lib/libcompat/Makefile,v 1.29 2010/08/06 20:13:36 ed Exp $
 
 LIB=	compat
 CFLAGS+=-DLIBC_SCCS -DSYSLIBC_SCCS -I${.CURDIR}/../libc/locale
@@ -10,17 +10,14 @@ WARNS?=	0
 .PATH:	${.CURDIR}/4.1 ${.CURDIR}/4.3 ${.CURDIR}/4.4
 
 # compat 4.1 sources
-SRCS+=	ascftime.c cftime.c ftime.c getpw.c
+SRCS+=	ftime.c
 
-MAN+=	4.1/ftime.3 4.1/getpw.3
-MAN+=	4.1/cftime.3
-
-MLINKS+=cftime.3 ascftime.3
+MAN+=	4.1/ftime.3
 
 # compat 4.3 sources
-SRCS+=	cfree.c re_comp.c rexec.c
+SRCS+=	re_comp.c rexec.c
 
-MAN+=	4.3/cfree.3 4.3/re_comp.3 4.3/rexec.3
+MAN+=	4.3/re_comp.3 4.3/rexec.3
 
 MLINKS+=re_comp.3 re_exec.3
 

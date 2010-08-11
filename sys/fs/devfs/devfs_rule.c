@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_rule.c,v 1.25 2008/06/22 14:34:38 gonzo Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_rule.c,v 1.26 2010/08/06 09:42:15 kib Exp $
  */
 
 /*
@@ -528,6 +528,7 @@ devfs_rule_match(struct devfs_krule *dk, struct devfs_dirent *de)
 	struct devfs_rule *dr = &dk->dk_rule;
 	struct cdev *dev;
 	struct cdevsw *dsw;
+	int ref;
 
 	dev = devfs_rule_getdev(de);
 	/*
@@ -545,14 +546,14 @@ devfs_rule_match(struct devfs_krule *dk, struct devfs_dirent *de)
 	if (dr->dr_icond & DRC_DSWFLAGS) {
 		if (dev == NULL)
 			return (0);
-		dsw = dev_refthread(dev);
+		dsw = dev_refthread(dev, &ref);
 		if (dsw == NULL)
 			return (0);
 		if ((dsw->d_flags & dr->dr_dswflags) == 0) {
-			dev_relthread(dev);
+			dev_relthread(dev, ref);
 			return (0);
 		}
-		dev_relthread(dev);
+		dev_relthread(dev, ref);
 	}
 	if (dr->dr_icond & DRC_PATHPTRN)
 		if (!devfs_rule_matchpath(dk, de))

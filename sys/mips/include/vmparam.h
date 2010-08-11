@@ -37,7 +37,7 @@
  *	from: Utah Hdr: vmparam.h 1.16 91/01/18
  *	@(#)vmparam.h	8.2 (Berkeley) 4/22/94
  *	JNPR: vmparam.h,v 1.3.2.1 2007/09/10 06:01:28 girish
- * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.9 2010/07/29 20:02:56 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.10 2010/08/04 14:12:09 jchandra Exp $
  */
 
 #ifndef _MACHINE_VMPARAM_H_
@@ -185,7 +185,7 @@
  *	  allocations use HIGHMEM if available, and then DEFAULT. 
  *	- HIGHMEM for other pages 
  */
-#ifdef __mips_n64
+#if 0 /* Not yet, change n64 to use xkphys */
 #define	VM_NFREELIST		1
 #define	VM_FREELIST_DEFAULT	0
 #define	VM_FREELIST_DIRECT	VM_FREELIST_DEFAULT

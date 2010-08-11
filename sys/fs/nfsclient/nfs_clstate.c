@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clstate.c,v 1.16 2010/07/18 00:24:01 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clstate.c,v 1.17 2010/08/03 01:49:28 rmacklem Exp $");
 
 /*
  * These functions implement the client side state handling for NFSv4.
@@ -3735,7 +3735,7 @@ nfscl_tryclose(struct nfsclopen *op, struct ucred *cred,
  * to the server. This might be a big performance win in some environments.
  * (Not useful until the client does caching on local stable storage.)
  */
-APPLESTATIC boolean_t
+APPLESTATIC int
 nfscl_mustflush(vnode_t vp)
 {
 	struct nfsclclient *clp;
@@ -3746,12 +3746,12 @@ nfscl_mustflush(vnode_t vp)
 	np = VTONFS(vp);
 	nmp = VFSTONFS(vnode_mount(vp));
 	if (!NFSHASNFSV4(nmp))
-		return (TRUE);
+		return (1);
 	NFSLOCKCLSTATE();
 	clp = nfscl_findcl(nmp);
 	if (clp == NULL) {
 		NFSUNLOCKCLSTATE();
-		return (TRUE);
+		return (1);
 	}
 	dp = nfscl_finddeleg(clp, np->n_fhp->nfh_fh, np->n_fhp->nfh_len);
 	if (dp != NULL && (dp->nfsdl_flags & (NFSCLDL_WRITE | NFSCLDL_RECALL))
@@ -3759,10 +3759,10 @@ nfscl_mustflush(vnode_t vp)
 	    (dp->nfsdl_sizelimit >= np->n_size ||
 	     !NFSHASSTRICT3530(nmp))) {
 		NFSUNLOCKCLSTATE();
-		return (FALSE);
+		return (0);
 	}
 	NFSUNLOCKCLSTATE();
-	return (TRUE);
+	return (1);
 }
 
 /*

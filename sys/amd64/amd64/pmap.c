@@ -77,7 +77,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/pmap.c,v 1.709 2010/07/15 16:25:51 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/pmap.c,v 1.710 2010/08/10 16:14:10 attilio Exp $");
 
 /*
  *	Manages physical address maps.
@@ -926,8 +926,7 @@ pmap_update_pde_invalidate(vm_offset_t va, pd_entry_t newpde)
 void
 pmap_invalidate_page(pmap_t pmap, vm_offset_t va)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 
 	sched_pin();
 	if (pmap == kernel_pmap || pmap->pm_active == all_cpus) {
@@ -947,8 +946,7 @@ pmap_invalidate_page(pmap_t pmap, vm_offset_t va)
 void
 pmap_invalidate_range(pmap_t pmap, vm_offset_t sva, vm_offset_t eva)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 	vm_offset_t addr;
 
 	sched_pin();
@@ -972,8 +970,7 @@ pmap_invalidate_range(pmap_t pmap, vm_offset_t sva, vm_offset_t eva)
 void
 pmap_invalidate_all(pmap_t pmap)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 
 	sched_pin();
 	if (pmap == kernel_pmap || pmap->pm_active == all_cpus) {

@@ -31,7 +31,7 @@
  *	@(#)kernfs_vfsops.c	8.10 (Berkeley) 5/14/95
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vfsops.c 1.36
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_vfsops.c,v 1.56 2009/06/05 14:55:22 rwatson Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_vfsops.c,v 1.58 2010/08/06 09:46:53 kib Exp $
  */
 
 #include <sys/param.h>
@@ -81,7 +81,8 @@ devfs_mount(struct mount *mp)
 
 	MNT_ILOCK(mp);
 	mp->mnt_flag |= MNT_LOCAL;
-	mp->mnt_kern_flag |= MNTK_MPSAFE;
+	mp->mnt_kern_flag |= MNTK_MPSAFE | MNTK_LOOKUP_SHARED |
+	    MNTK_EXTENDED_SHARED;
 #ifdef MAC
 	mp->mnt_flag |= MNT_MULTILABEL;
 #endif
@@ -155,7 +156,7 @@ devfs_root(struct mount *mp, int flags, struct vnode **vpp)
 
 	dmp = VFSTODEVFS(mp);
 	sx_xlock(&dmp->dm_lock);
-	error = devfs_allocv(dmp->dm_rootdir, mp, &vp);
+	error = devfs_allocv(dmp->dm_rootdir, mp, LK_EXCLUSIVE, &vp);
 	if (error)
 		return (error);
 	vp->v_vflag |= VV_ROOT;

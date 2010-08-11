@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/e1000phy.c,v 1.36 2010/04/30 19:01:55 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/e1000phy.c,v 1.37 2010/08/07 23:16:21 yongari Exp $");
 
 /*
  * driver for the Marvell 88E1000 series external 1000/100/10-BT PHY.
@@ -103,7 +103,7 @@ static const struct mii_phydesc e1000phys[] = {
 	MII_PHY_DESC(MARVELL, E1000_3),
 	MII_PHY_DESC(MARVELL, E1000S),
 	MII_PHY_DESC(MARVELL, E1000_5),
-	MII_PHY_DESC(MARVELL, E1000_6),
+	MII_PHY_DESC(MARVELL, E1101),
 	MII_PHY_DESC(MARVELL, E3082),
 	MII_PHY_DESC(MARVELL, E1112),
 	MII_PHY_DESC(MARVELL, E1149),

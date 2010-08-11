@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_param.c,v 1.96 2010/06/24 00:27:20 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_param.c,v 1.97 2010/08/06 15:04:40 csjp Exp $");
 
 #include "opt_param.h"
 #include "opt_maxusers.h"
@@ -149,6 +149,7 @@ static const char *const vm_bnames[] = {
 	"QEMU",				/* QEMU */
 	"Plex86",			/* Plex86 */
 	"Bochs",			/* Bochs */
+	"Xen",				/* Xen */
 	NULL
 };
 

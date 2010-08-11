@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/pjdlog.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/pjdlog.h,v 1.2 2010/08/05 18:26:38 pjd Exp $
  */
 
 #ifndef	_PJDLOG_H_
@@ -84,5 +84,18 @@ void pjdlogv_exit(int exitcode, const char *fmt, va_list ap) __printflike(2, 0) 
 
 void pjdlog_exitx(int exitcode, const char *fmt, ...) __printflike(2, 3) __dead2;
 void pjdlogv_exitx(int exitcode, const char *fmt, va_list ap) __printflike(2, 0) __dead2;
+
+void pjdlog_verify(const char *func, const char *file, int line,
+    const char *failedexpr) __dead2;
+
+#define	PJDLOG_VERIFY(expr)	do {					\
+	if (!(expr))							\
+		pjdlog_verify(__func__, __FILE__, __LINE__, #expr);	\
+} while (0)
+#ifdef NDEBUG
+#define	PJDLOG_ASSERT(expr)	do { } while (0)
+#else
+#define	PJDLOG_ASSERT(expr)	PJDLOG_VERIFY(expr)
+#endif
 
 #endif	/* !_PJDLOG_H_ */

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/cam.c,v 1.16 2010/01/28 08:41:30 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/cam.c,v 1.17 2010/08/02 18:06:49 bcr Exp $");
 
 #include <sys/param.h>
 #ifdef _KERNEL
@@ -59,7 +59,7 @@ const struct cam_status_entry cam_status_table[] = {
 	{ CAM_REQ_ABORTED,	 "CCB request aborted by the host"	     },
 	{ CAM_UA_ABORT,		 "Unable to abort CCB request"		     },
 	{ CAM_REQ_CMP_ERR,	 "CCB request completed with an error"	     },
-	{ CAM_BUSY,		 "CAM subsytem is busy"			     },
+	{ CAM_BUSY,		 "CAM subsystem is busy"		     },
 	{ CAM_REQ_INVALID,	 "CCB request was invalid"		     },
 	{ CAM_PATH_INVALID,	 "Supplied Path ID is invalid"		     },
 	{ CAM_DEV_NOT_THERE,	 "Device Not Present"			     },

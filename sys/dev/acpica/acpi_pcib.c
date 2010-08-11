@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib.c,v 1.62 2009/06/05 18:44:36 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib.c,v 1.63 2010/08/05 16:10:12 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -169,13 +169,6 @@ acpi_pcib_attach(device_t dev, ACPI_BUFFER *prt, int busno)
     prt_walk_table(prt, prt_attach_devices, dev);
 
     return_VALUE (bus_generic_attach(dev));
-}
-
-int
-acpi_pcib_resume(device_t dev)
-{
-
-    return (bus_generic_resume(dev));
 }
 
 static void

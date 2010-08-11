@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/mips/mpboot.S,v 1.8 2010/07/20 19:25:11 jmallett Exp $
+ * $FreeBSD: src/sys/mips/mips/mpboot.S,v 1.9 2010/08/07 01:49:44 neel Exp $
  */
 
 #include <machine/asm.h>
@@ -54,7 +54,7 @@ GLOBAL(mpentry)
 
 	mtc0	zero, MIPS_COP_0_CAUSE	/* clear soft interrupts */
 
-	li	t0, MIPS_CCA_CNC	/* make sure kseg0 is cached */
+	li	t0, MIPS_CCA_CACHED	/* make sure kseg0 is cached */
 	mtc0	t0, MIPS_COP_0_CONFIG
 	COP0_SYNC
 

@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netinet/ip_carp.h,v 1.4 2009/04/12 14:19:37 rwatson Exp $	*/
+/*	$FreeBSD: src/sys/netinet/ip_carp.h,v 1.5 2010/08/11 00:51:50 will Exp $	*/
 /*	$OpenBSD: ip_carp.h,v 1.8 2004/07/29 22:12:15 mcbride Exp $	*/
 
 /*
@@ -157,15 +157,15 @@ struct carpreq {
 }
 
 #ifdef _KERNEL
-void		 carp_carpdev_state(void *);
+void		 carp_carpdev_state(struct ifnet *);
 void		 carp_input (struct mbuf *, int);
 int		 carp6_input (struct mbuf **, int *, int);
 int		 carp_output (struct ifnet *, struct mbuf *, struct sockaddr *,
 		     struct rtentry *);
-int		 carp_iamatch (void *, struct in_ifaddr *, struct in_addr *,
+int		 carp_iamatch (struct ifnet *, struct in_ifaddr *, struct in_addr *,
 		     u_int8_t **);
-struct ifaddr	*carp_iamatch6(void *, struct in6_addr *);
-void		*carp_macmatch6(void *, struct mbuf *, const struct in6_addr *);
-struct	ifnet	*carp_forus (void *, void *);
+struct ifaddr	*carp_iamatch6(struct ifnet *, struct in6_addr *);
+caddr_t		carp_macmatch6(struct ifnet *, struct mbuf *, const struct in6_addr *);
+struct	ifnet	*carp_forus (struct ifnet *, u_char *);
 #endif
 #endif /* _IP_CARP_H */

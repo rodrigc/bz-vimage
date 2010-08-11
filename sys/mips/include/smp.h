@@ -8,7 +8,7 @@
  *
  *	from: src/sys/alpha/include/smp.h,v 1.8 2005/01/05 20:05:50 imp
  *	JNPR: smp.h,v 1.3 2006/12/02 09:53:41 katta
- * $FreeBSD: src/sys/mips/include/smp.h,v 1.7 2010/07/23 07:46:55 mav Exp $
+ * $FreeBSD: src/sys/mips/include/smp.h,v 1.8 2010/08/06 15:36:59 jhb Exp $
  *
  */
 
@@ -33,6 +33,7 @@
 #ifndef LOCORE
 
 void	ipi_all_but_self(int ipi);
+void	ipi_cpu(int cpu, u_int ipi);
 void	ipi_selected(cpumask_t cpus, int ipi);
 void	smp_init_secondary(u_int32_t cpuid);
 void	mpentry(void);

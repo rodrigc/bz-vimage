@@ -23,20 +23,27 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/tools/regression/fstest/fstest.c,v 1.6 2009/09/07 19:40:22 trasz Exp $
+ * $FreeBSD: src/tools/regression/fstest/fstest.c,v 1.12 2010/08/09 20:16:52 pjd Exp $
  */
 
 #include <sys/param.h>
+#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <grp.h>
-#include <string.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#ifndef makedev
+#include <sys/mkdev.h>
+#endif
+
+#include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <assert.h>
+#include <fcntl.h>
+#include <grp.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #ifndef HAS_TRUNCATE64
 #define	truncate64	truncate
@@ -63,6 +70,9 @@ enum action {
 	ACTION_SYMLINK,
 	ACTION_RENAME,
 	ACTION_MKFIFO,
+	ACTION_MKNOD,
+	ACTION_BIND,
+	ACTION_CONNECT,
 	ACTION_CHMOD,
 #ifdef HAS_LCHMOD
 	ACTION_LCHMOD,
@@ -110,6 +120,9 @@ static struct syscall_desc syscalls[] = {
 	{ "symlink", ACTION_SYMLINK, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "rename", ACTION_RENAME, { TYPE_STRING, TYPE_STRING, TYPE_NONE } },
 	{ "mkfifo", ACTION_MKFIFO, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
+	{ "mknod", ACTION_MKNOD, { TYPE_STRING, TYPE_STRING, TYPE_NUMBER, TYPE_NUMBER, TYPE_NUMBER, TYPE_NONE} },
+	{ "bind", ACTION_BIND, { TYPE_STRING, TYPE_NONE } },
+	{ "connect", ACTION_CONNECT, { TYPE_STRING, TYPE_NONE } },
 	{ "chmod", ACTION_CHMOD, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
 #ifdef HAS_LCHMOD
 	{ "lchmod", ACTION_LCHMOD, { TYPE_STRING, TYPE_NUMBER, TYPE_NONE } },
@@ -251,7 +264,7 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: fstest [-u uid] [-g gid1[,gid2[...]]] syscall args ...\n");
+	fprintf(stderr, "usage: fstest [-U umask] [-u uid] [-g gid1[,gid2[...]]] syscall args ...\n");
 	exit(1);
 }
 
@@ -352,6 +365,10 @@ show_stat(struct stat64 *sp, const char *what)
 	else if (strcmp(what, "flags") == 0)
 		printf("%s", flags2str(chflags_flags, (long long)sp->st_flags));
 #endif
+	else if (strcmp(what, "major") == 0)
+		printf("%u", (unsigned int)major(sp->st_rdev));
+	else if (strcmp(what, "minor") == 0)
+		printf("%u", (unsigned int)minor(sp->st_rdev));
 	else if (strcmp(what, "type") == 0) {
 		switch (sp->st_mode & S_IFMT) {
 		case S_IFIFO:
@@ -496,6 +513,55 @@ call_syscall(struct syscall_desc *scall, char *argv[])
 	case ACTION_MKFIFO:
 		rval = mkfifo(STR(0), (mode_t)NUM(1));
 		break;
+	case ACTION_MKNOD:
+	    {
+		mode_t ntype;
+		dev_t dev;
+
+		dev = makedev(NUM(3), NUM(4));
+		if (strcmp(STR(1), "c") == 0)		/* character device */
+			ntype = S_IFCHR;
+		else if (strcmp(STR(1), "b") == 0)	/* block device */
+			ntype = S_IFBLK;
+		else if (strcmp(STR(1), "f") == 0)	/* fifo special */
+			ntype = S_IFIFO;
+		else if (strcmp(STR(1), "d") == 0)	/* directory */
+			ntype = S_IFDIR;
+		else if (strcmp(STR(1), "o") == 0)	/* regular file */
+			ntype = S_IFREG;
+		else {
+			fprintf(stderr, "wrong argument 1\n");
+			exit(1);
+		}
+		rval = mknod(STR(0), ntype | NUM(2), dev);
+		break;
+	    }
+	case ACTION_BIND:
+	    {
+		struct sockaddr_un sunx;
+
+		sunx.sun_family = AF_UNIX;
+		strncpy(sunx.sun_path, STR(0), sizeof(sunx.sun_path) - 1);
+		sunx.sun_path[sizeof(sunx.sun_path) - 1] = '\0';
+		rval = socket(AF_UNIX, SOCK_STREAM, 0);
+		if (rval < 0)
+			break;
+		rval = bind(rval, (struct sockaddr *)&sunx, sizeof(sunx));
+		break;
+	    }
+	case ACTION_CONNECT:
+	    {
+		struct sockaddr_un sunx;
+
+		sunx.sun_family = AF_UNIX;
+		strncpy(sunx.sun_path, STR(0), sizeof(sunx.sun_path) - 1);
+		sunx.sun_path[sizeof(sunx.sun_path) - 1] = '\0';
+		rval = socket(AF_UNIX, SOCK_STREAM, 0);
+		if (rval < 0)
+			break;
+		rval = connect(rval, (struct sockaddr *)&sunx, sizeof(sunx));
+		break;
+	    }
 	case ACTION_CHMOD:
 		rval = chmod(STR(0), (mode_t)NUM(1));
 		break;

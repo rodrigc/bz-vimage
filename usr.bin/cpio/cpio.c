@@ -26,7 +26,7 @@
 
 
 #include "cpio_platform.h"
-__FBSDID("$FreeBSD: src/usr.bin/cpio/cpio.c,v 1.20 2010/05/08 16:47:33 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/cpio/cpio.c,v 1.21 2010/08/08 01:25:33 kientzle Exp $");
 
 #include <sys/types.h>
 #include <archive.h>
@@ -273,15 +273,21 @@ main(int argc, char *argv[])
 			cpio->quiet = 1;
 			break;
 		case 'R': /* GNU cpio, also --owner */
+			/* TODO: owner_parse should return uname/gname
+			 * also; use that to set [ug]name_override. */
 			errmsg = owner_parse(cpio->optarg, &uid, &gid);
 			if (errmsg) {
 				warnc(-1, "%s", errmsg);
 				usage();
 			}
-			if (uid != -1)
+			if (uid != -1) {
 				cpio->uid_override = uid;
-			if (gid != -1)
+				cpio->uname_override = NULL;
+			}
+			if (gid != -1) {
 				cpio->gid_override = gid;
+				cpio->gname_override = NULL;
+			}
 			break;
 		case 'r': /* POSIX 1997 */
 			cpio->option_rename = 1;
@@ -575,10 +581,14 @@ file_to_archive(struct cpio *cpio, const char *srcpath)
 		return (r);
 	}
 
-	if (cpio->uid_override >= 0)
+	if (cpio->uid_override >= 0) {
 		archive_entry_set_uid(entry, cpio->uid_override);
-	if (cpio->gid_override >= 0)
+		archive_entry_set_uname(entry, cpio->uname_override);
+	}
+	if (cpio->gid_override >= 0) {
 		archive_entry_set_gid(entry, cpio->gid_override);
+		archive_entry_set_gname(entry, cpio->gname_override);
+	}
 
 	/*
 	 * Generate a destination path for this entry.

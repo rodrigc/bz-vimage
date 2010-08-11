@@ -1,4 +1,4 @@
-.\" Copyright (c) 2007-2008 Daniel Braniss <danny@cs.huji.ac.il>
+.\" Copyright (c) 2007-2010 Daniel Braniss <danny@cs.huji.ac.il>
 .\" All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/sbin/iscontrol/iscsi.conf.5,v 1.5 2010/07/31 21:09:49 joel Exp $
+.\" $FreeBSD: src/sbin/iscontrol/iscsi.conf.5,v 1.6 2010/08/09 12:36:36 des Exp $
 .\"
 .Dd June 5, 2007
 .Dt ISCSI.CONF 5
@@ -68,6 +68,7 @@ Only CRC32C is implemented.
 Default is none.
 .It Cm DataDigest
 same as for HeaderDigest, but on the data part of the iSCSI PDU.
+(not yet tested)
 .It Cm MaxConnections
 is the number of simultaneous connections per session,
 currently only 1.

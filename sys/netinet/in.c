@@ -31,9 +31,8 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.161 2010/05/25 20:42:35 qingli Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.162 2010/08/11 00:51:50 will Exp $");
 
-#include "opt_carp.h"
 #include "opt_mpath.h"
 
 #include <sys/param.h>
@@ -924,13 +923,11 @@ in_ifinit(struct ifnet *ifp, struct in_ifaddr *ia, struct sockaddr_in *sin,
 	ia->ia_net = i & ia->ia_netmask;
 	ia->ia_subnet = i & ia->ia_subnetmask;
 	in_socktrim(&ia->ia_sockmask);
-#ifdef DEV_CARP
 	/*
 	 * XXX: carp(4) does not have interface route
 	 */
 	if (ifp->if_type == IFT_CARP)
 		return (0);
-#endif
 	/*
 	 * Add route for the network.
 	 */
@@ -1185,12 +1182,12 @@ in_scrubprefix(struct in_ifaddr *target)
 		 * the route itself to it.  Make sure that routing daemons
 		 * get a heads-up.
 		 *
-		 * XXX: a special case for carp(4) interface
+		 * XXX: a special case for carp(4) interface - this should
+		 *      be more generally specified as an interface that
+		 *      doesn't support such action.
 		 */
 		if ((ia->ia_flags & IFA_ROUTE) == 0
-#ifdef DEV_CARP
 		    && (ia->ia_ifp->if_type != IFT_CARP)
-#endif
 							) {
 			IN_IFADDR_RUNLOCK();
 			rtinit(&(target->ia_ifa), (int)RTM_DELETE,

@@ -1,7 +1,7 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/fstest/tests/open/13.t,v 1.1 2007/01/17 01:42:10 pjd Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/open/13.t,v 1.2 2010/08/06 19:18:19 pjd Exp $
 
-desc="open returns EISDIR when he named file is a directory, and the arguments specify it is to be modified"
+desc="open returns EISDIR when trying to open a directory for writing"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh

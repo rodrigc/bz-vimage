@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.658 2010/07/24 22:11:11 rmacklem Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.659 2010/08/11 00:51:50 will Exp $
 
 .include <bsd.own.mk>
 
@@ -112,6 +112,7 @@ SUBDIR=	${_3dfx} \
 	${_ida} \
 	${_ie} \
 	if_bridge \
+	if_carp \
 	if_disc \
 	if_edsc \
 	if_ef \

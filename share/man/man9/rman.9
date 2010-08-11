@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/rman.9,v 1.9 2007/04/29 19:46:33 jmg Exp $
+.\" $FreeBSD: src/share/man/man9/rman.9,v 1.10 2010/08/06 14:33:42 joel Exp $
 .\"
 .Dd April 29, 2007
 .Dt RMAN 9
@@ -157,10 +157,10 @@ shall be set to a string that describes the resource to be managed.
 It also initializes any mutexes associated with the structure.
 If
 .Fn rman_init
-fails to initalize the mutex, it will return
+fails to initialize the mutex, it will return
 .Er ENOMEM ; otherwise it will return 0 and
 .Fa rm
-will be initalized.
+will be initialized.
 .Pp
 The
 .Fn rman_fini

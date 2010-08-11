@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/ObsoleteFiles.inc,v 1.240 2010/07/27 14:26:38 rpaulo Exp $
+# $FreeBSD: src/ObsoleteFiles.inc,v 1.241 2010/08/06 20:13:36 ed Exp $
 #
 # This file lists old files (OLD_FILES), libraries (OLD_LIBS) and
 # directories (OLD_DIRS) which should get removed at an update. Recently
@@ -14,6 +14,11 @@
 # The file is partitioned: OLD_FILES first, then OLD_LIBS and OLD_DIRS last.
 #
 
+# 20100806: removal of unused libcompat routines
+OLD_FILES+=usr/share/man/man3/ascftime.3.gz
+OLD_FILES+=usr/share/man/man3/cfree.3.gz
+OLD_FILES+=usr/share/man/man3/cftime.3.gz
+OLD_FILES+=usr/share/man/man3/getpw.3.gz
 # 20100725: acpi_aiboost(4) removal.
 OLD_FILES+=usr/share/man/man4/acpi_aiboost.4.gz
 # 20100720: new clang import which bumps version from 2.0 to 2.8

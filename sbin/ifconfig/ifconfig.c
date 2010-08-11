@@ -38,7 +38,7 @@ static const char copyright[] =
 static char sccsid[] = "@(#)ifconfig.c	8.2 (Berkeley) 2/16/94";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/ifconfig/ifconfig.c,v 1.153 2010/04/14 22:02:19 delphij Exp $";
+  "$FreeBSD: src/sbin/ifconfig/ifconfig.c,v 1.154 2010/08/06 15:09:21 jhb Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -321,7 +321,9 @@ main(int argc, char *argv[])
 				/* special case for "ether" address family */
 				if (!strcmp(afp->af_name, "ether")) {
 					if (sdl == NULL ||
-					    sdl->sdl_type != IFT_ETHER ||
+					    (sdl->sdl_type != IFT_ETHER &&
+					    sdl->sdl_type != IFT_L2VLAN &&
+					    sdl->sdl_type != IFT_BRIDGE) ||
 					    sdl->sdl_alen != ETHER_ADDR_LEN)
 						continue;
 				} else {

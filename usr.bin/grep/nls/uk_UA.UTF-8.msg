@@ -1,8 +1,8 @@
-$ $FreeBSD: src/usr.bin/grep/nls/uk_UA.UTF-8.msg,v 1.1 2010/07/30 11:07:24 gabor Exp $
+$ $FreeBSD: src/usr.bin/grep/nls/uk_UA.UTF-8.msg,v 1.2 2010/08/06 10:34:48 gabor Exp $
 $set 1
 $quote "
-1 "(стандартний ввод)"
-2 "не можу прочитати стислий bzip2 файл"
+1 "(стандартний ввід)"
+2 "не можу прочитати стиснутий bzip2 файл"
 3 "невiдома опція %s"
 4 "використання: %s [-abcDEFGHhIiJLlmnOoPqRSsUVvwxZ] [-A чис] [-B чис] [-C[чис]]\n"
 5 "\t[-e шаблон] [-f файл] [--binary-files=значення] [--color=коли]\n"

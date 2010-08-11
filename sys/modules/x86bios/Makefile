@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/x86bios/Makefile,v 1.3 2009/10/19 20:58:10 jkim Exp $
+# $FreeBSD: src/sys/modules/x86bios/Makefile,v 1.4 2010/08/08 06:18:05 jkim Exp $
 
 KMOD=	x86bios
 SRCS=	opt_x86bios.h
@@ -6,6 +6,9 @@ SRCS+=	bus_if.h device_if.h pci_if.h
 
 .PATH:	${.CURDIR}/../../contrib/x86emu
 .PATH:	${.CURDIR}/../../compat/x86bios
-SRCS+=	x86bios.c x86emu.c
+SRCS+=	x86bios.c
+.if ${MACHINE_ARCH} != "i386"
+SRCS+=	x86emu.c
+.endif
 
 .include <bsd.kmod.mk>

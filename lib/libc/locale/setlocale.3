@@ -29,7 +29,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)setlocale.3	8.1 (Berkeley) 6/9/93
-.\" $FreeBSD: src/lib/libc/locale/setlocale.3,v 1.35 2007/01/09 00:28:00 imp Exp $
+.\" $FreeBSD: src/lib/libc/locale/setlocale.3,v 1.36 2010/08/02 13:11:41 uqs Exp $
 .\"
 .Dd November 21, 2003
 .Dt SETLOCALE 3
@@ -103,11 +103,11 @@ function.
 .Pp
 Only three locales are defined by default,
 the empty string
-.Li "\&""\|""
+.Li \&"\|"
 which denotes the native environment, and the
-.Li "\&""C""
+.Li \&"C"
 and
-.Li "\&""POSIX""
+.Li \&"POSIX"
 locales, which denote the C language environment.
 A
 .Fa locale
@@ -117,7 +117,7 @@ causes
 .Fn setlocale
 to return the current locale.
 By default, C programs start in the
-.Li "\&""C""
+.Li \&"C"
 locale.
 The only function in the library that sets the locale is
 .Fn setlocale ;

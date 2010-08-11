@@ -23,14 +23,14 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libutil/property.3,v 1.19 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/lib/libutil/property.3,v 1.21 2010/08/06 14:33:42 joel Exp $
 .\" "
 .Dd October 7, 1998
 .Dt PROPERTIES 3
 .Os
 .Sh NAME
 .Nm properties_read ,
-.Nm propery_find ,
+.Nm property_find ,
 .Nm properties_free
 .Nd "functions to allow creating simple property lists from ASCII file data"
 .Sh LIBRARY
@@ -85,7 +85,7 @@ where
 is an alphanumeric string (and any punctuation not including the `=' character)
 and
 .Fa value
-is an arbitary string of text terminated by a newline character.
+is an arbitrary string of text terminated by a newline character.
 If newlines
 are desired, the entire value should be enclosed in { } (curly-bracket)
 characters.

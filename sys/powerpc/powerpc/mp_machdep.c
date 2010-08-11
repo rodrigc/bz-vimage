@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.28 2010/07/13 05:32:19 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/mp_machdep.c,v 1.29 2010/08/06 15:36:59 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -334,6 +334,14 @@ ipi_selected(cpumask_t cpus, int ipi)
 		if (cpus & pc->pc_cpumask)
 			ipi_send(pc, ipi);
 	}
+}
+
+/* Send an IPI to a specific CPU. */
+void
+ipi_cpu(int cpu, u_int ipi)
+{
+
+	ipi_send(cpuid_to_pcpu[cpu], ipi);
 }
 
 /* Send an IPI to all CPUs EXCEPT myself. */

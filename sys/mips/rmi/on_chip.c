@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/on_chip.c,v 1.5 2010/07/08 15:05:23 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/on_chip.c,v 1.6 2010/08/04 14:03:23 jchandra Exp $");
 #include <sys/types.h>
 #include <sys/systm.h>
 #include <sys/param.h>
@@ -356,7 +356,7 @@ create_msgring_thread(int core, int cpu)
 	sched_class(td, PRI_ITHD);
 	sched_add(td, SRQ_INTR);
 	thread_unlock(td);
-	CTR2(KTR_INTR, "%s: created %s", __func__, ithd_name[core]);
+	CTR2(KTR_INTR, "%s: created %s", __func__, td->td_name);
 }
 
 int 

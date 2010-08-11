@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_calltree.c,v 1.7 2010/06/05 22:57:53 fabient Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_calltree.c,v 1.8 2010/08/02 13:40:19 fabient Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -354,6 +354,7 @@ pmcpl_ct_node_dumptop(int pmcin, struct pmcpl_ct_node *ct,
     struct pmcpl_ct_sample *rsamples, int x, int *y)
 {
 	int i, terminal;
+	struct pmcpl_ct_arc *arc;
 
 	if (ct->pct_flags & PMCPL_PCT_TAG)
 		return 0;
@@ -372,12 +373,17 @@ pmcpl_ct_node_dumptop(int pmcin, struct pmcpl_ct_node *ct,
 	 * for at least one arc for that PMC.
 	 */
 	terminal = 1;
-	for (i = 0; i < ct->pct_narc; i++)
+	for (i = 0; i < ct->pct_narc; i++) {
+		arc = &ct->pct_arc[i];
 		if (PMCPL_CT_SAMPLE(pmcin,
-		    &ct->pct_arc[i].pcta_samples) != 0) {
+		    &arc->pcta_samples) != 0 &&
+		    PMCPL_CT_SAMPLEP(pmcin,
+		    &arc->pcta_samples) > pmcstat_threshold &&
+		    (arc->pcta_child->pct_flags & PMCPL_PCT_TAG) == 0) {
 			terminal = 0;
 			break;
 		}
+	}
 
 	if (ct->pct_narc == 0 || terminal) {
 		pmcpl_ct_topscreen[x+1][*y] = NULL;

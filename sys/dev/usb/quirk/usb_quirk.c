@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.22 2010/07/28 18:56:01 tijl Exp $ */
+/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.23 2010/08/06 13:45:16 kib Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -159,6 +159,8 @@ static struct usb_quirk_entry usb_quirks[USB_DEV_QUIRKS_MAX] = {
 	USB_QUIRK(ALCOR, AU6390, 0x0000, 0xffff, UQ_MSC_NO_SYNC_CACHE),
 	USB_QUIRK(ALCOR, UMCR_9361, 0x0000, 0xffff, UQ_MSC_FORCE_WIRE_BBB,
 	    UQ_MSC_FORCE_PROTO_SCSI, UQ_MSC_NO_GETMAXLUN),
+	USB_QUIRK(ALCOR, TRANSCEND, 0x0142, 0x0142, UQ_MSC_FORCE_WIRE_BBB,
+	    UQ_MSC_FORCE_PROTO_SCSI, UQ_MSC_NO_GETMAXLUN, UQ_MSC_NO_SYNC_CACHE),
 	USB_QUIRK(ALCOR, TRANSCEND, 0x0000, 0xffff, UQ_MSC_FORCE_WIRE_BBB,
 	    UQ_MSC_FORCE_PROTO_SCSI, UQ_MSC_NO_GETMAXLUN),
 	USB_QUIRK(APACER, HT202, 0x0000, 0xffff, UQ_MSC_NO_TEST_UNIT_READY,

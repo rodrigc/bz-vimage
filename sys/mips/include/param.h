@@ -36,7 +36,7 @@
  *	from: Utah Hdr: machparam.h 1.11 89/08/14
  *	from: @(#)param.h	8.1 (Berkeley) 6/10/93
  *	JNPR: param.h,v 1.6.2.1 2007/09/10 07:49:36 girish
- * $FreeBSD: src/sys/mips/include/param.h,v 1.15 2010/07/29 20:02:56 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/param.h,v 1.16 2010/08/04 14:12:09 jchandra Exp $
  */
 
 #ifndef _MIPS_INCLUDE_PARAM_H_
@@ -107,8 +107,18 @@
 #define	NPTEPG		(PAGE_SIZE/(sizeof (pt_entry_t)))
 #define	NPDEPG		(PAGE_SIZE/(sizeof (pd_entry_t)))
 
+#if defined(__mips_n64)
+#define	SEGSHIFT	31		/* LOG2(NBSEG) */
+#define	NBSEG		(1ul << SEGSHIFT)	/* bytes/segment */
+#define	PDRSHIFT	22              /* second level */
+#define	PDRMASK		((1 << PDRSHIFT) - 1)
+#else
 #define	SEGSHIFT	22		/* LOG2(NBSEG) */
 #define	NBSEG		(1 << SEGSHIFT)	/* bytes/segment */
+#define	PDRSHIFT	SEGSHIFT	/* alias for SEG in 32 bit */
+#define	PDRMASK		((1 << PDRSHIFT) - 1)
+#endif
+#define	NBPDR		(1 << PDRSHIFT)	/* bytes/pagedir */
 #define	SEGMASK		(NBSEG-1)	/* byte offset into segment */
 
 #define	MAXPAGESIZES	1		/* maximum number of supported page sizes */
@@ -119,7 +129,7 @@
 /*
  * The kernel stack needs to be aligned on a (PAGE_SIZE * 2) boundary.
  */
-#define	KSTACK_PAGES		2	/* kernel stack*/
+#define	KSTACK_PAGES		2	/* kernel stack */
 #define	KSTACK_GUARD_PAGES	2	/* pages of kstack guard; 0 disables */
 
 #define	UPAGES			2

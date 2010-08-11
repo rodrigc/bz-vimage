@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_ktrace.c,v 1.132 2010/07/14 17:38:01 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_ktrace.c,v 1.133 2010/08/09 14:48:31 gavin Exp $");
 
 #include "opt_ktrace.h"
 
@@ -218,7 +218,8 @@ sysctl_kern_ktrace_request_pool(SYSCTL_HANDLER_ARGS)
 	return (0);
 }
 SYSCTL_PROC(_kern_ktrace, OID_AUTO, request_pool, CTLTYPE_UINT|CTLFLAG_RW,
-    &ktr_requestpool, 0, sysctl_kern_ktrace_request_pool, "IU", "");
+    &ktr_requestpool, 0, sysctl_kern_ktrace_request_pool, "IU",
+    "Pool buffer size for ktrace(1)");
 
 static u_int
 ktrace_resize_pool(u_int newsize)

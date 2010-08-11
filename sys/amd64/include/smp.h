@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/amd64/include/smp.h,v 1.98 2010/06/17 11:54:49 mav Exp $
+ * $FreeBSD: src/sys/amd64/include/smp.h,v 1.99 2010/08/06 15:36:59 jhb Exp $
  *
  */
 
@@ -60,10 +60,11 @@ void	cpu_add(u_int apic_id, char boot_cpu);
 void	cpustop_handler(void);
 void	cpususpend_handler(void);
 void	init_secondary(void);
-int	ipi_nmi_handler(void);
-void	ipi_selected(cpumask_t cpus, u_int ipi);
 void	ipi_all_but_self(u_int ipi);
 void 	ipi_bitmap_handler(struct trapframe frame);
+void	ipi_cpu(int cpu, u_int ipi);
+int	ipi_nmi_handler(void);
+void	ipi_selected(cpumask_t cpus, u_int ipi);
 u_int	mp_bootaddress(u_int);
 int	mp_grab_cpu_hlt(void);
 void	smp_cache_flush(void);

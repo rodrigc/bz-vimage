@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)rtsock.c	8.7 (Berkeley) 10/12/95
- * $FreeBSD: src/sys/net/rtsock.c,v 1.188 2010/05/25 20:42:35 qingli Exp $
+ * $FreeBSD: src/sys/net/rtsock.c,v 1.189 2010/08/03 15:40:42 kib Exp $
  */
 #include "opt_compat.h"
 #include "opt_sctp.h"
@@ -1439,7 +1439,7 @@ copy_ifdata32(struct if_data *src, struct if_data32 *dst)
 	CP(*src, *dst, ifi_addrlen);
 	CP(*src, *dst, ifi_hdrlen);
 	CP(*src, *dst, ifi_link_state);
-	CP(*src, *dst, ifi_datalen);
+	dst->ifi_datalen = sizeof(struct if_data32);
 	CP(*src, *dst, ifi_mtu);
 	CP(*src, *dst, ifi_metric);
 	CP(*src, *dst, ifi_baudrate);

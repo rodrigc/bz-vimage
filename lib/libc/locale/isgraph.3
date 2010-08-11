@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)isgraph.3	8.2 (Berkeley) 12/11/93
-.\" $FreeBSD: src/lib/libc/locale/isgraph.3,v 1.25 2009/11/13 09:03:50 roam Exp $
+.\" $FreeBSD: src/lib/libc/locale/isgraph.3,v 1.26 2010/08/02 13:11:35 uqs Exp $
 .\"
 .Dd July 17, 2005
 .Dt ISGRAPH 3
@@ -48,7 +48,7 @@
 The
 .Fn isgraph
 function tests for any printing character except space
-.Pq Ql "\ "
+.Pq Ql "\~"
 and other
 locale-specific space-like characters.
 The value of the argument must be representable as an

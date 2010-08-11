@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.110 2010/07/27 17:31:03 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.114 2010/08/07 11:57:13 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_inet.h"
@@ -1059,6 +1059,8 @@ freebsd32_recvmsg(td, uap)
 		
 		if (control != NULL)
 			error = freebsd32_copy_msg_out(&msg, control);
+		else
+			msg.msg_controllen = 0;
 		
 		if (error == 0)
 			error = freebsd32_copyoutmsghdr(&msg, uap->msg);
@@ -1614,8 +1616,9 @@ freebsd32_sendfile(struct thread *td, struct freebsd32_sendfile_args *uap)
 }
 
 static void
-copy_stat( struct stat *in, struct stat32 *out)
+copy_stat(struct stat *in, struct stat32 *out)
 {
+
 	CP(*in, *out, st_dev);
 	CP(*in, *out, st_ino);
 	CP(*in, *out, st_mode);
@@ -1631,6 +1634,7 @@ copy_stat( struct stat *in, struct stat32 *out)
 	CP(*in, *out, st_blksize);
 	CP(*in, *out, st_flags);
 	CP(*in, *out, st_gen);
+	TS_CP(*in, *out, st_birthtim);
 }
 
 int
@@ -2537,7 +2541,8 @@ freebsd32_copyout_strings(struct image_params *imgp)
 		execpath_len = strlen(imgp->execpath) + 1;
 	else
 		execpath_len = 0;
-	arginfo = (struct freebsd32_ps_strings *)FREEBSD32_PS_STRINGS;
+	arginfo = (struct freebsd32_ps_strings *)curproc->p_sysent->
+	    sv_psstrings;
 	szsigcode = *(imgp->proc->p_sysent->sv_szsigcode);
 	destp =	(caddr_t)arginfo - szsigcode - SPARE_USRSPACE -
 		roundup(execpath_len, sizeof(char *)) -

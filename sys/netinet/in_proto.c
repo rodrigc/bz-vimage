@@ -30,14 +30,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_proto.c,v 1.102 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in_proto.c,v 1.103 2010/08/11 00:51:50 will Exp $");
 
 #include "opt_ipx.h"
 #include "opt_mrouting.h"
 #include "opt_ipsec.h"
 #include "opt_inet6.h"
 #include "opt_pf.h"
-#include "opt_carp.h"
 #include "opt_sctp.h"
 #include "opt_mpath.h"
 
@@ -92,10 +91,6 @@ static struct pr_usrreqs nousrreqs;
 #ifdef DEV_PFSYNC
 #include <net/pfvar.h>
 #include <net/if_pfsync.h>
-#endif
-
-#ifdef DEV_CARP
-#include <netinet/ip_carp.h>
 #endif
 
 extern	struct domain inetdomain;
@@ -318,18 +313,6 @@ struct protosw inetsw[] = {
 	.pr_usrreqs =		&rip_usrreqs
 },
 #endif	/* DEV_PFSYNC */
-#ifdef DEV_CARP
-{
-	.pr_type =		SOCK_RAW,
-	.pr_domain =		&inetdomain,
-	.pr_protocol =		IPPROTO_CARP,
-	.pr_flags =		PR_ATOMIC|PR_ADDR,
-	.pr_input =		carp_input,
-	.pr_output =		(pr_output_t*)rip_output,
-	.pr_ctloutput =		rip_ctloutput,
-	.pr_usrreqs =		&rip_usrreqs
-},
-#endif /* DEV_CARP */
 /* Spacer n-times for loadable protocols. */
 IPPROTOSPACER,
 IPPROTOSPACER,
@@ -397,7 +380,4 @@ SYSCTL_NODE(_net_inet, IPPROTO_IPIP,	ipip,	CTLFLAG_RW, 0,	"IPIP");
 SYSCTL_NODE(_net_inet, IPPROTO_RAW,	raw,	CTLFLAG_RW, 0,	"RAW");
 #ifdef DEV_PFSYNC
 SYSCTL_NODE(_net_inet, IPPROTO_PFSYNC,	pfsync,	CTLFLAG_RW, 0,	"PFSYNC");
-#endif
-#ifdef DEV_CARP
-SYSCTL_NODE(_net_inet, IPPROTO_CARP,	carp,	CTLFLAG_RW, 0,	"CARP");
 #endif

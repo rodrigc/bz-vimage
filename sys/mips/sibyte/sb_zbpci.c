@@ -53,7 +53,7 @@
 #include "sb_bus_space.h"
 #include "sb_scd.h"
 
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbpci.c,v 1.5 2010/02/17 06:43:37 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbpci.c,v 1.6 2010/08/06 07:03:22 neel Exp $");
 
 static struct {
 	vm_offset_t vaddr;
@@ -457,7 +457,6 @@ static device_method_t zbpci_methods[] ={
  * consider drivers belonging to the "pcib" when probing children of
  * "zbpci".
  */
-DECLARE_CLASS(pcib_driver);
 DEFINE_CLASS_1(zbpci, zbpci_driver, zbpci_methods, 0, pcib_driver);
 
 static devclass_t zbpci_devclass;

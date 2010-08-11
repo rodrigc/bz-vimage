@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/pmcstat/pmcstat.h,v 1.8 2010/02/11 22:51:44 fabient Exp $
+ * $FreeBSD: src/usr.sbin/pmcstat/pmcstat.h,v 1.9 2010/08/03 13:46:25 fabient Exp $
  */
 
 #ifndef	_PMCSTAT_H_
@@ -51,6 +51,7 @@
 #define	FLAG_DO_ANNOTATE		0x00008000	/* -m */
 #define	FLAG_DO_TOP			0x00010000	/* -T */
 #define	FLAG_DO_ANALYSIS		0x00020000	/* -g or -G or -m or -T */
+#define	FLAGS_HAS_CPUMASK		0x00040000	/* -c */
 
 #define	DEFAULT_SAMPLE_COUNT		65536
 #define	DEFAULT_WAIT_INTERVAL		5.0

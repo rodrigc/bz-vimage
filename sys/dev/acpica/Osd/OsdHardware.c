@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdHardware.c,v 1.29 2010/07/16 04:27:38 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdHardware.c,v 1.30 2010/08/06 23:11:19 jkim Exp $");
 
 #include <contrib/dev/acpica/include/acpi.h>
 
@@ -89,7 +89,7 @@ AcpiOsWritePort(ACPI_IO_ADDRESS OutPort, UINT32	Value, UINT32 Width)
 }
 
 ACPI_STATUS
-AcpiOsReadPciConfiguration(ACPI_PCI_ID *PciId, UINT32 Register, void *Value,
+AcpiOsReadPciConfiguration(ACPI_PCI_ID *PciId, UINT32 Register, UINT64 *Value,
     UINT32 Width)
 {
 

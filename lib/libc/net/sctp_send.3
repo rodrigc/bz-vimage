@@ -29,7 +29,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libc/net/sctp_send.3,v 1.8 2010/07/04 08:09:33 brucec Exp $
+.\" $FreeBSD: src/lib/libc/net/sctp_send.3,v 1.9 2010/08/02 16:01:45 joel Exp $
 .\"
 .Dd December 15, 2006
 .Dt SCTP_SEND 3
@@ -170,7 +170,7 @@ For a one-to-many type (SOCK_SEQPACKET) socket the flag
 .Dv SCTP_SENDALL
 can be used as a convenient way to make one send call and have
 all associations that are under the socket get a copy of the message.
-Note that this mechanism is quite efficent and makes only one actual
+Note that this mechanism is quite efficient and makes only one actual
 copy of the data which is shared by all the associations for sending.
 .Pp
 The remaining flags are used for the partial reliability extension (RFC3758)

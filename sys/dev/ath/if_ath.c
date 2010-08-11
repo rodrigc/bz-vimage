@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.275 2010/07/08 14:08:03 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath.c,v 1.276 2010/08/10 07:56:56 adrian Exp $");
 
 /*
  * Driver for the Atheros Wireless LAN controller.
@@ -5418,6 +5418,7 @@ ath_calibrate(void *arg)
 	longCal = (ticks - sc->sc_lastlongcal >= ath_longcalinterval*hz);
 	if (longCal) {
 		sc->sc_stats.ast_per_cal++;
+		sc->sc_lastlongcal = ticks;
 		if (ath_hal_getrfgain(ah) == HAL_RFGAIN_NEED_CHANGE) {
 			/*
 			 * Rfgain is out of bounds, reset the chip
@@ -5466,7 +5467,6 @@ restart:
 			nextcal *= 10;
 	} else {
 		nextcal = ath_longcalinterval*hz;
-		sc->sc_lastlongcal = ticks;
 		if (sc->sc_lastcalreset == 0)
 			sc->sc_lastcalreset = sc->sc_lastlongcal;
 		else if (ticks - sc->sc_lastcalreset >= ath_resetcalinterval*hz)

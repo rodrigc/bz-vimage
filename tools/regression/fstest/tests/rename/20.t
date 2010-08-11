@@ -1,12 +1,12 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/fstest/tests/rename/20.t,v 1.1 2007/01/17 01:42:10 pjd Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/rename/20.t,v 1.3 2010/08/11 17:34:58 pjd Exp $
 
 desc="rename returns EEXIST or ENOTEMPTY if the 'to' argument is a directory and is not empty"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..16"
+echo "1..25"
 
 n0=`namegen`
 n1=`namegen`
@@ -15,21 +15,15 @@ n2=`namegen`
 expect 0 mkdir ${n0} 0755
 expect 0 mkdir ${n1} 0755
 
-expect 0 create ${n1}/${n2} 0644
-expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
-expect 0 unlink ${n1}/${n2}
-
-expect 0 mkdir ${n1}/${n2} 0755
-expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
-expect 0 rmdir ${n1}/${n2}
-
-expect 0 mkfifo ${n1}/${n2} 0644
-expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
-expect 0 unlink ${n1}/${n2}
-
-expect 0 symlink test ${n1}/${n2}
-expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
-expect 0 unlink ${n1}/${n2}
+for type in regular dir fifo block char socket symlink; do
+	create_file ${type} ${n1}/${n2}
+	expect "EEXIST|ENOTEMPTY" rename ${n0} ${n1}
+	if [ "${type}" = "dir" ]; then
+		expect 0 rmdir ${n1}/${n2}
+	else
+		expect 0 unlink ${n1}/${n2}
+	fi
+done
 
 expect 0 rmdir ${n1}
 expect 0 rmdir ${n0}

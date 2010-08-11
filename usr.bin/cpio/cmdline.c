@@ -26,7 +26,7 @@
 
 
 #include "cpio_platform.h"
-__FBSDID("$FreeBSD: src/usr.bin/cpio/cmdline.c,v 1.10 2010/05/08 16:47:33 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/cpio/cmdline.c,v 1.11 2010/08/08 01:25:33 kientzle Exp $");
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -285,6 +285,8 @@ cpio_getopt(struct cpio *cpio)
  * A period can be used instead of the colon.
  *
  * Sets uid/gid return as appropriate, -1 indicates uid/gid not specified.
+ * TODO: If the spec uses uname/gname, then return those to the caller
+ * as well.  If the spec provides uid/gid, just return names as NULL.
  *
  * Returns NULL if no error, otherwise returns error string for display.
  *

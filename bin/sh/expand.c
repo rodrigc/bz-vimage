@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)expand.c	8.5 (Berkeley) 5/15/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.65 2010/06/29 22:37:45 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.66 2010/08/10 22:45:59 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -1082,8 +1082,8 @@ ifsbreakup(char *string, struct arglist *arglist)
  * should be escapes.  The results are stored in the list exparg.
  */
 
-STATIC char *expdir;
-
+STATIC char expdir[PATH_MAX];
+#define expdir_end (expdir + sizeof(expdir))
 
 STATIC void
 expandmeta(struct strlist *str, int flag __unused)
@@ -1106,14 +1106,7 @@ expandmeta(struct strlist *str, int flag __unused)
 		}
 		savelastp = exparg.lastp;
 		INTOFF;
-		if (expdir == NULL) {
-			int i = strlen(str->text);
-			expdir = ckmalloc(i < 2048 ? 2048 : i); /* XXX */
-		}
-
 		expmeta(expdir, str->text);
-		ckfree(expdir);
-		expdir = NULL;
 		INTON;
 		if (exparg.lastp == savelastp) {
 			/*
@@ -1202,6 +1195,8 @@ expmeta(char *enddir, char *name)
 			*enddir++ = *p;
 			if (*p == '\0')
 				break;
+			if (enddir == expdir_end)
+				return;
 		}
 		if (metaflag == 0 || lstat(expdir, &statb) >= 0)
 			addfname(expdir);
@@ -1216,6 +1211,8 @@ expmeta(char *enddir, char *name)
 			if (*p == CTLESC)
 				p++;
 			*enddir++ = *p++;
+			if (enddir == expdir_end)
+				return;
 		}
 	}
 	if (enddir == expdir) {
@@ -1249,15 +1246,17 @@ expmeta(char *enddir, char *name)
 		if (dp->d_name[0] == '.' && ! matchdot)
 			continue;
 		if (patmatch(start, dp->d_name, 0)) {
-			if (atend) {
-				scopy(dp->d_name, enddir);
+			if (enddir + dp->d_namlen + 1 > expdir_end)
+				continue;
+			memcpy(enddir, dp->d_name, dp->d_namlen + 1);
+			if (atend)
 				addfname(expdir);
-			} else {
-				for (p = enddir, q = dp->d_name;
-				     (*p++ = *q++) != '\0';)
+			else {
+				if (enddir + dp->d_namlen + 2 > expdir_end)
 					continue;
-				p[-1] = '/';
-				expmeta(p, endname);
+				enddir[dp->d_namlen] = '/';
+				enddir[dp->d_namlen + 1] = '\0';
+				expmeta(enddir + dp->d_namlen + 1, endname);
 			}
 		}
 	}

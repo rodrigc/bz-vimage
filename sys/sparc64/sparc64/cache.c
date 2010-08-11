@@ -71,7 +71,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/cache.c,v 1.25 2010/05/02 19:38:17 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/cache.c,v 1.26 2010/08/08 00:01:08 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -87,6 +87,8 @@ cache_enable_t *cache_enable;
 cache_flush_t *cache_flush;
 dcache_page_inval_t *dcache_page_inval;
 icache_page_inval_t *icache_page_inval;
+
+u_int dcache_color_ignore;
 
 #define	OF_GET(h, n, v)	OF_getprop((h), (n), &(v), sizeof(v))
 
@@ -113,6 +115,13 @@ cache_init(struct pcpu *pcpu)
 {
 	u_long set;
 	u_int use_new_prop;
+
+	/*
+	 * For CPUs which ignore TD_CV and support hardware unaliasing don't
+	 * bother doing page coloring.  This is equal across all CPUs.
+	 */
+	if (pcpu->pc_cpuid == 0 && pcpu->pc_impl == CPU_IMPL_SPARC64V)
+		dcache_color_ignore = 1;
 
 	use_new_prop = cache_new_prop(pcpu->pc_impl);
 	if (OF_GET(pcpu->pc_node, !use_new_prop ? "icache-size" :
@@ -145,9 +154,8 @@ cache_init(struct pcpu *pcpu)
 	 * For CPUs which don't support unaliasing in hardware ensure that
 	 * the data cache doesn't have too many virtual colors.
 	 */
-	if (pcpu->pc_impl != CPU_IMPL_SPARC64V &&
-	    ((pcpu->pc_cache.dc_size / pcpu->pc_cache.dc_assoc) /
-	    PAGE_SIZE) != DCACHE_COLORS)
+	if (dcache_color_ignore == 0 && ((pcpu->pc_cache.dc_size /
+	    pcpu->pc_cache.dc_assoc) / PAGE_SIZE) != DCACHE_COLORS)
 		panic("cache_init: too many D$ colors");
 	set = pcpu->pc_cache.ec_size / pcpu->pc_cache.ec_assoc;
 	if ((set & ~(1UL << (ffs(set) - 1))) != 0)

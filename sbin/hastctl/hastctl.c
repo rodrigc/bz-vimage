@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastctl/hastctl.c,v 1.1 2010/02/18 23:16:19 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastctl/hastctl.c,v 1.3 2010/08/06 06:04:27 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/disk.h>
@@ -432,7 +432,7 @@ main(int argc, char *argv[])
 
 	pjdlog_debug_set(debug);
 
-	cfg = yy_config_parse(cfgpath);
+	cfg = yy_config_parse(cfgpath, true);
 	assert(cfg != NULL);
 
 	switch (cmd) {

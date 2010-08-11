@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.79 2010/07/16 22:09:29 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.81 2010/08/08 14:37:16 marius Exp $");
 
 #include "opt_kstack_pages.h"
 
@@ -103,10 +103,6 @@ ASSYM(DC_SIZE, offsetof(struct cacheinfo, dc_size));
 ASSYM(DC_LINESIZE, offsetof(struct cacheinfo, dc_linesize));
 ASSYM(IC_SIZE, offsetof(struct cacheinfo, ic_size));
 ASSYM(IC_LINESIZE, offsetof(struct cacheinfo, ic_linesize));
-#endif
-
-#ifdef SMP
-ASSYM(ICA_PA, offsetof(struct ipi_cache_args, ica_pa));
 #endif
 
 ASSYM(KTR_SIZEOF, sizeof(struct ktr_entry));
@@ -215,7 +211,12 @@ ASSYM(IR_ARG, offsetof(struct intr_request, ir_arg));
 ASSYM(IR_PRI, offsetof(struct intr_request, ir_pri));
 ASSYM(IR_VEC, offsetof(struct intr_request, ir_vec));
 
-#ifdef SMP
+#if defined(SUN4U) && defined(SMP)
+ASSYM(ICA_PA, offsetof(struct ipi_cache_args, ica_pa));
+
+ASSYM(IRA_MASK, offsetof(struct ipi_rd_args, ira_mask));
+ASSYM(IRA_VAL, offsetof(struct ipi_rd_args, ira_val));
+
 ASSYM(ITA_MASK, offsetof(struct ipi_tlb_args, ita_mask));
 ASSYM(ITA_PMAP, offsetof(struct ipi_tlb_args, ita_pmap));
 ASSYM(ITA_START, offsetof(struct ipi_tlb_args, ita_start));

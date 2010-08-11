@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/control.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/control.h,v 1.2 2010/08/05 19:04:29 pjd Exp $
  */
 
 #ifndef	_CONTROL_H_
@@ -36,6 +36,9 @@
 #define	HASTCTL_STATUS		2
 
 struct hastd_config;
+struct hast_resource;
+
+void control_set_role(struct hast_resource *res, uint8_t role);
 
 void control_handle(struct hastd_config *cfg);
 

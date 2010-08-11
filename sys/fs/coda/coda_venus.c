@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/coda/coda_venus.c,v 1.33 2010/04/05 20:12:54 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/coda/coda_venus.c,v 1.34 2010/08/07 08:08:14 rwatson Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -273,6 +273,12 @@ venus_ioctl(void *mdp, struct CodaFid *fid, int com, int flag, caddr_t data,
 	inp->cmd = (com & ~(IOCPARM_MASK << 16));
 	tmp = ((com >> 16) & IOCPARM_MASK) - sizeof (char *) - sizeof (int);
 	inp->cmd |= (tmp & IOCPARM_MASK) << 16;
+
+	if (iap->vi.in_size > VC_MAXMSGSIZE ||
+	    iap->vi.out_size > VC_MAXMSGSIZE) {
+		CODA_FREE(inp, coda_ioctl_size);
+		return (EINVAL);
+	}
 
 	inp->rwflag = flag;
 	inp->len = iap->vi.in_size;

@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/sys/dev/drm/drm_pciids.h,v 1.21 2010/03/13 11:51:18 rnoland Exp $
+ * $FreeBSD: src/sys/dev/drm/drm_pciids.h,v 1.22 2010/08/03 16:30:56 olli Exp $
  */
 /*
    This file is auto-generated from the drm_pciids.txt in the DRM CVS
@@ -335,6 +335,7 @@
 	{0x1002, 0x9712, CHIP_RS880|RADEON_IS_MOBILITY|RADEON_NEW_MEMMAP|RADEON_IS_IGP, "ATI Mobility Radeon HD 4200"}, \
 	{0x1002, 0x9713, CHIP_RS880|RADEON_IS_MOBILITY|RADEON_NEW_MEMMAP|RADEON_IS_IGP, "ATI Mobility Radeon 4100"}, \
 	{0x1002, 0x9714, CHIP_RS880|RADEON_NEW_MEMMAP|RADEON_IS_IGP, "ATI RS880"}, \
+	{0x1002, 0x9715, CHIP_RS880|RADEON_NEW_MEMMAP|RADEON_IS_IGP, "ATI Radeon HD 4250"}, \
 	{0x1002, 0x9440, CHIP_RV770|RADEON_NEW_MEMMAP, "ATI Radeon 4800 Series"}, \
 	{0x1002, 0x9441, CHIP_RV770|RADEON_NEW_MEMMAP, "ATI Radeon 4870 X2"}, \
 	{0x1002, 0x9442, CHIP_RV770|RADEON_NEW_MEMMAP, "ATI Radeon 4800 Series"}, \

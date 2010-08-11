@@ -42,7 +42,7 @@ static char copyright[] =
 static char sccsid[] = "@(#)login.c	8.4 (Berkeley) 4/2/94";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/release/picobsd/tinyware/login/pico-login.c,v 1.7 2010/02/14 15:51:36 luigi Exp $";
+  "$FreeBSD: src/release/picobsd/tinyware/login/pico-login.c,v 1.9 2010/08/08 16:55:27 gavin Exp $";
 #endif /* not lint */
 
 /*
@@ -279,7 +279,8 @@ main(argc, argv)
 	 * Get "login-retries" & "login-backoff" from default class
 	 */
 	lc = login_getclass(NULL);
-	prompt = login_getcapstr(lc, "prompt", DEFAULT_PROMPT, DEFAULT_PROMPT);
+	prompt = login_getcapstr(lc, "login_prompt",
+	    DEFAULT_PROMPT, DEFAULT_PROMPT);
 	passwd_prompt = login_getcapstr(lc, "passwd_prompt",
 	    DEFAULT_PASSWD_PROMPT, DEFAULT_PASSWD_PROMPT);
 	retries = login_getcapnum(lc, "login-retries", DEFAULT_RETRIES,
@@ -538,10 +539,10 @@ main(argc, argv)
 	 * devices, we just clear them.
 	 */
 	if (chflags(ttyn, 0) && errno != EOPNOTSUPP)
-		syslog(LOG_ERR, "chmod(%s): %m", ttyn);
+		syslog(LOG_ERR, "chflags(%s): %m", ttyn);
 	if (chown(ttyn, pwd->pw_uid,
 	    (gr = getgrnam(TTYGRPNAME)) ? gr->gr_gid : pwd->pw_gid))
-		syslog(LOG_ERR, "chmod(%s): %m", ttyn);
+		syslog(LOG_ERR, "chown(%s): %m", ttyn);
 
 
 	/*

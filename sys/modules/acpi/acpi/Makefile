@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/acpi/acpi/Makefile,v 1.31 2010/07/13 16:57:52 jkim Exp $
+# $FreeBSD: src/sys/modules/acpi/acpi/Makefile,v 1.32 2010/08/06 23:11:19 jkim Exp $
 
 .if ${MACHINE_ARCH} == "ia64"
 .error "ACPI can only be compiled into the kernel on the ia64 platform"
@@ -50,7 +50,7 @@ SRCS+=	rsmemory.c rsmisc.c rsutils.c rsxface.c
 SRCS+=	tbfadt.c tbfind.c tbinstal.c tbutils.c tbxface.c tbxfroot.c
 SRCS+=	utalloc.c utcache.c utcopy.c utdebug.c utdelete.c uteval.c utglobal.c
 SRCS+=	utids.c utinit.c utlock.c utmath.c utmisc.c utmutex.c utobject.c
-SRCS+=	utresrc.c utstate.c utxface.c
+SRCS+=	utosi.c utresrc.c utstate.c utxface.c
 
 # OSPM layer and core hardware drivers
 SRCS+=	acpi.c acpi_button.c acpi_isab.c acpi_package.c acpi_pci.c acpi_pcib.c

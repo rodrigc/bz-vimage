@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/periodic/daily/Makefile,v 1.18 2010/06/17 12:25:47 netchild Exp $
+# $FreeBSD: src/etc/periodic/daily/Makefile,v 1.19 2010/08/10 12:58:44 olli Exp $
 
 .include <bsd.own.mk>
 
@@ -37,6 +37,10 @@ FILES+=	130.clean-msgs
 
 .if ${MK_NTP} != "no"
 FILES+=	480.status-ntpd
+.endif
+
+.if ${MK_PKGTOOLS} != "no"
+FILES+=	490.status-pkg-changes
 .endif
 
 .if ${MK_RCMDS} != "no"

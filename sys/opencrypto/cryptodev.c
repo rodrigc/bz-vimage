@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/opencrypto/cryptodev.c,v 1.42 2010/07/29 20:42:20 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/opencrypto/cryptodev.c,v 1.43 2010/08/11 16:53:45 jhb Exp $");
 
 #include "opt_compat.h"
 
@@ -506,7 +506,7 @@ cryptof_ioctl(
 			}
 		}
 
-		/* NB: CIOGSESSION2 has the crid */
+		/* NB: CIOCGSESSION2 has the crid */
 		if (cmd == CIOCGSESSION2
 #ifdef COMPAT_FREEBSD32
 		    || cmd == CIOCGSESSION232

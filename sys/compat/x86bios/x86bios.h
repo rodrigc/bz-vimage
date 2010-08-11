@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.6 2010/06/23 17:20:51 jkim Exp $
+ * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.7 2010/08/05 18:48:30 jkim Exp $
  */
 /*
  * x86 registers were borrowed from x86emu.h x86emu_regs.h
@@ -138,8 +138,8 @@ typedef struct x86regs	x86regs_t;
 #define	R_FS		register_fs
 #define	R_GS		register_gs
 
-#define	X86BIOS_PHYSTOSEG(x)	(((x) >> 4) & 0xffff)
-#define	X86BIOS_PHYSTOOFF(x)	((x) & 0x000f)
+#define	X86BIOS_PHYSTOSEG(x)	(((x) >> 4) & 0xff00)
+#define	X86BIOS_PHYSTOOFF(x)	((x) & 0x0fff)
 
 __BEGIN_DECLS
 void	*x86bios_alloc(uint32_t *offset, size_t size, int flags);

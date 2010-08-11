@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libproc/libproc.h,v 1.3 2010/07/31 16:10:20 rpaulo Exp $
+ * $FreeBSD: src/lib/libproc/libproc.h,v 1.4 2010/08/11 17:33:26 rpaulo Exp $
  */
 
 #ifndef	_LIBPROC_H_
@@ -131,7 +131,7 @@ pid_t	proc_getpid(struct proc_handle *);
 int	proc_wstatus(struct proc_handle *);
 int	proc_getwstat(struct proc_handle *);
 char *	proc_signame(int, char *, size_t);
-int	proc_read(struct proc_handle *, char *, size_t, size_t);
+int	proc_read(struct proc_handle *, void *, size_t, size_t);
 const lwpstatus_t *
 	proc_getlwpstatus(struct proc_handle *);
 void	proc_free(struct proc_handle *);

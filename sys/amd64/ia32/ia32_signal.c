@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.30 2010/06/30 18:03:42 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.31 2010/08/07 11:57:13 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -391,7 +391,7 @@ freebsd4_ia32_sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	}
 
 	regs->tf_rsp = (uintptr_t)sfp;
-	regs->tf_rip = FREEBSD32_PS_STRINGS - sz_freebsd4_ia32_sigcode;
+	regs->tf_rip = p->p_sysent->sv_psstrings - sz_freebsd4_ia32_sigcode;
 	regs->tf_rflags &= ~(PSL_T | PSL_D);
 	regs->tf_cs = _ucode32sel;
 	regs->tf_ss = _udatasel;
@@ -512,7 +512,7 @@ ia32_sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	}
 
 	regs->tf_rsp = (uintptr_t)sfp;
-	regs->tf_rip = FREEBSD32_PS_STRINGS - *(p->p_sysent->sv_szsigcode);
+	regs->tf_rip = p->p_sysent->sv_psstrings - *(p->p_sysent->sv_szsigcode);
 	regs->tf_rflags &= ~(PSL_T | PSL_D);
 	regs->tf_cs = _ucode32sel;
 	regs->tf_ss = _udatasel;

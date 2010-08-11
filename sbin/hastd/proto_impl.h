@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/proto_impl.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/proto_impl.h,v 1.2 2010/08/05 17:56:41 pjd Exp $
  */
 
 #ifndef	_PROTO_IMPL_H_
@@ -64,10 +64,10 @@ struct hast_proto {
 	hp_local_address_t *hp_local_address;
 	hp_remote_address_t *hp_remote_address;
 	hp_close_t	*hp_close;
-	LIST_ENTRY(hast_proto) hp_next;
+	TAILQ_ENTRY(hast_proto) hp_next;
 };
 
-void proto_register(struct hast_proto *proto);
+void proto_register(struct hast_proto *proto, bool isdefault);
 
 int proto_common_send(int fd, const unsigned char *data, size_t size);
 int proto_common_recv(int fd, unsigned char *data, size_t size);

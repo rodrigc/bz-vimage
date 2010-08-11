@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/csup/main.c,v 1.1 2010/03/02 07:26:07 lulf Exp $
+ * $FreeBSD: src/usr.bin/csup/main.c,v 1.2 2010/08/05 18:26:03 joel Exp $
  */
 
 #include <sys/file.h>
@@ -265,7 +265,6 @@ main(int argc, char *argv[])
 			lprintf(0, "Software version: %s\n", PROTO_SWVER);
 			lprintf(0, "Protocol version: %d.%d\n",
 			    PROTO_MAJ, PROTO_MIN);
-			lprintf(0, "http://mu.org/~mux/csup.html\n");
 			return (0);
 			break;
 		case 'z':

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/cpio/cpio.h,v 1.10 2010/05/08 16:47:33 kientzle Exp $
+ * $FreeBSD: src/usr.bin/cpio/cpio.h,v 1.11 2010/08/08 01:25:33 kientzle Exp $
  */
 
 #ifndef CPIO_H_INCLUDED
@@ -68,7 +68,9 @@ struct cpio {
 	size_t		  pass_destpath_alloc;
 	char		 *pass_destpath;
 	int		  uid_override;
+	char		 *uname_override;
 	int		  gid_override;
+	char		 *gname_override;
 	int		  day_first; /* true if locale prefers day/mon */
 
 	/* If >= 0, then close this when done. */

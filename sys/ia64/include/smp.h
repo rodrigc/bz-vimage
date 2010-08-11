@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/sys/ia64/include/smp.h,v 1.13 2010/03/17 00:37:15 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/smp.h,v 1.14 2010/08/06 15:36:59 jhb Exp $
  */
 #ifndef _MACHINE_SMP_H_
 #define _MACHINE_SMP_H_
@@ -25,6 +25,7 @@ extern int ia64_ipi_stop;
 extern int ia64_ipi_wakeup;
 
 void	ipi_all_but_self(int ipi);
+void	ipi_cpu(int cpu, u_int ipi);
 void	ipi_selected(cpumask_t cpus, int ipi);
 void	ipi_send(struct pcpu *, int ipi);
 

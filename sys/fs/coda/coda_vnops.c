@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/coda/coda_vnops.c,v 1.102 2010/04/05 20:12:54 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/coda/coda_vnops.c,v 1.103 2010/08/07 08:08:14 rwatson Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -471,7 +471,8 @@ coda_ioctl(struct vop_ioctl_args *ap)
 		    iap->path)););
 		return (EINVAL);
 	}
-	if (iap->vi.in_size > VC_MAXDATASIZE) {
+	if (iap->vi.in_size > VC_MAXDATASIZE ||
+	    iap->vi.out_size > VC_MAXDATASIZE) {
 		NDFREE(&ndp, 0);
 		return (EINVAL);
 	}

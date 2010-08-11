@@ -30,14 +30,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_input.c,v 1.384 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_input.c,v 1.385 2010/08/11 00:51:50 will Exp $");
 
 #include "opt_bootp.h"
 #include "opt_ipfw.h"
 #include "opt_ipstealth.h"
 #include "opt_ipsec.h"
 #include "opt_route.h"
-#include "opt_carp.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -74,9 +73,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/ip_input.c,v 1.384 2010/04/29 11:52:42 bz Ex
 #include <netinet/ip_icmp.h>
 #include <netinet/ip_options.h>
 #include <machine/in_cksum.h>
-#ifdef DEV_CARP
 #include <netinet/ip_carp.h>
-#endif
 #ifdef IPSEC
 #include <netinet/ip_ipsec.h>
 #endif /* IPSEC */
@@ -612,10 +609,7 @@ passin:
 	 */
 	checkif = V_ip_checkinterface && (V_ipforwarding == 0) && 
 	    ifp != NULL && ((ifp->if_flags & IFF_LOOPBACK) == 0) &&
-#ifdef DEV_CARP
-	    !ifp->if_carp &&
-#endif
-	    (dchg == 0);
+	    ifp->if_carp == NULL && (dchg == 0);
 
 	/*
 	 * Check for exact addresses in the hash bucket.

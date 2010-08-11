@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.8 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.9 2010/08/06 15:36:59 jhb Exp $
  */
 
 #ifndef _MACHINE_SMP_H_
@@ -40,6 +40,7 @@
 #ifndef LOCORE
 
 void	ipi_all_but_self(int ipi);
+void	ipi_cpu(int cpu, u_int ipi);
 void	ipi_selected(cpumask_t cpus, int ipi);
 
 struct cpuref {

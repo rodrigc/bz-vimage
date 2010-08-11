@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libproc/proc_sym.c,v 1.2 2010/07/31 16:10:20 rpaulo Exp $
+ * $FreeBSD: src/lib/libproc/proc_sym.c,v 1.3 2010/08/11 17:33:26 rpaulo Exp $
  */
 
 #include <sys/types.h>
@@ -110,14 +110,25 @@ proc_iter_objs(struct proc_handle *p, proc_map_f *func, void *cd)
 	rd_loadobj_t *rdl;
 	prmap_t map;
 	char path[MAXPATHLEN];
+	char last[MAXPATHLEN];
 
 	if (p->nobjs == 0)
 		return (-1);
+	memset(last, 0, sizeof(last));
 	for (i = 0; i < p->nobjs; i++) {
 		rdl = &p->rdobjs[i];
 		proc_rdl2prmap(rdl, &map);
 		basename_r(rdl->rdl_path, path);
+		/*
+		 * We shouldn't call the callback twice with the same object.
+		 * To do that we are assuming the fact that if there are
+		 * repeated object names (i.e. different mappings for the
+		 * same object) they occur next to each other.
+		 */
+		if (strcmp(path, last) == 0)
+			continue;
 		(*func)(cd, &map, path);
+		strlcpy(last, path, sizeof(last));
 	}
 
 	return (0);

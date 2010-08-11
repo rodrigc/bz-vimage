@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first
 # in NOTES.
 #
-# $FreeBSD: src/sys/amd64/conf/GENERIC,v 1.546 2010/07/28 15:36:12 mdf Exp $
+# $FreeBSD: src/sys/amd64/conf/GENERIC,v 1.547 2010/08/06 18:46:27 bschmidt Exp $
 
 cpu		HAMMER
 ident		GENERIC
@@ -62,7 +62,7 @@ options 	KBD_INSTALL_CDEV	# install a CDEV entry in /dev
 options 	HWPMC_HOOKS		# Necessary kernel hooks for hwpmc(4)
 options 	AUDIT			# Security event auditing
 options 	MAC			# TrustedBSD MAC Framework
-options		FLOWTABLE		# per-cpu routing cache
+options 	FLOWTABLE		# per-cpu routing cache
 #options 	KDTRACE_FRAME		# Ensure frames are compiled in
 #options 	KDTRACE_HOOKS		# Kernel DTrace hooks
 options 	INCLUDE_CONFIG_FILE     # Include this file in kernel

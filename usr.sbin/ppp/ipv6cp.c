@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/ppp/ipv6cp.c,v 1.18 2009/04/20 14:38:48 bz Exp $
+ * $FreeBSD: src/usr.sbin/ppp/ipv6cp.c,v 1.19 2010/08/06 15:09:21 jhb Exp $
  */
 
 #include <sys/param.h>
@@ -148,6 +148,7 @@ SetInterfaceID(u_char *ifid, int userandom)
     switch(sdl->sdl_type) {
     case IFT_ETHER:
     case IFT_FDDI:
+    case IFT_L2VLAN:
       /* XXX need more cases? */
       break;
     default:

@@ -1,5 +1,2 @@
-# $FreeBSD: src/Makefile.mips,v 1.1 2010/06/24 16:28:52 imp Exp $
+# $FreeBSD: src/Makefile.mips,v 1.2 2010/08/10 14:36:20 adrian Exp $
 
-# A bug in binutils prevents rescue from building, so override the user's
-# choice.
-MK_RESCUE=no

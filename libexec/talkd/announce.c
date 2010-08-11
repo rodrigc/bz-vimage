@@ -36,7 +36,7 @@
 static char sccsid[] = "@(#)announce.c	8.3 (Berkeley) 4/28/95";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/libexec/talkd/announce.c,v 1.17 2008/03/26 07:32:07 brueffer Exp $";
+  "$FreeBSD: src/libexec/talkd/announce.c,v 1.18 2010/08/08 02:45:48 ed Exp $";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -99,7 +99,6 @@ print_mesg(const char *tty, CTL_MSG *request,
 {
 	struct timeval now;
 	time_t clock_sec;
-	struct timezone zone;
 	struct tm *localclock;
 	struct iovec iovec;
 	char line_buf[N_LINES][N_CHARS];
@@ -110,7 +109,7 @@ print_mesg(const char *tty, CTL_MSG *request,
 
 	i = 0;
 	max_size = 0;
-	gettimeofday(&now, &zone);
+	gettimeofday(&now, NULL);
 	clock_sec = now.tv_sec;
 	localclock = localtime(&clock_sec);
 	(void)snprintf(line_buf[i], N_CHARS, " ");

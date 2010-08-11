@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/etc/netstart,v 1.70 2009/03/19 12:52:19 des Exp $
+# $FreeBSD: src/etc/netstart,v 1.72 2010/08/05 15:11:03 ume Exp $
 #	From: @(#)netstart	5.9 (Berkeley) 3/30/91
 #
 
@@ -55,8 +55,6 @@ _start=quietstart
 /etc/rc.d/dhclient ${_start}
 /etc/rc.d/ppp ${_start}
 /etc/rc.d/ipfw ${_start}
-/etc/rc.d/ip6fw ${_start}
-/etc/rc.d/network_ipv6 ${_start}
 /etc/rc.d/routing ${_start}
 /etc/rc.d/mroute6d ${_start}
 /etc/rc.d/route6d ${_start}

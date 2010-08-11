@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mksyntax.c	8.2 (Berkeley) 5/4/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.29 2010/04/11 12:24:47 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.30 2010/08/08 21:04:27 jilles Exp $");
 
 /*
  * This program creates syntax.h and syntax.c.
@@ -241,8 +241,8 @@ main(int argc __unused, char **argv __unused)
 	filltable("0");
 	fputs("\n/* character classification table */\n", cfile);
 	add("0123456789", "ISDIGIT");
-	add("abcdefghijklmnopqrstucvwxyz", "ISLOWER");
-	add("ABCDEFGHIJKLMNOPQRSTUCVWXYZ", "ISUPPER");
+	add("abcdefghijklmnopqrstuvwxyz", "ISLOWER");
+	add("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "ISUPPER");
 	add("_", "ISUNDER");
 	add("#?$!-*@", "ISSPECL");
 	print("is_type");

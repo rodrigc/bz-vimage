@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/libexec/rtld-elf/mips/reloc.c,v 1.5 2010/07/29 20:18:52 jchandra Exp $");
+__FBSDID("$FreeBSD: src/libexec/rtld-elf/mips/reloc.c,v 1.7 2010/08/11 02:28:39 neel Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -75,7 +75,7 @@ void _rtld_relocate_nonplt_self(Elf_Dyn *, Elf_Addr);
  * ELF64 MIPS encodes the relocs uniquely.  The first 32-bits of info contain
  * the symbol index.  The top 32-bits contain three relocation types encoded
  * in big-endian integer with first relocation in LSB.  This means for little
- * endian we have to byte swap that interger (r_type).
+ * endian we have to byte swap that integer (r_type).
  */
 #define	Elf_Sxword			Elf64_Sxword
 #define	ELF_R_NXTTYPE_64_P(r_type)	((((r_type) >> 8) & 0xff) == R_TYPE(64))

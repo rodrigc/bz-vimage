@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/sys/boot/common/loader.8,v 1.96 2009/02/16 02:42:17 thompsa Exp $
+.\" $FreeBSD: src/sys/boot/common/loader.8,v 1.97 2010/08/02 13:11:35 uqs Exp $
 .\"
 .Dd February 15, 2009
 .Dt LOADER 8
@@ -806,7 +806,7 @@ Evaluates the remainder of the input buffer under a
 exception guard.
 .It Ic .#
 Works like
-.Ic .
+.Ic "."
 but without outputting a trailing space.
 .It Ic fclose Pq Ar fd --
 Closes a file.

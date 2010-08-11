@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.49 2010/07/23 06:30:01 ae Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.51 2010/08/03 09:10:48 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -1739,6 +1739,7 @@ static void
 g_part_orphan(struct g_consumer *cp)
 {
 	struct g_provider *pp;
+	struct g_part_table *table;
 
 	pp = cp->provider;
 	KASSERT(pp != NULL, (__func__));
@@ -1746,6 +1747,9 @@ g_part_orphan(struct g_consumer *cp)
 	g_topology_assert();
 
 	KASSERT(pp->error != 0, (__func__));
+	table = cp->geom->softc;
+	if (table != NULL && table->gpt_opened)
+		g_access(cp, -1, -1, -1);
 	g_part_wither(cp->geom, pp->error);
 }
 

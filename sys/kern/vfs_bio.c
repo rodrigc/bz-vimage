@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.590 2010/07/23 12:30:29 ivoras Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.593 2010/08/09 23:32:37 ivoras Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -622,8 +622,11 @@ bufinit(void)
 
 	/*
 	 * Note: The 16 MB upper limit for hirunningspace was chosen
-	 * arbitrarily and may need further tuning. The lower 1 MB
-	 * limit is the historical upper limit for hirunningspace.
+	 * arbitrarily and may need further tuning. It corresponds to
+	 * 128 outstanding write IO requests (if IO size is 128 KiB),
+	 * which fits with many RAID controllers' tagged queuing limits.
+	 * The lower 1 MB limit is the historical upper limit for
+	 * hirunningspace.
 	 */
 	hirunningspace = lmax(lmin(roundup(hibufspace / 64, MAXBSIZE),
 	    16 * 1024 * 1024), 1024 * 1024);
@@ -3203,6 +3206,7 @@ dev_strategy(struct cdev *dev, struct buf *bp)
 {
 	struct cdevsw *csw;
 	struct bio *bip;
+	int ref;
 
 	if ((!bp->b_iocmd) || (bp->b_iocmd & (bp->b_iocmd - 1)))
 		panic("b_iocmd botch");
@@ -3224,7 +3228,7 @@ dev_strategy(struct cdev *dev, struct buf *bp)
 	KASSERT(dev->si_refcount > 0,
 	    ("dev_strategy on un-referenced struct cdev *(%s)",
 	    devtoname(dev)));
-	csw = dev_refthread(dev);
+	csw = dev_refthread(dev, &ref);
 	if (csw == NULL) {
 		g_destroy_bio(bip);
 		bp->b_error = ENXIO;
@@ -3233,7 +3237,7 @@ dev_strategy(struct cdev *dev, struct buf *bp)
 		return;
 	}
 	(*csw->d_strategy)(bip);
-	dev_relthread(dev);
+	dev_relthread(dev, ref);
 }
 
 /*

@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)malloc.3	8.1 (Berkeley) 6/4/93
-.\" $FreeBSD: src/lib/libc/stdlib/malloc.3,v 1.82 2010/01/31 23:16:10 jasone Exp $
+.\" $FreeBSD: src/lib/libc/stdlib/malloc.3,v 1.83 2010/08/06 14:33:42 joel Exp $
 .\"
 .Dd January 31, 2010
 .Dt MALLOC 3
@@ -415,7 +415,7 @@ Allocation requests that are more than half the quantum, but no more than the
 minimum cacheline-multiple size class (see the
 .Dq Q
 option) are rounded up to the nearest multiple of the quantum.
-Allocation requests that are more than the minumum cacheline-multiple size
+Allocation requests that are more than the minimum cacheline-multiple size
 class, but no more than the minimum subpage-multiple size class (see the
 .Dq C
 option) are rounded up to the nearest multiple of the cacheline size (64).

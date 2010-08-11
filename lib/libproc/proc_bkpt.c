@@ -28,7 +28,7 @@
  */ 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libproc/proc_bkpt.c,v 1.1 2010/07/31 16:10:20 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/lib/libproc/proc_bkpt.c,v 1.2 2010/08/11 17:33:26 rpaulo Exp $");
 
 #include <sys/types.h>
 #include <sys/ptrace.h>
@@ -164,7 +164,8 @@ proc_bkptexec(struct proc_handle *phdl, unsigned long saved)
 		warn("ERROR: ptrace step failed");
 		return (-1);
 	}
-	status = proc_wstatus(phdl);
+	proc_wstatus(phdl);
+	status = proc_getwstat(phdl);
 	if (!WIFSTOPPED(status)) {
 		warn("ERROR: don't know why process stopped");
 		return (-1);

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/mp_machdep.c,v 1.86 2010/07/03 20:19:20 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/mp_machdep.c,v 1.87 2010/08/06 15:36:59 jhb Exp $");
 
 #include "opt_kstack_pages.h"
 
@@ -405,6 +405,16 @@ ipi_selected(cpumask_t cpus, int ipi)
 		if (cpus & pc->pc_cpumask)
 			ipi_send(pc, ipi);
 	}
+}
+
+/*
+ * send an IPI to a specific CPU.
+ */
+void
+ipi_cpu(int cpu, u_int ipi)
+{
+
+	ipi_send(cpuid_to_pcpu[cpu], ipi);
 }
 
 /*

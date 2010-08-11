@@ -1,27 +1,21 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/fstest/tests/mkdir/10.t,v 1.1 2007/01/17 01:42:09 pjd Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/mkdir/10.t,v 1.3 2010/08/11 17:34:58 pjd Exp $
 
 desc="mkdir returns EEXIST if the named file exists"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
 
-echo "1..12"
+echo "1..21"
 
 n0=`namegen`
 
-expect 0 mkdir ${n0} 0755
-expect EEXIST mkdir ${n0} 0755
-expect 0 rmdir ${n0}
-
-expect 0 create ${n0} 0644
-expect EEXIST mkdir ${n0} 0755
-expect 0 unlink ${n0}
-
-expect 0 symlink test ${n0}
-expect EEXIST mkdir ${n0} 0755
-expect 0 unlink ${n0}
-
-expect 0 mkfifo ${n0} 0644
-expect EEXIST mkdir ${n0} 0755
-expect 0 unlink ${n0}
+for type in regular dir fifo block char socket symlink; do
+	create_file ${type} ${n0}
+	expect EEXIST mkdir ${n0} 0755
+	if [ "${type}" = "dir" ]; then
+		expect 0 rmdir ${n0}
+	else
+		expect 0 unlink ${n0}
+	fi
+done

@@ -31,7 +31,7 @@
 /* $KAME: sctp_output.c,v 1.46 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.113 2010/08/01 08:06:59 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.114 2010/08/05 16:52:13 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
@@ -2740,6 +2740,15 @@ sctp_select_nth_preferred_addr_from_ifn_boundall(struct sctp_ifn *ifn,
 			}
 		}
 		if (stcb) {
+			if (sctp_is_address_in_scope(ifa,
+			    stcb->asoc.ipv4_addr_legal,
+			    stcb->asoc.ipv6_addr_legal,
+			    stcb->asoc.loopback_scope,
+			    stcb->asoc.ipv4_local_scope,
+			    stcb->asoc.local_scope,
+			    stcb->asoc.site_scope, 0) == 0) {
+				continue;
+			}
 			if (((non_asoc_addr_ok == 0) &&
 			    (sctp_is_addr_restricted(stcb, sifa))) ||
 			    (non_asoc_addr_ok &&
@@ -2783,6 +2792,15 @@ sctp_count_num_preferred_boundall(struct sctp_ifn *ifn,
 			continue;
 		}
 		if (stcb) {
+			if (sctp_is_address_in_scope(ifa,
+			    stcb->asoc.ipv4_addr_legal,
+			    stcb->asoc.ipv6_addr_legal,
+			    stcb->asoc.loopback_scope,
+			    stcb->asoc.ipv4_local_scope,
+			    stcb->asoc.local_scope,
+			    stcb->asoc.site_scope, 0) == 0) {
+				continue;
+			}
 			if (((non_asoc_addr_ok == 0) &&
 			    (sctp_is_addr_restricted(stcb, sifa))) ||
 			    (non_asoc_addr_ok &&
@@ -2963,6 +2981,15 @@ bound_all_plan_b:
 		if (sifa == NULL)
 			continue;
 		if (stcb) {
+			if (sctp_is_address_in_scope(sifa,
+			    stcb->asoc.ipv4_addr_legal,
+			    stcb->asoc.ipv6_addr_legal,
+			    stcb->asoc.loopback_scope,
+			    stcb->asoc.ipv4_local_scope,
+			    stcb->asoc.local_scope,
+			    stcb->asoc.site_scope, 0) == 0) {
+				continue;
+			}
 			if (((non_asoc_addr_ok == 0) &&
 			    (sctp_is_addr_restricted(stcb, sifa))) ||
 			    (non_asoc_addr_ok &&
@@ -3005,6 +3032,15 @@ plan_d:
 			if (sifa == NULL)
 				continue;
 			if (stcb) {
+				if (sctp_is_address_in_scope(sifa,
+				    stcb->asoc.ipv4_addr_legal,
+				    stcb->asoc.ipv6_addr_legal,
+				    stcb->asoc.loopback_scope,
+				    stcb->asoc.ipv4_local_scope,
+				    stcb->asoc.local_scope,
+				    stcb->asoc.site_scope, 0) == 0) {
+					continue;
+				}
 				if (((non_asoc_addr_ok == 0) &&
 				    (sctp_is_addr_restricted(stcb, sifa))) ||
 				    (non_asoc_addr_ok &&

@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.369 2010/07/05 16:23:55 jh Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.370 2010/08/06 16:50:48 stefanf Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -770,8 +770,13 @@ MLINKS+=lock.9 lockdestroy.9 \
 	lock.9 lockstatus.9
 MLINKS+=LOCK_PROFILING.9 MUTEX_PROFILING.9
 MLINKS+=make_dev.9 destroy_dev.9 \
+	make_dev.9 destroy_dev_drain.9 \
+	make_dev.9 destroy_dev_sched.9 \
+	make_dev.9 destroy_dev_sched_cb.9 \
 	make_dev.9 dev_depends.9 \
-	make_dev.9 make_dev_alias.9
+	make_dev.9 make_dev_alias.9 \
+	make_dev.9 make_dev_cred.9 \
+	make_dev.9 make_dev_credf.9
 MLINKS+=malloc.9 free.9 \
 	malloc.9 MALLOC_DECLARE.9 \
 	malloc.9 MALLOC_DEFINE.9 \

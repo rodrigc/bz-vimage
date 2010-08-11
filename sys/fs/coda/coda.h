@@ -27,7 +27,7 @@
  * Mellon the rights to redistribute these changes without encumbrance.
  * 
  * 	@(#) src/sys/coda/coda.h,v 1.1.1.1 1998/08/29 21:14:52 rvb Exp $ 
- * $FreeBSD: src/sys/fs/coda/coda.h,v 1.18 2010/04/05 20:12:54 rwatson Exp $
+ * $FreeBSD: src/sys/fs/coda/coda.h,v 1.19 2010/08/07 08:08:14 rwatson Exp $
  * 
  */
 
@@ -41,7 +41,9 @@
 #ifndef _CODA_HEADER_
 #define _CODA_HEADER_
 
+#ifdef _KERNEL
 #include "opt_coda.h"	/* for CODA_COMPAT_5 option */
+#endif
 
 /* Avoid CODA_COMPAT_5 redefinition in coda5 module */
 #if defined (CODA5_MODULE) && !defined(CODA_COMPAT_5)
@@ -782,8 +784,8 @@ union coda_downcalls {
 #define PIOCPARM_MASK 0x0000ffff
 struct ViceIoctl {
         caddr_t in, out;        /* Data to be transferred in, or out */
-        short in_size;          /* Size of input buffer <= 2K */
-        short out_size;         /* Maximum size of output buffer, <= 2K */
+        unsigned short in_size;	/* Size of input buffer <= 8K */
+        unsigned short out_size; /* Maximum size of output buffer, <= 8K */
 };
 
 #if defined(__CYGWIN32__) || defined(DJGPP)

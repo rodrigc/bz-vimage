@@ -39,7 +39,7 @@
  *	from: @(#)cache.h	8.1 (Berkeley) 6/11/93
  *	from: NetBSD: cache.h,v 1.3 2000/08/01 00:28:02 eeh Exp
  *
- * $FreeBSD: src/sys/sparc64/include/cache.h,v 1.17 2010/05/02 19:38:17 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/cache.h,v 1.18 2010/08/08 00:01:08 marius Exp $
  */
 
 #ifndef _MACHINE_CACHE_H_
@@ -49,7 +49,7 @@
 #define	DCACHE_COLORS		(1 << DCACHE_COLOR_BITS)
 #define	DCACHE_COLOR_MASK	(DCACHE_COLORS - 1)
 #define	DCACHE_COLOR(va)	(((va) >> PAGE_SHIFT) & DCACHE_COLOR_MASK)
-#define	DCACHE_OTHER_COLOR(color) \
+#define	DCACHE_OTHER_COLOR(color)					\
 	((color) ^ DCACHE_COLOR_BITS)
 
 #define	DC_TAG_SHIFT	2
@@ -88,6 +88,8 @@ struct cacheinfo {
 };
 
 #ifdef _KERNEL
+
+extern u_int dcache_color_ignore;
 
 struct pcpu;
 

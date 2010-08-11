@@ -1,10 +1,12 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/fstest/tests/granular/03.t,v 1.1 2009/09/07 19:40:22 trasz Exp $
+# $FreeBSD: src/tools/regression/fstest/tests/granular/03.t,v 1.2 2010/08/06 23:58:54 pjd Exp $
 
 desc="NFSv4 granular permissions checking - DELETE and DELETE_CHILD"
 
 dir=`dirname $0`
 . ${dir}/../misc.sh
+
+[ "${os}:${fs}" = "FreeBSD:ZFS" ] || quick_exit
 
 echo "1..65"
 

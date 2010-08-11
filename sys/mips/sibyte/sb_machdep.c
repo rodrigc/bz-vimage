@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.12 2010/07/13 22:30:27 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.14 2010/08/06 05:24:41 neel Exp $");
 
 #include <sys/param.h>
 
@@ -189,11 +189,11 @@ mips_init(void)
 			("CFE DRAM region is not available?"));
 
 		if (bootverbose)
-			printf("cfe_enummem: 0x%016jx/%llu.\n", addr, len);
+			printf("cfe_enummem: 0x%016jx/%ju.\n", addr, len);
 
 		if (maxmem != 0) {
 			if (addr >= maxmem) {
-				printf("Ignoring %llu bytes of memory at 0x%jx "
+				printf("Ignoring %ju bytes of memory at 0x%jx "
 				       "that is above maxmem %dMB\n",
 				       len, addr,
 				       (int)(maxmem / (1024 * 1024)));
@@ -201,7 +201,7 @@ mips_init(void)
 			}
 
 			if (addr + len > maxmem) {
-				printf("Ignoring %llu bytes of memory "
+				printf("Ignoring %ju bytes of memory "
 				       "that is above maxmem %dMB\n",
 				       (addr + len) - maxmem,
 				       (int)(maxmem / (1024 * 1024)));
@@ -454,6 +454,4 @@ platform_start(__register_t a0, __register_t a1, __register_t a2,
 	mips_init();
 
 	mips_timer_init_params(sb_cpu_speed(), 0);
-
-	set_cputicker(sb_zbbus_cycle_count, sb_cpu_speed() / 2, 1);
 }

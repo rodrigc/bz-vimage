@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.93 2009/09/09 20:37:49 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.94 2010/08/04 01:19:11 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -193,12 +193,14 @@ nfs_inactive(struct vop_inactive_args *ap)
 	np = VTONFS(ap->a_vp);
 	if (prtactive && vrefcnt(ap->a_vp) != 0)
 		vprint("nfs_inactive: pushing active", ap->a_vp);
+	mtx_lock(&np->n_mtx);
 	if (ap->a_vp->v_type != VDIR) {
 		sp = np->n_sillyrename;
 		np->n_sillyrename = NULL;
 	} else
 		sp = NULL;
 	if (sp) {
+		mtx_unlock(&np->n_mtx);
 		(void)nfs_vinvalbuf(ap->a_vp, 0, td, 1);
 		/*
 		 * Remove the silly file that was rename'd earlier
@@ -207,8 +209,10 @@ nfs_inactive(struct vop_inactive_args *ap)
 		crfree(sp->s_cred);
 		vrele(sp->s_dvp);
 		free((caddr_t)sp, M_NFSREQ);
+		mtx_lock(&np->n_mtx);
 	}
 	np->n_flag &= NMODIFIED;
+	mtx_unlock(&np->n_mtx);
 	return (0);
 }
 
