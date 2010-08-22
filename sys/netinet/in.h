@@ -727,6 +727,7 @@ int	 inet_aton(const char *, struct in_addr *); /* in libkern */
 char	*inet_ntoa(struct in_addr); /* in libkern */
 char	*inet_ntoa_r(struct in_addr ina, char *buf); /* in libkern */
 void	 in_ifdetach(struct ifnet *, int);
+struct in_ifaddr *in_ifawithifp(struct ifnet *, struct in_addr *);
 
 #define	in_hosteq(s, t)	((s).s_addr == (t).s_addr)
 #define	in_nullhost(x)	((x).s_addr == INADDR_ANY)

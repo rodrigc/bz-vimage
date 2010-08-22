@@ -1637,3 +1637,33 @@ in_domifdetach(struct ifnet *ifp, void *aux)
 	lltable_free(ii->ii_llt);
 	free(ii, M_IFADDR);
 }
+
+struct in_ifaddr *
+in_ifawithifp(struct ifnet *ifp, struct in_addr *ia)
+{
+	struct ifaddr *ifa;
+	struct in_ifaddr *ia2;
+
+	KASSERT(ifp != NULL, ("%s: ifp is NULL", __func__));
+
+	IF_ADDR_LOCK(ifp);
+	TAILQ_FOREACH(ifa, &ifp->if_addrhead, ifa_link) {
+		if (ifa->ifa_addr->sa_family != AF_INET)
+			continue;
+		ia2 = (struct in_ifaddr *)ifa;
+		if (ia2->ia_addr.sin_addr.s_addr == ia->s_addr) {
+			ifa_ref(ifa);
+			IF_ADDR_UNLOCK(ifp);
+			return (ia2);
+		}
+		if ((ifp->if_flags & IFF_BROADCAST) &&
+		    ia2->ia_broadaddr.sin_len != 0 &&
+		    ia2->ia_broadaddr.sin_addr.s_addr == ia->s_addr) {
+			ifa_ref(ifa);
+			IF_ADDR_UNLOCK(ifp);
+			return (ia2);
+		}
+	}
+	IF_ADDR_UNLOCK(ifp);
+	return (NULL);
+}

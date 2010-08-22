@@ -294,8 +294,11 @@ again:
 			error = EHOSTUNREACH;
 			goto bad;
 		}
-		ia = ifatoia(rte->rt_ifa);
-		ifa_ref(&ia->ia_ifa);
+		if (ip->ip_src.s_addr == INADDR_ANY ||
+		    (ia = in_ifawithifp(rte->rt_ifp, &ip->ip_src)) == NULL) {
+			ia = ifatoia(rte->rt_ifa);
+			ifa_ref(&ia->ia_ifa);
+		}
 		ifp = rte->rt_ifp;
 		rte->rt_rmx.rmx_pksent++;
 		if (rte->rt_flags & RTF_GATEWAY)
