@@ -128,8 +128,11 @@ nd6_ns_input(struct mbuf *m, int off, int icmp6len)
 #endif
 	ip6 = mtod(m, struct ip6_hdr *); /* adjust pointer for safety */
 	taddr6 = nd_ns->nd_ns_target;
-	if (in6_setscope(&taddr6, ifp, NULL) != 0)
+	if (in6_setscope(&taddr6, ifp, NULL) != 0) {
+		nd6log((LOG_ERR, "%s:%d: in6_setscope(%p, %p, NULL) failed.\n",
+		    __func__, __LINE__, &taddr6, ifp));
 		goto bad;
+	}
 
 	if (ip6->ip6_hlim != 255) {
 		nd6log((LOG_ERR,
@@ -328,8 +331,11 @@ nd6_ns_input(struct mbuf *m, int off, int icmp6len)
 		struct in6_addr in6_all;
 
 		in6_all = in6addr_linklocal_allnodes;
-		if (in6_setscope(&in6_all, ifp, NULL) != 0)
+		if (in6_setscope(&in6_all, ifp, NULL) != 0) {
+			nd6log((LOG_ERR, "%s:%d: in6_setscope(%p, %p, NULL) "
+			    "failed.\n", __func__, __LINE__, &in6_all, ifp));
 			goto bad;
+		}
 		nd6_na_output(ifp, &in6_all, &taddr6,
 		    ((anycast || proxy || !tlladdr) ? 0 : ND_NA_FLAG_OVERRIDE) |
 		    (V_ip6_forwarding ? ND_NA_FLAG_ROUTER : 0),
