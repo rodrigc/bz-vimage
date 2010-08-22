@@ -2158,7 +2158,7 @@ nd6_storelladdr(struct ifnet *ifp, struct mbuf *m,
 			LLE_RUNLOCK(ln);
 		/* this could happen, if we could not allocate memory */
 		m_freem(m);
-		return (1);
+		return (ENOENT); /* XXX-BZ not always correct either but ... */
 	}
 
 	bcopy(&ln->ll_addr, desten, ifp->if_addrlen);
