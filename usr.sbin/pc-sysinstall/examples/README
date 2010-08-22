@@ -128,6 +128,11 @@ Setting this to "s1, s2, s3 or s4" will use the specified MBR slice
 
 (This tag is unused for upgrades)
 
+# partscheme=(MBR/GPT)
+
+When performing a "full" disk (partition=all), the partscheme= variable is used
+to determine the partition scheme type gpart will be using on the disk. Valid
+choices are MBR or GPT. 
 
 # mirror=(disk device such as ad1)
 
@@ -352,4 +357,4 @@ localizeKeyVariant is used to update the xorg config to set the keyboard variant
 Setting autoLoginUser will enable the specified user to log into the desktop 
 automatically without entering a password
 
-$FreeBSD: src/usr.sbin/pc-sysinstall/examples/README,v 1.1 2010/06/24 22:21:47 imp Exp $
+$FreeBSD: src/usr.sbin/pc-sysinstall/examples/README,v 1.2 2010/08/19 06:11:06 imp Exp $

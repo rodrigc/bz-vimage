@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.54 2010/08/06 20:55:49 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_igb.c,v 1.55 2010/08/19 17:00:33 jfv Exp $*/
 
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
@@ -2473,8 +2473,8 @@ igb_setup_msix(struct adapter *adapter)
 	if ((adapter->hw.mac.type == e1000_82575) && (queues > 4))
 		queues = 4;
 
-	/* Limit the VF adapter to one queues */
-	if ((adapter->hw.mac.type == e1000_vfadapt) && (queues > 2))
+	/* Limit the VF adapter to one queue */
+	if (adapter->hw.mac.type == e1000_vfadapt)
 		queues = 1;
 
 	/*

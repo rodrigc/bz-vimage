@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/mirror/g_mirror.c,v 1.99 2010/01/05 10:30:56 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/mirror/g_mirror.c,v 1.100 2010/08/18 15:38:10 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -842,21 +842,6 @@ g_mirror_unidle(struct g_mirror_softc *sc)
 		disk->d_flags |= G_MIRROR_DISK_FLAG_DIRTY;
 		g_mirror_update_metadata(disk);
 	}
-}
-
-static __inline int
-bintime_cmp(struct bintime *bt1, struct bintime *bt2)
-{
-
-	if (bt1->sec < bt2->sec)
-		return (-1);
-	else if (bt1->sec > bt2->sec)
-		return (1);
-	if (bt1->frac < bt2->frac)
-		return (-1);
-	else if (bt1->frac > bt2->frac)
-		return (1);
-	return (0);
 }
 
 static void

@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/vm_machdep.c,v 1.18 2010/07/30 12:45:00 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/vm_machdep.c,v 1.19 2010/08/12 11:00:45 jchandra Exp $");
 
 #include "opt_cputype.h"
 #include "opt_ddb.h"
@@ -419,7 +419,7 @@ cpu_set_upcall_kse(struct thread *td, void (*entry)(void *), void *arg,
 #if defined(__mips_n32) 
 	td->td_frame->sr |= MIPS_SR_PX;
 #elif  defined(__mips_n64)
-	td->td_frame->sr |= MIPS_SR_PX | MIPS_SR_UX;
+	td->td_frame->sr |= MIPS_SR_PX | MIPS_SR_UX | MIPS_SR_KX;
 #endif
 #ifdef CPU_CNMIPS
 	tf->sr |=  MIPS_SR_INT_IE | MIPS_SR_COP_0_BIT | MIPS_SR_PX | MIPS_SR_UX |

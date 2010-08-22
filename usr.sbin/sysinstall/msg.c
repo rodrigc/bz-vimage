@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/msg.c,v 1.60 2010/07/07 22:53:58 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/msg.c,v 1.61 2010/08/17 09:39:06 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -233,7 +233,7 @@ msgFatal(char *fmt, ...)
     mvaddstr(StatusLine, 0, errstr);
     addstr(" - ");
     addstr("PRESS ANY KEY TO ");
-    if (getpid() == 1)
+    if (RunningAsInit)
 	addstr("REBOOT");
     else
 	addstr("QUIT");

@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.158 2010/06/15 19:28:37 sbruno Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.159 2010/08/16 14:24:00 andre Exp $");
 
 /* I should really use ktr.. */
 /*
@@ -2794,6 +2794,24 @@ uma_zone_set_max(uma_zone_t zone, int nitems)
 		keg->uk_maxpages += keg->uk_ppera;
 
 	ZONE_UNLOCK(zone);
+}
+
+/* See uma.h */
+int
+uma_zone_get_max(uma_zone_t zone)
+{
+	int nitems;
+	uma_keg_t keg;
+
+	ZONE_LOCK(zone);
+	keg = zone_first_keg(zone);
+	if (keg->uk_maxpages)
+		nitems = keg->uk_maxpages * keg->uk_ipers;
+	else
+		nitems = 0;
+	ZONE_UNLOCK(zone);
+
+	return (nitems);
 }
 
 /* See uma.h */

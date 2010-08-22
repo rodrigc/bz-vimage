@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/28/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.39 2010/05/28 22:40:24 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.40 2010/08/15 21:06:53 jilles Exp $");
 
 #include <stdio.h>
 #include <signal.h>
@@ -232,8 +232,9 @@ cmdloop(int top)
 		}
 		popstackmark(&smark);
 		setstackmark(&smark);
-		if (evalskip == SKIPFILE) {
-			evalskip = 0;
+		if (evalskip != 0) {
+			if (evalskip == SKIPFILE)
+				evalskip = 0;
 			break;
 		}
 	}

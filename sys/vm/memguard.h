@@ -23,12 +23,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/vm/memguard.h,v 1.4 2010/04/07 16:29:10 joel Exp $
+ * $FreeBSD: src/sys/vm/memguard.h,v 1.6 2010/08/12 16:54:43 mdf Exp $
  */
 
-extern u_int vm_memguard_divisor;
+#ifndef _VM_MEMGUARD_H_
+#define	_VM_MEMGUARD_H_
 
-void	memguard_init(vm_map_t parent_map, unsigned long size);
-void 	*memguard_alloc(unsigned long size, int flags);
-void	memguard_free(void *addr);
-int	memguard_cmp(struct malloc_type *mtp);
+#include "opt_vm.h"
+
+struct malloc_type;
+struct vm_map;
+
+#ifdef DEBUG_MEMGUARD
+unsigned long	memguard_fudge(unsigned long, unsigned long);
+void	memguard_init(struct vm_map *);
+void 	*memguard_alloc(unsigned long, int);
+void	memguard_free(void *);
+int	memguard_cmp(struct malloc_type *, unsigned long);
+int	is_memguard_addr(void *);
+#else
+#define	memguard_fudge(size, xxx)	(size)
+#define	memguard_init(map)		do { } while (0)
+#define	memguard_alloc(size, flags)	NULL
+#define	memguard_free(addr)		do { } while (0)
+#define	memguard_cmp(mtp, size)		0
+#define	is_memguard_addr(addr)		0
+#endif
+
+#endif /* _VM_MEMGUARD_H_ */

@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.135 2010/07/31 21:33:18 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.136 2010/08/19 11:31:03 anchie Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -122,7 +122,7 @@ VNET_DEFINE(int, nd6_recalc_reachtm_interval) = ND6_RECALC_REACHTM_INTERVAL;
 
 static struct sockaddr_in6 all1_sa;
 
-int	(*send_sendso_input_hook)(struct mbuf *, int, int);
+int	(*send_sendso_input_hook)(struct mbuf *, struct ifnet *, int, int);
 
 static int nd6_is_new_addr_neighbor __P((struct sockaddr_in6 *,
 	struct ifnet *));
@@ -1950,18 +1950,23 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 	mac_netinet6_nd6_send(ifp, m);
 #endif
 
-	skip = 0;
-	/* send outgoing NS/NA/REDIRECT packet to sendd. */
+	/*
+	 * If called from nd6_ns_output() (NS), nd6_na_output() (NA),
+	 * icmp6_redirect_output() (REDIRECT) or from rip6_output() (RS, RA
+	 * as handled by rtsol and rtadvd), mbufs will be tagged for SeND
+	 * to be diverted to user space.  When re-injected into the kernel,
+	 * send_output() will directly dispatch them to the outgoing interface.
+	 */
 	if (send_sendso_input_hook != NULL) {
 		mtag = m_tag_find(m, PACKET_TAG_ND_OUTGOING, NULL);
 		if (mtag != NULL) {
-			skip = 1;
-			nd_type = (unsigned short *)(mtag + 1);
+			ip6 = mtod(m, struct ip6_hdr *);
+			ip6len = sizeof(struct ip6_hdr) + ntohs(ip6->ip6_plen);
 			/* Use the SEND socket */
-			error = send_sendso_input_hook(m, SND_OUT, 
-			    ip6len); 
+			error = send_sendso_input_hook(m, ifp, SND_OUT,
+			    ip6len);
 			/* -1 == no app on SEND socket */
-			if (error == 0 && error != -1)
+			if (error == 0 || error != -1)
 			    return (error);
 		}
 	}

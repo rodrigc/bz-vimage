@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/trap.c,v 1.330 2010/06/05 15:59:59 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/trap.c,v 1.331 2010/08/19 16:41:27 jhb Exp $");
 
 /*
  * 386 Trap and System call handling
@@ -50,7 +50,6 @@ __FBSDID("$FreeBSD: src/sys/i386/i386/trap.c,v 1.330 2010/06/05 15:59:59 kib Exp
 #include "opt_isa.h"
 #include "opt_kdb.h"
 #include "opt_kdtrace.h"
-#include "opt_ktrace.h"
 #include "opt_npx.h"
 #include "opt_trap.h"
 
@@ -72,9 +71,6 @@ __FBSDID("$FreeBSD: src/sys/i386/i386/trap.c,v 1.330 2010/06/05 15:59:59 kib Exp
 #include <sys/sysent.h>
 #include <sys/uio.h>
 #include <sys/vmmeter.h>
-#ifdef KTRACE
-#include <sys/ktrace.h>
-#endif
 #ifdef HWPMC_HOOKS
 #include <sys/pmckern.h>
 #endif

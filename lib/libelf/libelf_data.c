@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libelf/libelf_data.c,v 1.5 2010/07/21 10:39:29 kaiw Exp $");
+__FBSDID("$FreeBSD: src/lib/libelf/libelf_data.c,v 1.6 2010/08/11 19:59:31 kaiw Exp $");
 
 #include <libelf.h>
 #include <osreldate.h>
@@ -81,6 +81,8 @@ _libelf_xlate_shtype(uint32_t sht)
 		return (ELF_T_MOVE);
 	case SHT_SUNW_syminfo:
 		return (ELF_T_SYMINFO);
+	case SHT_SUNW_dof:
+		return (ELF_T_BYTE);
 #endif
 	case SHT_AMD64_UNWIND:	/* == SHT_IA_64_UNWIND */
 		return (ELF_T_BYTE);

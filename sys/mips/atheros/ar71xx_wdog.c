@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_wdog.c,v 1.2 2010/06/19 12:12:39 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_wdog.c,v 1.3 2010/08/19 02:03:12 adrian Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -41,6 +41,7 @@ __FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_wdog.c,v 1.2 2010/06/19 12:12:39
 #include <sys/sysctl.h>
 
 #include <mips/atheros/ar71xxreg.h>
+#include <mips/atheros/ar71xx_cpudef.h>
 
 struct ar71xx_wdog_softc {
 	device_t dev;

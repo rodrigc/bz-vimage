@@ -1,9 +1,10 @@
-# $FreeBSD: src/tools/regression/bin/sh/builtins/command5.0,v 1.1 2005/10/28 14:02:42 stefanf Exp $
+# $FreeBSD: src/tools/regression/bin/sh/builtins/command5.0,v 1.2 2010/08/16 17:18:08 jilles Exp $
 command -V ls
 command -V true
 command -V /bin/ls
 
 fun() {
+	:
 }
 command -V fun
 command -V break

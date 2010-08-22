@@ -23,13 +23,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/intr_machdep.h,v 1.4 2010/02/20 16:30:29 rrs Exp $ 
+ * $FreeBSD: src/sys/mips/include/intr_machdep.h,v 1.5 2010/08/13 12:56:00 jchandra Exp $ 
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
 #define	_MACHINE_INTR_MACHDEP_H_
 
-#ifdef TARGET_XLR_XLS
+#ifdef CPU_RMI
 #define XLR_MAX_INTR 64 
 #else
 #define NHARD_IRQS	6

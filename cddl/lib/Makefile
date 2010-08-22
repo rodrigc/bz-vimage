@@ -1,8 +1,8 @@
-# $FreeBSD: src/cddl/lib/Makefile,v 1.10 2010/07/31 17:13:14 rpaulo Exp $
+# $FreeBSD: src/cddl/lib/Makefile,v 1.12 2010/08/21 11:14:50 rpaulo Exp $
 
 .include <bsd.own.mk>
 
-SUBDIR=	drti \
+SUBDIR=	${_drti} \
 	libavl \
 	libctf \
 	${_libdtrace} \
@@ -19,7 +19,8 @@ _libzpool=	libzpool
 .endif
 .endif
 
-.if ${MACHINE_ARCH} == amd64 || ${MACHINE_ARCH} == i386
+.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
+_drti=		drti
 _libdtrace=	libdtrace
 .endif
 

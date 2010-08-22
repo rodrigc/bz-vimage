@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/proto_common.c,v 1.2 2010/04/29 15:36:32 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/proto_common.c,v 1.3 2010/08/18 12:09:27 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -42,8 +42,7 @@ __FBSDID("$FreeBSD: src/sbin/hastd/proto_common.c,v 1.2 2010/04/29 15:36:32 pjd 
 
 /* Maximum size of packet we want to use when sending data. */
 #ifndef MAX_SEND_SIZE
-//#define	MAX_SEND_SIZE	32768
-#define	MAX_SEND_SIZE	131072
+#define	MAX_SEND_SIZE	32768
 #endif
 
 int

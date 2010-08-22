@@ -26,7 +26,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/pmap.h,v 1.30 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/pmap.h,v 1.31 2010/08/11 23:22:53 jhb Exp $
  */
 /*-
  * Copyright (C) 1995, 1996 Wolfgang Solfrank.
@@ -99,7 +99,7 @@ struct	pmap {
     #else
 	register_t	pm_sr[16];
     #endif
-	u_int		pm_active;
+	cpumask_t	pm_active;
 	uint32_t	pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int		pm_retries;
 
@@ -153,7 +153,7 @@ void	slb_free_user_cache(struct slb *);
 struct pmap {
 	struct mtx		pm_mtx;		/* pmap mutex */
 	tlbtid_t		pm_tid[MAXCPU];	/* TID to identify this pmap entries in TLB */
-	u_int			pm_active;	/* active on cpus */
+	cpumask_t		pm_active;	/* active on cpus */
 	int			pm_refs;	/* ref count */
 	struct pmap_statistics	pm_stats;	/* pmap statistics */
 

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.12 2010/07/24 22:11:11 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clport.c,v 1.13 2010/08/20 19:46:50 jhb Exp $");
 
 /*
  * generally, I don't like #includes inside .h files, but it seems to
@@ -230,9 +230,9 @@ nfscl_nget(struct mount *mntp, struct vnode *dvp, struct nfsfh *nfhp,
 	/*
 	 * NFS supports recursive and shared locking.
 	 */
+	lockmgr(vp->v_vnlock, LK_EXCLUSIVE | LK_NOWITNESS, NULL);
 	VN_LOCK_AREC(vp);
 	VN_LOCK_ASHARE(vp);
-	lockmgr(vp->v_vnlock, LK_EXCLUSIVE | LK_NOWITNESS, NULL);
 	error = insmntque(vp, mntp);
 	if (error != 0) {
 		*npp = NULL;

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/sysent.h,v 1.69 2010/06/29 14:31:49 kib Exp $
+ * $FreeBSD: src/sys/sys/sysent.h,v 1.70 2010/08/22 10:53:32 rpaulo Exp $
  */
 
 #ifndef _SYS_SYSENT_H_
@@ -42,7 +42,8 @@ struct ksiginfo;
 typedef	int	sy_call_t(struct thread *, void *);
 
 /* Used by the machine dependent syscall() code. */
-typedef	void (*systrace_probe_func_t)(u_int32_t, int, struct sysent *, void *);
+typedef	void (*systrace_probe_func_t)(u_int32_t, int, struct sysent *, void *,
+    int);
 
 /*
  * Used by loaded syscalls to convert arguments to a DTrace array

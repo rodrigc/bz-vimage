@@ -25,7 +25,7 @@
 
 #include <sys/cdefs.h>
 #ifdef __FreeBSD__
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_sta.c,v 1.33 2010/06/11 01:32:42 avatar Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_sta.c,v 1.35 2010/08/14 20:12:10 bschmidt Exp $");
 #endif
 
 /*
@@ -60,6 +60,7 @@ __FBSDID("$FreeBSD: src/sys/net80211/ieee80211_sta.c,v 1.33 2010/06/11 01:32:42 
 #ifdef IEEE80211_SUPPORT_SUPERG
 #include <net80211/ieee80211_superg.h>
 #endif
+#include <net80211/ieee80211_ratectl.h>
 
 #define	IEEE80211_RATE2MBS(r)	(((r) & IEEE80211_RATE_VAL) / 2)
 
@@ -1596,6 +1597,8 @@ sta_recv_mgmt(struct ieee80211_node *ni, struct mbuf *m0,
 			     IEEE80211_F_JOIN | IEEE80211_F_DOBRS);
 			ieee80211_setup_basic_htrates(ni, htinfo);
 			ieee80211_node_setuptxparms(ni);
+			if (vap->iv_caps & IEEE80211_C_RATECTL)
+				ieee80211_ratectl_node_init(ni);
 		} else {
 #ifdef IEEE80211_SUPPORT_SUPERG
 			if (IEEE80211_ATH_CAP(vap, ni, IEEE80211_NODE_ATH))

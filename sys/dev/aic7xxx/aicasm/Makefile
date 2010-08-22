@@ -1,7 +1,7 @@
 #
 # $Id$
 #
-# $FreeBSD: src/sys/dev/aic7xxx/aicasm/Makefile,v 1.27 2009/12/31 00:07:26 ed Exp $
+# $FreeBSD: src/sys/dev/aic7xxx/aicasm/Makefile,v 1.28 2010/08/17 20:39:28 rpaulo Exp $
 
 PROG=	aicasm
 
@@ -24,7 +24,7 @@ WARNS?=	5
 DEPENDFILE=	.depend_aicasm
 .endif
 
-.if ${CC} == "icc"
+.if ${CC:T:Micc} == "icc"
 CFLAGS+=	-restrict
 NOSTDINC=	-X
 .else

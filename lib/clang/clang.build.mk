@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/clang.build.mk,v 1.8 2010/07/22 19:09:34 rpaulo Exp $
+# $FreeBSD: src/lib/clang/clang.build.mk,v 1.9 2010/08/21 15:46:33 rpaulo Exp $
 
 CLANG_SRCS=${LLVM_SRCS}/tools/clang
 
@@ -26,6 +26,10 @@ LLVM_REQUIRES_RTTI=
 
 .ifndef LLVM_REQUIRES_RTTI
 CFLAGS+=-fno-rtti
+.endif
+
+.ifdef TOOLS_PREFIX
+CFLAGS+=-DCLANG_PREFIX=\"${TOOLS_PREFIX}\"
 .endif
 
 .PATH:	${LLVM_SRCS}/${SRCDIR}

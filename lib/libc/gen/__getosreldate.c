@@ -25,10 +25,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/__getosreldate.c,v 1.2 2010/03/31 18:37:00 delphij Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/__getosreldate.c,v 1.3 2010/08/17 09:13:26 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
+#include <errno.h>
+#include <link.h>
+#include "libc_private.h"
 
 int __getosreldate(void);
 
@@ -51,7 +54,11 @@ __getosreldate(void)
 
 	if (osreldate != 0)
 		return (osreldate);
-	
+
+	error = _elf_aux_info(AT_OSRELDATE, &osreldate, sizeof(osreldate));
+	if (error == 0 && osreldate != 0)
+		return (osreldate);
+
 	oid[0] = CTL_KERN;
 	oid[1] = KERN_OSRELDATE;
 	osrel = 0;

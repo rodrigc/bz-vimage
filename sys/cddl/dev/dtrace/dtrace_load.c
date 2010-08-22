@@ -18,7 +18,7 @@
  *
  * CDDL HEADER END
  *
- * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.3 2010/06/11 18:46:34 jhb Exp $
+ * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.4 2010/08/22 10:53:32 rpaulo Exp $
  *
  */
 
@@ -161,7 +161,10 @@ dtrace_load(void *dummy)
 	/* Setup device cloning events. */
 	eh_tag = EVENTHANDLER_REGISTER(dev_clone, dtrace_clone, 0, 1000);
 #else
-	dtrace_dev = make_dev(&dtrace_cdevsw, 0, UID_ROOT, GID_WHEEL, 0600, "dtrace/dtrace");
+	dtrace_dev = make_dev(&dtrace_cdevsw, 0, UID_ROOT, GID_WHEEL, 0600,
+	    "dtrace/dtrace");
+	helper_dev = make_dev(&helper_cdevsw, 0, UID_ROOT, GID_WHEEL, 0600,
+	    "dtrace/helper");
 #endif
 
 	return;

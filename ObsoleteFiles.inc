@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/ObsoleteFiles.inc,v 1.241 2010/08/06 20:13:36 ed Exp $
+# $FreeBSD: src/ObsoleteFiles.inc,v 1.242 2010/08/15 21:25:52 brueffer Exp $
 #
 # This file lists old files (OLD_FILES), libraries (OLD_LIBS) and
 # directories (OLD_DIRS) which should get removed at an update. Recently
@@ -14,6 +14,8 @@
 # The file is partitioned: OLD_FILES first, then OLD_LIBS and OLD_DIRS last.
 #
 
+# 20100815: retired last traces of chooseproc(9)
+OLD_FILES+=usr/share/man/man9/chooseproc.9.gz
 # 20100806: removal of unused libcompat routines
 OLD_FILES+=usr/share/man/man3/ascftime.3.gz
 OLD_FILES+=usr/share/man/man3/cfree.3.gz

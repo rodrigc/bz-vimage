@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/class/multipath/geom_multipath.c,v 1.6 2010/07/04 22:17:56 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/class/multipath/geom_multipath.c,v 1.7 2010/08/13 15:17:19 mjacob Exp $");
 #include <sys/param.h>
 #include <errno.h>
 #include <paths.h>
@@ -149,16 +149,6 @@ mp_label(struct gctl_req *req)
 	}
 
 	/*
-	 * Allocate a sector to write as metadata.
-	 */
-	sector = malloc(secsize);
-	if (sector == NULL) {
-		gctl_error(req, "unable to allocate metadata buffer");
-		return;
-	}
-	memset(sector, 0, secsize);
-
-	/*
 	 * Generate metadata.
 	 */
 	strlcpy(md.md_magic, G_MULTIPATH_MAGIC, sizeof(md.md_magic));
@@ -189,6 +179,16 @@ mp_label(struct gctl_req *req)
 		gctl_error(req, "cannot clear metadata on %s: %s.", name, strerror(error));
 		return;
 	}
+
+	/*
+	 * Allocate a sector to write as metadata.
+	 */
+	sector = malloc(secsize);
+	if (sector == NULL) {
+		gctl_error(req, "unable to allocate metadata buffer");
+		return;
+	}
+	memset(sector, 0, secsize);
 
 	/*
 	 * encode the metadata

@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-bsdlabel.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-bsdlabel.sh,v 1.3 2010/08/19 06:05:05 imp Exp $
 
 # Functions related to disk operations using bsdlabel
 
@@ -58,20 +58,13 @@ get_fs_line_xvars()
     echo $LINE | grep '^ZFS' >/dev/null 2>/dev/null
     if [ "$?" = "0" ] ; then
       ZTYPE="NONE"
-      ZFSVARS="`echo $LINE | cut -d '(' -f 2- | cut -d ')' -f 1`"
+      ZFSVARS="`echo $LINE | cut -d '(' -f 2- | cut -d ')' -f 1 | xargs`"
 
-      # Check if we are doing raidz setup
-      echo $ZFSVARS | grep "^raidz:" >/dev/null 2>/dev/null
-      if [ "$?" = "0" ] ; then
-       ZTYPE="raidz" 
-       ZFSVARS="`echo $ZFSVARS | sed 's|raidz: ||g' | sed 's|raidz:||g'`"
-      fi
-
-      echo $ZFSVARS | grep "^mirror:" >/dev/null 2>/dev/null
-      if [ "$?" = "0" ] ; then
-        ZTYPE="mirror" 
-        ZFSVARS="`echo $ZFSVARS | sed 's|mirror: ||g' | sed 's|mirror:||g'`"
-      fi
+      echo $ZFSVARS | grep -E "^(disk|file|mirror|raidz(1|2)?|spare|log|cache):" >/dev/null 2>/dev/null
+	  if [ "$?" = "0" ] ; then
+       ZTYPE=`echo $ZFSVARS | cut -f1 -d:`
+       ZFSVARS=`echo $ZFSVARS | sed "s|$ZTYPE: ||g" | sed "s|$ZTYPE:||g"`
+	  fi
 
       # Return the ZFS options
       if [ "${ZTYPE}" = "NONE" ] ; then

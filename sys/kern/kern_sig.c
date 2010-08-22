@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.395 2010/07/20 02:23:12 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.396 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -89,14 +89,14 @@ __FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.395 2010/07/20 02:23:12 davidxu 
 #define	ONSIG	32		/* NSIG for osig* syscalls.  XXX. */
 
 SDT_PROVIDER_DECLARE(proc);
-SDT_PROBE_DEFINE(proc, kernel, , signal_send);
+SDT_PROBE_DEFINE(proc, kernel, , signal_send, signal-send);
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_send, 0, "struct thread *");
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_send, 1, "struct proc *");
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_send, 2, "int");
-SDT_PROBE_DEFINE(proc, kernel, , signal_clear);
+SDT_PROBE_DEFINE(proc, kernel, , signal_clear, signal-clear);
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_clear, 0, "int");
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_clear, 1, "ksiginfo_t *");
-SDT_PROBE_DEFINE(proc, kernel, , signal_discard);
+SDT_PROBE_DEFINE(proc, kernel, , signal_discard, signal-discard);
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_discard, 0, "struct thread *");
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_discard, 1, "struct proc *");
 SDT_PROBE_ARGTYPE(proc, kernel, , signal_discard, 2, "int");

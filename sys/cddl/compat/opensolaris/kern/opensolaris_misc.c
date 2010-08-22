@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_misc.c,v 1.6 2009/05/29 21:27:12 jamie Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_misc.c,v 1.7 2010/08/21 11:41:32 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/jail.h>
@@ -38,7 +38,8 @@ __FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_misc.c,v 1.
 char hw_serial[11] = "0";
 
 struct opensolaris_utsname utsname = {
-	.nodename = "unset"
+	.nodename = "unset",
+	.sysname  = "SunOS"
 };
 
 int

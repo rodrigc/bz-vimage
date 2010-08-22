@@ -47,7 +47,7 @@
  *
  *	from: @(#)locore.s	8.5 (Berkeley) 1/4/94
  *	JNPR: locore.S,v 1.6.2.1 2007/08/29 12:24:49 girish
- * $FreeBSD: src/sys/mips/mips/locore.S,v 1.14 2010/08/07 01:49:44 neel Exp $
+ * $FreeBSD: src/sys/mips/mips/locore.S,v 1.15 2010/08/13 12:56:00 jchandra Exp $
  */
 
 /*
@@ -99,7 +99,7 @@ VECTOR(_locore, unknown)
 
 	/* Reset these bits */
         li	t0, ~(MIPS_SR_DE | MIPS_SR_SOFT_RESET | MIPS_SR_ERL | MIPS_SR_EXL | MIPS_SR_INT_IE)
-#elif defined (TARGET_XLR_XLS)
+#elif defined (CPU_RMI)
 	/* Set these bits */
         li	t1, (MIPS_SR_COP_2_BIT | MIPS_SR_COP_0_BIT | MIPS_SR_KX | MIPS_SR_UX)
 

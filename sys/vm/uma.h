@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/vm/uma.h,v 1.35 2010/06/15 19:28:37 sbruno Exp $
+ * $FreeBSD: src/sys/vm/uma.h,v 1.36 2010/08/16 14:24:00 andre Exp $
  *
  */
 
@@ -457,6 +457,18 @@ int uma_zone_set_obj(uma_zone_t zone, struct vm_object *obj, int size);
  *	Nothing
  */
 void uma_zone_set_max(uma_zone_t zone, int nitems);
+
+/*
+ * Obtains the effective limit on the number of items in a zone
+ *
+ * Arguments:
+ *	zone  The zone to obtain the effective limit from
+ *
+ * Return:
+ *	0  No limit
+ *	int  The effective limit of the zone
+ */
+int uma_zone_get_max(uma_zone_t zone);
 
 /*
  * The following two routines (uma_zone_set_init/fini)

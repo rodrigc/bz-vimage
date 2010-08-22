@@ -37,12 +37,11 @@
  *
  *      from: @(#)trap.c        7.4 (Berkeley) 5/13/91
  * 	from: FreeBSD: src/sys/i386/i386/trap.c,v 1.197 2001/07/19
- * $FreeBSD: src/sys/sun4v/sun4v/trap.c,v 1.22 2010/05/23 18:32:02 kib Exp $
+ * $FreeBSD: src/sys/sun4v/sun4v/trap.c,v 1.23 2010/08/19 16:41:27 jhb Exp $
  */
 
 #include "opt_ddb.h"
 #include "opt_ktr.h"
-#include "opt_ktrace.h"
 
 #include <sys/param.h>
 #include <sys/kdb.h>
@@ -62,10 +61,6 @@
 #include <sys/sysctl.h>
 #include <sys/sysent.h>
 #include <sys/vmmeter.h>
-#ifdef KTRACE
-#include <sys/uio.h>
-#include <sys/ktrace.h>
-#endif
 
 #include <dev/ofw/openfirm.h>
 

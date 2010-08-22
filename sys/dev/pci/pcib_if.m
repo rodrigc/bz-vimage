@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/dev/pci/pcib_if.m,v 1.13 2009/05/20 22:00:39 imp Exp $
+# $FreeBSD: src/sys/dev/pci/pcib_if.m,v 1.14 2010/08/17 15:44:52 jhb Exp $
 #
 
 #include <sys/bus.h>
@@ -143,4 +143,14 @@ METHOD int map_msi {
 	int		irq;
 	uint64_t	*addr;
 	uint32_t	*data;
+};
+
+#
+# Return the device power state to be used during a system sleep state
+# transition such as suspend and resume.
+#
+METHOD int power_for_sleep {
+	device_t	pcib;
+	device_t	dev;
+	int		*pstate;
 };

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_exit.c,v 1.31 2008/09/09 17:14:32 jasone Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_exit.c,v 1.32 2010/08/17 02:50:12 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -81,6 +81,8 @@ _pthread_exit(void *status)
 
 	/* Flag this thread as exiting. */
 	curthread->cancelling = 1;
+	curthread->cancel_enable = 0;
+	curthread->cancel_async = 0;
 	
 	_thr_exit_cleanup();
 

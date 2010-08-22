@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.36 2010/05/03 07:32:50 sobomax Exp $	*/
+/*	$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.37 2010/08/14 20:12:10 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2005, 2006
@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.36 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.37 2010/08/14 20:12:10 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2560 chipset driver
@@ -291,6 +291,7 @@ rt2560_attach(device_t dev, int id)
 #ifdef notyet
 		| IEEE80211_C_TXFRAG		/* handle tx frags */
 #endif
+		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	bands = 0;

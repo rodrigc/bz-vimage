@@ -1,4 +1,6 @@
-# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.35 2010/07/22 18:49:27 rpaulo Exp $
+# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.36 2010/08/21 14:59:37 rpaulo Exp $
+
+.include <bsd.own.mk>
 
 OBJCDIR=${.CURDIR}/../../../contrib/libobjc
 GCCDIR=	${.CURDIR}/../../../contrib/gcc

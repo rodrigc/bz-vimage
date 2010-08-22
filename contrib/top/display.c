@@ -8,7 +8,7 @@
  *  Copyright (c) 1984, 1989, William LeFebvre, Rice University
  *  Copyright (c) 1989, 1990, 1992, William LeFebvre, Northwestern University
  *
- * $FreeBSD: src/contrib/top/display.c,v 1.11 2009/08/19 15:17:13 jhb Exp $
+ * $FreeBSD: src/contrib/top/display.c,v 1.12 2010/08/17 09:51:08 brucec Exp $
  */
 
 /*
@@ -1273,7 +1273,6 @@ time_t *tod;
 
     if (bt->tv_sec != -1) {
 	uptime = *tod - bt->tv_sec;
-	uptime += 30;
 	days = uptime / 86400;
 	uptime %= 86400;
 	hrs = uptime / 3600;

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vnode.h	8.7 (Berkeley) 2/4/94
- * $FreeBSD: src/sys/sys/vnode.h,v 1.370 2010/08/06 09:42:15 kib Exp $
+ * $FreeBSD: src/sys/sys/vnode.h,v 1.371 2010/08/20 19:46:50 jhb Exp $
  */
 
 #ifndef _SYS_VNODE_H_
@@ -419,10 +419,8 @@ extern	struct vattr va_null;		/* predefined null vattr structure */
 #define	VI_UNLOCK(vp)	mtx_unlock(&(vp)->v_interlock)
 #define	VI_MTX(vp)	(&(vp)->v_interlock)
 
-#define	VN_LOCK_AREC(vp)						\
-	((vp)->v_vnlock->lock_object.lo_flags |= LO_RECURSABLE)
-#define	VN_LOCK_ASHARE(vp)						\
-	((vp)->v_vnlock->lock_object.lo_flags &= ~LK_NOSHARE)
+#define	VN_LOCK_AREC(vp)	lockallowrecurse((vp)->v_vnlock)
+#define	VN_LOCK_ASHARE(vp)	lockallowshare((vp)->v_vnlock)
 
 #endif /* _KERNEL */
 

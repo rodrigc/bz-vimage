@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.9 2010/08/06 15:36:59 jhb Exp $
+ * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.10 2010/08/11 23:22:53 jhb Exp $
  */
 
 #ifndef	_MACHINE_SMP_H_
@@ -59,12 +59,12 @@ struct cpu_start_args {
 };
 
 struct ipi_cache_args {
-	u_int	ica_mask;
+	cpumask_t ica_mask;
 	vm_paddr_t ica_pa;
 };
 
 struct ipi_tlb_args {
-	u_int	ita_mask;
+	cpumask_t ita_mask;
 	struct	pmap *ita_pmap;
 	u_long	ita_start;
 	u_long	ita_end;

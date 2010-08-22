@@ -31,7 +31,7 @@
 #include "opt_kdtrace.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_priv.c,v 1.9 2009/06/05 14:55:22 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_priv.c,v 1.10 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/jail.h>
@@ -60,8 +60,8 @@ SYSCTL_INT(_security_bsd, OID_AUTO, suser_enabled, CTLFLAG_RW,
 TUNABLE_INT("security.bsd.suser_enabled", &suser_enabled);
 
 SDT_PROVIDER_DEFINE(priv);
-SDT_PROBE_DEFINE1(priv, kernel, priv_check, priv_ok, "int");
-SDT_PROBE_DEFINE1(priv, kernel, priv_check, priv_err, "int");
+SDT_PROBE_DEFINE1(priv, kernel, priv_check, priv_ok, priv-ok, "int");
+SDT_PROBE_DEFINE1(priv, kernel, priv_check, priv_err, priv-err, "int");
 
 /*
  * Check a credential for privilege.  Lots of good reasons to deny privilege;

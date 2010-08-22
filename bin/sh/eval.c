@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)eval.c	8.9 (Berkeley) 6/8/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.84 2010/08/03 22:17:29 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.85 2010/08/13 20:29:43 jilles Exp $");
 
 #include <paths.h>
 #include <signal.h>
@@ -641,7 +641,7 @@ evalcommand(union node *cmd, int flags, struct backcmd *backcmd)
 	char *lastarg;
 	int realstatus;
 	int do_clearcmdentry;
-	char *path = pathval();
+	const char *path = pathval();
 
 	/* First expand the arguments. */
 	TRACE(("evalcommand(%p, %d) called\n", (void *)cmd, flags));

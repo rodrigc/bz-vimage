@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/usr.sbin/powerd/powerd.8,v 1.15 2010/03/15 16:06:52 joerg Exp $
+.\" $FreeBSD: src/usr.sbin/powerd/powerd.8,v 1.16 2010/08/17 09:11:38 brucec Exp $
 .\"
 .Dd December 21, 2009
 .Dt POWERD 8
@@ -35,6 +35,8 @@
 .Op Fl a Ar mode
 .Op Fl b Ar mode
 .Op Fl i Ar percent
+.Op Fl m Ar freq
+.Op Fl M Ar freq
 .Op Fl n Ar mode
 .Op Fl p Ar ival
 .Op Fl P Ar pidfile
@@ -79,6 +81,10 @@ to use while on battery power.
 Specifies the CPU load percent level when adaptive
 mode should begin to degrade performance to save power.
 The default is 50% or lower.
+.It Fl m Ar freq
+Specifies the minimum frequency to throttle down to.
+.It Fl M Ar freq
+Specifies the maximum frequency to throttle up to.
 .It Fl n Ar mode
 Selects the
 .Ar mode

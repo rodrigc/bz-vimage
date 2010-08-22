@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/i386/acpica/Makefile,v 1.8 2006/10/19 05:55:09 ru Exp $
+# $FreeBSD: src/sys/i386/acpica/Makefile,v 1.9 2010/08/17 20:39:28 rpaulo Exp $
 
 # Correct path for kernel builds
 # Don't rely on the kernel's .depend file
@@ -9,7 +9,7 @@ DEPENDFILE=
 MAKESRCPATH= ${.CURDIR}
 CLEANFILES= acpi_wakecode.h acpi_wakecode.bin acpi_wakecode.o
 .endif
-.if ${CC} == "icc"
+.if ${CC:T:Micc} == "icc"
 CFLAGS+=	-restrict
 NOSTDINC=	-X
 .else

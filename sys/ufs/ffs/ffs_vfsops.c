@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.375 2010/07/16 19:52:03 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.376 2010/08/20 19:46:50 jhb Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -1501,6 +1501,7 @@ ffs_vgetf(mp, ino, flags, vpp, ffs_flags)
 	/*
 	 * FFS supports recursive locking.
 	 */
+	lockmgr(vp->v_vnlock, LK_EXCLUSIVE, NULL);
 	VN_LOCK_AREC(vp);
 	vp->v_data = ip;
 	vp->v_bufobj.bo_bsize = fs->fs_bsize;
@@ -1518,7 +1519,6 @@ ffs_vgetf(mp, ino, flags, vpp, ffs_flags)
 	}
 #endif
 
-	lockmgr(vp->v_vnlock, LK_EXCLUSIVE, NULL);
 	if (ffs_flags & FFSV_FORCEINSMQ)
 		vp->v_vflag |= VV_FORCEINSMQ;
 	error = insmntque(vp, mp);

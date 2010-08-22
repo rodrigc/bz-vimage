@@ -1,10 +1,7 @@
-# $FreeBSD: src/sys/mips/rmi/std.xlr,v 1.1 2010/01/09 18:29:35 imp Exp $
+# $FreeBSD: src/sys/mips/rmi/std.xlr,v 1.2 2010/08/13 12:56:00 jchandra Exp $
 files	"../rmi/files.xlr"
 
 #
 # XXXMIPS: It's a stub, isn't it?
 #
-cpu     CPU_MIPS4KC
 option	NOFPU
-# Kludge for now
-options TARGET_XLR_XLS

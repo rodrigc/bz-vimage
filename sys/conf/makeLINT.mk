@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/makeLINT.mk,v 1.2 2010/01/08 19:00:20 bz Exp $
+# $FreeBSD: src/sys/conf/makeLINT.mk,v 1.3 2010/08/19 03:19:26 nwhitehorn Exp $
 
 all:
 	@echo "make LINT only"
@@ -16,4 +16,7 @@ LINT: ${NOTES} ../../conf/makeLINT.sed
 	echo "include ${.TARGET}"	>  ${.TARGET}-VIMAGE
 	echo "ident ${.TARGET}-VIMAGE"	>> ${.TARGET}-VIMAGE
 	echo "options VIMAGE"		>> ${.TARGET}-VIMAGE
+.endif
+.if ${TARGET} == "powerpc"
+	echo "machine	${TARGET} ${TARGET_ARCH}" >> ${.TARGET}
 .endif

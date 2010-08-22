@@ -33,7 +33,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libutil/libutil.h,v 1.52 2010/05/07 00:41:12 mckusick Exp $
+ * $FreeBSD: src/lib/libutil/libutil.h,v 1.53 2010/08/14 14:34:36 des Exp $
  */
 
 #ifndef _LIBUTIL_H_
@@ -109,7 +109,7 @@ int	forkpty(int *_amaster, char *_name,
 		     struct termios *_termp, struct winsize *_winp);
 int	humanize_number(char *_buf, size_t _len, int64_t _number,
 	    const char *_suffix, int _scale, int _flags);
-int	expand_number(const char *_buf, int64_t *_num);
+int	expand_number(const char *_buf, uint64_t *_num);
 const char *uu_lockerr(int _uu_lockresult);
 int	uu_lock(const char *_ttyname);
 int	uu_unlock(const char *_ttyname);

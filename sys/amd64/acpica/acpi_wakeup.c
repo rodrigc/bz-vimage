@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_wakeup.c,v 1.35 2010/08/06 17:21:32 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_wakeup.c,v 1.37 2010/08/13 22:08:42 jkim Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -278,6 +278,8 @@ acpi_sleep_machdep(struct acpi_softc *sc, int state)
 		for (;;)
 			ia32_pause();
 	} else {
+		PCPU_SET(switchtime, 0);
+		PCPU_SET(switchticks, ticks);
 #ifdef SMP
 		if (wakeup_cpus != 0)
 			acpi_wakeup_cpus(sc, wakeup_cpus);

@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/libc/gen/Symbol.map,v 1.32 2010/01/19 23:07:12 ed Exp $
+ * $FreeBSD: src/lib/libc/gen/Symbol.map,v 1.33 2010/08/17 09:13:26 kib Exp $
  */
 
 FBSD_1.0 {
@@ -492,4 +492,6 @@ FBSDprivate_1.0 {
 	_libc_sem_timedwait_compat;
 	_libc_sem_post_compat;
 	_libc_sem_getvalue_compat;
+
+	__elf_aux_vector;
 };

@@ -75,7 +75,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/pmap.c,v 1.46 2010/06/11 15:49:39 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/pmap.c,v 1.47 2010/08/11 23:22:53 jhb Exp $");
 
 /*
  *	Manages physical address maps.
@@ -863,8 +863,7 @@ pmap_cache_bits(int mode, boolean_t is_pde)
 void
 pmap_invalidate_page(pmap_t pmap, vm_offset_t va)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 
 	CTR2(KTR_PMAP, "pmap_invalidate_page: pmap=%p va=0x%x",
 	    pmap, va);
@@ -888,8 +887,7 @@ pmap_invalidate_page(pmap_t pmap, vm_offset_t va)
 void
 pmap_invalidate_range(pmap_t pmap, vm_offset_t sva, vm_offset_t eva)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 	vm_offset_t addr;
 
 	CTR3(KTR_PMAP, "pmap_invalidate_page: pmap=%p eva=0x%x sva=0x%x",
@@ -917,8 +915,7 @@ pmap_invalidate_range(pmap_t pmap, vm_offset_t sva, vm_offset_t eva)
 void
 pmap_invalidate_all(pmap_t pmap)
 {
-	u_int cpumask;
-	u_int other_cpus;
+	cpumask_t cpumask, other_cpus;
 
 	CTR1(KTR_PMAP, "pmap_invalidate_page: pmap=%p", pmap);
 

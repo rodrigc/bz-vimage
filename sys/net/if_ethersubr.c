@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if_ethersubr.c	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/net/if_ethersubr.c,v 1.278 2010/08/11 00:51:50 will Exp $
+ * $FreeBSD: src/sys/net/if_ethersubr.c,v 1.280 2010/08/13 18:17:32 zec Exp $
  */
 
 #include "opt_atalk.h"
@@ -114,11 +114,6 @@ void	(*ng_ether_attach_p)(struct ifnet *ifp);
 void	(*ng_ether_detach_p)(struct ifnet *ifp);
 
 void	(*vlan_input_p)(struct ifnet *, struct mbuf *);
-#if defined(INET) || defined(INET6)
-int (*carp_forus_p)(struct ifnet *, u_char *);
-int (*carp_output_p)(struct ifnet *, struct mbuf *, struct sockaddr *,
-    struct rtentry *);
-#endif
 
 /* if_bridge(4) support */
 struct mbuf *(*bridge_input_p)(struct ifnet *, struct mbuf *); 
@@ -134,6 +129,9 @@ static const u_char etherbroadcastaddr[ETHER_ADDR_LEN] =
 
 static	int ether_resolvemulti(struct ifnet *, struct sockaddr **,
 		struct sockaddr *);
+#ifdef VIMAGE
+static	void ether_reassign(struct ifnet *, struct vnet *, char *);
+#endif
 
 /* XXX: should be in an arp support file, not here */
 MALLOC_DEFINE(M_ARPCOM, "arpcom", "802.* interface internals");
@@ -949,6 +947,9 @@ ether_ifattach(struct ifnet *ifp, const u_int8_t *lla)
 	ifp->if_output = ether_output;
 	ifp->if_input = ether_input;
 	ifp->if_resolvemulti = ether_resolvemulti;
+#ifdef VIMAGE
+	ifp->if_reassign = ether_reassign;
+#endif
 	if (ifp->if_baudrate == 0)
 		ifp->if_baudrate = IF_Mbps(10);		/* just a default */
 	ifp->if_broadcastaddr = etherbroadcastaddr;
@@ -987,6 +988,25 @@ ether_ifdetach(struct ifnet *ifp)
 	bpfdetach(ifp);
 	if_detach(ifp);
 }
+
+#ifdef VIMAGE
+void
+ether_reassign(struct ifnet *ifp, struct vnet *new_vnet, char *unused __unused)
+{
+
+	if (IFP2AC(ifp)->ac_netgraph != NULL) {
+		KASSERT(ng_ether_detach_p != NULL,
+		    ("ng_ether_detach_p is NULL"));
+		(*ng_ether_detach_p)(ifp);
+	}
+
+	if (ng_ether_attach_p != NULL) {
+		CURVNET_SET_QUIET(new_vnet);
+		(*ng_ether_attach_p)(ifp);
+		CURVNET_RESTORE();
+	}
+}
+#endif
 
 SYSCTL_DECL(_net_link);
 SYSCTL_NODE(_net_link, IFT_ETHER, ether, CTLFLAG_RW, 0, "Ethernet");

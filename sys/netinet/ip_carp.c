@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_carp.c,v 1.78 2010/08/11 00:51:50 will Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_carp.c,v 1.79 2010/08/11 20:18:19 will Exp $");
 
 #include "opt_bpf.h"
 #include "opt_inet.h"
@@ -134,26 +134,6 @@ struct carp_softc {
 	LIST_ENTRY(carp_softc)	 sc_next;	/* Interface clue */
 };
 #define	SC2IFP(sc)	((sc)->sc_ifp)
-
-/* These are external networking stack hooks for CARP */
-/* net/if.c */
-extern void (*carp_linkstate_p)(struct ifnet *);
-/* net/if_bridge.c net/if_ethersubr.c */
-extern struct ifnet *(*carp_forus_p)(struct ifnet *, u_char *);
-/* net/if_ethersubr.c */
-extern int (*carp_output_p)(struct ifnet *, struct mbuf *,
-    struct sockaddr *, struct rtentry *);
-#ifdef INET
-/* netinet/if_ether.c */
-extern int (*carp_iamatch_p)(struct ifnet *, struct in_ifaddr *,
-    struct in_addr *, u_int8_t **);
-#endif
-#ifdef INET6
-/* netinet6/nd6_nbr.c */
-extern struct ifaddr *(*carp_iamatch6_p)(struct ifnet *, struct in6_addr *);
-extern caddr_t (*carp_macmatch6_p)(struct ifnet *, struct mbuf *,
-    const struct in6_addr *);
-#endif
 
 int carp_suppress_preempt = 0;
 int carp_opts[CARPCTL_MAXID] = { 0, 1, 0, 1, 0, 0 };	/* XXX for now */

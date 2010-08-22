@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib.c,v 1.63 2010/08/05 16:10:12 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib.c,v 1.64 2010/08/17 15:44:52 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -275,3 +275,14 @@ out:
 
     return_VALUE (interrupt);
 }
+
+int
+acpi_pcib_power_for_sleep(device_t pcib, device_t dev, int *pstate)
+{
+    device_t acpi_dev;
+
+    acpi_dev = devclass_get_device(devclass_find("acpi"), 0);
+    acpi_device_pwr_for_sleep(acpi_dev, dev, pstate);
+    return (0);
+}
+

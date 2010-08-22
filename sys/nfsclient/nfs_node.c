@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.94 2010/08/04 01:19:11 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.95 2010/08/20 19:46:50 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -150,6 +150,7 @@ nfs_nget(struct mount *mntp, nfsfh_t *fhp, int fhsize, struct nfsnode **npp, int
 	/*
 	 * NFS supports recursive and shared locking.
 	 */
+	lockmgr(vp->v_vnlock, LK_EXCLUSIVE | LK_NOWITNESS, NULL);
 	VN_LOCK_AREC(vp);
 	VN_LOCK_ASHARE(vp);
 	if (fhsize > NFS_SMALLFH) {
@@ -158,7 +159,6 @@ nfs_nget(struct mount *mntp, nfsfh_t *fhp, int fhsize, struct nfsnode **npp, int
 		np->n_fhp = &np->n_fh;
 	bcopy((caddr_t)fhp, (caddr_t)np->n_fhp, fhsize);
 	np->n_fhsize = fhsize;
-	lockmgr(vp->v_vnlock, LK_EXCLUSIVE | LK_NOWITNESS, NULL);
 	error = insmntque(vp, mntp);
 	if (error != 0) {
 		*npp = NULL;

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/em/Makefile,v 1.17 2010/07/01 21:03:30 jfv Exp $
+# $FreeBSD: src/sys/modules/em/Makefile,v 1.18 2010/08/16 17:48:55 yongari Exp $
 .PATH:  ${.CURDIR}/../../dev/e1000
 KMOD    = if_em
 SRCS    = device_if.h bus_if.h pci_if.h opt_inet.h
@@ -17,11 +17,5 @@ CFLAGS += -I${.CURDIR}/../../dev/e1000
 
 # DEVICE_POLLING for a non-interrupt-driven method
 #CFLAGS  += -DDEVICE_POLLING
-
-clean:
-	rm -f device_if.h bus_if.h pci_if.h setdef*
-	rm -f *.o *.kld *.ko
-	rm -f @ machine
-	rm -f ${CLEANFILES}
 
 .include <bsd.kmod.mk>

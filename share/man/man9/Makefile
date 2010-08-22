@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.370 2010/08/06 16:50:48 stefanf Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.371 2010/08/15 21:25:52 brueffer Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -995,7 +995,7 @@ MLINKS+=rtalloc.9 rtalloc1.9 \
 	rtalloc.9 rtalloc_ign.9 \
 	rtalloc.9 RTFREE.9 \
 	rtalloc.9 rtfree.9
-MLINKS+=runqueue.9 chooseproc.9 \
+MLINKS+=runqueue.9 choosethread.9 \
 	runqueue.9 procrunnable.9 \
 	runqueue.9 remrunqueue.9 \
 	runqueue.9 setrunqueue.9

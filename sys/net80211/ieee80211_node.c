@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_node.c,v 1.136 2010/04/28 10:58:50 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_node.c,v 1.139 2010/08/21 11:06:21 bschmidt Exp $");
 
 #include "opt_wlan.h"
 
@@ -817,6 +817,8 @@ ieee80211_sta_join(struct ieee80211vap *vap, struct ieee80211_channel *chan,
 	if (ieee80211_iserp_rateset(&ni->ni_rates))
 		ni->ni_flags |= IEEE80211_NODE_ERP;
 	ieee80211_node_setuptxparms(ni);
+	if (vap->iv_caps & IEEE80211_C_RATECTL)
+		ieee80211_ratectl_node_init(ni);
 
 	return ieee80211_sta_join1(ieee80211_ref_node(ni));
 }
@@ -1036,7 +1038,8 @@ node_free(struct ieee80211_node *ni)
 {
 	struct ieee80211com *ic = ni->ni_ic;
 
-	ieee80211_ratectl_node_deinit(ni);
+	if (ni->ni_vap->iv_caps & IEEE80211_C_RATECTL)
+		ieee80211_ratectl_node_deinit(ni);
 	ic->ic_node_cleanup(ni);
 	ieee80211_ies_cleanup(&ni->ni_ies);
 	ieee80211_psq_cleanup(&ni->ni_psq);
@@ -1401,6 +1404,8 @@ ieee80211_fakeup_adhoc_node(struct ieee80211vap *vap,
 #endif
 		}
 		ieee80211_node_setuptxparms(ni);
+		if (vap->iv_caps & IEEE80211_C_RATECTL)
+			ieee80211_ratectl_node_init(ni);
 		if (ic->ic_newassoc != NULL)
 			ic->ic_newassoc(ni, 1);
 		/* XXX not right for 802.1x/WPA */
@@ -1470,6 +1475,8 @@ ieee80211_add_neighbor(struct ieee80211vap *vap,
 		if (ieee80211_iserp_rateset(&ni->ni_rates))
 			ni->ni_flags |= IEEE80211_NODE_ERP;
 		ieee80211_node_setuptxparms(ni);
+		if (vap->iv_caps & IEEE80211_C_RATECTL)
+			ieee80211_ratectl_node_init(ni);
 		if (ic->ic_newassoc != NULL)
 			ic->ic_newassoc(ni, 1);
 		/* XXX not right for 802.1x/WPA */
@@ -2338,6 +2345,8 @@ ieee80211_node_join(struct ieee80211_node *ni, int resp)
 	);
 
 	ieee80211_node_setuptxparms(ni);
+	if (vap->iv_caps & IEEE80211_C_RATECTL)
+		ieee80211_ratectl_node_init(ni);
 	/* give driver a chance to setup state like ni_txrate */
 	if (ic->ic_newassoc != NULL)
 		ic->ic_newassoc(ni, newassoc);

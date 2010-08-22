@@ -25,7 +25,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/dev/cxgb/common/cxgb_common.h,v 1.21 2010/07/09 00:38:00 np Exp $
+$FreeBSD: src/sys/dev/cxgb/common/cxgb_common.h,v 1.22 2010/08/15 20:45:16 np Exp $
 
 ***************************************************************************/
 #ifndef __CHELSIO_COMMON_H
@@ -745,6 +745,7 @@ int t3_mc7_bd_read(struct mc7 *mc7, unsigned int start, unsigned int n,
 
 int t3_mac_init(struct cmac *mac);
 void t3b_pcs_reset(struct cmac *mac);
+void t3c_pcs_force_los(struct cmac *mac);
 void t3_mac_disable_exact_filters(struct cmac *mac);
 void t3_mac_enable_exact_filters(struct cmac *mac);
 int t3_mac_enable(struct cmac *mac, int which);

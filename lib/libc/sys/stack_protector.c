@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.6 2009/09/17 13:21:53 kan Exp $ */
+/* $FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.7 2010/08/17 09:13:26 kib Exp $ */
 /* $NetBSD: stack_protector.c,v 1.4 2006/11/22 17:23:25 christos Exp $	*/
 /* $OpenBSD: stack_protector.c,v 1.10 2006/03/31 05:34:44 deraadt Exp $	*/
 /*
@@ -29,15 +29,18 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.6 2009/09/17 13:21:53 kan Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.7 2010/08/17 09:13:26 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
+#include <errno.h>
+#include <link.h>
 #include <signal.h>
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
+#include "libc_private.h"
 
 extern int __sysctl(int *name, u_int namelen, void *oldp, size_t *oldlenp,
     void *newp, size_t newlen);
@@ -54,8 +57,13 @@ __guard_setup(void)
 {
 	int mib[2];
 	size_t len;
+	int error;
 
 	if (__stack_chk_guard[0] != 0)
+		return;
+	error = _elf_aux_info(AT_CANARY, __stack_chk_guard,
+	    sizeof(__stack_chk_guard));
+	if (error == 0 && __stack_chk_guard[0] != 0)
 		return;
 
 	mib[0] = CTL_KERN;

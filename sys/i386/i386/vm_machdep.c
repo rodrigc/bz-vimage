@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.303 2010/06/23 11:21:19 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.304 2010/08/11 23:22:53 jhb Exp $");
 
 #include "opt_isa.h"
 #include "opt_npx.h"
@@ -596,7 +596,8 @@ cpu_reset()
 #endif
 
 #ifdef SMP
-	u_int cnt, map;
+	cpumask_t map;
+	u_int cnt;
 
 	if (smp_active) {
 		map = PCPU_GET(other_cpus) & ~stopped_cpus;

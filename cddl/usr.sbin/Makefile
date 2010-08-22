@@ -1,4 +1,4 @@
-# $FreeBSD: src/cddl/usr.sbin/Makefile,v 1.11 2010/07/31 17:13:14 rpaulo Exp $
+# $FreeBSD: src/cddl/usr.sbin/Makefile,v 1.12 2010/08/21 14:02:04 rpaulo Exp $
 
 .include <bsd.own.mk>
 
@@ -12,7 +12,7 @@ _zdb=	zdb
 .endif
 .endif
 
-.if ${MACHINE_ARCH} == amd64 || ${MACHINE_ARCH} == i386
+.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
 _dtrace=	dtrace
 _lockstat=	lockstat
 .endif

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_syscall.c,v 1.22 2010/05/23 18:32:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_syscall.c,v 1.23 2010/08/19 16:41:27 jhb Exp $");
 
 /*
  * 386 Trap and System call handling
@@ -45,7 +45,6 @@ __FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_syscall.c,v 1.22 2010/05/23 18:32:02
 #include "opt_clock.h"
 #include "opt_cpu.h"
 #include "opt_isa.h"
-#include "opt_ktrace.h"
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -65,9 +64,6 @@ __FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_syscall.c,v 1.22 2010/05/23 18:32:02
 #include <sys/sysent.h>
 #include <sys/uio.h>
 #include <sys/vmmeter.h>
-#ifdef KTRACE
-#include <sys/ktrace.h>
-#endif
 #include <security/audit/audit.h>
 
 #include <vm/vm.h>

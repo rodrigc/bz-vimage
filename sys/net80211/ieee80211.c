@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211.c,v 1.91 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211.c,v 1.92 2010/08/14 20:12:10 bschmidt Exp $");
 
 /*
  * IEEE 802.11 generic handler
@@ -487,7 +487,8 @@ ieee80211_vap_setup(struct ieee80211com *ic, struct ieee80211vap *vap,
 	ieee80211_regdomain_vattach(vap);
 	ieee80211_radiotap_vattach(vap);
 
-	ieee80211_ratectl_set(vap, IEEE80211_RATECTL_AMRR);
+	if (vap->iv_caps & IEEE80211_C_RATECTL)
+		ieee80211_ratectl_set(vap, IEEE80211_RATECTL_AMRR);
 
 	return 0;
 }

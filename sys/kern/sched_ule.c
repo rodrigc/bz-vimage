@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.272 2010/08/06 15:36:59 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.273 2010/08/19 16:41:27 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -62,10 +62,6 @@ __FBSDID("$FreeBSD: src/sys/kern/sched_ule.c,v 1.272 2010/08/06 15:36:59 jhb Exp
 #include <sys/vmmeter.h>
 #include <sys/cpuset.h>
 #include <sys/sbuf.h>
-#ifdef KTRACE
-#include <sys/uio.h>
-#include <sys/ktrace.h>
-#endif
 
 #ifdef HWPMC_HOOKS
 #include <sys/pmckern.h>

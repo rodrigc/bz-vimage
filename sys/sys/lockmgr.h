@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
  * DAMAGE.
  *
- * $FreeBSD: src/sys/sys/lockmgr.h,v 1.72 2009/06/17 01:55:42 attilio Exp $
+ * $FreeBSD: src/sys/sys/lockmgr.h,v 1.73 2010/08/20 19:46:50 jhb Exp $
  */
 
 #ifndef	_SYS_LOCKMGR_H_
@@ -73,7 +73,10 @@ void	 _lockmgr_assert(struct lock *lk, int what, const char *file, int line);
 #endif
 void	 _lockmgr_disown(struct lock *lk, const char *file, int line);
 
+void	 lockallowrecurse(struct lock *lk);
+void	 lockallowshare(struct lock *lk);
 void	 lockdestroy(struct lock *lk);
+void	 lockdisablerecurse(struct lock *lk);
 void	 lockinit(struct lock *lk, int prio, const char *wmesg, int timo,
 	    int flags);
 #ifdef DDB

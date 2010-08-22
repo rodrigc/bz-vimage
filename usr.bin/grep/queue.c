@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 1999 James Howard and Dag-Erling Coïdan Smørgrav
+ * Copyright (c) 1999 James Howard and Dag-Erling CoÃ¯dan SmÃ¸rgrav
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/grep/queue.c,v 1.2 2010/07/29 00:11:14 gabor Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/grep/queue.c,v 1.4 2010/08/19 09:28:59 des Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -60,7 +60,7 @@ enqueue(struct str *x)
 	item->data.len = x->len;
 	item->data.line_no = x->line_no;
 	item->data.off = x->off;
-	strcpy(item->data.dat, x->dat);
+	memcpy(item->data.dat, x->dat, x->len);
 	item->data.file = x->file;
 
 	STAILQ_INSERT_TAIL(&queue, item, list);

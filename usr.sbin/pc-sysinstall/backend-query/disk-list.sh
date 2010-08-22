@@ -23,10 +23,20 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-list.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-list.sh,v 1.3 2010/08/19 06:07:49 imp Exp $
+
+ARGS=$1
 
 # Create our device listing
 SYSDISK=$(sysctl -n kern.disks)
+if [ "${ARGS}" = "-m" ]
+then
+	MDS=`mdconfig -l`
+	if [ -n "${MDS}" ]
+	then
+		SYSDISK="${SYSDISK} ${MDS}"
+	fi
+fi
 
 # Now loop through these devices, and list the disk drives
 for i in ${SYSDISK}
@@ -44,6 +54,10 @@ do
   NEWLINE=$(dmesg | sed -n "s/^$DEV: .*<\(.*\)>.*$/ <\1>/p" | head -n 1)
   if [ -z "$NEWLINE" ]; then
     NEWLINE=" <Unknown Device>"
+  fi
+  if echo "${DEV}" | grep -E '^md[0-9]+' >/dev/null 2>/dev/null
+  then
+	NEWLINE=" <Memory Disk>"
   fi
 
   # Save the disk list

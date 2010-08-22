@@ -1,11 +1,11 @@
 #	From: @(#)Makefile	8.3 (Berkeley) 1/7/94
-# $FreeBSD: src/usr.bin/Makefile,v 1.336 2010/07/22 19:11:57 gabor Exp $
+# $FreeBSD: src/usr.bin/Makefile,v 1.337 2010/08/11 18:23:26 delphij Exp $
 
 .include <bsd.own.mk>
 
 # XXX MISSING:		deroff diction graph learn plot
 #			spell spline struct xsend
-# XXX Use GNU versions: apropos diff grep ld man patch whatis
+# XXX Use GNU versions: apropos diff ld man patch whatis
 # Moved to secure: bdes
 #
 

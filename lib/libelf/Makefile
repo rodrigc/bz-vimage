@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libelf/Makefile,v 1.9 2010/07/21 12:54:34 kaiw Exp $
+# $FreeBSD: src/lib/libelf/Makefile,v 1.11 2010/08/21 17:29:59 rpaulo Exp $
 
 LIB=	elf
 

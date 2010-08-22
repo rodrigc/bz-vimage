@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libutil/login_class.c,v 1.31 2009/06/23 20:57:27 kib Exp $");
+__FBSDID("$FreeBSD: src/lib/libutil/login_class.c,v 1.32 2010/08/16 11:32:20 des Exp $");
 
 #include <sys/param.h>
 #include <sys/cpuset.h>
@@ -525,7 +525,7 @@ setusercontext(login_cap_t *lc, const struct passwd *pwd, uid_t uid, unsigned in
     /*
      * Now, we repeat some of the above for the user's private entries
      */
-    if ((lc = login_getuserclass(pwd)) != NULL) {
+    if (getuid() == uid && (lc = login_getuserclass(pwd)) != NULL) {
 	mymask = setlogincontext(lc, pwd, mymask, flags);
 	login_close(lc);
     }

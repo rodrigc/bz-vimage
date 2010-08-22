@@ -1,4 +1,5 @@
-# $FreeBSD: src/tools/regression/bin/sh/execution/func2.0,v 1.1 2009/08/28 22:41:25 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/execution/func2.0,v 1.2 2010/08/16 17:18:08 jilles Exp $
+# The empty pairs of braces here are to test that this does not cause a crash.
 
 f() { }
 f

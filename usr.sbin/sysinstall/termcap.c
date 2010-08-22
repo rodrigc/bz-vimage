@@ -10,7 +10,7 @@
  * software, nor does the author assume any responsibility for damages
  * incurred with its use.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/termcap.c,v 1.34 2009/11/13 11:28:54 ed Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/termcap.c,v 1.35 2010/08/17 09:39:06 brucec Exp $
  */
 
 #include "sysinstall.h"
@@ -105,7 +105,7 @@ set_termcap(void)
     else {
 	int i, on;
 
-	if (getpid() == 1) {
+	if (RunningAsInit) {
 	    DebugFD = open("/dev/ttyv1", O_WRONLY);
 	    if (DebugFD != -1) {
 		on = 1;

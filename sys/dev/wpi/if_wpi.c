@@ -19,7 +19,7 @@
 #define VERSION "20071127"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wpi/if_wpi.c,v 1.33 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wpi/if_wpi.c,v 1.34 2010/08/14 20:12:10 bschmidt Exp $");
 
 /*
  * Driver for Intel PRO/Wireless 3945ABG 802.11 network adapters.
@@ -634,6 +634,7 @@ wpi_attach(device_t dev)
 		| IEEE80211_C_WME		/* 802.11e */
 		| IEEE80211_C_HOSTAP		/* Host access point mode */
 #endif
+		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	/*

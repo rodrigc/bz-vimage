@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/imgact.h,v 1.51 2010/07/28 04:47:40 alc Exp $
+ * $FreeBSD: src/sys/sys/imgact.h,v 1.52 2010/08/17 08:55:45 kib Exp $
  */
 
 #ifndef _SYS_IMGACT_H_
@@ -71,6 +71,10 @@ struct image_params {
 	char *execpath;
 	unsigned long execpathp;
 	char *freepath;
+	unsigned long canary;
+	int canarylen;
+	unsigned long pagesizes;
+	int pagesizeslen;
 };
 
 #ifdef _KERNEL

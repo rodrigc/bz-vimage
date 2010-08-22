@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-extractimage.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-extractimage.sh,v 1.4 2010/08/19 06:02:31 imp Exp $
 
 # Functions which perform the extraction / installation of system to disk
 
@@ -123,7 +123,7 @@ start_extract_split()
 	cd "${dir}"
 	if [ -f "install.sh" ]
 	then
-	  echo "Extracting" `basename ${dir}`
+	  echo_log "Extracting" `basename ${dir}`
       echo "y" | sh install.sh >/dev/null
       if [ "$?" != "0" ]
       then
@@ -139,7 +139,7 @@ start_extract_split()
   cd "${KERNELS}"
   if [ -f "install.sh" ]
   then
-	echo "Extracting" `basename ${KERNELS}`
+	echo_log "Extracting" `basename ${KERNELS}`
     echo "y" | sh install.sh generic >/dev/null
     if [ "$?" != "0" ]
     then
@@ -155,7 +155,7 @@ start_extract_split()
   cd "${SOURCE}"
   if [ -f "install.sh" ]
   then
-	echo "Extracting" `basename ${SOURCE}`
+	echo_log "Extracting" `basename ${SOURCE}`
     echo "y" | sh install.sh all >/dev/null
     if [ "$?" != "0" ]
     then
@@ -202,6 +202,69 @@ fetch_install_file()
   INSFILE="${OUTFILE}" ; export INSFILE
 
 };
+
+# Function which will download freebsd install files
+fetch_split_files()
+{
+  get_value_from_cfg ftpHost
+  if [ -z "$VAL" ]
+  then
+    exit_err "ERROR: Install medium was set to ftp, but no ftpHost was provided!" 
+  fi
+  FTPHOST="${VAL}"
+
+  get_value_from_cfg ftpDir
+  if [ -z "$VAL" ]
+  then
+    exit_err "ERROR: Install medium was set to ftp, but no ftpDir was provided!" 
+  fi
+  FTPDIR="${VAL}"
+
+  # Check if we have a /usr partition to save the download
+  if [ -d "${FSMNT}/usr" ]
+  then
+    OUTFILE="${FSMNT}/usr/.fetch-${INSFILE}"
+  else
+    OUTFILE="${FSMNT}/.fetch-${INSFILE}"
+  fi
+
+  NETRC="${OUTFILE}/.netrc"
+  cat<<EOF>"${NETRC}"
+machine ${FTPHOST}
+login anonymous
+password anonymous
+macdef INSTALL
+bin
+prompt
+EOF
+
+  DIRS="base catpages dict doc games info manpages proflibs kernels src"
+  if [ "${FBSD_ARCH}" = "amd64" ]
+  then
+	DIRS="${DIRS} lib32"
+  fi
+
+  for d in ${DIRS}
+  do
+	cat<<EOF>>"${NETRC}"
+cd ${FTPDIR}/${d}
+lcd ${OUTFILE}/${d}
+mreget *
+EOF
+  done
+
+	cat<<EOF>>"${NETRC}"
+bye
+
+
+EOF
+
+  # Fetch the files via ftp
+  echo "$ INSTALL" | ftp -N "${NETRC}" "${FTPHOST}"
+
+  # Done fetching, now reset the INSFILE to our downloaded archived
+  INSFILE="${OUTFILE}" ; export INSFILE
+}
 
 # Function which does the rsync download from the server specifed in cfg
 start_rsync_copy()
@@ -304,8 +367,17 @@ init_extraction()
           	start_extract_uzip_tar
 		  fi
           ;;
-     ftp) fetch_install_file
-          start_extract_uzip_tar 
+     ftp)
+		  if [ "$PACKAGETYPE" = "split" ]
+		  then
+			fetch_split_files
+
+			INSDIR="${INSFILE}" ; export INSDIR
+			start_extract_split
+		  else
+          	fetch_install_file
+          	start_extract_uzip_tar 
+		  fi
           ;;
      rsync) start_rsync_copy
             ;;

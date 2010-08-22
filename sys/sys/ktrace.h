@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ktrace.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/sys/sys/ktrace.h,v 1.37 2010/07/14 17:38:01 jhb Exp $
+ * $FreeBSD: src/sys/sys/ktrace.h,v 1.38 2010/08/19 15:55:50 jhb Exp $
  */
 
 #ifndef _SYS_KTRACE_H_
@@ -72,10 +72,6 @@ struct ktr_header {
 #define	KTRUSERRET(td) do {						\
 	if (KTRCHECKDRAIN(td))						\
 		ktruserret(td);						\
-} while (0)
-#define	KTRPROCEXIT(td) do {						\
-	if (KTRCHECKDRAIN(td))						\
-		ktrprocexit(td);					\
 } while (0)
 
 /*

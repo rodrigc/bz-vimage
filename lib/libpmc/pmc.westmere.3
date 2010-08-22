@@ -21,7 +21,7 @@
 .\" out of the use of this software, even if advised of the possibility of
 .\" such damage.
 .\"
-.\" $FreeBSD: src/lib/libpmc/pmc.westmere.3,v 1.4 2010/08/06 14:33:42 joel Exp $
+.\" $FreeBSD: src/lib/libpmc/pmc.westmere.3,v 1.5 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd March 24, 2010
 .Dt PMC.WESTMERE 3
@@ -975,7 +975,7 @@ Counting: Faulting executions of GETSEC/VM entry/VM Exit/MWait will not
 count as retired instructions.
 .It Li INST_RETIRED.X87
 .Pq Event C0H , Umask 02H
-Counts the number of floating point computational operations retired:
+Counts the number of floating point computational operations retired
 floating point computational operations executed by the assist handler and
 sub-operations of complex floating point instructions like transcendental
 instructions.

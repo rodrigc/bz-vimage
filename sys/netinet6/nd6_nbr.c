@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.72 2010/08/11 00:51:50 will Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.74 2010/08/19 11:31:03 anchie Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -72,6 +72,7 @@ __FBSDID("$FreeBSD: src/sys/netinet6/nd6_nbr.c,v 1.72 2010/08/11 00:51:50 will E
 #include <netinet6/scope6_var.h>
 #include <netinet6/nd6.h>
 #include <netinet/icmp6.h>
+#include <netinet/ip_carp.h>
 #include <netinet6/send.h>
 
 #define SDL(s) ((struct sockaddr_dl *)s)
@@ -84,10 +85,6 @@ static void nd6_dad_timer(struct dadq *);
 static void nd6_dad_ns_output(struct dadq *, struct ifaddr *);
 static void nd6_dad_ns_input(struct ifaddr *);
 static void nd6_dad_na_input(struct ifaddr *);
-
-struct ifaddr *(*carp_iamatch6_p)(struct ifnet *, struct in6_addr *);
-caddr_t (*carp_macmatch6_p)(struct ifnet *, struct mbuf *,
-    const struct in6_addr *);
 
 VNET_DEFINE(int, dad_ignore_ns) = 0;	/* ignore NS in DAD - specwise incorrect*/
 VNET_DEFINE(int, dad_maxtry) = 15;	/* max # of *tries* to transmit DAD packet */
@@ -563,12 +560,12 @@ nd6_ns_output(struct ifnet *ifp, const struct in6_addr *daddr6,
 	    in6_cksum(m, IPPROTO_ICMPV6, sizeof(*ip6), icmp6len);
 
 	if (send_sendso_input_hook != NULL) {
-		mtag = m_tag_get(PACKET_TAG_ND_OUTGOING, 
-			sizeof(unsigned short), M_NOWAIT); 
+		mtag = m_tag_get(PACKET_TAG_ND_OUTGOING,
+			sizeof(unsigned short), M_NOWAIT);
 		if (mtag == NULL)
 			goto bad;
 		*(unsigned short *)(mtag + 1) = nd_ns->nd_ns_type;
-		m_tag_prepend(m, mtag); 
+		m_tag_prepend(m, mtag);
 	}
 
 	ip6_output(m, NULL, &ro, dad ? IPV6_UNSPECSRC : 0, &im6o, NULL, NULL);
@@ -618,7 +615,7 @@ nd6_na_input(struct mbuf *m, int off, int icmp6len)
 	struct llentry *ln = NULL;
 	union nd_opts ndopts;
 	struct mbuf *chain = NULL;
-	struct m_tag *mtag; 
+	struct m_tag *mtag;
 	struct sockaddr_in6 sin6;
 	char ip6bufs[INET6_ADDRSTRLEN], ip6bufd[INET6_ADDRSTRLEN];
 
@@ -890,8 +887,8 @@ nd6_na_input(struct mbuf *m, int off, int icmp6len)
 			 */
 
 			if (send_sendso_input_hook != NULL) {
-				mtag = m_tag_get(PACKET_TAG_ND_OUTGOING, 
-					sizeof(unsigned short), M_NOWAIT);
+				mtag = m_tag_get(PACKET_TAG_ND_OUTGOING,
+				    sizeof(unsigned short), M_NOWAIT);
 				if (mtag == NULL)
 					goto bad;
 				m_tag_prepend(m, mtag);
@@ -1080,10 +1077,9 @@ nd6_na_output(struct ifnet *ifp, const struct in6_addr *daddr6_0,
 	nd_na->nd_na_cksum =
 	    in6_cksum(m, IPPROTO_ICMPV6, sizeof(struct ip6_hdr), icmp6len);
 
-	if (send_sendso_input_hook != NULL) { 
-		mtag = m_tag_get(PACKET_TAG_ND_OUTGOING, 
-		    sizeof(unsigned short), 
-			M_NOWAIT);
+	if (send_sendso_input_hook != NULL) {
+		mtag = m_tag_get(PACKET_TAG_ND_OUTGOING,
+		    sizeof(unsigned short), M_NOWAIT);
 		if (mtag == NULL)
 			goto bad;
 		*(unsigned short *)(mtag + 1) = nd_na->nd_na_type;

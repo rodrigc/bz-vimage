@@ -21,7 +21,7 @@
 .\" out of the use of this software, even if advised of the possibility of
 .\" such damage.
 .\"
-.\" $FreeBSD: src/lib/libpmc/pmc.corei7.3,v 1.5 2010/08/06 14:33:42 joel Exp $
+.\" $FreeBSD: src/lib/libpmc/pmc.corei7.3,v 1.6 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd March 24, 2010
 .Dt PMC.COREI7 3
@@ -993,7 +993,7 @@ Counting: Faulting executions of GETSEC/VM entry/VM Exit/MWait will not
 count as retired instructions.
 .It Li INST_RETIRED.X87
 .Pq Event C0H , Umask 02H
-Counts the number of MMX instructions retired:.
+Counts the number of MMX instructions retired.
 .It Li INST_RETIRED.MMX
 .Pq Event C0H , Umask 04H
 Counts the number of floating point computational operations retired:

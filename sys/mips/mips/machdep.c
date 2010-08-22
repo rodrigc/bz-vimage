@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/machdep.c,v 1.32 2010/07/23 07:46:55 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/machdep.c,v 1.33 2010/08/13 12:56:00 jchandra Exp $");
 
 #include "opt_cputype.h"
 #include "opt_ddb.h"
@@ -334,7 +334,7 @@ mips_vector_init(void)
 	bcopy(MipsTLBMiss, (void *)MIPS_UTLB_MISS_EXC_VEC,
 	      MipsTLBMissEnd - MipsTLBMiss);
 
-#if defined(CPU_CNMIPS) || defined(TARGET_XLR_XLS)
+#if defined(CPU_CNMIPS) || defined(CPU_RMI)
 /* Fake, but sufficient, for the 32-bit with 64-bit hardware addresses  */
 	bcopy(MipsTLBMiss, (void *)MIPS3_XTLB_MISS_EXC_VEC,
 	      MipsTLBMissEnd - MipsTLBMiss);

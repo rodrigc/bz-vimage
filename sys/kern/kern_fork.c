@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.310 2009/09/01 11:41:51 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.311 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_ktrace.h"
@@ -84,7 +84,7 @@ dtrace_fork_func_t	dtrace_fasttrap_fork;
 #endif
 
 SDT_PROVIDER_DECLARE(proc);
-SDT_PROBE_DEFINE(proc, kernel, , create);
+SDT_PROBE_DEFINE(proc, kernel, , create, create);
 SDT_PROBE_ARGTYPE(proc, kernel, , create, 0, "struct proc *");
 SDT_PROBE_ARGTYPE(proc, kernel, , create, 1, "struct proc *");
 SDT_PROBE_ARGTYPE(proc, kernel, , create, 2, "int");

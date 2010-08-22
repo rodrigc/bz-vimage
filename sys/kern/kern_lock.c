@@ -31,7 +31,7 @@
 #include "opt_kdtrace.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_lock.c,v 1.154 2010/01/07 01:24:09 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_lock.c,v 1.155 2010/08/20 19:46:50 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/ktr.h>
@@ -394,6 +394,34 @@ lockinit(struct lock *lk, int pri, const char *wmesg, int timo, int flags)
 	lk->lk_pri = pri;
 	lock_init(&lk->lock_object, &lock_class_lockmgr, wmesg, NULL, iflags);
 	STACK_ZERO(lk);
+}
+
+/*
+ * XXX: Gross hacks to manipulate external lock flags after
+ * initialization.  Used for certain vnode and buf locks.
+ */
+void
+lockallowshare(struct lock *lk)
+{
+
+	lockmgr_assert(lk, KA_XLOCKED);
+	lk->lock_object.lo_flags &= ~LK_NOSHARE;
+}
+
+void
+lockallowrecurse(struct lock *lk)
+{
+
+	lockmgr_assert(lk, KA_XLOCKED);
+	lk->lock_object.lo_flags |= LO_RECURSABLE;
+}
+
+void
+lockdisablerecurse(struct lock *lk)
+{
+
+	lockmgr_assert(lk, KA_XLOCKED);
+	lk->lock_object.lo_flags &= ~LO_RECURSABLE;
 }
 
 void

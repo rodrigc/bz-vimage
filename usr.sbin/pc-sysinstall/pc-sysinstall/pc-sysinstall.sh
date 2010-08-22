@@ -30,21 +30,27 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.6 2010/07/13 23:47:12 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.9 2010/08/19 06:07:49 imp Exp $
 #####################################################################
 
 # User-editable configuration variables
 
 # Set this to the program location
-PROGDIR="/usr/share/pc-sysinstall"
-export PROGDIR
+if [ -z "${PROGDIR}" ]
+then
+	PROGDIR="/usr/share/pc-sysinstall"
+	export PROGDIR
+fi
 
 # Set this to the components location
 COMPDIR="${PROGDIR}/components"
 export COMPDIR
 
+CONFDIR="${PROGDIR}/conf"
+export CONFDIR
+
 # Set this to the packages location
-PKGDIR="${PROGDIR}/conf"
+PKGDIR="${CONFDIR}"
 export PKGDIR
 
 # End of user-editable configuration
@@ -137,7 +143,7 @@ case $1 in
   ;;
 
   # The user is wanting to query which disks are available
-  disk-list) ${QUERYDIR}/disk-list.sh
+  disk-list) ${QUERYDIR}/disk-list.sh "${2}"
   ;;
   
   # The user is wanting to query a disk's partitions
@@ -182,6 +188,10 @@ case $1 in
 
   # Function to get package index
   get-packages) ${QUERYDIR}/get-packages.sh "${2}"
+  ;;
+
+  # Function to set FTP mirror
+  set-mirror) ${QUERYDIR}/set-mirror.sh "${2}"
   ;;
 
   # Function which allows setting up of SSH keys

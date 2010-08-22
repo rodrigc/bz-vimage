@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/misc.h,v 1.5 2010/07/12 23:49:04 mm Exp $
+ * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/misc.h,v 1.6 2010/08/21 14:09:24 rpaulo Exp $
  */
 
 #ifndef _OPENSOLARIS_SYS_MISC_H_
@@ -46,6 +46,7 @@
 #ifdef _KERNEL
 struct opensolaris_utsname {
 	char *nodename;
+	char *sysname;
 };
 
 extern char hw_serial[11];

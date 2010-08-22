@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.20 2010/07/22 20:08:02 weongyo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.21 2010/08/14 20:12:10 bschmidt Exp $");
 
 /*
  * The Broadcom Wireless LAN controller driver.
@@ -1070,6 +1070,7 @@ bwn_attach_post(struct bwn_softc *sc)
 		| IEEE80211_C_WPA		/* capable of WPA1+WPA2 */
 		| IEEE80211_C_BGSCAN		/* capable of bg scanning */
 		| IEEE80211_C_TXPMGT		/* capable of txpow mgt */
+		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	ic->ic_flags_ext |= IEEE80211_FEXT_SWBMISS;	/* s/w bmiss */

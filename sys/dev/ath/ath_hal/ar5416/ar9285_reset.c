@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar9285_reset.c,v 1.3 2010/06/01 15:47:57 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar9285_reset.c,v 1.4 2010/08/14 15:29:21 adrian Exp $
  */
 
 /*
@@ -792,7 +792,7 @@ ar9285GetGainBoundariesAndPdadcs(struct ath_hal *ah,
          * for last gain, pdGainBoundary == Pmax_t2, so will
          * have to extrapolate
          */
-        if (tgtIndex > maxIndex) {  /* need to extrapolate above */
+        if (tgtIndex >= maxIndex) {  /* need to extrapolate above */
             while ((ss <= tgtIndex) && (k < (AR5416_NUM_PDADC_VALUES - 1))) {
                 tmpVal = (int16_t)((vpdTableI[i][sizeCurrVpdTable - 1] +
                           (ss - maxIndex +1) * vpdStep));

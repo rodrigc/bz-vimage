@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_input.c,v 1.416 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_input.c,v 1.417 2010/08/18 17:39:47 andre Exp $");
 
 #include "opt_ipfw.h"		/* for ipfw_fwd	*/
 #include "opt_inet.h"
@@ -571,7 +571,7 @@ findpcb:
 		 */
 		if ((tcp_log_in_vain == 1 && (thflags & TH_SYN)) ||
 		    tcp_log_in_vain == 2) {
-			if ((s = tcp_log_addrs(NULL, th, (void *)ip, ip6)))
+			if ((s = tcp_log_vain(NULL, th, (void *)ip, ip6)))
 				log(LOG_INFO, "%s; %s: Connection attempt "
 				    "to closed port\n", s, __func__);
 		}

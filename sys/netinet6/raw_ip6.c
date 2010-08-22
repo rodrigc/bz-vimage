@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/raw_ip6.c,v 1.115 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/raw_ip6.c,v 1.119 2010/08/20 17:52:49 ume Exp $");
 
 #include "opt_ipsec.h"
 #include "opt_inet6.h"
@@ -250,6 +250,7 @@ rip6_input(struct mbuf **mp, int *offp, int proto)
 			}
 			if (blocked != MCAST_PASS) {
 				IP6STAT_INC(ip6s_notmember);
+				INP_RUNLOCK(in6p);
 				continue;
 			}
 		}
@@ -403,6 +404,7 @@ rip6_output(m, va_alist)
 	struct ifnet *oifp = NULL;
 	int type = 0, code = 0;		/* for ICMPv6 output statistics only */
 	int scope_ambiguous = 0;
+	int use_defzone = 0;
 	struct in6_addr in6a;
 	va_list ap;
 
@@ -432,9 +434,12 @@ rip6_output(m, va_alist)
 	 * XXX: we may still need to determine the zone later.
 	 */
 	if (!(so->so_state & SS_ISCONNECTED)) {
-		if (dstsock->sin6_scope_id == 0 && !V_ip6_use_defzone)
+		if (!optp || !optp->ip6po_pktinfo ||
+		    !optp->ip6po_pktinfo->ipi6_ifindex)
+			use_defzone = V_ip6_use_defzone;
+		if (dstsock->sin6_scope_id == 0 && !use_defzone)
 			scope_ambiguous = 1;
-		if ((error = sa6_embedscope(dstsock, V_ip6_use_defzone)) != 0)
+		if ((error = sa6_embedscope(dstsock, use_defzone)) != 0)
 			goto bad;
 	}
 
@@ -531,16 +536,16 @@ rip6_output(m, va_alist)
 		*p = in6_cksum(m, ip6->ip6_nxt, sizeof(*ip6), plen);
 	}
 
-	/* 
-	 * Send RA/RS messages to user land for protection, before sending 
+	/*
+	 * Send RA/RS messages to user land for protection, before sending
 	 * them to rtadvd/rtsol.
 	 */
-	if ((send_sendso_input_hook != NULL) && 
+	if ((send_sendso_input_hook != NULL) &&
 	    so->so_proto->pr_protocol == IPPROTO_ICMPV6) {
 		switch (type) {
 		case ND_ROUTER_ADVERT:
 		case ND_ROUTER_SOLICIT:
-			mtag = m_tag_get(PACKET_TAG_ND_OUTGOING, 
+			mtag = m_tag_get(PACKET_TAG_ND_OUTGOING,
 				sizeof(unsigned short), M_NOWAIT);
 			if (mtag == NULL)
 				goto bad;

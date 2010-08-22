@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_misc.c,v 1.5 2009/02/20 22:06:58 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_misc.c,v 1.6 2010/08/12 06:06:14 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -1068,6 +1068,41 @@ ar5212GetDiagState(struct ath_hal *ah, int request,
 				return AH_FALSE;
 			return ar5212AniSetParams(ah, args, args);
 		}
+	}
+	return AH_FALSE;
+}
+
+/*
+ * Check whether there's an in-progress NF completion.
+ *
+ * Returns AH_TRUE if there's a in-progress NF calibration, AH_FALSE
+ * otherwise.
+ */
+HAL_BOOL
+ar5212IsNFCalInProgress(struct ath_hal *ah)
+{
+	if (OS_REG_READ(ah, AR_PHY_AGC_CONTROL) & AR_PHY_AGC_CONTROL_NF)
+		return AH_TRUE;
+	return AH_FALSE;
+}
+
+/*
+ * Wait for an in-progress NF calibration to complete.
+ *
+ * The completion function waits "i" times 10uS.
+ * It returns AH_TRUE if the NF calibration completed (or was never
+ * in progress); AH_FALSE if it was still in progress after "i" checks.
+ */
+HAL_BOOL
+ar5212WaitNFCalComplete(struct ath_hal *ah, int i)
+{
+	int j;
+	if (i <= 0)
+		i = 1;	  /* it should run at least once */
+	for (j = 0; j < i; j++) {
+		if (! ar5212IsNFCalInProgress(ah))
+			return AH_TRUE;
+		OS_DELAY(10);
 	}
 	return AH_FALSE;
 }

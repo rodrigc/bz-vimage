@@ -1,8 +1,8 @@
 /*	$OpenBSD: grep.h,v 1.15 2010/04/05 03:03:55 tedu Exp $	*/
-/*	$FreeBSD: src/usr.bin/grep/grep.h,v 1.3 2010/07/29 00:11:14 gabor Exp $	*/
+/*	$FreeBSD: src/usr.bin/grep/grep.h,v 1.6 2010/08/19 09:28:59 des Exp $	*/
 
 /*-
- * Copyright (c) 1999 James Howard and Dag-Erling Coïdan Smørgrav
+ * Copyright (c) 1999 James Howard and Dag-Erling CoÃ¯dan SmÃ¸rgrav
  * Copyright (c) 2008-2009 Gabor Kovesdan <gabor@FreeBSD.org>
  * All rights reserved.
  *
@@ -77,12 +77,8 @@ extern const char		*errstr[];
 #define MAX_LINE_MATCHES	32
 
 struct file {
-	struct mmfile	*mmf;
-	BZFILE		*bzf;
-	FILE		*f;
-	gzFile		*gzf;
+	int		 fd;
 	bool		 binary;
-	bool		 stdin;
 };
 
 struct str {
@@ -115,7 +111,7 @@ extern int	 cflags, eflags;
 extern bool	 Eflag, Fflag, Gflag, Hflag, Lflag,
 		 bflag, cflag, hflag, iflag, lflag, mflag, nflag, oflag,
 		 qflag, sflag, vflag, wflag, xflag;
-extern bool	 dexclude, dinclude, fexclude, finclude, nullflag;
+extern bool	 dexclude, dinclude, fexclude, finclude, lbflag, nullflag;
 extern unsigned long long Aflag, Bflag, mcount;
 extern char	*label;
 extern const char *color;
@@ -134,7 +130,6 @@ extern fastgrep_t *fg_pattern;
 extern char	 re_error[RE_ERROR_BUF + 1];	/* Seems big enough */
 
 /* util.c */
-bool	 dir_matching(const char *dname);
 bool	 file_matching(const char *fname);
 int	 procfile(const char *fn);
 int	 grep_tree(char **argv);
@@ -151,13 +146,10 @@ void	 clearqueue(void);
 
 /* file.c */
 void		 grep_close(struct file *f);
-struct file	*grep_stdin_open(void);
 struct file	*grep_open(const char *path);
-int		 grep_feof(struct file *f);
-int		 grep_fgetc(struct file *f);
 char		*grep_fgetln(struct file *f, size_t *len);
 
 /* fastgrep.c */
 int		 fastcomp(fastgrep_t *, const char *);
 void		 fgrepcomp(fastgrep_t *, const char *);
-int		 grep_search(fastgrep_t *, unsigned char *, size_t, regmatch_t *);
+int		 grep_search(fastgrep_t *, const unsigned char *, size_t, regmatch_t *);

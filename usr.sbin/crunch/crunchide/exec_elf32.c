@@ -34,7 +34,7 @@
 __RCSID("$NetBSD: exec_elf32.c,v 1.4 1997/08/12 06:07:24 mikel Exp $");
 #endif
 #endif
-__FBSDID("$FreeBSD: src/usr.sbin/crunch/crunchide/exec_elf32.c,v 1.18 2010/08/10 09:24:19 adrian Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/crunch/crunchide/exec_elf32.c,v 1.19 2010/08/12 14:16:57 adrian Exp $");
  
 #ifndef ELFSIZE
 #define ELFSIZE         32
@@ -60,10 +60,15 @@ __FBSDID("$FreeBSD: src/usr.sbin/crunch/crunchide/exec_elf32.c,v 1.18 2010/08/10
 #include <sys/elf32.h>
 #define	xewtoh(x)	((data == ELFDATA2MSB) ? be32toh(x) : le32toh(x))
 #define	htoxew(x)	((data == ELFDATA2MSB) ? htobe32(x) : htole32(x))
+#define	wewtoh(x)	((data == ELFDATA2MSB) ? be32toh(x) : le32toh(x))
+#define	htowew(x)	((data == ELFDATA2MSB) ? htobe32(x) : htole32(x))
 #elif (ELFSIZE == 64)
 #include <sys/elf64.h>
 #define	xewtoh(x)	((data == ELFDATA2MSB) ? be64toh(x) : le64toh(x))
 #define	htoxew(x)	((data == ELFDATA2MSB) ? htobe64(x) : htole64(x))
+/* elf64 Elf64_Word are 32 bits */
+#define	wewtoh(x)	((data == ELFDATA2MSB) ? be32toh(x) : le32toh(x))
+#define	htowew(x)	((data == ELFDATA2MSB) ? htobe32(x) : htole32(x))
 #endif
 #include <sys/elf_generic.h>
 
@@ -345,7 +350,7 @@ ELFNAMEEND(hide)(int fd, const char *fn)
 				goto bad;
 		}
 
-		sp->st_name = htoxew(nstrtab_nextoff);
+		sp->st_name = htowew(nstrtab_nextoff);
 
 		/* if it's a keeper or is undefined, don't rename it. */
 		if (in_keep_list(symname) ||

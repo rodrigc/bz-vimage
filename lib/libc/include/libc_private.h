@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.23 2010/01/05 02:37:59 davidxu Exp $
+ * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.24 2010/08/17 09:13:26 kib Exp $
  *
  * Private definitions for libc, libc_r and libpthread.
  *
@@ -212,5 +212,7 @@ extern int	__sys_fcntl(int, int, ...);
 
 /* execve() with PATH processing to implement posix_spawnp() */
 int _execvpe(const char *, char * const *, char * const *);
+
+int _elf_aux_info(int aux, void *buf, int buflen);
 
 #endif /* _LIBC_PRIVATE_H_ */

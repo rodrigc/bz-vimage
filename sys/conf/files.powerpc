@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.powerpc,v 1.114 2010/07/31 13:22:34 nwhitehorn Exp $
+# $FreeBSD: src/sys/conf/files.powerpc,v 1.115 2010/08/20 01:23:17 nwhitehorn Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -102,15 +102,15 @@ powerpc/booke/trap.c		optional	e500
 powerpc/booke/vm_machdep.c	optional	e500
 powerpc/cpufreq/dfs.c		optional	cpufreq
 powerpc/cpufreq/pcr.c		optional	cpufreq aim
-powerpc/fpu/fpu_add.c		optional	fpu_emu
-powerpc/fpu/fpu_compare.c	optional	fpu_emu
-powerpc/fpu/fpu_div.c		optional	fpu_emu
-powerpc/fpu/fpu_emu.c		optional	fpu_emu
-powerpc/fpu/fpu_explode.c	optional	fpu_emu
-powerpc/fpu/fpu_implode.c	optional	fpu_emu
-powerpc/fpu/fpu_mul.c		optional	fpu_emu
-powerpc/fpu/fpu_sqrt.c		optional	fpu_emu
-powerpc/fpu/fpu_subr.c		optional	fpu_emu
+powerpc/fpu/fpu_add.c		optional	fpu_emu powerpc
+powerpc/fpu/fpu_compare.c	optional	fpu_emu powerpc
+powerpc/fpu/fpu_div.c		optional	fpu_emu powerpc
+powerpc/fpu/fpu_emu.c		optional	fpu_emu powerpc
+powerpc/fpu/fpu_explode.c	optional	fpu_emu powerpc
+powerpc/fpu/fpu_implode.c	optional	fpu_emu powerpc
+powerpc/fpu/fpu_mul.c		optional	fpu_emu powerpc
+powerpc/fpu/fpu_sqrt.c		optional	fpu_emu powerpc
+powerpc/fpu/fpu_subr.c		optional	fpu_emu powerpc
 powerpc/mambo/mambocall.S	optional	mambo
 powerpc/mambo/mambo.c		optional	mambo
 powerpc/mambo/mambo_console.c	optional	mambo

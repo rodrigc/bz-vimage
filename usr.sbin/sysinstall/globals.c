@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/globals.c,v 1.28 2008/10/15 15:54:33 kensmith Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/globals.c,v 1.29 2010/08/17 09:39:06 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -76,13 +76,10 @@ globalsInit(void)
 {
     DebugFD = -1;
     ColorDisplay = FALSE;
-    Fake = FALSE;
-    Restarting = FALSE;
     OnVTY = FALSE;
     DialogActive = FALSE;
     VarHead = NULL;
     mediaDevice = NULL;
-    RunningAsInit = FALSE;
 
     HomeChunk = NULL;
     RootChunk = NULL;

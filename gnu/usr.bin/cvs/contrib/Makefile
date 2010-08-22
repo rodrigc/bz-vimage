@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/cvs/contrib/Makefile,v 1.21 2008/06/27 14:59:23 obrien Exp $
+# $FreeBSD: src/gnu/usr.bin/cvs/contrib/Makefile,v 1.22 2010/08/12 20:46:49 will Exp $
 
 .include "../Makefile.inc"
 
@@ -24,7 +24,7 @@ Makefile:
 	@:
 
 .sh:
-	cp ${.IMPSRC} ${.TARGET}
+	cp -f ${.IMPSRC} ${.TARGET}
 
 .pl:
 	sed -e 's,xPERL_PATHx,$(PERLPATH),' ${.IMPSRC} > ${.TARGET}

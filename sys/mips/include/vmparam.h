@@ -37,7 +37,7 @@
  *	from: Utah Hdr: vmparam.h 1.16 91/01/18
  *	@(#)vmparam.h	8.2 (Berkeley) 4/22/94
  *	JNPR: vmparam.h,v 1.3.2.1 2007/09/10 06:01:28 girish
- * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.10 2010/08/04 14:12:09 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/vmparam.h,v 1.11 2010/08/18 12:52:21 jchandra Exp $
  */
 
 #ifndef _MACHINE_VMPARAM_H_
@@ -96,7 +96,7 @@
 #define	VM_MINUSER_ADDRESS	((vm_offset_t)0x00000000)
 #define	VM_MAX_MMAP_ADDR	VM_MAXUSER_ADDRESS
 
-#if defined(__mips_n64)
+#ifdef __mips_n64
 #define	VM_MAXUSER_ADDRESS	(VM_MINUSER_ADDRESS + (NPDEPG * NBSEG))
 #define	VM_MIN_KERNEL_ADDRESS	((vm_offset_t)0xc000000000000000)
 #define	VM_MAX_KERNEL_ADDRESS	(VM_MIN_KERNEL_ADDRESS + (NPDEPG * NBSEG))
@@ -185,7 +185,7 @@
  *	  allocations use HIGHMEM if available, and then DEFAULT. 
  *	- HIGHMEM for other pages 
  */
-#if 0 /* Not yet, change n64 to use xkphys */
+#ifdef __mips_n64
 #define	VM_NFREELIST		1
 #define	VM_FREELIST_DEFAULT	0
 #define	VM_FREELIST_DIRECT	VM_FREELIST_DEFAULT

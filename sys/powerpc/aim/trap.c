@@ -32,9 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.82 2010/07/13 05:32:19 nwhitehorn Exp $");
-
-#include "opt_ktrace.h"
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.83 2010/08/19 16:41:27 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/kdb.h>
@@ -50,9 +48,6 @@ __FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.82 2010/07/13 05:32:19 nwhite
 #include <sys/systm.h>
 #include <sys/uio.h>
 #include <sys/signalvar.h>
-#ifdef KTRACE
-#include <sys/ktrace.h>
-#endif
 #include <sys/vmmeter.h>
 
 #include <security/audit/audit.h>

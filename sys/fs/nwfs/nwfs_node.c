@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nwfs/nwfs_node.c,v 1.46 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/fs/nwfs/nwfs_node.c,v 1.47 2010/08/20 19:46:50 jhb Exp $
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -185,7 +185,6 @@ rescan:
 	if (dvp) {
 		np->n_parent = VTONW(dvp)->n_fid;
 	}
-	VN_LOCK_AREC(vp);
 	sx_xlock(&nwhashlock);
 	/*
 	 * Another process can create vnode while we blocked in malloc() or
@@ -202,6 +201,7 @@ rescan:
 	nhpp = NWNOHASH(fid);
 	LIST_INSERT_HEAD(nhpp, np, n_hash);
 	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY);
+	VN_LOCK_AREC(vp);
 	sx_xunlock(&nwhashlock);
 	
 	ASSERT_VOP_LOCKED(dvp, "nwfs_allocvp");

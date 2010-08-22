@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/dtrace/Makefile,v 1.6 2009/05/26 20:28:22 sson Exp $
+# $FreeBSD: src/sys/modules/dtrace/Makefile,v 1.7 2010/08/22 11:12:07 rpaulo Exp $
 
 .include <bsd.own.mk>
 .include "Makefile.inc"
@@ -14,9 +14,7 @@ SUBDIR=		dtmalloc	\
 		sdt		\
 		systrace
 
-.if ${MACHINE_ARCH} == "amd64"
-SUBDIR+=	fbt
-.elif ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
 SUBDIR+=	fbt
 .endif
 

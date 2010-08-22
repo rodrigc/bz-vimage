@@ -44,7 +44,7 @@
  *      from: @(#)pmap.h        7.4 (Berkeley) 5/12/91
  * 	from: FreeBSD: src/sys/i386/include/pmap.h,v 1.70 2000/11/30
  *
- * $FreeBSD: src/sys/arm/include/pmap.h,v 1.34 2010/04/30 00:46:43 kmacy Exp $
+ * $FreeBSD: src/sys/arm/include/pmap.h,v 1.35 2010/08/11 23:22:53 jhb Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -136,7 +136,7 @@ struct	pmap {
 	pd_entry_t		*pm_pdir;	/* KVA of page directory */
 	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int			pm_retries;
-	int			pm_active;	/* active on cpus */
+	cpumask_t			pm_active;	/* active on cpus */
 	struct pmap_statistics	pm_stats;	/* pmap statictics */
 	TAILQ_HEAD(,pv_entry)	pm_pvlist;	/* list of mappings in pmap */
 };

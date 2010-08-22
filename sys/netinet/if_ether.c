@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.221 2010/08/11 00:51:50 will Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.222 2010/08/11 20:18:19 will Exp $");
 
 #include "opt_inet.h"
 
@@ -64,6 +64,9 @@ __FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.221 2010/08/11 00:51:50 will 
 #include <netinet/in_var.h>
 #include <net/if_llatbl.h>
 #include <netinet/if_ether.h>
+#if defined(INET) || defined(INET6)
+#include <netinet/ip_carp.h>
+#endif
 
 #include <net/if_arc.h>
 #include <net/iso88025.h>
@@ -117,10 +120,6 @@ static void	arpintr(struct mbuf *);
 static void	arptimer(void *);
 #ifdef INET
 static void	in_arpinput(struct mbuf *);
-#endif
-#if defined(INET) || defined(INET6)
-int		(*carp_iamatch_p)(struct ifnet *, struct in_ifaddr *, struct in_addr *,
-		    u_int8_t **);
 #endif
 
 static const struct netisr_handler arp_nh = {

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.114 2010/08/07 11:57:13 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.115 2010/08/17 08:55:45 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_inet.h"
@@ -2525,11 +2525,13 @@ syscall32_helper_unregister(struct syscall_helper_data *sd)
 register_t *
 freebsd32_copyout_strings(struct image_params *imgp)
 {
-	int argc, envc;
+	int argc, envc, i;
 	u_int32_t *vectp;
 	char *stringp, *destp;
 	u_int32_t *stack_base;
 	struct freebsd32_ps_strings *arginfo;
+	char canary[sizeof(long) * 8];
+	int32_t pagesizes32[MAXPAGESIZES];
 	size_t execpath_len;
 	int szsigcode;
 
@@ -2545,8 +2547,10 @@ freebsd32_copyout_strings(struct image_params *imgp)
 	    sv_psstrings;
 	szsigcode = *(imgp->proc->p_sysent->sv_szsigcode);
 	destp =	(caddr_t)arginfo - szsigcode - SPARE_USRSPACE -
-		roundup(execpath_len, sizeof(char *)) -
-		roundup((ARG_MAX - imgp->args->stringspace), sizeof(char *));
+	    roundup(execpath_len, sizeof(char *)) -
+	    roundup(sizeof(canary), sizeof(char *)) -
+	    roundup(sizeof(pagesizes32), sizeof(char *)) -
+	    roundup((ARG_MAX - imgp->args->stringspace), sizeof(char *));
 
 	/*
 	 * install sigcode
@@ -2563,6 +2567,25 @@ freebsd32_copyout_strings(struct image_params *imgp)
 		copyout(imgp->execpath, (void *)imgp->execpathp,
 		    execpath_len);
 	}
+
+	/*
+	 * Prepare the canary for SSP.
+	 */
+	arc4rand(canary, sizeof(canary), 0);
+	imgp->canary = (uintptr_t)arginfo - szsigcode - execpath_len -
+	    sizeof(canary);
+	copyout(canary, (void *)imgp->canary, sizeof(canary));
+	imgp->canarylen = sizeof(canary);
+
+	/*
+	 * Prepare the pagesizes array.
+	 */
+	for (i = 0; i < MAXPAGESIZES; i++)
+		pagesizes32[i] = (uint32_t)pagesizes[i];
+	imgp->pagesizes = (uintptr_t)arginfo - szsigcode - execpath_len -
+	    roundup(sizeof(canary), sizeof(char *)) - sizeof(pagesizes32);
+	copyout(pagesizes32, (void *)imgp->pagesizes, sizeof(pagesizes32));
+	imgp->pagesizeslen = sizeof(pagesizes32);
 
 	/*
 	 * If we have a valid auxargs ptr, prepare some room

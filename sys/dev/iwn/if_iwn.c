@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iwn/if_iwn.c,v 1.43 2010/07/15 11:52:20 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iwn/if_iwn.c,v 1.44 2010/08/14 20:12:10 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/sockio.h>
@@ -580,6 +580,7 @@ iwn_attach(device_t dev)
 		| IEEE80211_C_IBSS		/* ibss/adhoc mode */
 #endif
 		| IEEE80211_C_WME		/* WME */
+		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 #if 0	/* HT */
 	/* XXX disable until HT channel setup works */

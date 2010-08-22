@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_divert.c,v 1.164 2010/03/17 18:28:27 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_divert.c,v 1.165 2010/08/17 16:41:16 jhb Exp $");
 
 #if !defined(KLD_MODULE)
 #include "opt_inet.h"
@@ -594,8 +594,8 @@ div_pcblist(SYSCTL_HANDLER_ARGS)
 	 */
 	if (req->oldptr == 0) {
 		n = V_divcbinfo.ipi_count;
-		req->oldidx = 2 * (sizeof xig)
-			+ (n + n/8) * sizeof(struct xinpcb);
+		n += imax(n / 8, 10);
+		req->oldidx = 2 * (sizeof xig) + n * sizeof(struct xinpcb);
 		return 0;
 	}
 

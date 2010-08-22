@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/pm_machdep.c,v 1.11 2010/07/30 12:45:00 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/pm_machdep.c,v 1.12 2010/08/12 11:00:45 jchandra Exp $");
 
 #include "opt_compat.h"
 #include "opt_cputype.h"
@@ -517,7 +517,7 @@ exec_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 #if defined(__mips_n32) 
 	td->td_frame->sr |= MIPS_SR_PX;
 #elif  defined(__mips_n64)
-	td->td_frame->sr |= MIPS_SR_PX | MIPS_SR_UX;
+	td->td_frame->sr |= MIPS_SR_PX | MIPS_SR_UX | MIPS_SR_KX;
 #endif
 #ifdef CPU_CNMIPS
 	td->td_frame->sr |= MIPS_SR_COP_2_BIT | MIPS_SR_PX | MIPS_SR_UX |

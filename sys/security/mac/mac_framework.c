@@ -70,7 +70,7 @@
 #include "opt_mac.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/security/mac/mac_framework.c,v 1.147 2009/06/02 22:22:09 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/security/mac/mac_framework.c,v 1.148 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/condvar.h>
@@ -94,10 +94,12 @@ __FBSDID("$FreeBSD: src/sys/security/mac/mac_framework.c,v 1.147 2009/06/02 22:2
 SDT_PROVIDER_DEFINE(mac);
 SDT_PROVIDER_DEFINE(mac_framework);
 
-SDT_PROBE_DEFINE2(mac, kernel, policy, modevent, "int",
+SDT_PROBE_DEFINE2(mac, kernel, policy, modevent, modevent, "int",
     "struct mac_policy_conf *mpc");
-SDT_PROBE_DEFINE1(mac, kernel, policy, register, "struct mac_policy_conf *");
-SDT_PROBE_DEFINE1(mac, kernel, policy, unregister, "struct mac_policy_conf *");
+SDT_PROBE_DEFINE1(mac, kernel, policy, register, register,
+    "struct mac_policy_conf *");
+SDT_PROBE_DEFINE1(mac, kernel, policy, unregister, unregister,
+    "struct mac_policy_conf *");
 
 /*
  * Root sysctl node for all MAC and MAC policy controls.

@@ -30,7 +30,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/bge/if_bgereg.h,v 1.100 2010/07/15 23:34:58 yongari Exp $
+ * $FreeBSD: src/sys/dev/bge/if_bgereg.h,v 1.101 2010/08/22 01:39:09 yongari Exp $
  */
 
 /*
@@ -2644,6 +2644,8 @@ struct bge_softc {
 	int			bge_link_evt;	/* pending link event */
 	int			bge_timer;
 	int			bge_forced_collapse;
+	int			bge_forced_udpcsum;
+	int			bge_csum_features;
 	struct callout		bge_stat_ch;
 	uint32_t		bge_rx_discards;
 	uint32_t		bge_tx_discards;

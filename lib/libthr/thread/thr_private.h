@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.97 2010/01/05 02:37:59 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.98 2010/08/20 05:15:39 davidxu Exp $
  */
 
 #ifndef _THR_PRIVATE_H
@@ -644,7 +644,8 @@ void	_thread_printf(int, const char *, ...) __hidden;
 void	_thr_spinlock_init(void) __hidden;
 void	_thr_cancel_enter(struct pthread *) __hidden;
 void	_thr_cancel_leave(struct pthread *) __hidden;
-void	_thr_cancel_enter_defer(struct pthread *) __hidden;
+void	_thr_cancel_leave2(struct pthread *, int) __hidden;
+void	_thr_cancel_enter_defer(struct pthread *, int) __hidden;
 void	_thr_cancel_leave_defer(struct pthread *, int) __hidden;
 void	_thr_testcancel(struct pthread *) __hidden;
 void	_thr_signal_block(struct pthread *) __hidden;

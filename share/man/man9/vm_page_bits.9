@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
 .\" DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/vm_page_bits.9,v 1.4 2010/01/04 14:58:41 kib Exp $
+.\" $FreeBSD: src/share/man/man9/vm_page_bits.9,v 1.5 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd December 1, 2001
 .Dt VM_PAGE_BITS 9
@@ -84,7 +84,7 @@ The range is expected to be
 .Dv DEV_BSIZE
 aligned and no larger than
 .Dv PAGE_SIZE .
-If it is not properly aligned, any unaligned chucks of the
+If it is not properly aligned, any unaligned chunks of the
 .Dv DEV_BSIZE
 blocks at the beginning and end of the range will be zeroed.
 .Pp

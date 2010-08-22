@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.31 2010/06/14 23:01:50 jkim Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.32 2010/08/14 20:12:10 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2005-2007 Damien Bergamini <damien.bergamini@free.fr>
@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.31 2010/06/14 23:01:50 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.32 2010/08/14 20:12:10 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2501USB/RT2601USB chipset driver
@@ -497,6 +497,7 @@ rum_attach(device_t self)
 	    | IEEE80211_C_SHSLOT	/* short slot time supported */
 	    | IEEE80211_C_BGSCAN	/* bg scanning supported */
 	    | IEEE80211_C_WPA		/* 802.11i */
+	    | IEEE80211_C_RATECTL	/* use ratectl */
 	    ;
 
 	bands = 0;

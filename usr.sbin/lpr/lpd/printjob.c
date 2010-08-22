@@ -45,7 +45,7 @@ static char sccsid[] = "@(#)printjob.c	8.7 (Berkeley) 5/10/95";
 #endif
 
 #include "lp.cdefs.h"		/* A cross-platform version of <sys/cdefs.h> */
-__FBSDID("$FreeBSD: src/usr.sbin/lpr/lpd/printjob.c,v 1.64 2006/07/07 01:12:26 gad Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/lpr/lpd/printjob.c,v 1.65 2010/08/11 19:32:49 gad Exp $");
 
 /*
  * printjob -- print jobs in the queue.
@@ -1263,8 +1263,9 @@ wait4data(struct printer *pp, const char *dfile)
 {
 	const char *cp;
 	int statres;
+	u_int sleepreq;
 	size_t dlen, hlen;
-	time_t amtslept, checktime;
+	time_t amtslept, cur_time, prev_mtime;
 	struct stat statdf;
 
 	/* Skip these checks if the print job is from the local host. */
@@ -1297,15 +1298,30 @@ wait4data(struct printer *pp, const char *dfile)
 
 	/*
 	 * The file exists, so keep waiting until the data file has not
-	 * changed for some reasonable amount of time.
+	 * changed for some reasonable amount of time.  Extra care is
+	 * taken when computing wait-times, just in case there are data
+	 * files with a last-modify time in the future.  While that is
+	 * very unlikely to happen, it can happen when the system has
+	 * a flakey time-of-day clock.
 	 */
-	while (statres == 0 && amtslept < MAXWAIT_4DATA) {
-		checktime = time(NULL) - MINWAIT_4DATA;
-		if (statdf.st_mtime <= checktime)
-			break;
+	prev_mtime = statdf.st_mtime;
+	cur_time = time(NULL);
+	if (statdf.st_mtime >= cur_time - MINWAIT_4DATA) {
+		if (statdf.st_mtime >= cur_time)	/* some TOD oddity */
+			sleepreq = MINWAIT_4DATA;
+		else
+			sleepreq = cur_time - statdf.st_mtime;
 		if (amtslept == 0)
 			pstatus(pp, "Waiting for data file from remote host");
-		amtslept += MINWAIT_4DATA - sleep(MINWAIT_4DATA);
+		amtslept += sleepreq - sleep(sleepreq);
+		statres = stat(dfile, &statdf);
+	}
+	sleepreq = MINWAIT_4DATA;
+	while (statres == 0 && amtslept < MAXWAIT_4DATA) {
+		if (statdf.st_mtime == prev_mtime)
+			break;
+		prev_mtime = statdf.st_mtime;
+		amtslept += sleepreq - sleep(sleepreq);
 		statres = stat(dfile, &statdf);
 	}
 

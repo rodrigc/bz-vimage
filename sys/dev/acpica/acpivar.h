@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.117 2010/05/23 07:53:22 mav Exp $
+ * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.118 2010/08/17 15:44:52 jhb Exp $
  */
 
 #ifndef _ACPIVAR_H_
@@ -393,6 +393,8 @@ EVENTHANDLER_DECLARE(acpi_wakeup_event, acpi_event_handler_t);
 /* Device power control. */
 ACPI_STATUS	acpi_pwr_wake_enable(ACPI_HANDLE consumer, int enable);
 ACPI_STATUS	acpi_pwr_switch_consumer(ACPI_HANDLE consumer, int state);
+int		acpi_device_pwr_for_sleep(device_t bus, device_t dev,
+		    int *dstate);
 
 /* Misc. */
 static __inline struct acpi_softc *

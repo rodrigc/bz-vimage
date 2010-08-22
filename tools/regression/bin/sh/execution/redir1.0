@@ -1,5 +1,5 @@
-# $FreeBSD: src/tools/regression/bin/sh/execution/redir1.0,v 1.1 2009/11/29 22:33:59 jilles Exp $
-trap ': $((brokenpipe+=1))' pipe
+# $FreeBSD: src/tools/regression/bin/sh/execution/redir1.0,v 1.2 2010/08/16 22:23:19 jilles Exp $
+trap ': $((brokenpipe+=1))' PIPE
 
 P=${TMPDIR:-/tmp}
 cd $P
@@ -17,7 +17,7 @@ if [ $brokenpipe -ne 0 ]; then
 	rc=3
 fi
 wait
-echo dummy >&4
+echo dummy >&4 2>/dev/null
 if [ $brokenpipe -eq 1 ]; then
 	: ${rc:=0}
 fi

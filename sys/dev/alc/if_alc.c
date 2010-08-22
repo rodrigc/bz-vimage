@@ -28,7 +28,7 @@
 /* Driver for Atheros AR813x/AR815x PCIe Ethernet. */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/alc/if_alc.c,v 1.15 2010/08/09 17:28:08 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/alc/if_alc.c,v 1.16 2010/08/13 19:39:33 yongari Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -3486,7 +3486,7 @@ alc_stop_mac(struct alc_softc *sc)
 	/* Disable Rx/Tx MAC. */
 	reg = CSR_READ_4(sc, ALC_MAC_CFG);
 	if ((reg & (MAC_CFG_TX_ENB | MAC_CFG_RX_ENB)) != 0) {
-		reg &= ~MAC_CFG_TX_ENB | MAC_CFG_RX_ENB;
+		reg &= ~(MAC_CFG_TX_ENB | MAC_CFG_RX_ENB);
 		CSR_WRITE_4(sc, ALC_MAC_CFG, reg);
 	}
 	for (i = ALC_TIMEOUT; i > 0; i--) {

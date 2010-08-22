@@ -34,7 +34,7 @@
 .\"          Archie Cobbs <archie@FreeBSD.org>
 .\"
 .\" $Whistle: netgraph.4,v 1.7 1999/01/28 23:54:52 julian Exp $
-.\" $FreeBSD: src/share/man/man4/netgraph.4,v 1.54 2008/05/26 22:39:56 rwatson Exp $
+.\" $FreeBSD: src/share/man/man4/netgraph.4,v 1.55 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd May 25, 2008
 .Dt NETGRAPH 4
@@ -531,7 +531,7 @@ The message can be examined using the
 macro, or completely extracted from the item using the
 .Fn NGI_GET_MSG
 which also removes the reference within the item.
-If the Item still holds a reference to the message when it is freed
+If the item still holds a reference to the message when it is freed
 (using the
 .Fn NG_FREE_ITEM
 macro), then the message will also be freed appropriately.

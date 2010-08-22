@@ -67,7 +67,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/bus.h,v 1.6 2010/04/08 19:34:55 imp Exp $
+ * $FreeBSD: src/sys/mips/include/bus.h,v 1.7 2010/08/13 12:56:00 jchandra Exp $
  */
 
 #ifndef _MACHINE_BUS_H_
@@ -721,7 +721,7 @@ void	__bs_c(f,_bs_c_8) (void *t, bus_space_handle_t bsh1,	\
 DECLARE_BUS_SPACE_PROTOTYPES(generic);
 extern bus_space_tag_t mips_bus_space_generic;
 /* Special bus space for RMI processors */
-#ifdef TARGET_XLR_XLS
+#ifdef CPU_RMI
 extern bus_space_tag_t rmi_bus_space;
 extern bus_space_tag_t rmi_pci_bus_space;
 #endif

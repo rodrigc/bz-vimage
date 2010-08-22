@@ -1,4 +1,4 @@
-#$FreeBSD: src/sys/modules/igb/Makefile,v 1.7 2010/06/30 21:05:51 jfv Exp $
+#$FreeBSD: src/sys/modules/igb/Makefile,v 1.8 2010/08/16 17:48:55 yongari Exp $
 .PATH:  ${.CURDIR}/../../dev/e1000
 KMOD    = if_igb
 SRCS    = device_if.h bus_if.h pci_if.h opt_inet.h
@@ -13,15 +13,5 @@ CFLAGS += -I${.CURDIR}/../../dev/e1000 -DSMP
 # DEVICE_POLLING gives you non-interrupt handling
 # not advisable since MSIX gives better results
 #CFLAGS  += -DDEVICE_POLLING
-
-clean:
-	rm -f device_if.h bus_if.h pci_if.h setdef*
-	rm -f *.o *.kld *.ko
-	rm -f @ machine
-	rm -f ${CLEANFILES}
-
-man:
-	mv /usr/share/man/man4/igb.4.gz /usr/share/man/man4/igbSAVE.4.gz
-	cp igb.4 /usr/share/man/man4/
 
 .include <bsd.kmod.mk>

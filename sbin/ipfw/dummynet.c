@@ -10,7 +10,7 @@
  *
  * This software is provided ``AS IS'' without any warranties of any kind.
  *
- * $FreeBSD: src/sbin/ipfw/dummynet.c,v 1.20 2010/07/15 14:34:56 luigi Exp $
+ * $FreeBSD: src/sbin/ipfw/dummynet.c,v 1.21 2010/08/19 11:19:21 des Exp $
  *
  * dummynet support
  */
@@ -1130,7 +1130,7 @@ end_mask:
 			NEED(p, "burst");
 			NEED1("burst needs argument\n");
 			errno = 0;
-			if (expand_number(av[0], (int64_t *)&p->burst) < 0)
+			if (expand_number(av[0], &p->burst) < 0)
 				if (errno != ERANGE)
 					errx(EX_DATAERR,
 					    "burst: invalid argument");

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/gzip/unpack.c,v 1.1 2009/06/21 09:39:43 delphij Exp $
+ * $FreeBSD: src/usr.bin/gzip/unpack.c,v 1.2 2010/08/19 01:34:00 delphij Exp $
  */
 
 /* This file is #included by gzip.c */
@@ -312,7 +312,14 @@ unpack(int in, int out, char *pre, size_t prelen, off_t *bytes_in)
 {
 	unpack_descriptor_t	unpackd;
 
-	unpack_parse_header(dup(in), dup(out), pre, prelen, bytes_in, &unpackd);
+	in = dup(in);
+	if (in == -1)
+		maybe_err("dup");
+	out = dup(out);
+	if (out == -1)
+		maybe_err("dup");
+
+	unpack_parse_header(in, out, pre, prelen, bytes_in, &unpackd);
 	unpack_decode(&unpackd, bytes_in);
 	unpack_descriptor_fini(&unpackd);
 

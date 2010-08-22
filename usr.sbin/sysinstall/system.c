@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/system.c,v 1.136 2010/06/11 20:56:40 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/system.c,v 1.137 2010/08/17 09:39:06 brucec Exp $
  *
  * Jordan Hubbard
  *
@@ -59,13 +59,20 @@ static int
 intr_restart(dialogMenuItem *self)
 {
     int ret, fd, fdmax;
+    char *arg;
 
     mediaClose();
     free_variables();
     fdmax = getdtablesize();
     for (fd = 3; fd < fdmax; fd++)
 	close(fd);
-    ret = execl(StartName, StartName, "-restart", (char *)NULL);
+    
+    if (RunningAsInit)
+	    arg = "-restart -fakeInit";
+    else
+	    arg = "-restart";
+
+    ret = execl(StartName, StartName, arg, NULL);
     msgDebug("execl failed (%s)\n", strerror(errno));
     /* NOTREACHED */
     return -1;
@@ -148,11 +155,10 @@ systemInitialize(int argc, char **argv)
 	variable_set2(VAR_DEBUG, "YES", 0);
 
     /* Are we running as init? */
-    if (getpid() == 1) {
+    if (RunningAsInit) {
 	struct ufs_args ufs_args;
 	int fd;
 
-	RunningAsInit = 1;
 	setsid();
 	close(0);
 	fd = open("/dev/ttyv0", O_RDWR);

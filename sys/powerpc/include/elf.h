@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/elf.h,v 1.12 2010/07/12 13:38:26 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/elf.h,v 1.13 2010/08/17 08:55:45 kib Exp $
  */
 
 #ifndef _MACHINE_ELF_H_
@@ -99,8 +99,14 @@ __ElfType(Auxinfo);
 #define	AT_ICACHEBSIZE	11	/* Instruction cache block size for the uP. */
 #define	AT_UCACHEBSIZE	12	/* Cache block size, or `0' if cache not unified. */
 #define	AT_EXECPATH	13	/* Path to the executable. */
+#define	AT_CANARY	14	/* Canary for SSP */
+#define	AT_CANARYLEN	15	/* Length of the canary. */
+#define	AT_OSRELDATE	16	/* OSRELDATE. */
+#define	AT_NCPUS	17	/* Number of CPUs. */
+#define	AT_PAGESIZES	18	/* Pagesizes. */
+#define	AT_PAGESIZESLEN	19	/* Number of pagesizes. */
 
-#define	AT_COUNT	14	/* Count of defined aux entry types. */
+#define	AT_COUNT	20	/* Count of defined aux entry types. */
 
 /*
  * Relocation types.

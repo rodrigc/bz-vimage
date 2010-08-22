@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.14 2010/08/06 15:36:59 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.15 2010/08/11 23:22:53 jhb Exp $");
 
 #include "opt_trap_trace.h"
 
@@ -115,7 +115,7 @@ vm_offset_t mp_tramp;
 
 u_int	mp_boot_mid;
 
-static volatile u_int	shutdown_cpus;
+static volatile cpumask_t	shutdown_cpus;
 
 void cpu_mp_unleash(void *);
 SYSINIT(cpu_mp_unleash, SI_SUB_SMP, SI_ORDER_FIRST, cpu_mp_unleash, NULL);

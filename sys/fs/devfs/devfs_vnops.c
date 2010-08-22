@@ -31,7 +31,7 @@
  *	@(#)kernfs_vnops.c	8.15 (Berkeley) 5/21/95
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vnops.c 1.43
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_vnops.c,v 1.187 2010/08/06 09:42:15 kib Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_vnops.c,v 1.191 2010/08/22 16:08:12 jh Exp $
  */
 
 /*
@@ -183,6 +183,43 @@ devfs_clear_cdevpriv(void)
 	if (fp == NULL)
 		return;
 	devfs_fpdrop(fp);
+}
+
+/*
+ * On success devfs_populate_vp() returns with dmp->dm_lock held.
+ */
+static int
+devfs_populate_vp(struct vnode *vp)
+{
+	struct devfs_mount *dmp;
+	int locked;
+
+	ASSERT_VOP_LOCKED(vp, "devfs_populate_vp");
+
+	dmp = VFSTODEVFS(vp->v_mount);
+	locked = VOP_ISLOCKED(vp);
+
+	sx_xlock(&dmp->dm_lock);
+	DEVFS_DMP_HOLD(dmp);
+
+	/* Can't call devfs_populate() with the vnode lock held. */
+	VOP_UNLOCK(vp, 0);
+	devfs_populate(dmp);
+
+	sx_xunlock(&dmp->dm_lock);
+	vn_lock(vp, locked | LK_RETRY);
+	sx_xlock(&dmp->dm_lock);
+	if (DEVFS_DMP_DROP(dmp)) {
+		sx_xunlock(&dmp->dm_lock);
+		devfs_unmount_final(dmp);
+		return (EBADF);
+	}
+	if (vp->v_iflag & VI_DOOMED) {
+		sx_xunlock(&dmp->dm_lock);
+		return (EBADF);
+	}
+
+	return (0);
 }
 
 static int
@@ -412,8 +449,8 @@ devfs_allocv(struct devfs_dirent *de, struct mount *mp, int lockmode,
 	} else {
 		vp->v_type = VBAD;
 	}
-	VN_LOCK_ASHARE(vp);
 	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY | LK_NOWITNESS);
+	VN_LOCK_ASHARE(vp);
 	mtx_lock(&devfs_de_interlock);
 	vp->v_data = de;
 	de->de_vnode = vp;
@@ -813,16 +850,8 @@ devfs_lookupx(struct vop_lookup_args *ap, int *dm_unlock)
 		return (error);
 	}
 
-	DEVFS_DMP_HOLD(dmp);
-	devfs_populate(dmp);
-	if (DEVFS_DMP_DROP(dmp)) {
-		*dm_unlock = 0;
-		sx_xunlock(&dmp->dm_lock);
-		devfs_unmount_final(dmp);
-		return (ENOENT);
-	}
 	dd = dvp->v_data;
-	de = devfs_find(dd, cnp->cn_nameptr, cnp->cn_namelen);
+	de = devfs_find(dd, cnp->cn_nameptr, cnp->cn_namelen, 0);
 	while (de == NULL) {	/* While(...) so we can use break */
 
 		if (nameiop == DELETE)
@@ -843,24 +872,31 @@ devfs_lookupx(struct vop_lookup_args *ap, int *dm_unlock)
 		EVENTHANDLER_INVOKE(dev_clone,
 		    td->td_ucred, pname, strlen(pname), &cdev);
 		sx_sunlock(&clone_drain_lock);
-		sx_xlock(&dmp->dm_lock);
+
+		if (cdev == NULL)
+			sx_xlock(&dmp->dm_lock);
+		else if (devfs_populate_vp(dvp) != 0) {
+			*dm_unlock = 0;
+			sx_xlock(&dmp->dm_lock);
+			if (DEVFS_DMP_DROP(dmp)) {
+				sx_xunlock(&dmp->dm_lock);
+				devfs_unmount_final(dmp);
+			} else
+				sx_xunlock(&dmp->dm_lock);
+			dev_rel(cdev);
+			return (ENOENT);
+		}
 		if (DEVFS_DMP_DROP(dmp)) {
 			*dm_unlock = 0;
 			sx_xunlock(&dmp->dm_lock);
 			devfs_unmount_final(dmp);
+			if (cdev != NULL)
+				dev_rel(cdev);
 			return (ENOENT);
 		}
+
 		if (cdev == NULL)
 			break;
-
-		DEVFS_DMP_HOLD(dmp);
-		devfs_populate(dmp);
-		if (DEVFS_DMP_DROP(dmp)) {
-			*dm_unlock = 0;
-			sx_xunlock(&dmp->dm_lock);
-			devfs_unmount_final(dmp);
-			return (ENOENT);
-		}
 
 		dev_lock();
 		dde = &cdev2priv(cdev)->cdp_dirents[dmp->dm_idx];
@@ -906,9 +942,11 @@ devfs_lookup(struct vop_lookup_args *ap)
 	struct devfs_mount *dmp;
 	int dm_unlock;
 
+	if (devfs_populate_vp(ap->a_dvp) != 0)
+		return (ENOTDIR);
+
 	dmp = VFSTODEVFS(ap->a_dvp->v_mount);
 	dm_unlock = 1;
-	sx_xlock(&dmp->dm_lock);
 	j = devfs_lookupx(ap, &dm_unlock);
 	if (dm_unlock == 1)
 		sx_xunlock(&dmp->dm_lock);
@@ -1136,12 +1174,7 @@ devfs_readdir(struct vop_readdir_args *ap)
 	}
 
 	dmp = VFSTODEVFS(ap->a_vp->v_mount);
-	sx_xlock(&dmp->dm_lock);
-	DEVFS_DMP_HOLD(dmp);
-	devfs_populate(dmp);
-	if (DEVFS_DMP_DROP(dmp)) {
-		sx_xunlock(&dmp->dm_lock);
-		devfs_unmount_final(dmp);
+	if (devfs_populate_vp(ap->a_vp) != 0) {
 		if (tmp_ncookies != NULL)
 			ap->a_ncookies = tmp_ncookies;
 		return (EIO);
@@ -1151,7 +1184,7 @@ devfs_readdir(struct vop_readdir_args *ap)
 	off = 0;
 	TAILQ_FOREACH(dd, &de->de_dlist, de_list) {
 		KASSERT(dd->de_cdp != (void *)0xdeadc0de, ("%s %d\n", __func__, __LINE__));
-		if (dd->de_flags & DE_WHITEOUT)
+		if (dd->de_flags & (DE_COVERED | DE_WHITEOUT))
 			continue;
 		if (devfs_prison_check(dd, uio->uio_td))
 			continue;
@@ -1232,7 +1265,7 @@ devfs_remove(struct vop_remove_args *ap)
 {
 	struct vnode *vp = ap->a_vp;
 	struct devfs_dirent *dd;
-	struct devfs_dirent *de;
+	struct devfs_dirent *de, *de_covered;
 	struct devfs_mount *dmp = VFSTODEVFS(vp->v_mount);
 
 	sx_xlock(&dmp->dm_lock);
@@ -1240,6 +1273,12 @@ devfs_remove(struct vop_remove_args *ap)
 	de = vp->v_data;
 	if (de->de_cdp == NULL) {
 		TAILQ_REMOVE(&dd->de_dlist, de, de_list);
+		if (de->de_dirent->d_type == DT_LNK) {
+			de_covered = devfs_find(dd, de->de_dirent->d_name,
+			    de->de_dirent->d_namlen, 0);
+			if (de_covered != NULL)
+				de_covered->de_flags &= ~DE_COVERED;
+		}
 		devfs_delete(dmp, de, 1);
 	} else {
 		de->de_flags |= DE_WHITEOUT;
@@ -1479,7 +1518,7 @@ devfs_symlink(struct vop_symlink_args *ap)
 {
 	int i, error;
 	struct devfs_dirent *dd;
-	struct devfs_dirent *de;
+	struct devfs_dirent *de, *de_covered, *de_dotdot;
 	struct devfs_mount *dmp;
 
 	error = priv_check(curthread, PRIV_DEVFS_SYMLINK);
@@ -1500,7 +1539,18 @@ devfs_symlink(struct vop_symlink_args *ap)
 #ifdef MAC
 	mac_devfs_create_symlink(ap->a_cnp->cn_cred, dmp->dm_mount, dd, de);
 #endif
-	TAILQ_INSERT_TAIL(&dd->de_dlist, de, de_list);
+	de_covered = devfs_find(dd, de->de_dirent->d_name,
+	    de->de_dirent->d_namlen, 0);
+	if (de_covered != NULL) {
+		KASSERT((de_covered->de_flags & DE_COVERED) == 0,
+		    ("devfs_symlink: entry %p already covered", de_covered));
+		de_covered->de_flags |= DE_COVERED;
+	}
+
+	de_dotdot = TAILQ_FIRST(&dd->de_dlist);		/* "." */
+	de_dotdot = TAILQ_NEXT(de_dotdot, de_list);	/* ".." */
+	TAILQ_INSERT_AFTER(&dd->de_dlist, de_dotdot, de, de_list);
+
 	return (devfs_allocv(de, ap->a_dvp->v_mount, LK_EXCLUSIVE, ap->a_vpp));
 }
 

@@ -15,11 +15,11 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/mips/conf/XLRN32,v 1.2 2010/07/13 22:27:19 imp Exp $
+# $FreeBSD: src/sys/mips/conf/XLRN32,v 1.3 2010/08/13 12:56:00 jchandra Exp $
 
 machine 	mips
-cpu 		CPU_MIPS4KC
-ident 		XLR
+cpu 		CPU_RMI
+ident 		XLRN32
 
 makeoptions	MODULES_OVERRIDE=""
 makeoptions     TARGET_BIG_ENDIAN

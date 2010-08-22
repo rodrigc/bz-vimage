@@ -33,7 +33,7 @@
 static char sccsid[] = "@(#)mkheaders.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/config/mkoptions.c,v 1.40 2010/07/15 22:28:19 imp Exp $";
+  "$FreeBSD: src/usr.sbin/config/mkoptions.c,v 1.41 2010/08/15 08:44:32 imp Exp $";
 #endif /* not lint */
 
 /*
@@ -351,9 +351,11 @@ update_option(const char *this, char *val, int flags)
 			return;
 		}
 	}
-	fprintf(stderr, "Compat option %s not listed in options file.\n",
-	    this);
-	exit(1);
+	/*
+	 * Option not found, but that's OK, we just ignore it since it
+	 * may be for another arch.
+	 */
+	return;
 }
 
 static int

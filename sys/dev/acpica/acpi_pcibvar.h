@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/acpica/acpi_pcibvar.h,v 1.7 2010/08/05 16:10:12 jhb Exp $
+ * $FreeBSD: src/sys/dev/acpica/acpi_pcibvar.h,v 1.8 2010/08/17 15:44:52 jhb Exp $
  */
 
 #ifndef	_ACPI_PCIBVAR_H_
@@ -38,6 +38,8 @@ int	acpi_pci_link_route_interrupt(device_t dev, int index);
 int	acpi_pcib_attach(device_t bus, ACPI_BUFFER *prt, int busno);
 int	acpi_pcib_route_interrupt(device_t pcib, device_t dev, int pin,
     ACPI_BUFFER *prtbuf);
+int	acpi_pcib_power_for_sleep(device_t pcib, device_t dev,
+    int *pstate);
 
 #endif /* _KERNEL */
 

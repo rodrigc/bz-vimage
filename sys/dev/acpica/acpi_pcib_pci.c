@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib_pci.c,v 1.19 2010/08/05 16:10:12 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib_pci.c,v 1.20 2010/08/17 15:44:52 jhb Exp $");
 
 #include "opt_acpi.h"
 
@@ -80,6 +80,7 @@ static device_method_t acpi_pcib_pci_methods[] = {
 
     /* pcib interface */
     DEVMETHOD(pcib_route_interrupt,	acpi_pcib_pci_route_interrupt),
+    DEVMETHOD(pcib_power_for_sleep,	acpi_pcib_power_for_sleep),
 
     {0, 0}
 };

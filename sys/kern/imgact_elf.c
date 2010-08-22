@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/imgact_elf.c,v 1.209 2010/04/30 03:13:24 alfred Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/imgact_elf.c,v 1.210 2010/08/17 08:55:45 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_core.h"
@@ -51,6 +51,7 @@ __FBSDID("$FreeBSD: src/sys/kern/imgact_elf.c,v 1.209 2010/04/30 03:13:24 alfred
 #include <sys/procfs.h>
 #include <sys/resourcevar.h>
 #include <sys/sf_buf.h>
+#include <sys/smp.h>
 #include <sys/systm.h>
 #include <sys/signalvar.h>
 #include <sys/stat.h>
@@ -972,6 +973,16 @@ __elfN(freebsd_fixup)(register_t **stack_base, struct image_params *imgp)
 	AUXARGS_ENTRY(pos, AT_BASE, args->base);
 	if (imgp->execpathp != 0)
 		AUXARGS_ENTRY(pos, AT_EXECPATH, imgp->execpathp);
+	AUXARGS_ENTRY(pos, AT_OSRELDATE, osreldate);
+	if (imgp->canary != 0) {
+		AUXARGS_ENTRY(pos, AT_CANARY, imgp->canary);
+		AUXARGS_ENTRY(pos, AT_CANARYLEN, imgp->canarylen);
+	}
+	AUXARGS_ENTRY(pos, AT_NCPUS, mp_ncpus);
+	if (imgp->pagesizes != 0) {
+		AUXARGS_ENTRY(pos, AT_PAGESIZES, imgp->pagesizes);
+		AUXARGS_ENTRY(pos, AT_PAGESIZESLEN, imgp->pagesizeslen);
+	}
 	AUXARGS_ENTRY(pos, AT_NULL, 0);
 
 	free(imgp->auxargs, M_TEMP);

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/pseudofs/pseudofs_vncache.c,v 1.48 2009/09/07 12:10:41 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/pseudofs/pseudofs_vncache.c,v 1.49 2010/08/20 19:46:50 jhb Exp $");
 
 #include "opt_pseudofs.h"
 
@@ -189,8 +189,8 @@ retry:
 	if ((pn->pn_flags & PFS_PROCDEP) != 0)
 		(*vpp)->v_vflag |= VV_PROCDEP;
 	pvd->pvd_vnode = *vpp;
-	VN_LOCK_AREC(*vpp);
 	vn_lock(*vpp, LK_EXCLUSIVE | LK_RETRY);
+	VN_LOCK_AREC(*vpp);
 	error = insmntque(*vpp, mp);
 	if (error != 0) {
 		free(pvd, M_PFSVNCACHE);

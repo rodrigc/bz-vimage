@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.60 2010/06/11 15:49:39 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.61 2010/08/11 23:22:53 jhb Exp $");
 
 #include "opt_kstack_pages.h"
 #include "opt_msgbuf.h"
@@ -1451,7 +1451,7 @@ pmap_ipi(pmap_t pmap, char *func, uint64_t arg1, uint64_t arg2)
 {
 
 	int i, cpu_count, retried;
-	u_int cpus;
+	cpumask_t cpus;
 	cpumask_t cpumask, active, curactive;
 	cpumask_t active_total, ackmask;
 	uint16_t *cpulist;

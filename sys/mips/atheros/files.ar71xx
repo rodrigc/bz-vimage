@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/mips/atheros/files.ar71xx,v 1.2 2010/01/22 22:14:12 gonzo Exp $
+# $FreeBSD: src/sys/mips/atheros/files.ar71xx,v 1.5 2010/08/19 11:53:55 adrian Exp $
 
 mips/atheros/apb.c		standard
 mips/atheros/ar71xx_machdep.c	standard
@@ -15,3 +15,7 @@ mips/atheros/uart_cpu_ar71xx.c	optional uart
 mips/atheros/ar71xx_bus_space_reversed.c	standard
 mips/mips/intr_machdep.c        standard
 mips/mips/tick.c		standard
+mips/atheros/ar71xx_setup.c	standard
+mips/atheros/ar71xx_chip.c	standard
+mips/atheros/ar724x_chip.c	standard
+mips/atheros/ar91xx_chip.c	standard

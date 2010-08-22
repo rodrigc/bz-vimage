@@ -1,5 +1,5 @@
 #	from: @(#)bsd.lib.mk	5.26 (Berkeley) 5/2/91
-# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.191 2010/07/30 15:25:57 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.192 2010/08/17 20:39:28 rpaulo Exp $
 #
 
 .include <bsd.init.mk>
@@ -65,7 +65,7 @@ PICFLAG=-fpic
 .endif
 .endif
 
-.if ${CC} == "icc"
+.if ${CC:T:Micc} == "icc"
 PO_FLAG=-p
 .else
 PO_FLAG=-pg

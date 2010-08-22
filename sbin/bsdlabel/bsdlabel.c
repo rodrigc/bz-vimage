@@ -53,7 +53,7 @@ static char sccsid[] = "@(#)disklabel.c	8.2 (Berkeley) 1/7/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.120 2010/06/30 18:34:45 jh Exp $");
+__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.121 2010/08/15 17:49:41 jh Exp $");
 
 #include <sys/param.h>
 #include <stdint.h>
@@ -755,7 +755,7 @@ word(char *cp)
 static int
 getasciilabel(FILE *f, struct disklabel *lp)
 {
-	char *cp;
+	char *cp, *endp;
 	const char **cpp;
 	u_int part;
 	char *tp, line[BUFSIZ];
@@ -794,11 +794,15 @@ getasciilabel(FILE *f, struct disklabel *lp)
 				}
 			if (cpp < &dktypenames[DKMAXTYPES])
 				continue;
-			v = strtoul(tp, NULL, 10);
+			errno = 0;
+			v = strtoul(tp, &endp, 10);
+			if (errno != 0 || *endp != '\0')
+				v = DKMAXTYPES;
 			if (v >= DKMAXTYPES)
 				fprintf(stderr, "line %d:%s %lu\n", lineno,
 				    "Warning, unknown disk type", v);
-			lp->d_type = v;
+			else
+				lp->d_type = v;
 			continue;
 		}
 		if (!strcmp(cp, "flags")) {
@@ -1023,7 +1027,7 @@ static int
 getasciipartspec(char *tp, struct disklabel *lp, int part, int lineno)
 {
 	struct partition *pp;
-	char *cp;
+	char *cp, *endp;
 	const char **cpp;
 	u_long v;
 
@@ -1059,9 +1063,12 @@ getasciipartspec(char *tp, struct disklabel *lp, int part, int lineno)
 	if (*cpp != NULL) {
 		pp->p_fstype = cpp - fstypenames;
 	} else {
-		if (isdigit(*cp))
-			v = strtoul(cp, NULL, 10);
-		else
+		if (isdigit(*cp)) {
+			errno = 0;
+			v = strtoul(cp, &endp, 10);
+			if (errno != 0 || *endp != '\0')
+				v = FSMAXTYPES;
+		} else
 			v = FSMAXTYPES;
 		if (v >= FSMAXTYPES) {
 			fprintf(stderr,

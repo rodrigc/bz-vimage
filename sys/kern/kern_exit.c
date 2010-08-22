@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.334 2010/06/29 20:41:52 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.335 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -90,7 +90,7 @@ dtrace_execexit_func_t	dtrace_fasttrap_exit;
 #endif
 
 SDT_PROVIDER_DECLARE(proc);
-SDT_PROBE_DEFINE(proc, kernel, , exit);
+SDT_PROBE_DEFINE(proc, kernel, , exit, exit);
 SDT_PROBE_ARGTYPE(proc, kernel, , exit, 0, "int");
 
 /* Required to be non-static for SysVR4 emulator */

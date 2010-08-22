@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/include/elf.h,v 1.23 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/amd64/include/elf.h,v 1.24 2010/08/17 08:55:45 kib Exp $
  */
 
 #ifndef _MACHINE_ELF_H_
@@ -88,8 +88,14 @@ __ElfType(Auxinfo);
 #define	AT_GID		13	/* Real gid. */
 #define	AT_EGID		14	/* Effective gid. */
 #define	AT_EXECPATH	15	/* Path to the executable. */
+#define	AT_CANARY	16	/* Canary for SSP */
+#define	AT_CANARYLEN	17	/* Length of the canary. */
+#define	AT_OSRELDATE	18	/* OSRELDATE. */
+#define	AT_NCPUS	19	/* Number of CPUs. */
+#define	AT_PAGESIZES	20	/* Pagesizes. */
+#define	AT_PAGESIZESLEN	21	/* Number of pagesizes. */
 
-#define	AT_COUNT	16	/* Count of defined aux entry types. */
+#define	AT_COUNT	22	/* Count of defined aux entry types. */
 
 /*
  * Relocation types.

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/smbfs/smbfs_node.c,v 1.43 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/fs/smbfs/smbfs_node.c,v 1.44 2010/08/20 19:46:50 jhb Exp $
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -253,8 +253,8 @@ loop:
 	} else if (vp->v_type == VREG)
 		SMBERROR("new vnode '%s' born without parent ?\n", np->n_name);
 
-	VN_LOCK_AREC(vp);
 	vn_lock(vp, LK_EXCLUSIVE | LK_RETRY);
+	VN_LOCK_AREC(vp);
 
 	smbfs_hash_lock(smp);
 	LIST_FOREACH(np2, nhpp, n_hash) {

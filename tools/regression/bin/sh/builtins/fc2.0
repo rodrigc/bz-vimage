@@ -1,6 +1,6 @@
-# $FreeBSD: src/tools/regression/bin/sh/builtins/fc2.0,v 1.1 2009/12/25 20:21:35 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/builtins/fc2.0,v 1.2 2010/08/16 22:23:19 jilles Exp $
 set -e
-trap 'echo Broken pipe -- test failed' pipe
+trap 'echo Broken pipe -- test failed' PIPE
 
 P=${TMPDIR:-/tmp}
 cd $P

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_cal_iq.c,v 1.2 2010/01/29 10:07:17 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_cal_iq.c,v 1.3 2010/08/14 15:28:15 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -115,7 +115,7 @@ ar5416IQCalibration(struct ath_hal *ah, uint8_t numChains)
 			if (qCoff > 15)
 				qCoff = 15;
 			else if (qCoff <= -16)
-				qCoff = 16;
+				qCoff = -16;
 			HALDEBUG(ah, HAL_DEBUG_PERCAL,
 			    " : iCoff = 0x%x  qCoff = 0x%x\n", iCoff, qCoff);
 

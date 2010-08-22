@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_ktrace.c,v 1.133 2010/08/09 14:48:31 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_ktrace.c,v 1.135 2010/08/19 16:38:58 jhb Exp $");
 
 #include "opt_ktrace.h"
 
@@ -107,7 +107,7 @@ static int data_lengths[] = {
 	0,					/* KTR_NAMEI */
 	sizeof(struct ktr_genio),		/* KTR_GENIO */
 	sizeof(struct ktr_psig),		/* KTR_PSIG */
-	sizeof(struct ktr_csw),			/* KTR_CSW */
+	sizeof(struct ktr_csw),		/* KTR_CSW */
 	0,					/* KTR_USER */
 	0,					/* KTR_STRUCT */
 	0,					/* KTR_SYSCTL */
@@ -336,7 +336,7 @@ ktr_drain(struct thread *td)
 	ktrace_assert(td);
 	sx_assert(&ktrace_sx, SX_XLOCKED);
 
-	STAILQ_INIT(&local_queue);	/* XXXRW: needed? */
+	STAILQ_INIT(&local_queue);
 
 	if (!STAILQ_EMPTY(&td->td_proc->p_ktr)) {
 		mtx_lock(&ktrace_mtx);
@@ -741,7 +741,6 @@ ktrace(td, uap)
 				PROC_UNLOCK(p); 
 				continue;
 			}
-			PROC_UNLOCK(p); 
 			nfound++;
 			if (descend)
 				ret |= ktrsetchildren(td, p, ops, facs, vp);
@@ -758,18 +757,13 @@ ktrace(td, uap)
 		 * by pid
 		 */
 		p = pfind(uap->pid);
-		if (p == NULL) {
-			sx_sunlock(&proctree_lock);
+		if (p == NULL)
 			error = ESRCH;
-			goto done;
-		}
-		error = p_cansee(td, p);
-		/*
-		 * The slock of the proctree lock will keep this process
-		 * from going away, so unlocking the proc here is ok.
-		 */
-		PROC_UNLOCK(p);
+		else
+			error = p_cansee(td, p);
 		if (error) {
+			if (p != NULL)
+				PROC_UNLOCK(p);
 			sx_sunlock(&proctree_lock);
 			goto done;
 		}
@@ -841,10 +835,15 @@ ktrops(td, p, ops, facs, vp)
 	struct vnode *tracevp = NULL;
 	struct ucred *tracecred = NULL;
 
-	PROC_LOCK(p);
+	PROC_LOCK_ASSERT(p, MA_OWNED);
 	if (!ktrcanset(td, p)) {
 		PROC_UNLOCK(p);
 		return (0);
+	}
+	if (p->p_flag & P_WEXIT) {
+		/* If the process is exiting, just ignore it. */
+		PROC_UNLOCK(p);
+		return (1);
 	}
 	mtx_lock(&ktrace_mtx);
 	if (ops == KTROP_SET) {
@@ -900,6 +899,7 @@ ktrsetchildren(td, top, ops, facs, vp)
 	register int ret = 0;
 
 	p = top;
+	PROC_LOCK_ASSERT(p, MA_OWNED);
 	sx_assert(&proctree_lock, SX_LOCKED);
 	for (;;) {
 		ret |= ktrops(td, p, ops, facs, vp);
@@ -919,6 +919,7 @@ ktrsetchildren(td, top, ops, facs, vp)
 			}
 			p = p->p_pptr;
 		}
+		PROC_LOCK(p);
 	}
 	/*NOTREACHED*/
 }

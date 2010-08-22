@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)cdefs.h	8.8 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/cdefs.h,v 1.106 2010/07/18 20:57:53 trasz Exp $
+ * $FreeBSD: src/sys/sys/cdefs.h,v 1.107 2010/08/15 14:38:01 kib Exp $
  */
 
 #ifndef	_SYS_CDEFS_H_
@@ -305,6 +305,14 @@
 #define __predict_false(exp)    (exp)
 #endif
 
+#if __GNUC_PREREQ__(4, 2)
+#define	__hidden	__attribute((visibility("hidden")))
+#define	__exported	__attribute((visibility("default")))
+#else
+#define	__hidden
+#define	__exported
+#endif
+
 /*
  * We define this here since <stddef.h>, <sys/queue.h>, and <sys/types.h>
  * require it.
@@ -409,7 +417,7 @@
  * Embed the rcs id of a source file in the resulting library.  Note that in
  * more recent ELF binutils, we use .ident allowing the ID to be stripped.
  * Usage:
- *	__FBSDID("$FreeBSD: src/sys/sys/cdefs.h,v 1.106 2010/07/18 20:57:53 trasz Exp $");
+ *	__FBSDID("$FreeBSD: src/sys/sys/cdefs.h,v 1.107 2010/08/15 14:38:01 kib Exp $");
  */
 #ifndef	__FBSDID
 #if !defined(lint) && !defined(STRIP_FBSDID)

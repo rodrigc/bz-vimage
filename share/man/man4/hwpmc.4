@@ -26,7 +26,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/hwpmc.4,v 1.24 2010/05/13 12:07:55 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/hwpmc.4,v 1.25 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd September 22, 2008
 .Dt HWPMC 4
@@ -81,7 +81,7 @@ Some architectures offer faster methods of reading these counts.
 .It Em Sampling
 In sampling modes, the PMCs are configured to sample the CPU
 instruction pointer (and optionally to capture the call chain leading
-upto the sampled instruction pointer) after a configurable number of
+up to the sampled instruction pointer) after a configurable number of
 hardware events have been observed.
 Instruction pointer samples and call chain records are usually
 directed to a log file for subsequent analysis.

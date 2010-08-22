@@ -23,14 +23,14 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/usr.sbin/bsnmpd/modules/snmp_bridge/snmp_bridge.3,v 1.5 2010/08/06 14:33:42 joel Exp $
+.\" $FreeBSD: src/usr.sbin/bsnmpd/modules/snmp_bridge/snmp_bridge.3,v 1.6 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd August 6, 2007
 .Dt snmp_bridge 3
 .Os
 .Sh NAME
 .Nm snmp_bridge
-.Nd "bridge module for snmpd.
+.Nd "bridge module for snmpd"
 .Sh LIBRARY
 .Pq begemotSnmpdModulePath."bridge" = "/usr/lib/snmp_bridge.so"
 .Sh DESCRIPTION
@@ -46,7 +46,7 @@ MIB also defines additional objects which make the functionality of
 similar to
 .Xr ifconfig 8
 for configuring bridge interfaces.
-Therefore one should consider adding write comminities or loading the
+Therefore one should consider adding write communities or loading the
 .Nm
 module on systems where security is crucial.
 .Sh IMPLEMENTATION NOTES

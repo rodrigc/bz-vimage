@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/core/geom.c,v 1.44 2010/06/21 08:24:50 ae Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/core/geom.c,v 1.45 2010/08/19 11:20:24 des Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -237,7 +237,7 @@ static void
 set_option(struct gctl_req *req, struct g_option *opt, const char *val)
 {
 	char *s;
-	intmax_t number;
+	uint64_t number;
 
 	if (G_OPT_TYPE(opt) == G_TYPE_NUMBER ||
 	    G_OPT_TYPE(opt) == G_TYPE_ASCNUM) {

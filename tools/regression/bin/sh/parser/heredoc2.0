@@ -1,4 +1,4 @@
-# $FreeBSD: src/tools/regression/bin/sh/parser/heredoc2.0,v 1.1 2010/04/03 20:55:56 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/parser/heredoc2.0,v 1.2 2010/08/16 21:14:49 jilles Exp $
 
 failures=0
 
@@ -15,11 +15,6 @@ check '"$(cat <<EOF
 ${s}
 EOF
 )" = "ast*que?non"'
-
-check '"$(cat <<EOF
-${s+"x"}
-EOF
-)" = ${dq}x${dq}'
 
 check '"$(cat <<EOF
 ${s+'$sq'x'$sq'}

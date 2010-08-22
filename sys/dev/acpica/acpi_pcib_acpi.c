@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib_acpi.c,v 1.61 2010/08/05 16:10:12 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pcib_acpi.c,v 1.62 2010/08/17 15:44:52 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -116,6 +116,7 @@ static device_method_t acpi_pcib_acpi_methods[] = {
     DEVMETHOD(pcib_alloc_msix,		acpi_pcib_alloc_msix),
     DEVMETHOD(pcib_release_msix,	pcib_release_msix),
     DEVMETHOD(pcib_map_msi,		acpi_pcib_map_msi),
+    DEVMETHOD(pcib_power_for_sleep,	acpi_pcib_power_for_sleep),
 
     {0, 0}
 };

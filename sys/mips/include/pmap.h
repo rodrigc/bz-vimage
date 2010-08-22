@@ -40,7 +40,7 @@
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: src/sys/i386/include/pmap.h,v 1.65.2.2 2000/11/30 01:54:42 peter
  *	JNPR: pmap.h,v 1.7.2.1 2007/09/10 07:44:12 girish
- *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.17 2010/08/06 07:32:33 jchandra Exp $
+ *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.19 2010/08/12 10:09:28 jchandra Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -81,7 +81,7 @@ struct pmap {
 						 * pmap */
 	uint32_t	pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int		pm_retries;
-	int pm_active;		/* active on cpus */
+	cpumask_t	pm_active;		/* active on cpus */
 	struct {
 		u_int32_t asid:ASID_BITS;	/* TLB address space tag */
 		u_int32_t gen:ASIDGEN_BITS;	/* its generation number */
@@ -157,16 +157,14 @@ void pmap_bootstrap(void);
 void *pmap_mapdev(vm_offset_t, vm_size_t);
 void pmap_unmapdev(vm_offset_t, vm_size_t);
 vm_offset_t pmap_steal_memory(vm_size_t size);
-void pmap_set_modified(vm_offset_t pa);
 int page_is_managed(vm_offset_t pa);
 void pmap_kenter(vm_offset_t va, vm_paddr_t pa);
 void pmap_kremove(vm_offset_t va);
 void *pmap_kenter_temporary(vm_paddr_t pa, int i);
 void pmap_kenter_temporary_free(vm_paddr_t pa);
 int pmap_compute_pages_to_dump(void);
-void pmap_update_page(pmap_t pmap, vm_offset_t va, pt_entry_t pte);
 void pmap_flush_pvcache(vm_page_t m);
-
+int pmap_emulate_modified(pmap_t pmap, vm_offset_t va);
 #endif				/* _KERNEL */
 
 #endif				/* !LOCORE */

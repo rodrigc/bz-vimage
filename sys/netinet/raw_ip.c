@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.229 2010/04/27 15:07:08 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.230 2010/08/17 16:41:16 jhb Exp $");
 
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
@@ -994,8 +994,8 @@ rip_pcblist(SYSCTL_HANDLER_ARGS)
 	 */
 	if (req->oldptr == 0) {
 		n = V_ripcbinfo.ipi_count;
-		req->oldidx = 2 * (sizeof xig)
-		    + (n + n/8) * sizeof(struct xinpcb);
+		n += imax(n / 8, 10);
+		req->oldidx = 2 * (sizeof xig) + n * sizeof(struct xinpcb);
 		return (0);
 	}
 

@@ -23,7 +23,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/kproc.9,v 1.5 2010/07/31 10:01:15 joel Exp $
+.\" $FreeBSD: src/share/man/man9/kproc.9,v 1.6 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd October 19, 2007
 .Dt KPROC 9
@@ -244,7 +244,7 @@ when it is called by the new process.
 The
 .Fa procptr
 pointer points to a
-.Vt "struct proc "
+.Vt "struct proc"
 pointer that is the location to be updated with the new proc pointer
 if a new process is created, or if not
 .Dv NULL ,
@@ -255,7 +255,7 @@ then a new process is created and the field updated.
 If not NULL, the
 .Fa tdptr
 pointer points to a
-.Vt "struct thread "
+.Vt "struct thread"
 pointer that is the location to be updated with the new thread pointer.
 The
 .Fa flags

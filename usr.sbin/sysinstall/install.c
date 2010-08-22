@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.389 2010/07/16 20:42:20 brucec Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.390 2010/08/17 09:39:06 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -1274,7 +1274,7 @@ installVarDefaults(dialogMenuItem *self)
 	    variable_set2(VAR_FIXIT_TTY,		"serial", 0);
     variable_set2(VAR_PKG_TMPDIR,		"/var/tmp", 0);
     variable_set2(VAR_MEDIA_TIMEOUT,		itoa(MEDIA_TIMEOUT), 0);
-    if (getpid() != 1)
+    if (!RunningAsInit)
 	variable_set2(SYSTEM_STATE,		"update", 0);
     else
 	variable_set2(SYSTEM_STATE,		"init", 0);

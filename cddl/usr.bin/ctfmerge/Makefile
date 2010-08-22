@@ -1,10 +1,9 @@
-# $FreeBSD: src/cddl/usr.bin/ctfmerge/Makefile,v 1.3 2010/03/02 19:04:07 uqs Exp $
+# $FreeBSD: src/cddl/usr.bin/ctfmerge/Makefile,v 1.4 2010/08/11 18:00:45 rpaulo Exp $
 
 .PATH: ${.CURDIR}/../../../cddl/contrib/opensolaris/tools/ctf/common
 .PATH: ${.CURDIR}/../../../cddl/contrib/opensolaris/tools/ctf/cvt
 
 PROG=		ctfmerge
-NO_MAN=
 SRCS=		alist.c \
 		barrier.c \
 		ctf.c \

@@ -27,7 +27,7 @@
 #include "opt_uart.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/uart_cpu_ar71xx.c,v 1.1 2010/01/09 18:02:31 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/uart_cpu_ar71xx.c,v 1.2 2010/08/19 02:03:12 adrian Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -39,6 +39,7 @@ __FBSDID("$FreeBSD: src/sys/mips/atheros/uart_cpu_ar71xx.c,v 1.1 2010/01/09 18:0
 #include <dev/uart/uart_cpu.h>
 
 #include <mips/atheros/ar71xxreg.h>
+#include <mips/atheros/ar71xx_cpudef.h>
 #include <mips/atheros/ar71xx_bus_space_reversed.h>
 
 bus_space_tag_t uart_bus_space_io;

@@ -1,4 +1,9 @@
-# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.61 2009/03/07 22:05:58 marcel Exp $
+# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.62 2010/08/21 15:01:59 rpaulo Exp $
+
+.include <bsd.own.mk>
+
+# XXX: clang can compile the boot code just fine, but boot2 gets too big
+CC:=${CC:C/^cc|^clang/gcc/}
 
 FILES=		boot boot1 boot2
 

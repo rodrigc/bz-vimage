@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.283 2010/07/15 23:24:06 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi.c,v 1.284 2010/08/17 15:44:52 jhb Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -129,8 +129,6 @@ static char	*acpi_device_id_probe(device_t bus, device_t dev, char **ids);
 static ACPI_STATUS acpi_device_eval_obj(device_t bus, device_t dev,
 		    ACPI_STRING pathname, ACPI_OBJECT_LIST *parameters,
 		    ACPI_BUFFER *ret);
-static int	acpi_device_pwr_for_sleep(device_t bus, device_t dev,
-		    int *dstate);
 static ACPI_STATUS acpi_device_scan_cb(ACPI_HANDLE h, UINT32 level,
 		    void *context, void **retval);
 static ACPI_STATUS acpi_device_scan_children(device_t bus, device_t dev,
@@ -1415,7 +1413,7 @@ acpi_device_eval_obj(device_t bus, device_t dev, ACPI_STRING pathname,
     return (AcpiEvaluateObject(h, pathname, parameters, ret));
 }
 
-static int
+int
 acpi_device_pwr_for_sleep(device_t bus, device_t dev, int *dstate)
 {
     struct acpi_softc *sc;

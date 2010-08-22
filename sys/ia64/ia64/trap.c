@@ -25,10 +25,9 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/trap.c,v 1.138 2010/05/24 17:24:14 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/trap.c,v 1.139 2010/08/19 16:41:27 jhb Exp $");
 
 #include "opt_ddb.h"
-#include "opt_ktrace.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -65,11 +64,6 @@ __FBSDID("$FreeBSD: src/sys/ia64/ia64/trap.c,v 1.138 2010/05/24 17:24:14 kib Exp
 #include <machine/pcb.h>
 #ifdef SMP
 #include <machine/smp.h>
-#endif
-
-#ifdef KTRACE
-#include <sys/uio.h>
-#include <sys/ktrace.h>
 #endif
 
 #include <security/audit/audit.h>

@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_machdep.c,v 1.59 2010/08/08 14:00:21 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mp_machdep.c,v 1.60 2010/08/11 23:22:53 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -121,7 +121,7 @@ cpu_ipi_single_t *cpu_ipi_single;
 static vm_offset_t mp_tramp;
 static u_int cpuid_to_mid[MAXCPU];
 static int isjbus;
-static volatile u_int shutdown_cpus;
+static volatile cpumask_t shutdown_cpus;
 
 static void ap_count(phandle_t node, u_int mid, u_int cpu_impl);
 static void ap_start(phandle_t node, u_int mid, u_int cpu_impl);

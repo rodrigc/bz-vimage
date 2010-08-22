@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/atheros/if_argevar.h,v 1.3 2010/07/08 15:20:57 adrian Exp $
+ * $FreeBSD: src/sys/mips/atheros/if_argevar.h,v 1.5 2010/08/19 16:29:08 adrian Exp $
  */
 
 #ifndef __IF_ARGEVAR_H__
@@ -150,9 +150,6 @@ struct arge_softc {
 	uint32_t		arge_intr_status;
 	int			arge_mac_unit;
 	int			arge_phymask;
-	uint32_t		arge_ddr_flush_reg;
-	uint32_t		arge_pll_reg;
-	uint32_t		arge_pll_reg_shift;
 	int			arge_if_flags;
 	uint32_t		arge_debug;
 	struct {

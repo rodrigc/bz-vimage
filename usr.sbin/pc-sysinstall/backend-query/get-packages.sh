@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/get-packages.sh,v 1.1 2010/07/13 23:47:12 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/get-packages.sh,v 1.2 2010/08/19 05:59:27 imp Exp $
 
 # Script which lists the available packages for this release
 ###########################################################################
@@ -31,24 +31,16 @@
 . ${PROGDIR}/backend/functions.sh
 . ${PROGDIR}/backend/functions-packages.sh
 
-DEFAULT_FTP_SERVER="ftp.freebsd.org"
-FTP_SERVER="${1}"
 ID=`id -u`
-
 if [ "${ID}" -ne "0" ]
 then
 	echo "Error: must be root!" 
 	exit 1
 fi
 
-if [ -z "${FTP_SERVER}" ]
-then
-	FTP_SERVER="${DEFAULT_FTP_SERVER}"
-fi
-
 if [ ! -f "${PKGDIR}/INDEX" ]
 then
-	get_package_index "${FTP_SERVER}"
+	get_package_index
 fi
 
 if [ -f "${PKGDIR}/INDEX" ]

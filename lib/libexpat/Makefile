@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libexpat/Makefile,v 1.9 2010/01/02 09:58:07 ed Exp $
+# $FreeBSD: src/lib/libexpat/Makefile,v 1.10 2010/08/12 20:46:49 will Exp $
 
 EXPAT=		${.CURDIR}/../../contrib/expat
 
@@ -30,6 +30,6 @@ bsdxml.h: expat.h
 		> ${.TARGET}
 
 bsdxml_external.h: expat_external.h
-	cp ${.ALLSRC} ${.TARGET}
+	cp -f ${.ALLSRC} ${.TARGET}
 
 .include <bsd.lib.mk>

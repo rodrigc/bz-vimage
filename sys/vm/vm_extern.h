@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vm_extern.h	8.2 (Berkeley) 1/12/94
- * $FreeBSD: src/sys/vm/vm_extern.h,v 1.94 2010/04/18 22:32:07 jmallett Exp $
+ * $FreeBSD: src/sys/vm/vm_extern.h,v 1.95 2010/08/11 22:10:37 mdf Exp $
  */
 
 #ifndef _VM_EXTERN_H_
@@ -53,6 +53,7 @@ void kmem_free(vm_map_t, vm_offset_t, vm_size_t);
 void kmem_free_wakeup(vm_map_t, vm_offset_t, vm_size_t);
 void kmem_init(vm_offset_t, vm_offset_t);
 vm_offset_t kmem_malloc(vm_map_t map, vm_size_t size, int flags);
+int kmem_back(vm_map_t, vm_offset_t, vm_size_t, int);
 vm_map_t kmem_suballoc(vm_map_t, vm_offset_t *, vm_offset_t *, vm_size_t,
     boolean_t);
 void swapout_procs(int);

@@ -1,5 +1,5 @@
 #	from: @(#)sys.mk	8.2 (Berkeley) 3/21/94
-# $FreeBSD: src/share/mk/sys.mk,v 1.109 2010/07/30 08:52:19 rpaulo Exp $
+# $FreeBSD: src/share/mk/sys.mk,v 1.110 2010/08/12 20:46:49 will Exp $
 
 unix		?=	We run FreeBSD, not UNIX.
 .FreeBSD	?=	true
@@ -167,7 +167,7 @@ YFLAGS		?=	-d
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})
 
 .sh:
-	cp ${.IMPSRC} ${.TARGET}
+	cp -f ${.IMPSRC} ${.TARGET}
 	chmod a+x ${.TARGET}
 
 # DOUBLE SUFFIX RULES
@@ -225,7 +225,7 @@ YFLAGS		?=	-d
 # non-Posix rule set
 
 .sh:
-	cp -p ${.IMPSRC} ${.TARGET}
+	cp -fp ${.IMPSRC} ${.TARGET}
 	chmod a+x ${.TARGET}
 
 .c.ln:

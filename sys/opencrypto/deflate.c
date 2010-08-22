@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/opencrypto/deflate.c,v 1.9 2009/11/29 17:46:40 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/opencrypto/deflate.c,v 1.10 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include "opt_kdtrace.h"
 
@@ -50,13 +50,13 @@ __FBSDID("$FreeBSD: src/sys/opencrypto/deflate.c,v 1.9 2009/11/29 17:46:40 bz Ex
 #include <opencrypto/deflate.h>
 
 SDT_PROVIDER_DECLARE(opencrypto);
-SDT_PROBE_DEFINE2(opencrypto, deflate, deflate_global, entry,
+SDT_PROBE_DEFINE2(opencrypto, deflate, deflate_global, entry, entry,
     "int", "u_int32_t");
-SDT_PROBE_DEFINE5(opencrypto, deflate, deflate_global, bad,
+SDT_PROBE_DEFINE5(opencrypto, deflate, deflate_global, bad, bad,
     "int", "int", "int", "int", "int");
-SDT_PROBE_DEFINE5(opencrypto, deflate, deflate_global, iter,
+SDT_PROBE_DEFINE5(opencrypto, deflate, deflate_global, iter, iter,
     "int", "int", "int", "int", "int");
-SDT_PROBE_DEFINE2(opencrypto, deflate, deflate_global, return,
+SDT_PROBE_DEFINE2(opencrypto, deflate, deflate_global, return, return,
     "int", "u_int32_t");
 
 int window_inflate = -1 * MAX_WBITS;

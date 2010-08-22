@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)error.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/error.c,v 1.29 2010/01/01 18:17:46 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/error.c,v 1.30 2010/08/13 13:36:18 jilles Exp $");
 
 /*
  * Errors and exceptions.
@@ -102,7 +102,7 @@ exraise(int e)
 void
 onint(void)
 {
-	sigset_t sigset;
+	sigset_t sigs;
 
 	/*
 	 * The !in_dotrap here is safe.  The only way we can arrive here
@@ -115,8 +115,8 @@ onint(void)
 		return;
 	}
 	intpending = 0;
-	sigemptyset(&sigset);
-	sigprocmask(SIG_SETMASK, &sigset, NULL);
+	sigemptyset(&sigs);
+	sigprocmask(SIG_SETMASK, &sigs, NULL);
 
 	/*
 	 * This doesn't seem to be needed, since main() emits a newline.

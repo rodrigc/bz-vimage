@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_pci.c,v 1.3 2010/08/05 21:31:29 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_pci.c,v 1.4 2010/08/19 02:05:16 adrian Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -55,6 +55,8 @@ __FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_pci.c,v 1.3 2010/08/05 21:31:29 
 
 #include <mips/atheros/ar71xxreg.h>
 #include <mips/atheros/ar71xx_pci_bus_space.h>
+
+#include <mips/atheros/ar71xx_cpudef.h>
 
 #undef AR71XX_PCI_DEBUG
 #ifdef AR71XX_PCI_DEBUG
@@ -258,7 +260,6 @@ ar71xx_pci_attach(device_t dev)
 {
 	int busno = 0;
 	int rid = 0;
-	uint32_t reset;
 	struct ar71xx_pci_softc *sc = device_get_softc(dev);
 
 	sc->sc_mem_rman.rm_type = RMAN_ARRAY;
@@ -295,15 +296,10 @@ ar71xx_pci_attach(device_t dev)
 	}
 
 	/* reset PCI core and PCI bus */
-	reset = ATH_READ_REG(AR71XX_RST_RESET);
-	reset |= (RST_RESET_PCI_CORE | RST_RESET_PCI_BUS);
-	ATH_WRITE_REG(AR71XX_RST_RESET, reset);
-	ATH_READ_REG(AR71XX_RST_RESET);
+	ar71xx_device_stop(RST_RESET_PCI_CORE | RST_RESET_PCI_BUS);
 	DELAY(100000);
 
-	reset &= ~(RST_RESET_PCI_CORE | RST_RESET_PCI_BUS);
-	ATH_WRITE_REG(AR71XX_RST_RESET, reset);
-	ATH_READ_REG(AR71XX_RST_RESET);
+	ar71xx_device_start(RST_RESET_PCI_CORE | RST_RESET_PCI_BUS);
 	DELAY(100000);
 
 	/* Init PCI windows */

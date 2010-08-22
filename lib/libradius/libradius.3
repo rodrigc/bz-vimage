@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libradius/libradius.3,v 1.18 2009/09/11 11:42:56 mav Exp $
+.\" $FreeBSD: src/lib/libradius/libradius.3,v 1.19 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd August 5, 2009
 .Dt LIBRADIUS 3
@@ -464,7 +464,7 @@ subsequent library calls using the same handle.
 To free the resources used by the RADIUS library, call
 .Fn rad_close .
 .Ss Server operation
-Server mode operates much alike to client mode, except packet send and receieve
+Server mode operates much alike to client mode, except packet send and receive
 steps are swapped. To operate as server you should obtain server context with
 .Fn rad_server_open
 function, passing opened and bound UDP socket file descriptor as argument.

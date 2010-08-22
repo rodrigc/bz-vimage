@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_bus.c,v 1.243 2010/06/21 09:55:56 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_bus.c,v 1.244 2010/08/12 19:26:27 gibbs Exp $");
 
 #include "opt_bus.h"
 
@@ -3316,7 +3316,7 @@ bus_generic_probe(device_t dev)
 		 * on early-pass busses during BUS_NEW_PASS().
 		 */
 		if (dl->pass > bus_current_pass)
-				continue;
+			continue;
 		DEVICE_IDENTIFY(dl->driver, dev);
 	}
 

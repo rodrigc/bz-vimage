@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212.h,v 1.7 2010/03/02 12:59:42 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212.h,v 1.8 2010/08/12 06:06:14 adrian Exp $
  */
 #ifndef _ATH_AR5212_H_
 #define _ATH_AR5212_H_
@@ -608,4 +608,8 @@ extern	void ar5212AniPoll(struct ath_hal *, const HAL_NODE_STATS *,
 			     const struct ieee80211_channel *);
 extern	void ar5212AniReset(struct ath_hal *, const struct ieee80211_channel *,
 		HAL_OPMODE, int);
+
+extern	HAL_BOOL ar5212IsNFCalInProgress(struct ath_hal *ah);
+extern	HAL_BOOL ar5212WaitNFCalComplete(struct ath_hal *ah, int i);
+
 #endif	/* _ATH_AR5212_H_ */

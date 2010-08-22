@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/Makefile.inc1,v 1.659 2010/07/15 13:21:25 raj Exp $
+# $FreeBSD: src/Makefile.inc1,v 1.664 2010/08/21 17:29:59 rpaulo Exp $
 #
 # Make command line options:
 #	-DNO_CLEANDIR run ${MAKE} clean, instead of ${MAKE} cleandir
@@ -1086,8 +1086,15 @@ _kgzip=		usr.sbin/kgzip
 .endif
 .endif
 
+.if ${CC:T:Mclang} == "clang"
+_clang=		usr.bin/clang
+_clang_libs=	lib/clang
+.endif
+
 cross-tools:
 .for _tool in \
+    ${_clang_libs} \
+    ${_clang} \
     gnu/usr.bin/binutils \
     gnu/usr.bin/cc \
     usr.bin/xlint/lint1 usr.bin/xlint/lint2 usr.bin/xlint/xlint \

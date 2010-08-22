@@ -33,7 +33,7 @@
 
 #if defined(LIBC_SCCS) && !defined(lint)
 /*static char *sccsid = "from: @(#)malloc.c	5.11 (Berkeley) 2/23/91";*/
-static char *rcsid = "$FreeBSD: src/libexec/rtld-elf/malloc.c,v 1.11 2006/01/12 07:28:21 jasone Exp $";
+static char *rcsid = "$FreeBSD: src/libexec/rtld-elf/malloc.c,v 1.12 2010/08/17 09:05:39 kib Exp $";
 #endif /* LIBC_SCCS and not lint */
 
 /*
@@ -48,6 +48,7 @@ static char *rcsid = "$FreeBSD: src/libexec/rtld-elf/malloc.c,v 1.11 2006/01/12 
  */
 
 #include <sys/types.h>
+#include <sys/sysctl.h>
 #include <err.h>
 #include <paths.h>
 #include <stdarg.h>
@@ -152,6 +153,26 @@ botch(s)
 static void xprintf(const char *, ...);
 #define TRACE()	xprintf("TRACE %s:%d\n", __FILE__, __LINE__)
 
+extern int pagesize;
+
+static int
+rtld_getpagesize(void)
+{
+	int mib[2];
+	size_t size;
+
+	if (pagesize != 0)
+		return (pagesize);
+
+	mib[0] = CTL_HW;
+	mib[1] = HW_PAGESIZE;
+	size = sizeof(pagesize);
+	if (sysctl(mib, 2, &pagesize, &size, NULL, 0) == -1)
+		return (-1);
+	return (pagesize);
+
+}
+
 void *
 malloc(nbytes)
 	size_t nbytes;
@@ -166,7 +187,7 @@ malloc(nbytes)
 	 * align break pointer so all data will be page aligned.
 	 */
 	if (pagesz == 0) {
-		pagesz = n = getpagesize();
+		pagesz = n = rtld_getpagesize();
 		if (morepages(NPOOLPAGES) == 0)
 			return NULL;
 		op = (union overhead *)(pagepool_start);

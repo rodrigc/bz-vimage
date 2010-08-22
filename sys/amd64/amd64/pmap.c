@@ -77,7 +77,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/pmap.c,v 1.710 2010/08/10 16:14:10 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/pmap.c,v 1.711 2010/08/17 12:17:24 gahr Exp $");
 
 /*
  *	Manages physical address maps.
@@ -620,7 +620,8 @@ pmap_init_pat(void)
 		if (sysenv != NULL) {
 			if (strncmp(sysenv, "MacBook5,1", 10) == 0 ||
 			    strncmp(sysenv, "MacBookPro5,5", 13) == 0 ||
-			    strncmp(sysenv, "Macmini3,1", 10) == 0)
+			    strncmp(sysenv, "Macmini3,1", 10) == 0 ||
+			    strncmp(sysenv, "iMac9,1", 7) == 0)
 				pat_works = 0;
 			freeenv(sysenv);
 		}

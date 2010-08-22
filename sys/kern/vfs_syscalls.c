@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_syscalls.c,v 1.499 2010/07/06 18:20:49 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_syscalls.c,v 1.500 2010/08/22 11:18:57 rpaulo Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -85,10 +85,10 @@ __FBSDID("$FreeBSD: src/sys/kern/vfs_syscalls.c,v 1.499 2010/07/06 18:20:49 kib 
 #include <vm/uma.h>
 
 SDT_PROVIDER_DEFINE(vfs);
-SDT_PROBE_DEFINE(vfs, , stat, mode);
+SDT_PROBE_DEFINE(vfs, , stat, mode, mode);
 SDT_PROBE_ARGTYPE(vfs, , stat, mode, 0, "char *");
 SDT_PROBE_ARGTYPE(vfs, , stat, mode, 1, "int");
-SDT_PROBE_DEFINE(vfs, , stat, reg);
+SDT_PROBE_DEFINE(vfs, , stat, reg, reg);
 SDT_PROBE_ARGTYPE(vfs, , stat, reg, 0, "char *");
 SDT_PROBE_ARGTYPE(vfs, , stat, reg, 1, "int");
 

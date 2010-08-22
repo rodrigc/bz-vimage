@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.314 2010/08/11 10:51:27 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/mp_machdep.c,v 1.317 2010/08/19 22:37:43 attilio Exp $");
 
 #include "opt_apic.h"
 #include "opt_cpu.h"
@@ -174,7 +174,7 @@ static u_long *ipi_statclock_counts[MAXCPU];
  * Local data and functions.
  */
 
-static cpumask_t logical_cpus;
+static u_int logical_cpus;
 static volatile cpumask_t ipi_nmi_pending;
 
 /* used to hold the AP's until we are ready to release them */
@@ -210,8 +210,8 @@ static int	start_all_aps(void);
 static int	start_ap(int apic_id);
 static void	release_aps(void *dummy);
 
-static cpumask_t	hlt_logical_cpus;
-static cpumask_t	hyperthreading_cpus;
+static int	hlt_logical_cpus;
+static u_int	hyperthreading_cpus;
 static cpumask_t	hyperthreading_cpus_mask;
 static int	hyperthreading_allowed = 1;
 static struct	sysctl_ctx_list logical_cpu_clist;
@@ -1411,10 +1411,8 @@ cpustop_handler(void)
 	cpumask_t cpumask;
 	u_int cpu;
 
-	sched_pin();
 	cpu = PCPU_GET(cpuid);
 	cpumask = PCPU_GET(cpumask);
-	sched_unpin();
 
 	savectx(&stoppcbs[cpu]);
 
@@ -1588,19 +1586,17 @@ mp_grab_cpu_hlt(void)
 #endif
 	int retval;
 
+	mask = PCPU_GET(cpumask);
 #ifdef MP_WATCHDOG
-	sched_pin();
-	mask = PCPU_GET(cpumask);
 	cpuid = PCPU_GET(cpuid);
-	sched_unpin();
 	ap_watchdog(cpuid);
-#else
-	mask = PCPU_GET(cpumask);
 #endif
 
-	retval = mask & hlt_cpus_mask;
-	while (mask & hlt_cpus_mask)
+	retval = 0;
+	while (mask & hlt_cpus_mask) {
+		retval = 1;
 		__asm __volatile("sti; hlt" : : : "memory");
+	}
 	return (retval);
 }
 

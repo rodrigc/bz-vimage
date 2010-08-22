@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.659 2010/08/11 00:51:50 will Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.662 2010/08/19 11:31:03 anchie Exp $
 
 .include <bsd.own.mk>
 
@@ -284,6 +284,7 @@ SUBDIR=	${_3dfx} \
 	ti \
 	tl \
 	tmpfs \
+	${_tpm} \
 	trm \
 	${_twa} \
 	twe \
@@ -481,6 +482,7 @@ _nfe=		nfe
 _nve=		nve
 _nvram=		nvram
 _nxge=		nxge
+_tpm=		tpm
 _wpi=		wpi
 _wpifw=		wpifw
 .if ${MK_CRYPT} != "no" || defined(ALL_MODULES)
@@ -576,6 +578,7 @@ _sound=		sound
 _speaker=	speaker
 _splash=	splash
 _sppp=		sppp
+_tpm=		tpm
 _twa=		twa
 _vesa=		vesa
 _x86bios=	x86bios
@@ -620,6 +623,7 @@ _sound=		sound
 _splash=	splash
 _sppp=		sppp
 _streams=	streams
+_tpm=		tpm
 _twa=		twa
 _wi=		wi
 _xe=		xe

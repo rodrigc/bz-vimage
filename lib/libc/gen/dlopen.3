@@ -30,7 +30,7 @@
 .\" Copyright (c) 1991 Sun Microsystems, Inc.
 .\"
 .\" @(#) dlopen.3 1.6 90/01/31 SMI
-.\" $FreeBSD: src/lib/libc/gen/dlopen.3,v 1.32 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/lib/libc/gen/dlopen.3,v 1.33 2010/08/16 15:18:30 joel Exp $
 .\"
 .Dd July 7, 2009
 .Dt DLOPEN 3
@@ -149,7 +149,7 @@ The same behaviour may be requested by
 option of the static linker
 .Xr ld 1 .
 .It Dv RTLD_NOLOAD
-Ony return valid handle for the object if it is already loaded in
+Only return valid handle for the object if it is already loaded in
 the process address space, otherwise
 .Dv NULL
 is returned.

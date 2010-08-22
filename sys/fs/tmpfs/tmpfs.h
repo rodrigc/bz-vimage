@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/tmpfs/tmpfs.h,v 1.19 2010/01/13 14:17:21 jh Exp $
+ * $FreeBSD: src/sys/fs/tmpfs/tmpfs.h,v 1.20 2010/08/22 05:36:06 ed Exp $
  */
 
 #ifndef _FS_TMPFS_TMPFS_H_
@@ -72,7 +72,8 @@ struct tmpfs_dirent {
 	* td_namelen field must always be used when accessing its value. */
 	char *				td_name;
 
-	/* Pointer to the node this entry refers to. */
+	/* Pointer to the node this entry refers to.  In case this field
+	 * is NULL, the node is a whiteout. */
 	struct tmpfs_node *		td_node;
 };
 
@@ -434,6 +435,8 @@ int	tmpfs_dir_getdotdent(struct tmpfs_node *, struct uio *);
 int	tmpfs_dir_getdotdotdent(struct tmpfs_node *, struct uio *);
 struct tmpfs_dirent *	tmpfs_dir_lookupbycookie(struct tmpfs_node *, off_t);
 int	tmpfs_dir_getdents(struct tmpfs_node *, struct uio *, off_t *);
+int	tmpfs_dir_whiteout_add(struct vnode *, struct componentname *);
+void	tmpfs_dir_whiteout_remove(struct vnode *, struct componentname *);
 int	tmpfs_reg_resize(struct vnode *, off_t);
 int	tmpfs_chflags(struct vnode *, int, struct ucred *, struct thread *);
 int	tmpfs_chmod(struct vnode *, mode_t, struct ucred *, struct thread *);

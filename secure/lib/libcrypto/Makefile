@@ -1,4 +1,4 @@
-# $FreeBSD: src/secure/lib/libcrypto/Makefile,v 1.84 2009/07/19 17:25:24 kensmith Exp $
+# $FreeBSD: src/secure/lib/libcrypto/Makefile,v 1.85 2010/08/12 20:46:49 will Exp $
 
 SHLIBDIR?=	/lib
 SUBDIR=		engines
@@ -355,13 +355,13 @@ buildinf.h: ${.CURDIR}/Makefile
 	echo "#endif" ) > ${.TARGET}
 
 opensslconf.h: opensslconf-${MACHINE_ARCH}.h
-	cp ${.ALLSRC} ${.TARGET}
+	cp -f ${.ALLSRC} ${.TARGET}
 
 evp.h: ${LCRYPTO_SRC}/crypto/evp/evp.h
 .if ${MK_IDEA} == "no"
 	sed '/^#ifndef OPENSSL_NO_IDEA$$/,/^#endif$$/d' ${.ALLSRC} > ${.TARGET}
 .else
-	cp ${.ALLSRC} ${.TARGET}
+	cp -f ${.ALLSRC} ${.TARGET}
 .endif
 
 # No FIPS support for now

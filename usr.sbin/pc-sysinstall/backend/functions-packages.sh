@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-packages.sh,v 1.1 2010/07/13 23:47:12 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-packages.sh,v 1.4 2010/08/19 06:02:31 imp Exp $
 
 # Functions which runs commands on the system
 
@@ -32,10 +32,12 @@
 . ${BACKEND}/functions-ftp.sh
 
 
-get_package_index()
+get_package_index_by_ftp()
 {
+	local INDEX_FILE
+	local FTP_SERVER
+
 	FTP_SERVER="${1}"
-	FTP_DIR="ftp://${FTP_SERVER}/pub/FreeBSD/releases/${FBSD_ARCH}/${FBSD_BRANCH}/packages"
 	INDEX_FILE="INDEX"
 	USE_BZIP2=0
 
@@ -45,18 +47,82 @@ get_package_index()
 		USE_BZIP2=1
 	fi
 
-	ftp "${FTP_DIR}/${INDEX_FILE}"
-	if [ -f "${INDEX_FILE}" ]
+	INDEX_PATH="${CONFDIR}/${INDEX_FILE}"
+	fetch_file "${FTP_SERVER}/${INDEX_FILE}" "${INDEX_PATH}" "1"
+	if [ -f "${INDEX_PATH}" ] && [ "${USE_BZIP2}" -eq "1" ]
 	then
-		if [ "${USE_BZIP2}" -eq  "1" ]
-		then
-			bzip2 -d "${INDEX_FILE}"
-			INDEX_FILE="${INDEX_FILE%.bz2}"
-		fi
-
-		mv "${INDEX_FILE}" "${PKGDIR}"
+		bzip2 -d "${INDEX_PATH}"
 	fi
-}
+};
+
+get_package_index_by_fs()
+{
+	local INDEX_FILE
+
+	INDEX_FILE="${CDMNT}/packages/INDEX"
+	fetch_file "${INDEX_FILE}" "${CONFDIR}/" "0"
+};
+
+get_package_index_size()
+{
+	if [ -f "${CONFDIR}/INDEX" ]
+	then
+		SIZE=`ls -l ${CONFDIR}/INDEX | awk '{ print $5 }'`
+	else
+		get_ftp_mirror
+		FTPHOST="${VAL}"
+
+		FTPDIR="/pub/FreeBSD/releases/${FBSD_ARCH}/${FBSD_BRANCH}"
+		FTPPATH="ftp://${FTPHOST}${FTPDIR}/packages"
+
+		fetch -s "${FTPPATH}/INDEX.bz2"
+	fi
+};
+
+get_package_index()
+{
+	RES=0
+
+	if [ -z "${INSTALLMODE}" ]
+	then
+		get_ftp_mirror
+		FTPHOST="${VAL}"
+
+		FTPDIR="/pub/FreeBSD/releases/${FBSD_ARCH}/${FBSD_BRANCH}"
+		FTPPATH="ftp://${FTPHOST}${FTPDIR}/packages"
+
+		get_package_index_by_ftp "${FTPPATH}"
+
+	else
+		get_value_from_cfg ftpHost
+		if [ -z "$VAL" ]
+		then
+			exit_err "ERROR: Install medium was set to ftp, but no ftpHost was provided!" 
+		fi
+		FTPHOST="${VAL}"
+
+		get_value_from_cfg ftpDir
+		if [ -z "$VAL" ]
+		then
+			exit_err "ERROR: Install medium was set to ftp, but no ftpDir was provided!" 
+		fi
+		FTPDIR="${VAL}"
+
+		FTPPATH="ftp://${FTPHOST}${FTPDIR}"
+
+		case "${INSTALLMEDIUM}" in
+		usb|dvd) get_package_index_by_fs
+			;;
+		ftp) get_package_index_by_ftp "${FTPPATH}"
+			;;
+		*) RES=1
+			;;
+		esac
+
+	fi
+
+	return ${RES}
+};
 
 parse_package_index()
 {
@@ -67,9 +133,11 @@ parse_package_index()
 
 	while read -r line
 	do
+		PKGNAME=""
 		CATEGORY=""
 		PACKAGE=""
 		DESC=""
+		DEPS=""
 		i=0
 
 		SAVE_IFS="${IFS}"
@@ -77,7 +145,11 @@ parse_package_index()
 
 		for part in ${line}
 		do
-			if [ "${i}" -eq "1" ]
+			if [ "${i}" -eq "0" ]
+			then
+				PKGNAME="${part}"
+
+			elif [ "${i}" -eq "1" ]
 			then
 				PACKAGE=`basename "${part}"`
 
@@ -88,21 +160,29 @@ parse_package_index()
 			elif [ "${i}" -eq "6" ]
 			then
 				CATEGORY=`echo "${part}" | cut -f1 -d' '`
+
+			elif [ "${i}" -eq "8" ]
+			then
+				DEPS="${part}"
 			fi
 
 			i=$((i+1))
 		done
 
 		echo "${CATEGORY}|${PACKAGE}|${DESC}" >> "${INDEX_FILE}.parsed"
+		echo "${PACKAGE}|${PKGNAME}|${DEPS}" >> "${INDEX_FILE}.deps"
+
 		IFS="${SAVE_IFS}"
 	done
 
 	exec 0<&3
-}
+};
 
 show_package_file()
 {
 	PKGFILE="${1}"
+
+	echo "Available Packages:"
 
 	exec 3<&0
 	exec 0<"${PKGFILE}"
@@ -117,7 +197,7 @@ show_package_file()
 	done
 
 	exec 0<&3
-}
+};
 
 show_packages_by_category()
 {
@@ -128,7 +208,7 @@ show_packages_by_category()
 	grep "^${CATEGORY}|" "${INDEX_FILE}" > "${TMPFILE}"
 	show_package_file "${TMPFILE}"
 	rm "${TMPFILE}"
-}
+};
 
 show_package_by_name()
 {
@@ -140,9 +220,161 @@ show_package_by_name()
 	grep "^${CATEGORY}|${PACKAGE}" "${INDEX_FILE}" > "${TMPFILE}"
 	show_package_file "${TMPFILE}"
 	rm "${TMPFILE}"
-}
+};
 
 show_packages()
 {
 	show_package_file "${PKGDIR}/INDEX.parsed"
-}
+};
+
+get_package_dependencies()
+{
+	PACKAGE="${1}"
+	LONG="${2:-0}"
+	RES=0
+
+	INDEX_FILE="${PKGDIR}/INDEX.deps"
+	REGEX="^${PACKAGE}|"
+
+	if [ "${LONG}" -ne "0" ]
+	then
+		REGEX="^.*|${PACKAGE}|"
+	fi
+
+	LINE=`grep "${REGEX}" "${INDEX_FILE}" 2>/dev/null`
+	DEPS=`echo "${LINE}"|cut -f3 -d'|'`
+
+	VAL="${DEPS}"
+	export VAL
+
+	if [ -z "${VAL}" ]
+	then
+		RES=1
+	fi
+
+	return ${RES}
+};
+
+get_package_name()
+{
+	PACKAGE="${1}"
+	RES=0
+
+	INDEX_FILE="${PKGDIR}/INDEX.deps"
+	REGEX="^${PACKAGE}|"
+	
+	LINE=`grep "${REGEX}" "${INDEX_FILE}" 2>/dev/null`
+	NAME=`echo "${LINE}"|cut -f2 -d'|'`
+
+	VAL="${NAME}"
+	export VAL
+
+	if [ -z "${VAL}" ]
+	then
+		RES=1
+	fi
+
+	return ${RES}
+};
+
+get_package_short_name()
+{
+	PACKAGE="${1}"
+	RES=0
+
+	INDEX_FILE="${PKGDIR}/INDEX.deps"
+	REGEX="^.*|${PACKAGE}|"
+	
+	LINE=`grep "${REGEX}" "${INDEX_FILE}" 2>/dev/null`
+	NAME=`echo "${LINE}"|cut -f1 -d'|'`
+
+	VAL="${NAME}"
+	export VAL
+
+	if [ -z "${VAL}" ]
+	then
+		RES=1
+	fi
+
+	return ${RES}
+};
+
+get_package_category()
+{
+	PACKAGE="${1}"
+	INDEX_FILE="${PKGDIR}/INDEX.parsed"
+	RES=0
+
+	LINE=`grep "|${PACKAGE}|" "${INDEX_FILE}" 2>/dev/null`
+	NAME=`echo "${LINE}"|cut -f1 -d'|'`
+
+	VAL="${NAME}"
+	export VAL
+
+	if [ -z "${VAL}" ]
+	then
+		RES=1
+	fi
+
+	return ${RES}
+};
+
+fetch_package_by_ftp()
+{
+	CATEGORY="${1}"
+	PACKAGE="${2}"
+	SAVEDIR="${3}"
+
+	get_value_from_cfg ftpHost
+	if [ -z "$VAL" ]
+	then
+		exit_err "ERROR: Install medium was set to ftp, but no ftpHost was provided!" 
+	fi
+	FTPHOST="${VAL}"
+
+	get_value_from_cfg ftpDir
+	if [ -z "$VAL" ]
+	then
+		exit_err "ERROR: Install medium was set to ftp, but no ftpDir was provided!" 
+	fi
+	FTPDIR="${VAL}"
+
+	PACKAGE="${PACKAGE}.tbz"
+	FTP_SERVER="ftp://${FTPHOST}${FTPDIR}"
+
+	if [ ! -f "${SAVEDIR}/${PACKAGE}" ]
+	then
+		PKGPATH="${CATEGORY}/${PACKAGE}"
+		FTP_PATH="${FTP_HOST}/packages/${PKGPATH}"
+		fetch_file "${FTP_PATH}" "${SAVEDIR}/" "0"
+	fi
+};
+
+fetch_package_by_fs()
+{
+	CATEGORY="${1}"
+	PACKAGE="${2}"
+	SAVEDIR="${3}"
+
+	PACKAGE="${PACKAGE}.tbz"
+	if [ ! -f "${SAVEDIR}/${PACKAGE}" ]
+	then
+		fetch_file "${CDMNT}/packages/${CATEGORY}/${PACKAGE}" "${SAVEDIR}/" "0"
+	fi
+};
+
+fetch_package()
+{
+	CATEGORY="${1}"
+	PACKAGE="${2}"
+	SAVEDIR="${3}"
+
+	case "${INSTALLMEDIUM}" in
+	usb|dvd)
+		fetch_package_by_fs "${CATEGORY}" "${PACKAGE}" "${SAVEDIR}"
+		;;
+	ftp)
+		fetch_package_by_ftp "${CATEGORY}" "${PACKAGE}" "${SAVEDIR}"
+		;;
+	esac
+};

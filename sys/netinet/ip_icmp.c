@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_icmp.c,v 1.140 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_icmp.c,v 1.141 2010/08/14 21:04:27 andre Exp $");
 
 #include "opt_ipsec.h"
 
@@ -42,6 +42,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/ip_icmp.c,v 1.140 2010/04/29 11:52:42 bz Exp
 #include <sys/time.h>
 #include <sys/kernel.h>
 #include <sys/sysctl.h>
+#include <sys/syslog.h>
 
 #include <net/if.h>
 #include <net/if_types.h>
@@ -975,7 +976,7 @@ badport_bandlim(int which)
 		 * the previous behaviour at the expense of added complexity.
 		 */
 		if (V_icmplim_output && opps > V_icmplim)
-			printf("Limiting %s from %d to %d packets/sec\n",
+			log(LOG_NOTICE, "Limiting %s from %d to %d packets/sec\n",
 				r->type, opps, V_icmplim);
 	}
 	return 0;			/* okay to send packet */
