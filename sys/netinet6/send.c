@@ -112,6 +112,7 @@ send_output(struct mbuf *m, struct ifnet *ifp, int direction)
 	struct sockaddr_in6 dst;
 	struct icmp6_hdr *icmp6;
 	int icmp6len;
+	int error;
 
 	/*
 	 * Receive incoming (SeND-protected) or outgoing traffic
@@ -131,13 +132,40 @@ send_output(struct mbuf *m, struct ifnet *ifp, int direction)
 		/* Before passing off the mbuf record the proper interface. */
 		m->m_pkthdr.rcvif = ifp;
 
-		if (m->m_flags & M_PKTHDR)
-			icmp6len = m->m_pkthdr.len - sizeof(struct ip6_hdr);
-		else
-			panic("Doh! not the first mbuf.");
+		KASSERT(m->m_flags & M_PKTHDR, ("%s: not first mbuf %p",
+		    __func__, m));
+		icmp6len = m->m_pkthdr.len - sizeof(struct ip6_hdr);
 
 		ip6 = mtod(m, struct ip6_hdr *);
 		icmp6 = (struct icmp6_hdr *)(ip6 + 1);
+
+		/*
+		 * From ip6_input /passing:
+		 * Disambiguate address scope zones (if there is ambiguity).
+		 * We first make sure that the original source or destination
+		 * address is not in our internal form for scoped addresses.
+		 * Such addresses are not necessarily invalid spec-wise, but
+		 * we cannot accept them due to the usage conflict.
+		 * in6_setscope() then also checks and rejects the cases where
+		 * src or dst are the loopback address and the receiving
+		 * interface is not loopback.
+		 */
+		if (in6_clearscope(&ip6->ip6_src) ||
+		    in6_clearscope(&ip6->ip6_dst)) {
+#if 0
+			V_ip6stat.ip6s_badscope++; /* XXX */
+#endif
+			m_freem(m);
+			return (EINVAL);
+		}
+		if (in6_setscope(&ip6->ip6_src, m->m_pkthdr.rcvif, NULL) ||
+		    in6_setscope(&ip6->ip6_dst, m->m_pkthdr.rcvif, NULL)) {
+#if 0
+			V_ip6stat.ip6s_badscope++;
+#endif
+			m_freem(m);
+			return (EINVAL);
+		}
 
 		/*
 		 * Output the packet as icmp6.c:icpm6_input() would do.
@@ -187,16 +215,18 @@ send_output(struct mbuf *m, struct ifnet *ifp, int direction)
 		 * XXX-BZ as we added data, what about fragmenting,
 		 * if now needed?
 		 */
-		int error;
 		error = ((*ifp->if_output)(ifp, m, (struct sockaddr *)&dst,
 		    NULL));
-		if (error)
+		if (error) {
+			printf("%s: error=%d\n", __func__, error);
 			error = ENOENT;
+		}
 		return (error);
 
 	default:
-		panic("%s: direction %d neither SND_IN nor SND_OUT.",
+		printf("%s: direction %d neither SND_IN nor SND_OUT.",
 		     __func__, direction);
+		return (EINVAL);
 	}
 }
 
