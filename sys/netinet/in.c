@@ -599,38 +599,58 @@ in_control(struct socket *so, u_long cmd, caddr_t data, struct ifnet *ifp,
 	}
 
 	IF_ADDR_LOCK(ifp);
-	TAILQ_REMOVE(&ifp->if_addrhead, &ia->ia_ifa, ifa_link);
+	/* Re-check that ia is still part of the list. */
+	TAILQ_FOREACH(ifa, &ifp->if_addrhead, ifa_link) {
+		if (ifa == &ia->ia_ifa)
+			break;
+	}
+	if (ifa != NULL)
+		TAILQ_REMOVE(&ifp->if_addrhead, &ia->ia_ifa, ifa_link);
 	IF_ADDR_UNLOCK(ifp);
 	ifa_free(&ia->ia_ifa);				/* if_addrhead */
 
 	IN_IFADDR_WLOCK();
-	TAILQ_REMOVE(&V_in_ifaddrhead, ia, ia_link);
-	if (ia->ia_addr.sin_family == AF_INET) {
-		struct in_ifaddr *if_ia;
+	/* Re-check that ia is still part of the list. */
+	TAILQ_FOREACH(iap, &V_in_ifaddrhead, ia_link) {
+		if (iap == ia)
+			break;
+	}
+	if (iap != NULL) {
+		TAILQ_REMOVE(&V_in_ifaddrhead, ia, ia_link);
+		if (ia->ia_addr.sin_family == AF_INET) {
+			struct in_ifaddr *if_ia;
 
-		LIST_REMOVE(ia, ia_hash);
+			LIST_REMOVE(ia, ia_hash);
+			IN_IFADDR_WUNLOCK();
+			/*
+			 * If this is the last IPv4 address configured on this
+			 * interface, leave the all-hosts group.
+			 * No state-change report need be transmitted.
+			 */
+			if_ia = NULL;
+			IFP_TO_IA(ifp, if_ia);
+			if (if_ia == NULL) {
+				ii = ((struct in_ifinfo *)ifp->if_afdata[AF_INET]);
+				IN_MULTI_LOCK();
+				if (ii->ii_allhosts) {
+					(void)in_leavegroup_locked(ii->ii_allhosts,
+					    NULL);
+					ii->ii_allhosts = NULL;
+				}
+				IN_MULTI_UNLOCK();
+			} else
+				ifa_free(&if_ia->ia_ifa);
+		} else
+			IN_IFADDR_WUNLOCK();
+		ifa_free(&ia->ia_ifa);				/* in_ifaddrhead */
+	} else {
 		IN_IFADDR_WUNLOCK();
 		/*
-		 * If this is the last IPv4 address configured on this
-		 * interface, leave the all-hosts group.
-		 * No state-change report need be transmitted.
+		 * Another thread already removed the last reference, or will,
+		 * so make sure we will not touch freed memory.
 		 */
-		if_ia = NULL;
-		IFP_TO_IA(ifp, if_ia);
-		if (if_ia == NULL) {
-			ii = ((struct in_ifinfo *)ifp->if_afdata[AF_INET]);
-			IN_MULTI_LOCK();
-			if (ii->ii_allhosts) {
-				(void)in_leavegroup_locked(ii->ii_allhosts,
-				    NULL);
-				ii->ii_allhosts = NULL;
-			}
-			IN_MULTI_UNLOCK();
-		} else
-			ifa_free(&if_ia->ia_ifa);
-	} else
-		IN_IFADDR_WUNLOCK();
-	ifa_free(&ia->ia_ifa);				/* in_ifaddrhead */
+		ia = NULL;
+	}
 out:
 	if (ia != NULL)
 		ifa_free(&ia->ia_ifa);
