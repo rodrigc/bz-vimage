@@ -3426,31 +3426,108 @@ if_deregister_com_alloc(u_char type)
 
 #ifdef DDB
 static void
+if_show_ifaddr(struct ifaddr *ifa)
+{
+
+#define	IFA_DB_RPINTF(f, e)	db_printf("\t   %s = " f "\n", #e, ifa->e);
+#define	IFA_DB_RPINTF_PTR(f, e)	db_printf("\t   %s = " f "\n", #e, &ifa->e);
+#define	IFA_DB_RPINTF_DPTR(f, e)	db_printf("\t  *%s = " f "\n", #e, *ifa->e);
+	db_printf("\tifa = %p\n", ifa);
+	IFA_DB_RPINTF("%p", ifa_addr);
+	IFA_DB_RPINTF("%p", ifa_dstaddr);
+	IFA_DB_RPINTF("%p", ifa_netmask);
+	IFA_DB_RPINTF_PTR("%p", if_data);
+	IFA_DB_RPINTF("%p", ifa_ifp);
+	IFA_DB_RPINTF_PTR("%p", ifa_link);
+	IFA_DB_RPINTF("%p", ifa_link.tqe_next);
+	IFA_DB_RPINTF("%p", ifa_link.tqe_prev);
+	IFA_DB_RPINTF_DPTR("%p", ifa_link.tqe_prev);
+	IFA_DB_RPINTF("%p", ifa_rtrequest);
+	IFA_DB_RPINTF("0x%04x", ifa_flags);
+	IFA_DB_RPINTF("%u", ifa_refcnt);
+	IFA_DB_RPINTF("%d", ifa_metric);
+	IFA_DB_RPINTF("%p", ifa_claim_addr);
+	IFA_DB_RPINTF_PTR("%p", ifa_mtx);
+#undef IFA_DB_RPINTF_DPTR
+#undef IFA_DB_RPINTF_PTR
+#undef IFA_DB_RPINTF
+}
+
+DB_SHOW_COMMAND(ifaddr, db_show_ifaddr)
+{
+	struct ifaddr *ifa;
+
+	ifa = (struct ifaddr *)addr;
+	if (ifa == NULL) {
+		db_printf("usage: show ifaddr <struct ifaddr *>\n");
+		return;
+	}
+
+	if_show_ifaddr(ifa);
+}
+
+static void
 if_show_ifnet(struct ifnet *ifp)
 {
+	struct ifaddr *ifa;
 
 	if (ifp == NULL)
 		return;
 	db_printf("%s:\n", ifp->if_xname);
 #define	IF_DB_PRINTF(f, e)	db_printf("   %s = " f "\n", #e, ifp->e);
-	IF_DB_PRINTF("%s", if_dname);
-	IF_DB_PRINTF("%d", if_dunit);
-	IF_DB_PRINTF("%s", if_description);
-	IF_DB_PRINTF("%u", if_index);
-	IF_DB_PRINTF("%u", if_refcount);
-	IF_DB_PRINTF("%d", if_index_reserved);
+#define	IF_DB_PRINTF_PTR(f, e)	db_printf("   %s = " f "\n", #e, &ifp->e);
+#define	IF_DB_PRINTF_DPTR(f, e)	db_printf("  *%s = " f "\n", #e, *ifp->e);
 	IF_DB_PRINTF("%p", if_softc);
 	IF_DB_PRINTF("%p", if_l2com);
 	IF_DB_PRINTF("%p", if_vnet);
+	IF_DB_PRINTF("%p", if_link.tqe_next);
+	IF_DB_PRINTF("%p", if_link.tqe_prev);
+	IF_DB_PRINTF("%s", if_xname);
+	IF_DB_PRINTF("%s", if_dname);
+	IF_DB_PRINTF("%d", if_dunit);
+	IF_DB_PRINTF("%u", if_refcount);
+	IF_DB_PRINTF_PTR("%p", if_addrhead);
+	IF_DB_PRINTF("%p", if_addrhead.tqh_first);
+	IF_DB_PRINTF("%p", if_addrhead.tqh_last);
+	IF_DB_PRINTF_DPTR("%p", if_addrhead.tqh_last);
+	/* XXX-BZ need a DB show for that. */
+	TAILQ_FOREACH(ifa, &ifp->if_addrhead, ifa_link) {
+		if_show_ifaddr(ifa);
+	}
+	IF_DB_PRINTF("%u", if_pcount);
+	IF_DB_PRINTF("%p", if_carp);
+	IF_DB_PRINTF("%p", if_bpf);
+	IF_DB_PRINTF("%u", if_index);
+	IF_DB_PRINTF("%d", if_index_reserved);
+	IF_DB_PRINTF("%p", if_vlantrunk);
+	IF_DB_PRINTF("0x%08x", if_flags);
+	IF_DB_PRINTF("0x%08x", if_capabilities);
+	IF_DB_PRINTF("0x%08x", if_capenable);
+	IF_DB_PRINTF("%p", if_linkmib);
+	IF_DB_PRINTF("%zu", if_linkmiblen);
+	IF_DB_PRINTF_PTR("%p", if_data);
+	/* XXX-BZ need a DB show for that. */
+	IF_DB_PRINTF_PTR("%p", if_multiaddrs);
+	/* XXX-BZ need a DB show for that. */
+	IF_DB_PRINTF("%d", if_amcount);
+
+	/* XXX-BZ should look up function names as well. */
+	IF_DB_PRINTF("%p", if_output);
+	IF_DB_PRINTF("%p", if_input);
+	IF_DB_PRINTF("%p", if_start);
+	IF_DB_PRINTF("%p", if_ioctl);
+	IF_DB_PRINTF("%p", if_init);
+	IF_DB_PRINTF("%p", if_resolvemulti);
+	IF_DB_PRINTF("%p", if_qflush);
+	IF_DB_PRINTF("%p", if_transmit);
+	IF_DB_PRINTF("%p", if_reassign);
+
 	IF_DB_PRINTF("%p", if_home_vnet);
 	IF_DB_PRINTF("%p", if_addr);
 	IF_DB_PRINTF("%p", if_llsoftc);
-	IF_DB_PRINTF("%p", if_label);
-	IF_DB_PRINTF("%u", if_pcount);
-	IF_DB_PRINTF("0x%08x", if_flags);
 	IF_DB_PRINTF("0x%08x", if_drv_flags);
-	IF_DB_PRINTF("0x%08x", if_capabilities);
-	IF_DB_PRINTF("0x%08x", if_capenable);
+
+	/* XXX-BZ factor this out into its own DB show */
 	IF_DB_PRINTF("%p", if_snd.ifq_head);
 	IF_DB_PRINTF("%p", if_snd.ifq_tail);
 	IF_DB_PRINTF("%d", if_snd.ifq_len);
@@ -3462,6 +3539,28 @@ if_show_ifnet(struct ifnet *ifp)
 	IF_DB_PRINTF("%d", if_snd.ifq_drv_maxlen);
 	IF_DB_PRINTF("%d", if_snd.altq_type);
 	IF_DB_PRINTF("%x", if_snd.altq_flags);
+
+	IF_DB_PRINTF("%p", if_broadcastaddr);
+	IF_DB_PRINTF("%p", if_bridge);
+	IF_DB_PRINTF("%p", if_label);
+	IF_DB_PRINTF_PTR("%p", if_prefixhead);
+	/* XXX-BZ iterate over all non-NULL. */
+	IF_DB_PRINTF("%p", if_afdata);
+	IF_DB_PRINTF("%d", if_afdata_initialized);
+	IF_DB_PRINTF_PTR("%p", if_afdata_lock);
+	IF_DB_PRINTF_PTR("%p", if_linktask);
+	IF_DB_PRINTF_PTR("%p", if_addr_mtx);
+	/* if_clones */
+	/* if_groups */
+	IF_DB_PRINTF("%p", if_pf_kif);
+	IF_DB_PRINTF("%p", if_lagg);
+	IF_DB_PRINTF("%u", if_alloctype);
+	/* if_cspare */
+	IF_DB_PRINTF("%s", if_description);
+	/* if_pspare */
+	/* if_ispare*/
+#undef IF_DB_PRINTF_DPTR
+#undef IF_DB_PRINTF_PTR
 #undef IF_DB_PRINTF
 }
 
