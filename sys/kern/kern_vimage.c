@@ -170,21 +170,24 @@ SDT_PROVIDER_DEFINE(vimage);
  * as the FBT provider missed function exists for some reason if compiled at
  * certain optimization levels.
  */
-SDT_PROBE_DEFINE1(vimage, functions, vimage_alloc, entry, "int");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "int",
+SDT_PROBE_DEFINE1(vimage, functions, vimage_alloc, entry, "entry", "int");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, alloc, "alloc", "int",
     "struct vimage *");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "int",
+SDT_PROBE_DEFINE2(vimage, functions, vimage_alloc, return, "return", "int",
     "struct vimage *");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy_thread, entry, "int",
+SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy_thread, entry, "entry",
+    "int", "struct vimage *");
+SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy_thread, return, "return",
+    "int");
+SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "entry", "int",
     "struct vimage *");
-SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy_thread, return, "int");
-SDT_PROBE_DEFINE2(vimage, functions, vimage_destroy, entry, "int",
+SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy, return, "return", "int");
+SDT_PROBE_DEFINE5(vimage, macros, curvimage, set, "set",
+    "struct vimage_subsys *", "char *", "int", "struct vimage *",
     "struct vimage *");
-SDT_PROBE_DEFINE1(vimage, functions, vimage_destroy, return, "int");
-SDT_PROBE_DEFINE5(vimage, macros, curvimage, set, "struct vimage_subsys *",
-    "char *", "int", "struct vimage *", "struct vimage *");
-SDT_PROBE_DEFINE5(vimage, macros, curvimage, restore, "struct vimage_subsys *",
-    "char *", "int", "struct vimage *", "struct vimage *");
+SDT_PROBE_DEFINE5(vimage, macros, curvimage, restore, "restore",
+    "struct vimage_subsys *", "char *", "int", "struct vimage *",
+    "struct vimage *");
 
 static struct vimage_subsys *vimage_subsys_get_locked(const char *);
 
