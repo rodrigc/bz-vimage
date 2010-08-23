@@ -1771,7 +1771,6 @@ nd6_output_lle(struct ifnet *ifp, struct ifnet *origifp, struct mbuf *m0,
 	int flags = 0;
 	int ip6len;
 	int  skip = 0;
-	unsigned short *nd_type;
 
 	ip6 = mtod(m, struct ip6_hdr *);
 	ip6len = sizeof(struct ip6_hdr) + ntohs(ip6->ip6_plen);	
