@@ -1321,7 +1321,7 @@ ipproto_register(u_char ipproto)
 				ip_protox[pr->pr_protocol] = pr - inetsw;
 				return (0);
 			} else
-				return (EINVAL);
+				break;
 		}
 	}
 	return (EPROTONOSUPPORT);
