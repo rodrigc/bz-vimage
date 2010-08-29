@@ -371,7 +371,9 @@ struct domain inet6domain = {
 	.dom_rtoffset =		offsetof(struct sockaddr_in6, sin6_addr) << 3,
 	.dom_maxrtkey =		sizeof(struct sockaddr_in6),
 	.dom_ifattach =		in6_domifattach,
-	.dom_ifdetach =		in6_domifdetach
+	.dom_ifdetach =		in6_domifdetach,
+	.dom_pr_register =	ip6proto_register,
+	.dom_pr_unregister =	ip6proto_unregister,
 };
 
 VNET_DOMAIN_SET(inet6);

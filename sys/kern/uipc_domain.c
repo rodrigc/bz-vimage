@@ -334,6 +334,28 @@ found:
 }
 
 /*
+ * Re-initialize protosw slot to make it available again.
+ */
+static void
+pf_proto_spacer_init(struct protosw *pr, struct domain *dp)
+{
+
+	pr->pr_type = 0;
+	pr->pr_domain = dp;
+	pr->pr_protocol = PROTO_SPACER;
+	pr->pr_flags = 0;
+	pr->pr_input = NULL;
+	pr->pr_output = NULL;
+	pr->pr_ctlinput = NULL;
+	pr->pr_ctloutput = NULL;
+	pr->pr_init = NULL;
+	pr->pr_fasttimo = NULL;
+	pr->pr_slowtimo = NULL;
+	pr->pr_drain = NULL;
+	pr->pr_usrreqs = &nousrreqs;
+}
+
+/*
  * The caller must make sure that the new protocol is fully set up and ready to
  * accept requests before it is registered.
  */
@@ -343,6 +365,7 @@ pf_proto_register(int family, struct protosw *npr)
 	VNET_ITERATOR_DECL(vnet_iter);
 	struct domain *dp;
 	struct protosw *pr, *fpr;
+	int error;
 
 	/* Sanity checks. */
 	if (family == 0)
@@ -392,6 +415,16 @@ found:
 	/* Copy the new struct protosw over the spacer. */
 	bcopy(npr, fpr, sizeof(*fpr));
 
+	/* Do per-proto registration if needed. */
+	if (dp->dom_pr_register) {
+		error = dp->dom_pr_register(npr->pr_protocol);
+		if (error != 0 && error != EPROTONOSUPPORT) {
+			pf_proto_spacer_init(fpr, dp);
+			mtx_unlock(&dom_mtx);
+			return (error);
+		}
+	}
+
 	/* Job is done, no more protection required. */
 	mtx_unlock(&dom_mtx);
 
@@ -416,6 +449,7 @@ pf_proto_unregister(int family, int protocol, int type)
 {
 	struct domain *dp;
 	struct protosw *pr, *dpr;
+	int error;
 
 	/* Sanity checks. */
 	if (family == 0)
@@ -454,20 +488,14 @@ found:
 		return (EPROTONOSUPPORT);
 	}
 
+	if (dp->dom_pr_unregister) {
+		error = dp->dom_pr_unregister(dpr->pr_protocol);
+		if (error != 0 && error != EPROTONOSUPPORT)
+			return (error);
+	}
+
 	/* De-orbit the protocol and make the slot available again. */
-	dpr->pr_type = 0;
-	dpr->pr_domain = dp;
-	dpr->pr_protocol = PROTO_SPACER;
-	dpr->pr_flags = 0;
-	dpr->pr_input = NULL;
-	dpr->pr_output = NULL;
-	dpr->pr_ctlinput = NULL;
-	dpr->pr_ctloutput = NULL;
-	dpr->pr_init = NULL;
-	dpr->pr_fasttimo = NULL;
-	dpr->pr_slowtimo = NULL;
-	dpr->pr_drain = NULL;
-	dpr->pr_usrreqs = &nousrreqs;
+	pf_proto_spacer_init(dpr, dp);
 
 	/* Job is done, not more protection required. */
 	mtx_unlock(&dom_mtx);

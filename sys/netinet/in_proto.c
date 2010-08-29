@@ -353,7 +353,9 @@ struct domain inetdomain = {
 	.dom_rtoffset =		32,
 	.dom_maxrtkey =		sizeof(struct sockaddr_in),
 	.dom_ifattach =		in_domifattach,
-	.dom_ifdetach =		in_domifdetach
+	.dom_ifdetach =		in_domifdetach,
+	.dom_pr_register =	ipproto_register,
+	.dom_pr_unregister =	ipproto_unregister,
 };
 
 VNET_DOMAIN_SET(inet);

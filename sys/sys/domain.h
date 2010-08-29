@@ -71,6 +71,13 @@ struct domain {
 	void	*(*dom_ifattach)(struct ifnet *);
 	void	(*dom_ifdetach)(struct ifnet *, void *);
 					/* af-dependent data on ifnet */
+
+	/*
+	 * In case we do a defered proto_(un)register, eg. from a
+	 * module, we might need to also do proto specific registration.
+	 */
+	int	(*dom_pr_register)(u_char);
+	int	(*dom_pr_unregister)(u_char);
 };
 
 #ifdef _KERNEL
