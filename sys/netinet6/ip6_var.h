@@ -365,8 +365,8 @@ int	icmp6_ctloutput __P((struct socket *, struct sockopt *sopt));
 
 struct in6_ifaddr;
 void	ip6_init __P((void));
-int	ip6proto_register(u_char);
-int	ip6proto_unregister(u_char);
+int	ip6proto_register(short);
+int	ip6proto_unregister(short);
 
 void	ip6_input __P((struct mbuf *));
 struct in6_ifaddr *ip6_getdstifaddr __P((struct mbuf *));

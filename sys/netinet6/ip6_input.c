@@ -229,12 +229,12 @@ ip6_init(void)
  * in inet6sw[], either statically or through pf_proto_register().
  */
 int
-ip6proto_register(u_char ip6proto)
+ip6proto_register(short ip6proto)
 {
 	struct ip6protosw *pr;
 
 	/* Sanity checks. */
-	if (ip6proto == 0)
+	if (ip6proto <= 0 || ip6proto >= IPPROTO_MAX)
 		return (EPROTONOSUPPORT);
 
 	/*
@@ -255,23 +255,20 @@ ip6proto_register(u_char ip6proto)
 		if (pr->pr_domain->dom_family == PF_INET6 &&
 		    pr->pr_protocol && pr->pr_protocol == ip6proto) {
 			/* Be careful to only index valid IP protocols. */
-			if (pr->pr_protocol < IPPROTO_MAX) {
-				ip6_protox[pr->pr_protocol] = pr - inet6sw;
-				return (0);
-			} else
-				break;
+			ip6_protox[pr->pr_protocol] = pr - inet6sw;
+			return (0);
 		}
 	}
 	return (EPROTONOSUPPORT);
 }
 
 int
-ip6proto_unregister(u_char ip6proto)
+ip6proto_unregister(short ip6proto)
 {
 	struct ip6protosw *pr;
 
 	/* Sanity checks. */
-	if (ip6proto == 0)
+	if (ip6proto <= 0 || ip6proto >= IPPROTO_MAX)
 		return (EPROTONOSUPPORT);
 
 	/* Check if the protocol was indeed registered. */
