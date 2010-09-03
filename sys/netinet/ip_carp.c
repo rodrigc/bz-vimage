@@ -245,7 +245,7 @@ static VNET_DEFINE(LIST_HEAD(, carp_softc), carpif_list) =
 #define	V_carpif_list		VNET(carpif_list)
 
 static struct mtx carp_mtx;
-IFC_SIMPLE_DECLARE(carp, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(carp, 0, IFT_ETHER);
 
 static eventhandler_tag if_detach_event_tag;
 

@@ -381,7 +381,11 @@ ieee80211_vap_setup(struct ieee80211com *ic, struct ieee80211vap *vap,
 {
 	struct ifnet *ifp;
 
+#ifdef __FreeBSD__
+	ifp = if_alloc_curvnet(IFT_ETHER);
+#else
 	ifp = if_alloc(IFT_ETHER);
+#endif
 	if (ifp == NULL) {
 		if_printf(ic->ic_ifp, "%s: unable to allocate ifnet\n",
 		    __func__);

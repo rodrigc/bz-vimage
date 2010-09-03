@@ -89,7 +89,8 @@ wlan_free(void *ic, u_char type)
 }
 
 static int
-wlan_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+wlan_clone_create(struct if_clone *ifc, struct ifnet *nifp __unused, int unit,
+    caddr_t params)
 {
 	struct ieee80211_clone_params cp;
 	struct ieee80211vap *vap;
@@ -144,7 +145,7 @@ wlan_clone_destroy(struct ifnet *ifp)
 
 	ic->ic_vap_delete(vap);
 }
-IFC_SIMPLE_DECLARE(wlan, 0, IFT_IEEE80211);
+IFC_SIMPLE_DECLARE(wlan, 0);
 
 void
 ieee80211_vap_destroy(struct ieee80211vap *vap)

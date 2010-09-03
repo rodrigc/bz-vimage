@@ -69,25 +69,22 @@ static int	discoutput(struct ifnet *, struct mbuf *,
 		    struct sockaddr *, struct route *);
 static void	discrtrequest(int, struct rtentry *, struct rt_addrinfo *);
 static int	discioctl(struct ifnet *, u_long, caddr_t);
-static int	disc_clone_create(struct if_clone *, int, caddr_t);
+static int	disc_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	disc_clone_destroy(struct ifnet *);
 
 static MALLOC_DEFINE(M_DISC, DISCNAME, "Discard interface");
 
-IFC_SIMPLE_DECLARE(disc, 0, IFT_LOOP);
+IFC_SIMPLE_DECLARE_IF(disc, 0, IFT_LOOP);
 
 static int
-disc_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+disc_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
-	struct ifnet		*ifp;
 	struct disc_softc	*sc;
 
 	sc = malloc(sizeof(struct disc_softc), M_DISC, M_WAITOK | M_ZERO);
-	ifp = sc->sc_ifp = if_alloc(IFT_LOOP);
-	if (ifp == NULL) {
-		free(sc, M_DISC);
-		return (ENOSPC);
-	}
+	sc->sc_ifp = ifp;
 
 	ifp->if_softc = sc;
 	if_initname(ifp, ifc->ifc_name, unit);
@@ -124,7 +121,6 @@ disc_clone_destroy(struct ifnet *ifp)
 
 	bpfdetach(ifp);
 	if_detach(ifp);
-	if_free(ifp);
 
 	free(sc, M_DISC);
 }

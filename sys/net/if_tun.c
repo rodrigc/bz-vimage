@@ -124,7 +124,7 @@ TUNABLE_INT("net.link.tun.devfs_cloning", &tundclone);
 
 static void	tunclone(void *arg, struct ucred *cred, char *name,
 		    int namelen, struct cdev **dev);
-static void	tuncreate(const char *name, struct cdev *dev);
+static void	tuncreate(const char *name, struct cdev *dev, struct ifnet *);
 static int	tunifioctl(struct ifnet *, u_long, caddr_t);
 static int	tuninit(struct ifnet *);
 static int	tunmodevent(module_t, int, void *);
@@ -132,10 +132,10 @@ static int	tunoutput(struct ifnet *, struct mbuf *, struct sockaddr *,
 		    struct route *ro);
 static void	tunstart(struct ifnet *);
 
-static int	tun_clone_create(struct if_clone *, int, caddr_t);
+static int	tun_clone_create(struct if_clone *, struct ifnet *, int, caddr_t);
 static void	tun_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(tun, 0, IFT_PPP);
+IFC_SIMPLE_DECLARE_IF(tun, 0, IFT_PPP);
 
 static d_open_t		tunopen;
 static d_close_t	tunclose;
@@ -177,7 +177,8 @@ static struct cdevsw tun_cdevsw = {
 };
 
 static int
-tun_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+tun_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct cdev *dev;
 	int i;
@@ -189,7 +190,7 @@ tun_clone_create(struct if_clone *ifc, int unit, caddr_t params)
 		dev = make_dev(&tun_cdevsw, unit,
 		    UID_UUCP, GID_DIALER, 0600, "%s%d", ifc->ifc_name, unit);
 	}
-	tuncreate(ifc->ifc_name, dev);
+	tuncreate(ifc->ifc_name, dev, ifp);
 
 	return (0);
 }
@@ -257,7 +258,6 @@ tun_destroy(struct tun_softc *tp)
 	dev = tp->tun_dev;
 	bpfdetach(TUN2IFP(tp));
 	if_detach(TUN2IFP(tp));
-	if_free(TUN2IFP(tp));
 	destroy_dev(dev);
 	knlist_destroy(&tp->tun_rsel.si_note);
 	mtx_destroy(&tp->tun_mtx);
@@ -299,9 +299,9 @@ tunmodevent(module_t mod, int type, void *data)
 
 		mtx_lock(&tunmtx);
 		while ((tp = TAILQ_FIRST(&tunhead)) != NULL) {
-			TAILQ_REMOVE(&tunhead, tp, tun_list);
 			mtx_unlock(&tunmtx);
-			tun_destroy(tp);
+			if (if_clone_destroy(TUN2IFP(tp)->if_dname))
+				return (EBUSY);
 			mtx_lock(&tunmtx);
 		}
 		mtx_unlock(&tunmtx);
@@ -355,10 +355,9 @@ tunstart(struct ifnet *ifp)
 
 /* XXX: should return an error code so it can fail. */
 static void
-tuncreate(const char *name, struct cdev *dev)
+tuncreate(const char *name, struct cdev *dev, struct ifnet *ifp)
 {
 	struct tun_softc *sc;
-	struct ifnet *ifp;
 
 	dev->si_flags &= ~SI_CHEAPCLONE;
 
@@ -371,10 +370,7 @@ tuncreate(const char *name, struct cdev *dev)
 	TAILQ_INSERT_TAIL(&tunhead, sc, tun_list);
 	mtx_unlock(&tunmtx);
 
-	ifp = sc->tun_ifp = if_alloc(IFT_PPP);
-	if (ifp == NULL)
-		panic("%s%d: failed to if_alloc() interface.\n",
-		    name, dev2unit(dev));
+	sc->tun_ifp = ifp;
 	if_initname(ifp, name, dev2unit(dev));
 	ifp->if_mtu = TUNMTU;
 	ifp->if_ioctl = tunifioctl;
@@ -408,7 +404,9 @@ tunopen(struct cdev *dev, int flag, int mode, struct thread *td)
 	 */
 	tp = dev->si_drv1;
 	if (!tp) {
-		tuncreate(TUNNAME, dev);
+		/* XXX-BZ this should not happen, right? */
+		panic("%s: dev=%p w/o softc\n", __func__, dev);
+		tuncreate(TUNNAME, dev, NULL);
 		tp = dev->si_drv1;
 	}
 

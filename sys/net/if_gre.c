@@ -99,13 +99,14 @@ static MALLOC_DEFINE(M_GRE, GRENAME, "Generic Routing Encapsulation");
 
 struct gre_softc_head gre_softc_list;
 
-static int	gre_clone_create(struct if_clone *, int, caddr_t);
+static int	gre_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	gre_clone_destroy(struct ifnet *);
 static int	gre_ioctl(struct ifnet *, u_long, caddr_t);
 static int	gre_output(struct ifnet *, struct mbuf *, struct sockaddr *,
 		    struct route *ro);
 
-IFC_SIMPLE_DECLARE(gre, 0, IFT_TUNNEL);
+IFC_SIMPLE_DECLARE_IF(gre, 0, IFT_TUNNEL);
 
 static int gre_compute_route(struct gre_softc *sc);
 
@@ -166,21 +167,13 @@ greattach(void)
 }
 
 static int
-gre_clone_create(ifc, unit, params)
-	struct if_clone *ifc;
-	int unit;
-	caddr_t params;
+gre_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct gre_softc *sc;
 
 	sc = malloc(sizeof(struct gre_softc), M_GRE, M_WAITOK | M_ZERO);
-
-	GRE2IFP(sc) = if_alloc(IFT_TUNNEL);
-	if (GRE2IFP(sc) == NULL) {
-		free(sc, M_GRE);
-		return (ENOSPC);
-	}
-
+	GRE2IFP(sc) = ifp;
 	GRE2IFP(sc)->if_softc = sc;
 	if_initname(GRE2IFP(sc), ifc->ifc_name, unit);
 
@@ -223,7 +216,6 @@ gre_clone_destroy(ifp)
 #endif
 	bpfdetach(ifp);
 	if_detach(ifp);
-	if_free(ifp);
 	free(sc, M_GRE);
 }
 

@@ -100,12 +100,13 @@ int		loioctl(struct ifnet *, u_long, caddr_t);
 static void	lortrequest(int, struct rtentry *, struct rt_addrinfo *);
 int		looutput(struct ifnet *ifp, struct mbuf *m,
 		    struct sockaddr *dst, struct route *ro);
-static int	lo_clone_create(struct if_clone *, int, caddr_t);
+static int	lo_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	lo_clone_destroy(struct ifnet *);
 
 VNET_DEFINE(struct ifnet *, loif);	/* Used externally */
 
-IFC_SIMPLE_DECLARE(lo, 1, IFT_LOOP);
+IFC_SIMPLE_DECLARE_IF(lo, 1, IFT_LOOP);
 
 static void
 lo_clone_destroy(struct ifnet *ifp)
@@ -118,17 +119,12 @@ lo_clone_destroy(struct ifnet *ifp)
 
 	bpfdetach(ifp);
 	if_detach(ifp);
-	if_free(ifp);
 }
 
 static int
-lo_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+lo_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
-	struct ifnet *ifp;
-
-	ifp = if_alloc_curvnet(IFT_LOOP);
-	if (ifp == NULL)
-		return (ENOSPC);
 
 	if_initname(ifp, ifc->ifc_name, unit);
 	ifp->if_mtu = LOMTU;

@@ -81,7 +81,8 @@ SLIST_HEAD(__trhead, lagg_softc) lagg_list;	/* list of laggs */
 static struct mtx	lagg_list_mtx;
 eventhandler_tag	lagg_detach_cookie = NULL;
 
-static int	lagg_clone_create(struct if_clone *, int, caddr_t);
+static int	lagg_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	lagg_clone_destroy(struct ifnet *);
 static void	lagg_lladdr(struct lagg_softc *, uint8_t *);
 static void	lagg_capabilities(struct lagg_softc *);
@@ -115,7 +116,7 @@ static struct lagg_port *lagg_link_active(struct lagg_softc *,
 	    struct lagg_port *);
 static const void *lagg_gethdr(struct mbuf *, u_int, u_int, void *);
 
-IFC_SIMPLE_DECLARE(lagg, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(lagg, 0, IFT_ETHER);
 
 /* Simple round robin */
 static int	lagg_rr_attach(struct lagg_softc *);
@@ -244,26 +245,21 @@ lagg_unregister_vlan(void *arg, struct ifnet *ifp, u_int16_t vtag)
 #endif
 
 static int
-lagg_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+lagg_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct lagg_softc *sc;
-	struct ifnet *ifp;
 	int i, error = 0;
 	static const u_char eaddr[6];	/* 00:00:00:00:00:00 */
 
 	sc = malloc(sizeof(*sc), M_DEVBUF, M_WAITOK|M_ZERO);
-	ifp = sc->sc_ifp = if_alloc(IFT_ETHER);
-	if (ifp == NULL) {
-		free(sc, M_DEVBUF);
-		return (ENOSPC);
-	}
+	sc->sc_ifp = ifp;
 
 	sc->sc_proto = LAGG_PROTO_NONE;
 	for (i = 0; lagg_protos[i].ti_proto != LAGG_PROTO_NONE; i++) {
 		if (lagg_protos[i].ti_proto == LAGG_PROTO_DEFAULT) {
 			sc->sc_proto = lagg_protos[i].ti_proto;
 			if ((error = lagg_protos[i].ti_attach(sc)) != 0) {
-				if_free_type(ifp, IFT_ETHER);
 				free(sc, M_DEVBUF);
 				return (error);
 			}
@@ -339,7 +335,6 @@ lagg_clone_destroy(struct ifnet *ifp)
 
 	ifmedia_removeall(&sc->sc_media);
 	ether_ifdetach(ifp);
-	if_free_type(ifp, IFT_ETHER);
 
 	mtx_lock(&lagg_list_mtx);
 	SLIST_REMOVE(&lagg_list, sc, lagg_softc, sc_entries);

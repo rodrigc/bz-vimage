@@ -65,9 +65,10 @@ struct edsc_softc {
 
 /*
  * Simple cloning methods.
- * IFC_SIMPLE_DECLARE() expects precisely these names.
+ * IFC_SIMPLE_DECLARE_IF() expects precisely these names.
  */
-static int	edsc_clone_create(struct if_clone *, int, caddr_t);
+static int	edsc_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	edsc_clone_destroy(struct ifnet *);
 
 /*
@@ -89,28 +90,23 @@ static		MALLOC_DEFINE(M_EDSC, "edsc", "Ethernet discard interface");
  * the outset.  It's also the minimum number of units allowed.
  * We don't want any units created as soon as the driver is loaded.
  */
-IFC_SIMPLE_DECLARE(edsc, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(edsc, 0, IFT_ETHER);
 
 /*
  * Create an interface instance.
  */
 static int
-edsc_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+edsc_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct edsc_softc	*sc;
-	struct ifnet		*ifp;
 	static u_char		 eaddr[ETHER_ADDR_LEN];	/* 0:0:0:0:0:0 */
 
 	/*
 	 * Allocate soft and ifnet structures.  Link each to the other.
 	 */
 	sc = malloc(sizeof(struct edsc_softc), M_EDSC, M_WAITOK | M_ZERO);
-	ifp = sc->sc_ifp = if_alloc(IFT_ETHER);
-	if (ifp == NULL) {
-		free(sc, M_EDSC);
-		return (ENOSPC);
-	}
-
+	sc->sc_ifp = ifp;
 	ifp->if_softc = sc;
 
 	/*
@@ -179,9 +175,8 @@ edsc_clone_destroy(struct ifnet *ifp)
 	ether_ifdetach(ifp);
 
 	/*
-	 * Free memory occupied by ifnet and softc.
+	 * Free memory occupied by softc.
 	 */
-	if_free(ifp);
 	free(sc, M_EDSC);
 }
 

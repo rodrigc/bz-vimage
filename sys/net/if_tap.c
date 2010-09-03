@@ -42,6 +42,7 @@
 #include <sys/conf.h>
 #include <sys/fcntl.h>
 #include <sys/filio.h>
+#include <sys/jail.h>
 #include <sys/kernel.h>
 #include <sys/malloc.h>
 #include <sys/mbuf.h>
@@ -87,20 +88,22 @@ static int		tapmodevent(module_t, int, void *);
 /* device */
 static void		tapclone(void *, struct ucred *, char *, int,
 			    struct cdev **);
-static void		tapcreate(struct cdev *);
+static void		tapcreate(struct cdev *, struct ifnet *);
 
 /* network interface */
 static void		tapifstart(struct ifnet *);
 static int		tapifioctl(struct ifnet *, u_long, caddr_t);
 static void		tapifinit(void *);
 
-static int		tap_clone_create(struct if_clone *, int, caddr_t);
+static int		tap_clone_create(struct if_clone *, struct ifnet *,
+			    int, caddr_t);
 static void		tap_clone_destroy(struct ifnet *);
-static int		vmnet_clone_create(struct if_clone *, int, caddr_t);
+static int		vmnet_clone_create(struct if_clone *, struct ifnet *,
+			    int, caddr_t);
 static void		vmnet_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(tap, 0, IFT_ETHER);
-IFC_SIMPLE_DECLARE(vmnet, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(tap, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(vmnet, 0, IFT_ETHER);
 
 /* character device */
 static d_open_t		tapopen;
@@ -176,7 +179,8 @@ TUNABLE_INT("net.link.tap.devfs_cloning", &tapdclone);
 DEV_MODULE(if_tap, tapmodevent, NULL);
 
 static int
-tap_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+tap_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct cdev *dev;
 	int i;
@@ -194,15 +198,17 @@ tap_clone_create(struct if_clone *ifc, int unit, caddr_t params)
 		     UID_ROOT, GID_WHEEL, 0600, "%s%d", ifc->ifc_name, unit);
 	}
 
-	tapcreate(dev);
+	tapcreate(dev, ifp);
 	return (0);
 }
 
 /* vmnet devices are tap devices in disguise */
 static int
-vmnet_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+vmnet_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
-	return tap_clone_create(ifc, unit, params);
+
+	return tap_clone_create(ifc, ifp, unit, params);
 }
 
 static void
@@ -219,7 +225,6 @@ tap_destroy(struct tap_softc *tp)
 	destroy_dev(tp->tap_dev);
 	s = splimp();
 	ether_ifdetach(ifp);
-	if_free_type(ifp, IFT_ETHER);
 	splx(s);
 
 	mtx_destroy(&tp->tap_mtx);
@@ -300,14 +305,14 @@ tapmodevent(module_t mod, int type, void *data)
 
 		mtx_lock(&tapmtx);
 		while ((tp = SLIST_FIRST(&taphead)) != NULL) {
-			SLIST_REMOVE_HEAD(&taphead, tap_next);
 			mtx_unlock(&tapmtx);
 
 			ifp = tp->tap_ifp;
 
 			TAPDEBUG("detaching %s\n", ifp->if_xname);
 
-			tap_destroy(tp);
+			if (if_clone_destroy(ifp->if_dname))
+				return (EBUSY);
 			mtx_lock(&tapmtx);
 		}
 		mtx_unlock(&tapmtx);
@@ -382,7 +387,9 @@ tapclone(void *arg, struct ucred *cred, char *name, int namelen, struct cdev **d
 		     cred, UID_ROOT, GID_WHEEL, 0600, "%s", name);
 	}
 
+	CURVNET_SET(CRED_TO_VNET(cred));
 	if_clone_create(name, namelen, NULL);
+	CURVNET_RESTORE();
 } /* tapclone */
 
 
@@ -392,9 +399,8 @@ tapclone(void *arg, struct ucred *cred, char *name, int namelen, struct cdev **d
  * to create interface
  */
 static void
-tapcreate(struct cdev *dev)
+tapcreate(struct cdev *dev, struct ifnet *ifp)
 {
-	struct ifnet		*ifp = NULL;
 	struct tap_softc	*tp = NULL;
 	unsigned short		 macaddr_hi;
 	uint32_t		 macaddr_mid;
@@ -432,9 +438,7 @@ tapcreate(struct cdev *dev)
 	eaddr[5] = (u_char)unit;
 
 	/* fill the rest and attach interface */
-	ifp = tp->tap_ifp = if_alloc(IFT_ETHER);
-	if (ifp == NULL)
-		panic("%s%d: can not if_alloc()", name, unit);
+	tp->tap_ifp = ifp;
 	ifp->if_softc = tp;
 	if_initname(ifp, name, unit);
 	ifp->if_init = tapifinit;

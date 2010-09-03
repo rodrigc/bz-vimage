@@ -103,10 +103,11 @@ void	(*ng_gif_attach_p)(struct ifnet *ifp);
 void	(*ng_gif_detach_p)(struct ifnet *ifp);
 
 static void	gif_start(struct ifnet *);
-static int	gif_clone_create(struct if_clone *, int, caddr_t);
+static int	gif_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	gif_clone_destroy(struct ifnet *);
 
-IFC_SIMPLE_DECLARE(gif, 0, IFT_GIF);
+IFC_SIMPLE_DECLARE_IF(gif, 0, IFT_GIF);
 
 static int gifmodevent(module_t, int, void *);
 
@@ -152,20 +153,14 @@ static const u_char etherbroadcastaddr[ETHER_ADDR_LEN] =
 #endif
 
 static int
-gif_clone_create(ifc, unit, params)
-	struct if_clone *ifc;
-	int unit;
-	caddr_t params;
+gif_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct gif_softc *sc;
 
 	sc = malloc(sizeof(struct gif_softc), M_GIF, M_WAITOK | M_ZERO);
 	sc->gif_fibnum = curthread->td_proc->p_fibnum;
-	GIF2IFP(sc) = if_alloc(IFT_GIF);
-	if (GIF2IFP(sc) == NULL) {
-		free(sc, M_GIF);
-		return (ENOSPC);
-	}
+	GIF2IFP(sc) = ifp;
 
 	GIF_LOCK_INIT(sc);
 
@@ -229,7 +224,6 @@ gif_clone_destroy(ifp)
 		(*ng_gif_detach_p)(ifp);
 	bpfdetach(ifp);
 	if_detach(ifp);
-	if_free(ifp);
 
 	GIF_LOCK_DESTROY(sc);
 

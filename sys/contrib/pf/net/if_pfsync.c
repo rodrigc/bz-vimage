@@ -138,10 +138,10 @@ SYSCTL_STRUCT(_net_inet_pfsync, 0, stats, CTLFLAG_RW,
 
 void	pfsyncattach(int);
 #ifdef __FreeBSD__
-int	pfsync_clone_create(struct if_clone *, int, caddr_t);
+static int pfsync_clone_create(struct if_clone *, struct ifnet *, int, caddr_t);
 void	pfsync_clone_destroy(struct ifnet *);
 #else
-int	pfsync_clone_create(struct if_clone *, int);
+static int pfsync_clone_create(struct if_clone *, int);
 int	pfsync_clone_destroy(struct ifnet *);
 #endif
 void	pfsync_setmtu(struct pfsync_softc *, int);
@@ -186,7 +186,7 @@ extern int ifqmaxlen;
 #endif
 
 #ifdef __FreeBSD__
-IFC_SIMPLE_DECLARE(pfsync, 1, IFT_PFSYNC);
+IFC_SIMPLE_DECLARE_IF(pfsync, 1, IFT_PFSYNC);
 #else
 struct if_clone	pfsync_cloner =
     IF_CLONE_INITIALIZER("pfsync", pfsync_clone_create, pfsync_clone_destroy);
@@ -198,14 +198,17 @@ pfsyncattach(int npfsync)
 	if_clone_attach(&pfsync_cloner);
 }
 
-int
+static int
 #ifdef __FreeBSD__
-pfsync_clone_create(struct if_clone *ifc, int unit, caddr_t param)
+pfsync_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t param)
 #else
 pfsync_clone_create(struct if_clone *ifc, int unit)
 #endif
 {
+#ifndef __FreeBSD__
 	struct ifnet *ifp;
+#endif
 
 	if (unit != 0)
 		return (EINVAL);
@@ -225,18 +228,12 @@ pfsync_clone_create(struct if_clone *ifc, int unit)
 	pfsyncif->sc_imo.imo_max_memberships = IP_MIN_MEMBERSHIPS;
 	pfsyncif->sc_imo.imo_multicast_vif = -1;
 
-	ifp = pfsyncif->sc_ifp = if_alloc(IFT_PFSYNC);
-	if (ifp == NULL) {
-		free(pfsyncif->sc_imo.imo_membership, M_DEVBUF);
-		free(pfsyncif, M_DEVBUF);
-		return (ENOSPC);
-	}
+	pfsyncif->sc_ifp = ifp;
 	if_initname(ifp, ifc->ifc_name, unit);
 
 	pfsyncif->sc_detachtag = EVENTHANDLER_REGISTER(ifnet_departure_event,
 	    pfsync_ifdetach, pfsyncif, EVENTHANDLER_PRI_ANY);
 	if (pfsyncif->sc_detachtag == NULL) {
-		if_free(ifp);
 		free(pfsyncif->sc_imo.imo_membership, M_DEVBUF);
 		free(pfsyncif, M_DEVBUF);
 		return (ENOSPC);
@@ -337,7 +334,6 @@ pfsync_clone_destroy(struct ifnet *ifp)
 #endif
 	if_detach(ifp);
 #ifdef __FreeBSD__
-	if_free(ifp);
 	free(pfsyncif->sc_imo.imo_membership, M_DEVBUF);
 #endif
 	free(pfsyncif, M_DEVBUF);

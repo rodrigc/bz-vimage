@@ -119,7 +119,7 @@ int	pflogoutput(struct ifnet *, struct mbuf *, struct sockaddr *,
 int	pflogioctl(struct ifnet *, u_long, caddr_t);
 void	pflogstart(struct ifnet *);
 #ifdef __FreeBSD__
-static int pflog_clone_create(struct if_clone *, int, caddr_t);
+static int pflog_clone_create(struct if_clone *, struct ifnet *, int, caddr_t);
 static void pflog_clone_destroy(struct ifnet *);
 #else
 int	pflog_clone_create(struct if_clone *, int);
@@ -128,7 +128,7 @@ int	pflog_clone_destroy(struct ifnet *);
 
 LIST_HEAD(, pflog_softc)	pflogif_list;
 #ifdef __FreeBSD__
-IFC_SIMPLE_DECLARE(pflog, 1, IFT_PFLOG);
+IFC_SIMPLE_DECLARE_IF(pflog, 1, IFT_PFLOG);
 #else
 struct if_clone	pflog_cloner =
     IF_CLONE_INITIALIZER("pflog", pflog_clone_create, pflog_clone_destroy);
@@ -155,13 +155,16 @@ pflogattach(int npflog)
 
 #ifdef __FreeBSD__
 static int
-pflog_clone_create(struct if_clone *ifc, int unit, caddr_t param)
+pflog_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t param)
 #else
 int
 pflog_clone_create(struct if_clone *ifc, int unit)
 #endif
 {
+#ifndef __FreeBSD__
 	struct ifnet *ifp;
+#endif
 	struct pflog_softc *pflogif;
 	int s;
 
@@ -174,11 +177,7 @@ pflog_clone_create(struct if_clone *ifc, int unit)
 
 	pflogif->sc_unit = unit;
 #ifdef __FreeBSD__
-	ifp = pflogif->sc_ifp = if_alloc(IFT_PFLOG);
-	if (ifp == NULL) {
-		free(pflogif, M_DEVBUF);
-		return (ENOSPC);
-	}
+	pflogif->sc_ifp = ifp;
 	if_initname(ifp, ifc->ifc_name, unit);
 #else
 	ifp = &pflogif->sc_if;
@@ -247,9 +246,6 @@ pflog_clone_destroy(struct ifnet *ifp)
 	bpfdetach(ifp);
 #endif
 	if_detach(ifp);
-#ifdef __FreeBSD__
-	if_free(ifp);
-#endif
 	free(pflogif, M_DEVBUF);
 #ifndef __FreeBSD__
 	return (0);

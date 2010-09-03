@@ -233,7 +233,8 @@ int	bridge_rtable_prune_period = BRIDGE_RTABLE_PRUNE_PERIOD;
 
 uma_zone_t bridge_rtnode_zone;
 
-static int	bridge_clone_create(struct if_clone *, int, caddr_t);
+static int	bridge_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void	bridge_clone_destroy(struct ifnet *);
 
 static int	bridge_ioctl(struct ifnet *, u_long, caddr_t);
@@ -471,7 +472,7 @@ const int bridge_control_table_size =
 
 LIST_HEAD(, bridge_softc) bridge_list;
 
-IFC_SIMPLE_DECLARE(bridge, 0, IFT_ETHER);
+IFC_SIMPLE_DECLARE_IF(bridge, 0, IFT_ETHER);
 
 static int
 bridge_modevent(module_t mod, int type, void *data)
@@ -556,18 +557,15 @@ SYSCTL_PROC(_net_link_bridge, OID_AUTO, ipfw, CTLTYPE_INT|CTLFLAG_RW,
  *	Create a new bridge instance.
  */
 static int
-bridge_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+bridge_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
 	struct bridge_softc *sc, *sc2;
-	struct ifnet *bifp, *ifp;
+	struct ifnet *bifp;
 	int retry;
 
 	sc = malloc(sizeof(*sc), M_DEVBUF, M_WAITOK|M_ZERO);
-	ifp = sc->sc_ifp = if_alloc(IFT_ETHER);
-	if (ifp == NULL) {
-		free(sc, M_DEVBUF);
-		return (ENOSPC);
-	}
+	sc->sc_ifp = ifp;
 
 	BRIDGE_LOCK_INIT(sc);
 	sc->sc_brtmax = BRIDGE_RTABLE_MAX;
@@ -661,7 +659,6 @@ bridge_clone_destroy(struct ifnet *ifp)
 
 	bstp_detach(&sc->sc_stp);
 	ether_ifdetach(ifp);
-	if_free_type(ifp, IFT_ETHER);
 
 	/* Tear down the routing table. */
 	bridge_rtable_fini(sc);
