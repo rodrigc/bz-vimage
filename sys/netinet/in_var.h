@@ -136,6 +136,7 @@ extern	struct rwlock in_ifaddr_lock;
 	/* struct in_ifaddr *ia; */ \
 do { \
 \
+	/* XXX-BZ IN_IFADDR_LOCK_ASSERT(). */ \
 	LIST_FOREACH(ia, INADDR_HASH((addr).s_addr), ia_hash) \
 		if (IA_SIN(ia)->sin_addr.s_addr == (addr).s_addr) \
 			break; \
