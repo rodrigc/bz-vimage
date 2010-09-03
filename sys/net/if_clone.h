@@ -56,7 +56,7 @@ struct if_clone {
 	int	(*ifc_destroy)(struct if_clone *, struct ifnet *);
 
 	/* (c) In case of "simple" implementation. */
-	int	(*ifcs_create)(struct if_clone *, int, caddr_t);
+	int	(*ifcs_create)(struct if_clone *, struct ifnet *, int, caddr_t);
 	void	(*ifcs_destroy)(struct ifnet *);
 
 	void *ifc_data;			/* (*) Data for ifc_* functions. */
@@ -113,6 +113,9 @@ EVENTHANDLER_DECLARE(if_clone_event, if_clone_event_handler_t);
     }
 
 #define IFC_SIMPLE_DECLARE(name, minifs, iftype)			\
+	IFC_SIMPLE_DECLARE_IF(name, minifs, 0)
+
+#define IFC_SIMPLE_DECLARE_IF(name, minifs, iftype)			\
 static VNET_DEFINE(struct if_clone_instance, name##_cloner_instance) =	\
     {									\
 	.ifci_minifs = minifs,						\

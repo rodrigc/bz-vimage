@@ -650,6 +650,7 @@ int
 ifc_simple_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 {
 	struct if_clone_instance *ifci;
+	struct ifnet *ifp;
 	char *dp;
 	int wildcard;
 	int unit;
@@ -665,8 +666,20 @@ ifc_simple_create(struct if_clone *ifc, char *name, size_t len, caddr_t params)
 	if (err != 0)
 		return (err);
 
-	err = ifc->ifcs_create(ifc, unit, params);
+	if (ifc->ifc_if_type > 0) {
+		ifp = if_alloc_curvnet(ifc->ifc_if_type);
+		if (ifp == NULL) {
+			ifci = V_IFCI(ifc);
+			ifc_free_unit(ifc, unit);
+			return (err);
+		}
+	} else
+		ifp = NULL;
+
+	err = ifc->ifcs_create(ifc, ifp, unit, params);
 	if (err != 0) {
+		if (ifc->ifc_if_type > 0)
+			if_free_type(ifp, ifc->ifc_if_type);
 		ifci = V_IFCI(ifc);
 		ifc_free_unit(ifc, unit);
 		return (err);
@@ -704,6 +717,8 @@ ifc_simple_destroy(struct if_clone *ifc, struct ifnet *ifp)
 
 	ifc->ifcs_destroy(ifp);
 
+	if (ifc->ifc_if_type > 0)
+		if_free_type(ifp, ifc->ifc_if_type);
 	ifc_free_unit(ifc, unit);
 
 	return (0);
