@@ -112,7 +112,7 @@ EVENTHANDLER_DECLARE(if_clone_event, if_clone_event_handler_t);
 	.ifc_if_type	= iftype,					\
     }
 
-#define IFC_SIMPLE_DECLARE(name, minifs, iftype)			\
+#define IFC_SIMPLE_DECLARE(name, minifs)				\
 	IFC_SIMPLE_DECLARE_IF(name, minifs, 0)
 
 #define IFC_SIMPLE_DECLARE_IF(name, minifs, iftype)			\
