@@ -135,24 +135,33 @@ struct carp_softc {
 };
 #define	SC2IFP(sc)	((sc)->sc_ifp)
 
-int carp_suppress_preempt = 0;
-int carp_opts[CARPCTL_MAXID] = { 0, 1, 0, 1, 0, 0 };	/* XXX for now */
-SYSCTL_NODE(_net_inet, IPPROTO_CARP,	carp,	CTLFLAG_RW, 0,	"CARP");
-SYSCTL_INT(_net_inet_carp, CARPCTL_ALLOW, allow, CTLFLAG_RW,
-    &carp_opts[CARPCTL_ALLOW], 0, "Accept incoming CARP packets");
-SYSCTL_INT(_net_inet_carp, CARPCTL_PREEMPT, preempt, CTLFLAG_RW,
-    &carp_opts[CARPCTL_PREEMPT], 0, "high-priority backup preemption mode");
-SYSCTL_INT(_net_inet_carp, CARPCTL_LOG, log, CTLFLAG_RW,
-    &carp_opts[CARPCTL_LOG], 0, "log bad carp packets");
-SYSCTL_INT(_net_inet_carp, CARPCTL_ARPBALANCE, arpbalance, CTLFLAG_RW,
-    &carp_opts[CARPCTL_ARPBALANCE], 0, "balance arp responses");
-SYSCTL_INT(_net_inet_carp, OID_AUTO, suppress_preempt, CTLFLAG_RD,
-    &carp_suppress_preempt, 0, "Preemption is suppressed");
+static VNET_DEFINE(int, carp_suppress_preempt);
+static VNET_DEFINE(int, carp_opts[CARPCTL_MAXID]) = { 0, 1, 0, 1, 0, 0 };	/* XXX for now */
 
-struct carpstats carpstats;
-SYSCTL_STRUCT(_net_inet_carp, CARPCTL_STATS, stats, CTLFLAG_RW,
-    &carpstats, carpstats,
+#define	V_carp_suppress_preempt	VNET(carp_suppress_preempt)
+#define	V_carp_opts		VNET(carp_opts)
+
+SYSCTL_NODE(_net_inet, IPPROTO_CARP,	carp,	CTLFLAG_RW, 0,	"CARP");
+SYSCTL_VNET_INT(_net_inet_carp, CARPCTL_ALLOW, allow, CTLFLAG_RW,
+    &VNET_NAME(carp_opts)[CARPCTL_ALLOW], 0, "Accept incoming CARP packets");
+SYSCTL_VNET_INT(_net_inet_carp, CARPCTL_PREEMPT, preempt, CTLFLAG_RW,
+    &VNET_NAME(carp_opts)[CARPCTL_PREEMPT], 0,
+    "high-priority backup preemption mode");
+SYSCTL_VNET_INT(_net_inet_carp, CARPCTL_LOG, log, CTLFLAG_RW,
+    &VNET_NAME(carp_opts)[CARPCTL_LOG], 0, "log bad carp packets");
+SYSCTL_VNET_INT(_net_inet_carp, CARPCTL_ARPBALANCE, arpbalance, CTLFLAG_RW,
+    &VNET_NAME(carp_opts)[CARPCTL_ARPBALANCE], 0, "balance arp responses");
+SYSCTL_VNET_INT(_net_inet_carp, OID_AUTO, suppress_preempt, CTLFLAG_RD,
+    &VNET_NAME(carp_suppress_preempt), 0, "Preemption is suppressed");
+
+static VNET_DEFINE(struct carpstats, carpstats);
+SYSCTL_VNET_STRUCT(_net_inet_carp, CARPCTL_STATS, stats, CTLFLAG_RW,
+    &VNET_NAME(carpstats), carpstats,
     "CARP statistics (struct carpstats, netinet/ip_carp.h)");
+
+#define	V_carpstats			VNET(carpstats)
+#define	CARPSTATS_ADD(name, val)	V_carpstats.name += (val)
+#define	CARPSTATS_INC(name)		CARPSTATS_ADD(name, 1)
 
 struct carp_if {
 	TAILQ_HEAD(, carp_softc) vhif_vrs;
@@ -182,12 +191,12 @@ static int proto_reg[] = {-1, -1};
 #define	CARP_SCLOCK_ASSERT(sc)	mtx_assert(&SC2CIF(sc)->vhif_mtx, MA_OWNED)
 
 #define	CARP_LOG(...)	do {				\
-	if (carp_opts[CARPCTL_LOG] > 0)			\
+	if (V_carp_opts[CARPCTL_LOG] > 0)		\
 		log(LOG_INFO, __VA_ARGS__);		\
 } while (0)
 
 #define	CARP_DEBUG(...)	do {				\
-	if (carp_opts[CARPCTL_LOG] > 1)			\
+	if (V_carp_opts[CARPCTL_LOG] > 1)		\
 		log(LOG_DEBUG, __VA_ARGS__);		\
 } while (0)
 
@@ -198,7 +207,8 @@ static int	carp_hmac_verify(struct carp_softc *, u_int32_t *,
 		    unsigned char *);
 static void	carp_setroute(struct carp_softc *, int);
 static void	carp_input_c(struct mbuf *, struct carp_header *, sa_family_t);
-static int 	carp_clone_create(struct if_clone *, int, caddr_t);
+static int 	carp_clone_create(struct if_clone *, struct ifnet *, int,
+		    caddr_t);
 static void 	carp_clone_destroy(struct ifnet *);
 static void	carpdetach(struct carp_softc *, int);
 static int	carp_prepare_ad(struct mbuf *, struct carp_softc *,
@@ -230,7 +240,10 @@ static int	carp_del_addr6(struct carp_softc *, struct sockaddr_in6 *);
 static void	carp_multicast6_cleanup(struct carp_softc *);
 #endif
 
-static LIST_HEAD(, carp_softc) carpif_list;
+static VNET_DEFINE(LIST_HEAD(, carp_softc), carpif_list) =
+    LIST_HEAD_INITIALIZER(carpif_list);
+#define	V_carpif_list		VNET(carpif_list)
+
 static struct mtx carp_mtx;
 IFC_SIMPLE_DECLARE(carp, 0, IFT_ETHER);
 
@@ -367,6 +380,7 @@ carp_setroute(struct carp_softc *sc, int cmd)
 	if (sc->sc_carpdev)
 		CARP_SCLOCK_ASSERT(sc);
 
+	CURVNET_SET(sc->sc_ifp->if_vnet);
 	s = splnet();
 	TAILQ_FOREACH(ifa, &SC2IFP(sc)->if_addrlist, ifa_list) {
 		if (ifa->ifa_addr->sa_family == AF_INET &&
@@ -381,22 +395,18 @@ carp_setroute(struct carp_softc *sc, int cmd)
 		}
 	}
 	splx(s);
+	CURVNET_RESTORE();
 }
 
 static int
-carp_clone_create(struct if_clone *ifc, int unit, caddr_t params)
+carp_clone_create(struct if_clone *ifc, struct ifnet *ifp, int unit,
+    caddr_t params)
 {
-
 	struct carp_softc *sc;
-	struct ifnet *ifp;
 
 	sc = malloc(sizeof(*sc), M_CARP, M_WAITOK|M_ZERO);
-	ifp = SC2IFP(sc) = if_alloc(IFT_ETHER);
-	if (ifp == NULL) {
-		free(sc, M_CARP);
-		return (ENOSPC);
-	}
-	
+	SC2IFP(sc) = ifp;
+
 	sc->sc_flags_backup = 0;
 	sc->sc_suppress = 0;
 	sc->sc_advbase = CARP_DFLTINTV;
@@ -436,7 +446,7 @@ carp_clone_create(struct if_clone *ifc, int unit, caddr_t params)
 	if_attach(ifp);
 	bpfattach(SC2IFP(sc), DLT_NULL, sizeof(u_int32_t));
 	mtx_lock(&carp_mtx);
-	LIST_INSERT_HEAD(&carpif_list, sc, sc_next);
+	LIST_INSERT_HEAD(&V_carpif_list, sc, sc_next);
 	mtx_unlock(&carp_mtx);
 	return (0);
 }
@@ -483,11 +493,11 @@ carpdetach(struct carp_softc *sc, int unlock)
 	callout_stop(&sc->sc_md6_tmo);
 
 	if (sc->sc_suppress)
-		carp_suppress_preempt--;
+		V_carp_suppress_preempt--;
 	sc->sc_suppress = 0;
 
 	if (sc->sc_sendad_errors >= CARP_SENDAD_MAX_ERRORS)
-		carp_suppress_preempt--;
+		V_carp_suppress_preempt--;
 	sc->sc_sendad_errors = 0;
 
 	carp_set_state(sc, INIT);
@@ -518,9 +528,10 @@ carpdetach(struct carp_softc *sc, int unlock)
 static void
 carp_ifdetach(void *arg __unused, struct ifnet *ifp)
 {
-	struct carp_if *cif = (struct carp_if *)ifp->if_carp;
+	struct carp_if *cif;
 	struct carp_softc *sc, *nextsc;
 
+	cif = (struct carp_if *)ifp->if_carp;
 	if (cif == NULL)
 		return;
 
@@ -548,7 +559,7 @@ carp_input(struct mbuf *m, int hlen)
 
 	CARPSTATS_INC(carps_ipackets);
 
-	if (!carp_opts[CARPCTL_ALLOW]) {
+	if (!V_carp_opts[CARPCTL_ALLOW]) {
 		m_freem(m);
 		return;
 	}
@@ -641,7 +652,7 @@ carp6_input(struct mbuf **mp, int *offp, int proto)
 
 	CARPSTATS_INC(carps_ipackets6);
 
-	if (!carp_opts[CARPCTL_ALLOW]) {
+	if (!V_carp_opts[CARPCTL_ALLOW]) {
 		m_freem(m);
 		return (IPPROTO_DONE);
 	}
@@ -760,7 +771,7 @@ carp_input_c(struct mbuf *m, struct carp_header *ch, sa_family_t af)
 	sc->sc_counter = tmp_counter;
 
 	sc_tv.tv_sec = sc->sc_advbase;
-	if (carp_suppress_preempt && sc->sc_advskew <  240)
+	if (V_carp_suppress_preempt && sc->sc_advskew <  240)
 		sc_tv.tv_usec = 240 * 1000000 / 256;
 	else
 		sc_tv.tv_usec = sc->sc_advskew * 1000000 / 256;
@@ -791,7 +802,7 @@ carp_input_c(struct mbuf *m, struct carp_header *ch, sa_family_t af)
 		 * If we're pre-empting masters who advertise slower than us,
 		 * and this one claims to be slower, treat him as down.
 		 */
-		if (carp_opts[CARPCTL_PREEMPT] &&
+		if (V_carp_opts[CARPCTL_PREEMPT] &&
 		    timevalcmp(&sc_tv, &ch_tv, <)) {
 			CARP_LOG("%s: BACKUP -> MASTER "
 			    "(preempting a slower master)\n",
@@ -866,15 +877,17 @@ carp_send_ad_all(void)
 	struct carp_softc *sc;
 
 	mtx_lock(&carp_mtx);
-	LIST_FOREACH(sc, &carpif_list, sc_next) {
+	LIST_FOREACH(sc, &V_carpif_list, sc_next) {
 		if (sc->sc_carpdev == NULL)
 			continue;
+		CURVNET_SET(sc->sc_ifp->if_vnet);
 		CARP_SCLOCK(sc);
 		if ((SC2IFP(sc)->if_flags & IFF_UP) &&
 		    (SC2IFP(sc)->if_drv_flags & IFF_DRV_RUNNING) &&
 		     sc->sc_state == MASTER)
 			carp_send_ad_locked(sc);
 		CARP_SCUNLOCK(sc);
+		CURVNET_RESTORE();
 	}
 	mtx_unlock(&carp_mtx);
 }
@@ -884,9 +897,11 @@ carp_send_ad(void *v)
 {
 	struct carp_softc *sc = v;
 
+	CURVNET_SET(sc->sc_ifp->if_vnet);
 	CARP_SCLOCK(sc);
 	carp_send_ad_locked(sc);
 	CARP_SCUNLOCK(sc);
+	CURVNET_RESTORE();
 }
 
 static void
@@ -907,7 +922,7 @@ carp_send_ad_locked(struct carp_softc *sc)
 		advskew = 255;
 	} else {
 		advbase = sc->sc_advbase;
-		if (!carp_suppress_preempt || sc->sc_advskew > 240)
+		if (!V_carp_suppress_preempt || sc->sc_advskew > 240)
 			advskew = sc->sc_advskew;
 		else
 			advskew = 240;
@@ -976,8 +991,8 @@ carp_send_ad_locked(struct carp_softc *sc)
 			if (sc->sc_sendad_errors < INT_MAX)
 				sc->sc_sendad_errors++;
 			if (sc->sc_sendad_errors == CARP_SENDAD_MAX_ERRORS) {
-				carp_suppress_preempt++;
-				if (carp_suppress_preempt == 1) {
+				V_carp_suppress_preempt++;
+				if (V_carp_suppress_preempt == 1) {
 					CARP_SCUNLOCK(sc);
 					carp_send_ad_all();
 					CARP_SCLOCK(sc);
@@ -988,7 +1003,7 @@ carp_send_ad_locked(struct carp_softc *sc)
 			if (sc->sc_sendad_errors >= CARP_SENDAD_MAX_ERRORS) {
 				if (++sc->sc_sendad_success >=
 				    CARP_SENDAD_MIN_SUCCESS) {
-					carp_suppress_preempt--;
+					V_carp_suppress_preempt--;
 					sc->sc_sendad_errors = 0;
 				}
 			} else
@@ -1053,8 +1068,8 @@ carp_send_ad_locked(struct carp_softc *sc)
 			if (sc->sc_sendad_errors < INT_MAX)
 				sc->sc_sendad_errors++;
 			if (sc->sc_sendad_errors == CARP_SENDAD_MAX_ERRORS) {
-				carp_suppress_preempt++;
-				if (carp_suppress_preempt == 1) {
+				V_carp_suppress_preempt++;
+				if (V_carp_suppress_preempt == 1) {
 					CARP_SCUNLOCK(sc);
 					carp_send_ad_all();
 					CARP_SCLOCK(sc);
@@ -1065,7 +1080,7 @@ carp_send_ad_locked(struct carp_softc *sc)
 			if (sc->sc_sendad_errors >= CARP_SENDAD_MAX_ERRORS) {
 				if (++sc->sc_sendad_success >=
 				    CARP_SENDAD_MIN_SUCCESS) {
-					carp_suppress_preempt--;
+					V_carp_suppress_preempt--;
 					sc->sc_sendad_errors = 0;
 				}
 			} else
@@ -1077,7 +1092,6 @@ carp_send_ad_locked(struct carp_softc *sc)
 	if (advbase != 255 || advskew != 255)
 		callout_reset(&sc->sc_ad_tmo, tvtohz(&tv),
 		    carp_send_ad, sc);
-
 }
 
 /*
@@ -1090,6 +1104,7 @@ carp_send_arp(struct carp_softc *sc)
 {
 	struct ifaddr *ifa;
 
+	CURVNET_SET(sc->sc_ifp->if_vnet);
 	TAILQ_FOREACH(ifa, &SC2IFP(sc)->if_addrlist, ifa_list) {
 
 		if (ifa->ifa_addr->sa_family != AF_INET)
@@ -1100,6 +1115,7 @@ carp_send_arp(struct carp_softc *sc)
 
 		DELAY(1000);	/* XXX */
 	}
+	CURVNET_RESTORE();
 }
 
 #ifdef INET6
@@ -1110,6 +1126,7 @@ carp_send_na(struct carp_softc *sc)
 	struct in6_addr *in6;
 	static struct in6_addr mcast = IN6ADDR_LINKLOCAL_ALLNODES_INIT;
 
+	CURVNET_SET(sc->sc_ifp->if_vnet);
 	TAILQ_FOREACH(ifa, &SC2IFP(sc)->if_addrlist, ifa_list) {
 
 		if (ifa->ifa_addr->sa_family != AF_INET6)
@@ -1120,6 +1137,7 @@ carp_send_na(struct carp_softc *sc)
 		    ND_NA_FLAG_OVERRIDE, 1, NULL);
 		DELAY(1000);	/* XXX */
 	}
+	CURVNET_RESTORE();
 }
 #endif /* INET6 */
 
@@ -1163,7 +1181,7 @@ carp_iamatch(struct ifnet *ifp, struct in_ifaddr *ia,
 	cif = ifp->if_carp;
 	CARP_LOCK(cif);
 
-	if (carp_opts[CARPCTL_ARPBALANCE]) {
+	if (V_carp_opts[CARPCTL_ARPBALANCE]) {
 		/*
 		 * XXX proof of concept implementation.
 		 * We use the source ip to decide which virtual host should
@@ -1351,7 +1369,9 @@ carp_master_down_locked(struct carp_softc *sc)
 		break;
 	case BACKUP:
 		carp_set_state(sc, MASTER);
+		CURVNET_SET(sc->sc_ifp->if_vnet);
 		carp_send_ad_locked(sc);
+		CURVNET_RESTORE();
 		carp_send_arp(sc);
 #ifdef INET6
 		carp_send_na(sc);
@@ -1390,8 +1410,10 @@ carp_setrun(struct carp_softc *sc, sa_family_t af)
 
 	switch (sc->sc_state) {
 	case INIT:
-		if (carp_opts[CARPCTL_PREEMPT] && !carp_suppress_preempt) {
+		if (V_carp_opts[CARPCTL_PREEMPT] && !V_carp_suppress_preempt) {
+			CURVNET_SET(sc->sc_ifp->if_vnet);
 			carp_send_ad_locked(sc);
+			CURVNET_RESTORE();
 			carp_send_arp(sc);
 #ifdef INET6
 			carp_send_na(sc);
@@ -1949,8 +1971,11 @@ carp_ioctl(struct ifnet *ifp, u_long cmd, caddr_t addr)
  			callout_stop(&sc->sc_ad_tmo);
  			callout_stop(&sc->sc_md_tmo);
  			callout_stop(&sc->sc_md6_tmo);
-			if (sc->sc_state == MASTER)
+			if (sc->sc_state == MASTER) {
+				CURVNET_SET(sc->sc_ifp->if_vnet);
 				carp_send_ad_locked(sc);
+				CURVNET_RESTORE();
+			}
 			carp_set_state(sc, INIT);
 			carp_setrun(sc, 0);
 		} else if (sc->sc_state == INIT && (ifr->ifr_flags & IFF_UP)) {
@@ -2255,8 +2280,8 @@ carp_sc_state_locked(struct carp_softc *sc)
 		carp_set_state(sc, INIT);
 		carp_setrun(sc, 0);
 		if (!sc->sc_suppress) {
-			carp_suppress_preempt++;
-			if (carp_suppress_preempt == 1) {
+			V_carp_suppress_preempt++;
+			if (V_carp_suppress_preempt == 1) {
 				CARP_SCUNLOCK(sc);
 				carp_send_ad_all();
 				CARP_SCLOCK(sc);
@@ -2268,7 +2293,7 @@ carp_sc_state_locked(struct carp_softc *sc)
 		carp_set_state(sc, INIT);
 		carp_setrun(sc, 0);
 		if (sc->sc_suppress)
-			carp_suppress_preempt--;
+			V_carp_suppress_preempt--;
 		sc->sc_suppress = 0;
 	}
 
@@ -2341,7 +2366,6 @@ carp_mod_load(void)
 	if (if_detach_event_tag == NULL)
 		return (ENOMEM);
 	mtx_init(&carp_mtx, "carp_mtx", NULL, MTX_DEF);
-	LIST_INIT(&carpif_list);
 	if_clone_attach(&carp_cloner);
 	carp_linkstate_p = carp_carpdev_state;
 	carp_forus_p = carp_forus;
