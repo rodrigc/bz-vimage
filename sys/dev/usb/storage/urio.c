@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/storage/urio.c,v 1.13 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/storage/urio.c,v 1.14 2010/09/01 23:47:53 thompsa Exp $");
 
 
 /*
@@ -197,6 +197,7 @@ static driver_t urio_driver = {
 
 DRIVER_MODULE(urio, uhub, urio_driver, urio_devclass, NULL, 0);
 MODULE_DEPEND(urio, usb, 1, 1, 1);
+MODULE_VERSION(urio, 1);
 
 static int
 urio_probe(device_t dev)

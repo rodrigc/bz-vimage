@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.243 2010/08/06 09:42:15 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_mmap.c,v 1.244 2010/08/28 16:57:07 alc Exp $");
 
 #include "opt_compat.h"
 #include "opt_hwpmc_hooks.h"
@@ -1467,9 +1467,10 @@ vm_mmap(vm_map_t map, vm_offset_t *addr, vm_size_t size, vm_prot_t prot,
 		 */
 		if (handle == 0)
 			foff = 0;
-	} else {
+	} else if (flags & MAP_PREFAULT_READ)
+		docow = MAP_PREFAULT;
+	else
 		docow = MAP_PREFAULT_PARTIAL;
-	}
 
 	if ((flags & (MAP_ANON|MAP_SHARED)) == 0)
 		docow |= MAP_COPY_ON_WRITE;

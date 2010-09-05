@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clvnops.c,v 1.25 2010/08/03 01:49:28 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clvnops.c,v 1.26 2010/09/05 00:10:18 rmacklem Exp $");
 
 /*
  * vnode op calls for Sun NFS version 2, 3 and 4
@@ -84,7 +84,7 @@ __FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clvnops.c,v 1.25 2010/08/03 01:49:2
 
 extern struct nfsstats newnfsstats;
 MALLOC_DECLARE(M_NEWNFSREQ);
-vop_advlock_t	*ncl_advlock_p = nfs_dolock;
+vop_advlock_t	*ncl_advlock_p = NULL;
 
 /*
  * Ifdef for FreeBSD-current merged buffer cache. It is unfortunate that these

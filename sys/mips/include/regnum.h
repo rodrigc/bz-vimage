@@ -36,7 +36,7 @@
  *	from: Utah Hdr: reg.h 1.1 90/07/09
  *	@(#)reg.h	8.2 (Berkeley) 1/11/94
  *	JNPR: regnum.h,v 1.6 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/regnum.h,v 1.3 2010/04/19 07:34:26 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/regnum.h,v 1.4 2010/08/27 07:45:50 jchandra Exp $
  */
 
 #ifndef _MACHINE_REGNUM_H_
@@ -46,20 +46,20 @@
  * in pcb.h and is used by
  * swtch.S
  */
-#define PREG_S0   0
-#define PREG_S1   1
-#define PREG_S2   2
-#define PREG_S3   3
-#define PREG_S4   4
-#define PREG_S5   5
-#define PREG_S6   6
-#define PREG_S7   7
-#define PREG_SP   8
-#define PREG_S8   9
-#define PREG_RA   10
-#define PREG_SR   11
-#define PREG_GP   12
-#define PREG_PC   13
+#define PREG_S0	0
+#define PREG_S1	1
+#define PREG_S2	2
+#define PREG_S3	3
+#define PREG_S4	4
+#define PREG_S5	5
+#define PREG_S6	6
+#define PREG_S7	7
+#define PREG_SP	8
+#define PREG_S8	9
+#define PREG_RA	10
+#define PREG_SR	11
+#define PREG_GP	12
+#define PREG_PC	13
 
 /*
  * Location of the saved registers relative to ZERO.

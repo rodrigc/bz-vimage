@@ -1,9 +1,9 @@
-# $FreeBSD: src/sys/boot/i386/zfsloader/Makefile,v 1.1 2009/11/23 16:00:16 rnoland Exp $
+# $FreeBSD: src/sys/boot/i386/zfsloader/Makefile,v 1.2 2010/08/31 19:01:12 delphij Exp $
 
 .PATH:	${.CURDIR}/../loader
 
 LOADER=		zfsloader
-NEWVERSWHAT=	"ZFS enabled bootstrap loader" i386
+NEWVERSWHAT=	"ZFS enabled bootstrap loader" x86
 LOADER_ZFS_SUPPORT=yes
 LOADER_ONLY=	yes
 NO_MAN=		yes

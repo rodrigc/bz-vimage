@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/tcpdump/tcpdump/Makefile,v 1.47 2009/03/21 18:40:38 rpaulo Exp $
+# $FreeBSD: src/usr.sbin/tcpdump/tcpdump/Makefile,v 1.48 2010/08/23 22:24:11 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -46,7 +46,7 @@ SRCS+=	print-ip6.c print-ip6opts.c print-mobility.c print-ripng.c \
 	print-icmp6.c print-frag6.c print-rt6.c print-ospf6.c print-dhcp6.c
 CFLAGS+=	-DINET6
 .endif
-.if ${MACHINE_ARCH} != "i386"
+.if ${MACHINE_CPUARCH} != "i386"
 CFLAGS+=	-DLBL_ALIGN
 .endif
 

@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-ftp.sh,v 1.3 2010/08/19 05:59:27 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-ftp.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
 
 # Functions which runs commands on the system
 
@@ -280,20 +280,43 @@ show_mirrors()
 
 set_ftp_mirror()
 {
-	MIRROR="${1}"
-	echo "${MIRROR}" > "${CONFDIR}/mirrors.conf"
+  MIRROR="${1}"
+  echo "${MIRROR}" > "${CONFDIR}/mirrors.conf"
 };
 
 get_ftp_mirror()
 {
-	MIRROR="${DEFAULT_FTP_SERVER}"
-	if [ -f "${CONFDIR}/mirrors.conf" ]
-	then
-		MIRROR=`cat "${CONFDIR}/mirrors.conf"`
-	fi
+  MIRROR="${DEFAULT_FTP_SERVER}"
+  if [ -f "${CONFDIR}/mirrors.conf" ]
+  then
+    MIRROR=`cat "${CONFDIR}/mirrors.conf"`
+  fi
 
-	VAL="${MIRROR}"
-	export VAL
+  VAL="${MIRROR}"
+  export VAL
+};
+
+
+get_ftpHost()
+{
+  get_value_from_cfg ftpPath
+  ftpPath="$VAL"
+
+  ftpHost=`echo "${ftpPath}" | sed -E 's|^(ftp://)([^/]*)(.*)|\2|'`
+  VAL="${ftpHost}"
+
+  export VAL
+};
+
+get_ftpDir()
+{
+  get_value_from_cfg ftpPath
+  ftpPath="$VAL"
+
+  ftpDir=`echo "${ftpPath}" | sed -E 's|^(ftp://)([^/]*)(.*)|\3|'`
+  VAL="${ftpDir}"
+
+  export VAL
 };
 
 get_ftp_mirrors()

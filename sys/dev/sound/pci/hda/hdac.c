@@ -88,7 +88,7 @@
 
 #define HDA_DRV_TEST_REV	"20100226_0142"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.127 2010/08/04 07:49:40 gavin Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.128 2010/08/28 00:23:13 jfv Exp $");
 
 #define HDA_BOOTVERBOSE(stmt)	do {			\
 	if (bootverbose != 0 || snd_verbose > 3) {	\
@@ -140,6 +140,7 @@ SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.127 2010/08/04 
 
 /* Intel */
 #define INTEL_VENDORID		0x8086
+#define HDA_INTEL_CPT		HDA_MODEL_CONSTRUCT(INTEL, 0x1c20)
 #define HDA_INTEL_82801F	HDA_MODEL_CONSTRUCT(INTEL, 0x2668)
 #define HDA_INTEL_63XXESB	HDA_MODEL_CONSTRUCT(INTEL, 0x269a)
 #define HDA_INTEL_82801G	HDA_MODEL_CONSTRUCT(INTEL, 0x27d8)
@@ -486,6 +487,7 @@ static const struct {
 	char		*desc;
 	char		flags;
 } hdac_devices[] = {
+	{ HDA_INTEL_CPT,     "Intel Cougar Point",	0 },
 	{ HDA_INTEL_82801F,  "Intel 82801F",	0 },
 	{ HDA_INTEL_63XXESB, "Intel 631x/632xESB",	0 },
 	{ HDA_INTEL_82801G,  "Intel 82801G",	0 },

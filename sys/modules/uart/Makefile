@@ -1,8 +1,8 @@
-# $FreeBSD: src/sys/modules/uart/Makefile,v 1.19 2010/05/23 20:08:41 marius Exp $
+# $FreeBSD: src/sys/modules/uart/Makefile,v 1.20 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/uart
 
-.if ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "sparc64"
 uart_bus_ebus=	uart_bus_ebus.c
 ofw_bus_if=	ofw_bus_if.h
 .endif

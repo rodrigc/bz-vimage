@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.i386,v 1.651 2010/08/12 00:16:18 takawata Exp $
+# $FreeBSD: src/sys/conf/files.i386,v 1.652 2010/08/25 19:12:05 jhb Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -394,6 +394,7 @@ x86/isa/isa.c			optional isa
 x86/isa/isa_dma.c		optional isa
 x86/isa/nmi.c			standard
 x86/isa/orm.c			optional isa
+x86/pci/qpi.c			standard
 x86/x86/io_apic.c		optional apic
 x86/x86/local_apic.c		optional apic
 x86/x86/mca.c			standard

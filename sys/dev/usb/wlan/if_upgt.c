@@ -1,5 +1,5 @@
 /*	$OpenBSD: if_upgt.c,v 1.35 2008/04/16 18:32:15 damien Exp $ */
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_upgt.c,v 1.17 2010/06/22 21:08:45 thompsa Exp $ */
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_upgt.c,v 1.19 2010/09/02 03:50:11 thompsa Exp $ */
 
 /*
  * Copyright (c) 2007 Marcus Glocker <mglocker@openbsd.org>
@@ -652,7 +652,7 @@ upgt_set_macfilter(struct upgt_softc *sc, uint8_t state)
 	struct ifnet *ifp = sc->sc_ifp;
 	struct ieee80211com *ic = ifp->if_l2com;
 	struct ieee80211vap *vap = TAILQ_FIRST(&ic->ic_vaps);
-	struct ieee80211_node *ni = vap->iv_bss;
+	struct ieee80211_node *ni;
 	struct upgt_data *data_cmd;
 	struct upgt_lmac_mem *mem;
 	struct upgt_lmac_filter *filter;
@@ -707,6 +707,7 @@ upgt_set_macfilter(struct upgt_softc *sc, uint8_t state)
 		filter->unknown3 = htole16(UPGT_FILTER_UNKNOWN3);
 		break;
 	case IEEE80211_S_RUN:
+		ni = ieee80211_ref_node(vap->iv_bss);
 		/* XXX monitor mode isn't tested yet.  */
 		if (vap->iv_opmode == IEEE80211_M_MONITOR) {
 			filter->type = htole16(UPGT_FILTER_TYPE_MONITOR);
@@ -730,6 +731,7 @@ upgt_set_macfilter(struct upgt_softc *sc, uint8_t state)
 			filter->rxhw = htole32(sc->sc_eeprom_hwrx);
 			filter->unknown3 = htole16(UPGT_FILTER_UNKNOWN3);
 		}
+		ieee80211_free_node(ni);
 		break;
 	default:
 		device_printf(sc->sc_dev,

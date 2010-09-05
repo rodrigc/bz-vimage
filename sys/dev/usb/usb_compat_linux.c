@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.21 2010/04/22 22:15:08 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.22 2010/09/01 23:47:53 thompsa Exp $ */
 /*-
  * Copyright (c) 2007 Luigi Rizzo - Universita` di Pisa. All rights reserved.
  * Copyright (c) 2007 Hans Petter Selasky. All rights reserved.
@@ -122,6 +122,7 @@ static driver_t usb_linux_driver = {
 static devclass_t usb_linux_devclass;
 
 DRIVER_MODULE(usb_linux, uhub, usb_linux_driver, usb_linux_devclass, NULL, 0);
+MODULE_VERSION(usb_linux, 1);
 
 /*------------------------------------------------------------------------*
  *	usb_linux_lookup_id

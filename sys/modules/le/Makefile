@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/le/Makefile,v 1.4 2008/05/04 14:59:24 marius Exp $
+# $FreeBSD: src/sys/modules/le/Makefile,v 1.5 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/le
 
@@ -7,7 +7,7 @@ SRCS=	am7990.c am79900.c ${if_le_cbus} ${if_le_isa} ${if_le_lebuffer}
 SRCS+=	${if_le_ledma} if_le_pci.c lance.c ${lebuffer_sbus}
 SRCS+=	bus_if.h device_if.h ${isa_if} ${ofw_bus_if} pci_if.h
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 .if ${MACHINE} == "pc98"
 if_le_cbus=	if_le_cbus.c
 .else

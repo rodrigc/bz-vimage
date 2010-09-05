@@ -1,9 +1,11 @@
-# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.62 2010/08/21 15:01:59 rpaulo Exp $
+# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.64 2010/08/31 17:33:29 dim Exp $
 
 .include <bsd.own.mk>
 
 # XXX: clang can compile the boot code just fine, but boot2 gets too big
-CC:=${CC:C/^cc|^clang/gcc/}
+.if ${CC:T:Mclang} == "clang"
+CC=gcc
+.endif
 
 FILES=		boot boot1 boot2
 
@@ -99,7 +101,7 @@ boot2.h: boot1.out
 	    ORG1=`printf "%d" ${ORG1}` \
 	    REL1=`printf "%d" ${REL1}` > ${.TARGET}
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend boot2.s: machine
 CLEANFILES+=	machine
 machine:

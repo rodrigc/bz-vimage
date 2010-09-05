@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_calltree.c,v 1.8 2010/08/02 13:40:19 fabient Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_calltree.c,v 1.9 2010/09/03 13:54:02 fabient Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -615,6 +615,8 @@ pmcpl_ct_node_hash_lookup_pc(struct pmcpl_ct_node *parent,
 	 */
 	if ((sym = pmcstat_symbol_search(image, pc)) != NULL)
 		pc = sym->ps_start;
+	else
+		pmcstat_stats.ps_samples_unknown_function++;
 
 	for (hash = i = 0; i < (int)sizeof(uintfptr_t); i++)
 		hash += (pc >> i) & 0xFF;

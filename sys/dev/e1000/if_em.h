@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_em.h,v 1.14 2010/04/09 23:15:37 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_em.h,v 1.15 2010/08/28 00:34:22 yongari Exp $*/
 
 
 #ifndef _EM_H_DEFINED_
@@ -391,6 +391,8 @@ struct adapter {
 	bool		has_manage;
 	bool		has_amt;
 
+	/* Multicast array memory */
+	u8		*mta;
 	/* Info about the board itself */
 	uint8_t		link_active;
 	uint16_t	link_speed;

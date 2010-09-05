@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  *
  *	from: src/sys/alpha/include/atomic.h,v 1.21.2.3 2005/10/06 18:12:05 jhb
- * $FreeBSD: src/sys/mips/include/atomic.h,v 1.3 2010/01/10 19:50:24 imp Exp $
+ * $FreeBSD: src/sys/mips/include/atomic.h,v 1.4 2010/08/27 07:45:50 jchandra Exp $
  */
 
 #ifndef _MACHINE_ATOMIC_H_
@@ -48,7 +48,7 @@
 static __inline  void
 mips_sync(void)
 {
-        __asm __volatile (".set noreorder\n\t"
+	__asm __volatile (".set noreorder\n\t"
 			"sync\n\t"
 			"nop\n\t"
 			"nop\n\t"

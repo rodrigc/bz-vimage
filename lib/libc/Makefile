@@ -1,9 +1,19 @@
 #	@(#)Makefile	8.2 (Berkeley) 2/3/94
-# $FreeBSD: src/lib/libc/Makefile,v 1.82 2010/08/01 12:35:01 rpaulo Exp $
+# $FreeBSD: src/lib/libc/Makefile,v 1.87 2010/08/25 20:48:24 nwhitehorn Exp $
 
 SHLIBDIR?= /lib
 
 .include <bsd.own.mk>
+
+# Pick the current architecture directory for libc. In general, this is
+# named MACHINE_CPUARCH, but some ABIs are different enough to require
+# their own libc, so allow a directory named MACHINE_ARCH to override this.
+
+.if exists(${.CURDIR}/${MACHINE_ARCH})
+LIBC_ARCH=${MACHINE_ARCH}
+.else
+LIBC_ARCH=${MACHINE_CPUARCH}
+.endif
 
 # All library objects contain FreeBSD revision strings by default; they may be
 # excluded as a space-saving measure.  To produce a library that does
@@ -15,7 +25,7 @@ LIB=c
 SHLIB_MAJOR= 7
 WARNS?=	2
 CFLAGS+=-I${.CURDIR}/include -I${.CURDIR}/../../include
-CFLAGS+=-I${.CURDIR}/${MACHINE_ARCH}
+CFLAGS+=-I${.CURDIR}/${LIBC_ARCH}
 CFLAGS+=-DNLS
 CLEANFILES+=tags
 INSTALL_PIC_ARCHIVE=
@@ -36,7 +46,7 @@ MDASM=
 MIASM=
 NOASM=
 
-.include "${.CURDIR}/${MACHINE_ARCH}/Makefile.inc"
+.include "${.CURDIR}/${LIBC_ARCH}/Makefile.inc"
 .include "${.CURDIR}/db/Makefile.inc"
 .include "${.CURDIR}/compat-43/Makefile.inc"
 .include "${.CURDIR}/gdtoa/Makefile.inc"
@@ -49,14 +59,14 @@ NOASM=
 .include "${.CURDIR}/net/Makefile.inc"
 .include "${.CURDIR}/nls/Makefile.inc"
 .include "${.CURDIR}/posix1e/Makefile.inc"
-.if ${MACHINE_ARCH} != "amd64" && \
-    ${MACHINE_ARCH} != "ia64" && \
-    ${MACHINE_ARCH} != "powerpc64" && \
-    ${MACHINE_ARCH} != "sparc64" && \
-    ${MACHINE_ARCH} != "mips"
+.if ${LIBC_ARCH} != "amd64" && \
+    ${LIBC_ARCH} != "ia64" && \
+    ${LIBC_ARCH} != "powerpc64" && \
+    ${LIBC_ARCH} != "sparc64" && \
+    ${LIBC_ARCH} != "mips"
 .include "${.CURDIR}/quad/Makefile.inc"
 .endif
-.if ${MACHINE_ARCH} == "mips" && \
+.if ${LIBC_ARCH} == "mips" && \
     (!defined(TARGET_ABI) || ${TARGET_ABI} == "o32")
 .include "${.CURDIR}/quad/Makefile.inc"
 .endif
@@ -70,7 +80,7 @@ NOASM=
 .include "${.CURDIR}/rpc/Makefile.inc"
 .include "${.CURDIR}/uuid/Makefile.inc"
 .include "${.CURDIR}/xdr/Makefile.inc"
-.if ${MACHINE_ARCH} == "arm" || ${MACHINE_ARCH} == "mips"
+.if ${LIBC_ARCH} == "arm" || ${LIBC_ARCH} == "mips"
 .include "${.CURDIR}/softfloat/Makefile.inc"
 .endif
 .if ${MK_NIS} != "no"
@@ -115,16 +125,16 @@ KQSRCS=	adddi3.c anddi3.c ashldi3.c ashrdi3.c cmpdi2.c divdi3.c iordi3.c \
 KSRCS=	bcmp.c ffs.c ffsl.c fls.c flsl.c index.c mcount.c rindex.c \
 	strcat.c strcmp.c strcpy.c strlen.c strncpy.c
 
-libkern: libkern.gen libkern.${MACHINE_ARCH}
+libkern: libkern.gen libkern.${LIBC_ARCH}
 
 libkern.gen: ${KQSRCS} ${KSRCS}
 	cp -p ${.CURDIR}/quad/quad.h ${.ALLSRC} ${DESTDIR}/sys/libkern
 
-libkern.${MACHINE_ARCH}:: ${KMSRCS}
+libkern.${LIBC_ARCH}:: ${KMSRCS}
 .if defined(KMSRCS) && !empty(KMSRCS)
-	cp -p ${.ALLSRC} ${DESTDIR}/sys/libkern/${MACHINE_ARCH}
+	cp -p ${.ALLSRC} ${DESTDIR}/sys/libkern/${LIBC_ARCH}
 .endif
-        
+
 .include <bsd.lib.mk>
 
 # Disable warnings in contributed sources.

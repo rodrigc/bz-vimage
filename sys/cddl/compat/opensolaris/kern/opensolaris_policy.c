@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_policy.c,v 1.10 2010/07/12 23:49:04 mm Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_policy.c,v 1.11 2010/08/28 09:24:11 mm Exp $");
 
 #include <sys/param.h>
 #include <sys/priv.h>
@@ -332,7 +332,7 @@ secpolicy_vnode_owner(struct vnode *vp, cred_t *cred, uid_t owner)
 }
 
 int
-secpolicy_vnode_chown(struct vnode *vp, cred_t *cred, boolean_t check_self)
+secpolicy_vnode_chown(struct vnode *vp, cred_t *cred, uid_t owner)
 {
 
 	if (secpolicy_fs_owner(vp->v_mount, cred) == 0)

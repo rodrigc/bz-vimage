@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/proto_socketpair.c,v 1.3 2010/08/05 17:56:41 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/proto_socketpair.c,v 1.4 2010/08/30 23:16:45 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -140,6 +140,10 @@ sp_send(void *ctx, const unsigned char *data, size_t size)
 		abort();
 	}
 
+	/* Someone is just trying to decide about side. */
+	if (data == NULL)
+		return (0);
+
 	return (proto_common_send(fd, data, size));
 }
 
@@ -173,6 +177,10 @@ sp_recv(void *ctx, unsigned char *data, size_t size)
 	default:
 		abort();
 	}
+
+	/* Someone is just trying to decide about side. */
+	if (data == NULL)
+		return (0);
 
 	return (proto_common_recv(fd, data, size));
 }

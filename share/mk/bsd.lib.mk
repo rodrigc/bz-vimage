@@ -1,5 +1,5 @@
 #	from: @(#)bsd.lib.mk	5.26 (Berkeley) 5/2/91
-# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.192 2010/08/17 20:39:28 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.193 2010/08/23 22:24:11 imp Exp $
 #
 
 .include <bsd.init.mk>
@@ -58,7 +58,7 @@ STRIP?=	-s
 .SUFFIXES: .out .o .po .So .S .asm .s .c .cc .cpp .cxx .m .C .f .y .l .ln
 
 .if !defined(PICFLAG)
-.if ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "sparc64"
 PICFLAG=-fPIC
 .else
 PICFLAG=-fpic

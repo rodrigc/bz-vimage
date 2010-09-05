@@ -1,5 +1,5 @@
-/*-
- * Copyright (c) 2003-2009 RMI Corporation
+/*
+ * Copyright (c) 2010 Konstantin Belousov <kib@freebsd.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -7,10 +7,7 @@
  * are met:
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of RMI Corporation, nor the names of its contributors,
+ * 2. Neither the name of the author nor the names of any co-contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
@@ -26,16 +23,25 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * RMI_BSD */
-#ifndef _RMI_CLOCK_H_
-#define _RMI_CLOCK_H_
+ * $FreeBSD: src/lib/libc/gen/elf_utils.c,v 1.1 2010/08/23 15:38:02 kib Exp $
+ */
 
-#define XLR_PIC_HZ 66000000U
-#define XLR_CPU_HZ (xlr_boot1_info.cpu_frequency)
+#include <link.h>
 
-int count_compare_clockhandler(struct trapframe *);
-int pic_hardclockhandler(struct trapframe *);
-int pic_timecounthandler(struct trapframe *);
-void rmi_early_counter_init(void);
+int
+__elf_phdr_match_addr(struct dl_phdr_info *phdr_info, void *addr)
+{
+	const Elf_Phdr *ph;
+	int i;
 
-#endif				/* _RMI_CLOCK_H_ */
+	for (i = 0; i < phdr_info->dlpi_phnum; i++) {
+		ph = &phdr_info->dlpi_phdr[i];
+		if (ph->p_type != PT_LOAD || (ph->p_flags & PF_X) == 0)
+			continue;
+		if (phdr_info->dlpi_addr + ph->p_vaddr <= (uintptr_t)addr &&
+		    (uintptr_t)addr + sizeof(addr) < phdr_info->dlpi_addr +
+		    ph->p_vaddr + ph->p_memsz)
+			break;
+	}
+	return (i != phdr_info->dlpi_phnum);
+}

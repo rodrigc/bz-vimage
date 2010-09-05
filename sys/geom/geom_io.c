@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.85 2010/06/10 17:49:36 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_io.c,v 1.86 2010/09/02 19:40:28 gibbs Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -265,6 +265,7 @@ g_io_flush(struct g_consumer *cp)
 	g_trace(G_T_BIO, "bio_flush(%s)", cp->provider->name);
 	bp = g_alloc_bio();
 	bp->bio_cmd = BIO_FLUSH;
+	bp->bio_flags |= BIO_ORDERED;
 	bp->bio_done = NULL;
 	bp->bio_attribute = NULL;
 	bp->bio_offset = cp->provider->mediasize;

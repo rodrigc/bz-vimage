@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/parseconfig.sh,v 1.3 2010/08/19 05:59:27 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/parseconfig.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
 
 # Main install configuration parsing script
 #
@@ -73,7 +73,7 @@ file_sanity_check "installMode disk0 installType installMedium packageType"
 check_value installMode "fresh upgrade"
 check_value bootManager "bsd none"
 check_value installType "PCBSD FreeBSD"
-check_value installMedium "dvd usb ftp rsync"
+check_value installMedium "dvd usb ftp rsync img"
 check_value packageType "uzip tar rsync split"
 if_check_value_exists partition "all ALL s1 s2 s3 s4 free FREE"
 if_check_value_exists mirrorbal "load prefer round-robin split"

@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/exception.S,v 1.147 2010/06/23 20:44:07 kib Exp $
+ * $FreeBSD: src/sys/amd64/amd64/exception.S,v 1.148 2010/08/28 08:03:29 rpaulo Exp $
  */
 
 #include "opt_atpic.h"
@@ -108,6 +108,10 @@ IDTVEC(dbg)
 	TRAP_NOEN(T_TRCTRAP)
 IDTVEC(bpt)
 	TRAP_NOEN(T_BPTFLT)
+#ifdef KDTRACE_HOOKS
+IDTVEC(dtrace_ret)
+	TRAP_NOEN(T_DTRACE_RET)
+#endif
 
 /* Regular traps; The cpu does not supply tf_err for these. */
 #define	TRAP(a)	 \

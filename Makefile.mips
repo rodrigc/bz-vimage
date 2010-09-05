@@ -1,2 +1,5 @@
-# $FreeBSD: src/Makefile.mips,v 1.2 2010/08/10 14:36:20 adrian Exp $
+# $FreeBSD: src/Makefile.mips,v 1.4 2010/08/26 14:54:12 imp Exp $
 
+.if defined(TARGET_ABI) && ${TARGET_ABI} == "n64"
+MK_RESCUE=no
+.endif

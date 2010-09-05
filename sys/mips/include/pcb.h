@@ -36,7 +36,7 @@
  *	from: Utah Hdr: pcb.h 1.13 89/04/23
  *	from: @(#)pcb.h 8.1 (Berkeley) 6/10/93
  *	JNPR: pcb.h,v 1.2 2006/08/07 11:51:17 katta
- * $FreeBSD: src/sys/mips/include/pcb.h,v 1.4 2010/04/17 09:42:07 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/pcb.h,v 1.5 2010/08/27 07:45:50 jchandra Exp $
  */
 
 #ifndef _MACHINE_PCB_H_
@@ -58,20 +58,20 @@ struct pcb
 /* these match the regnum's in regnum.h
  * used by switch.S
  */
-#define PCB_REG_S0   0
-#define PCB_REG_S1   1
-#define PCB_REG_S2   2
-#define PCB_REG_S3   3
-#define PCB_REG_S4   4
-#define PCB_REG_S5   5
-#define PCB_REG_S6   6
-#define PCB_REG_S7   7
-#define PCB_REG_SP   8
-#define PCB_REG_S8   9
-#define PCB_REG_RA   10
-#define PCB_REG_SR   11
-#define PCB_REG_GP   12
-#define PCB_REG_PC   13
+#define	PCB_REG_S0	0
+#define	PCB_REG_S1	1
+#define	PCB_REG_S2	2
+#define	PCB_REG_S3	3
+#define	PCB_REG_S4	4
+#define	PCB_REG_S5	5
+#define	PCB_REG_S6	6
+#define	PCB_REG_S7	7
+#define	PCB_REG_SP	8
+#define	PCB_REG_S8	9
+#define	PCB_REG_RA	10
+#define	PCB_REG_SR	11
+#define	PCB_REG_GP	12
+#define	PCB_REG_PC	13
 
 
 #ifdef _KERNEL

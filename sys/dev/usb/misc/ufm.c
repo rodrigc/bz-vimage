@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/misc/ufm.c,v 1.9 2009/08/24 04:59:09 alfred Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/misc/ufm.c,v 1.10 2010/09/01 23:47:53 thompsa Exp $");
 
 
 #include <sys/stdint.h>
@@ -117,6 +117,7 @@ static driver_t ufm_driver = {
 
 DRIVER_MODULE(ufm, uhub, ufm_driver, ufm_devclass, NULL, 0);
 MODULE_DEPEND(ufm, usb, 1, 1, 1);
+MODULE_VERSION(ufm, 1);
 
 static int
 ufm_probe(device_t dev)

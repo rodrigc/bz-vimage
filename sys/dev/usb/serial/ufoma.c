@@ -1,7 +1,7 @@
 /*	$NetBSD: umodem.c,v 1.45 2002/09/23 05:51:23 simonb Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ufoma.c,v 1.16 2009/11/26 00:43:17 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ufoma.c,v 1.17 2010/09/01 23:47:53 thompsa Exp $");
 #define UFOMA_HANDSFREE
 /*-
  * Copyright (c) 2005, Takanori Watanabe
@@ -326,6 +326,7 @@ static driver_t ufoma_driver = {
 DRIVER_MODULE(ufoma, uhub, ufoma_driver, ufoma_devclass, NULL, 0);
 MODULE_DEPEND(ufoma, ucom, 1, 1, 1);
 MODULE_DEPEND(ufoma, usb, 1, 1, 1);
+MODULE_VERSION(ufoma, 1);
 
 static int
 ufoma_probe(device_t dev)

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/arm/uboot/Makefile,v 1.5 2010/06/13 12:46:32 raj Exp $
+# $FreeBSD: src/sys/boot/arm/uboot/Makefile,v 1.7 2010/08/23 01:37:55 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -77,7 +77,7 @@ CLEANFILES+=	vers.c loader.help
 
 CFLAGS+=	-ffreestanding
 
-LDFLAGS=	-nostdlib -static -T ${.CURDIR}/ldscript.arm
+LDFLAGS=	-nostdlib -static -T ${.CURDIR}/ldscript.${MACHINE_CPUARCH}
 
 # Pull in common loader code
 .PATH:		${.CURDIR}/../../uboot/common

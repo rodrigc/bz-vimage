@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cue.c,v 1.14 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cue.c,v 1.15 2010/09/01 23:47:53 thompsa Exp $");
 
 /*
  * CATC USB-EL1210A USB to ethernet driver. Used in the CATC Netmate
@@ -173,6 +173,7 @@ DRIVER_MODULE(cue, uhub, cue_driver, cue_devclass, NULL, 0);
 MODULE_DEPEND(cue, uether, 1, 1, 1);
 MODULE_DEPEND(cue, usb, 1, 1, 1);
 MODULE_DEPEND(cue, ether, 1, 1, 1);
+MODULE_VERSION(cue, 1);
 
 static const struct usb_ether_methods cue_ue_methods = {
 	.ue_attach_post = cue_attach_post,

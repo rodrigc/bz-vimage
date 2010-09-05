@@ -1,9 +1,8 @@
-# $FreeBSD: src/gnu/usr.bin/gdb/Makefile,v 1.17 2010/04/12 23:35:58 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/gdb/Makefile,v 1.18 2010/08/23 22:24:11 imp Exp $
 
 SUBDIR=	doc libgdb gdb gdbtui kgdb
 
-TARGET_ARCH?= ${MACHINE_ARCH}
-.if exists(${.CURDIR}/gdbserver/reg-${TARGET_ARCH}.c)
+.if exists(${.CURDIR}/gdbserver/reg-${MACHINE_CPUARCH}.c)
 SUBDIR+=gdbserver
 .endif
 

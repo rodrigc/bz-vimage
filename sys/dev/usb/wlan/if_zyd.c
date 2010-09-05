@@ -1,6 +1,6 @@
 /*	$OpenBSD: if_zyd.c,v 1.52 2007/02/11 00:08:04 jsg Exp $	*/
 /*	$NetBSD: if_zyd.c,v 1.7 2007/06/21 04:04:29 kiyohara Exp $	*/
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.29 2010/08/14 20:12:10 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.31 2010/09/02 03:28:03 thompsa Exp $	*/
 
 /*-
  * Copyright (c) 2006 by Damien Bergamini <damien.bergamini@free.fr>
@@ -20,7 +20,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.29 2010/08/14 20:12:10 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.31 2010/09/02 03:28:03 thompsa Exp $");
 
 /*
  * ZyDAS ZD1211/ZD1211B USB WLAN driver.
@@ -572,7 +572,6 @@ zyd_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 	struct zyd_vap *zvp = ZYD_VAP(vap);
 	struct ieee80211com *ic = vap->iv_ic;
 	struct zyd_softc *sc = ic->ic_ifp->if_softc;
-	struct ieee80211_node *ni;
 	int error;
 
 	DPRINTF(sc, ZYD_DEBUG_STATE, "%s: %s -> %s\n", __func__,
@@ -586,7 +585,6 @@ zyd_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 		zyd_set_chan(sc, ic->ic_curchan);
 		break;
 	case IEEE80211_S_RUN:
-		ni = vap->iv_bss;
 		if (vap->iv_opmode == IEEE80211_M_MONITOR)
 			break;
 
@@ -598,7 +596,7 @@ zyd_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 		/* make data LED blink upon Tx */
 		zyd_write32_m(sc, sc->sc_fwbase + ZYD_FW_LINK_STATUS, 1);
 
-		IEEE80211_ADDR_COPY(sc->sc_bssid, ni->ni_bssid);
+		IEEE80211_ADDR_COPY(sc->sc_bssid, vap->iv_bss->ni_bssid);
 		zyd_set_bssid(sc, sc->sc_bssid);
 		break;
 	default:
@@ -2948,3 +2946,4 @@ static devclass_t zyd_devclass;
 DRIVER_MODULE(zyd, uhub, zyd_driver, zyd_devclass, NULL, 0);
 MODULE_DEPEND(zyd, usb, 1, 1, 1);
 MODULE_DEPEND(zyd, wlan, 1, 1, 1);
+MODULE_VERSION(zyd, 1);

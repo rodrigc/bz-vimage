@@ -47,7 +47,7 @@
 .\" This document is derived in part from the enet man page (enet.4)
 .\" distributed with 4.3BSD Unix.
 .\"
-.\" $FreeBSD: src/share/man/man4/bpf.4,v 1.54 2010/07/31 12:14:28 joel Exp $
+.\" $FreeBSD: src/share/man/man4/bpf.4,v 1.55 2010/08/28 16:32:01 brucec Exp $
 .\"
 .Dd June 15, 2010
 .Dt BPF 4
@@ -683,7 +683,7 @@ padding between the header and the link level protocol.
 The purpose here is to guarantee proper alignment of the packet
 data structures, which is required on alignment sensitive
 architectures and improves performance on many other architectures.
-The packet filter insures that the
+The packet filter ensures that the
 .Vt bpf_xhdr ,
 .Vt bpf_hdr
 and the network layer

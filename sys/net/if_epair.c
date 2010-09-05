@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.6 2010/06/11 18:46:34 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.8 2010/09/02 16:11:12 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>

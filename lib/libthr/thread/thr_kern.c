@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_kern.c,v 1.21 2006/09/21 04:21:30 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_kern.c,v 1.22 2010/09/01 02:18:33 davidxu Exp $
  */
 
 #include <sys/types.h>
@@ -58,38 +58,6 @@ _thr_setthreaded(int threaded)
 		_thr_rtld_fini();
 	}
 	return (0);
-}
-
-void
-_thr_signal_block(struct pthread *curthread)
-{
-	sigset_t set;
-	
-	if (curthread->sigblock > 0) {
-		curthread->sigblock++;
-		return;
-	}
-	SIGFILLSET(set);
-	SIGDELSET(set, SIGBUS);
-	SIGDELSET(set, SIGILL);
-	SIGDELSET(set, SIGFPE);
-	SIGDELSET(set, SIGSEGV);
-	SIGDELSET(set, SIGTRAP);
-	__sys_sigprocmask(SIG_BLOCK, &set, &curthread->sigmask);
-	curthread->sigblock++;
-}
-
-void
-_thr_signal_unblock(struct pthread *curthread)
-{
-	if (--curthread->sigblock == 0)
-		__sys_sigprocmask(SIG_SETMASK, &curthread->sigmask, NULL);
-}
-
-int
-_thr_send_sig(struct pthread *thread, int sig)
-{
-	return thr_kill(thread->tid, sig);
 }
 
 void

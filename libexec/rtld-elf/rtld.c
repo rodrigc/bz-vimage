@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.153 2010/08/17 09:08:28 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.156 2010/08/24 13:01:14 kib Exp $
  */
 
 /*
@@ -104,7 +104,6 @@ static void init_dag1(Obj_Entry *, Obj_Entry *, DoneList *);
 static void init_rtld(caddr_t, Elf_Auxinfo **);
 static void initlist_add_neededs(Needed_Entry *, Objlist *);
 static void initlist_add_objects(Obj_Entry *, Obj_Entry **, Objlist *);
-static bool is_exported(const Elf_Sym *);
 static void linkmap_add(Obj_Entry *);
 static void linkmap_delete(Obj_Entry *);
 static int load_needed_objects(Obj_Entry *, int);
@@ -147,6 +146,8 @@ static int  rtld_verify_object_versions(Obj_Entry *);
 static void object_add_name(Obj_Entry *, const char *);
 static int  object_match_name(const Obj_Entry *, const char *);
 static void ld_utrace_log(int, void *, void *, size_t, int, const char *);
+static void rtld_fill_dl_phdr_info(const Obj_Entry *obj,
+    struct dl_phdr_info *phdr_info);
 
 void r_debug_state(struct r_debug *, struct link_map *);
 
@@ -193,35 +194,6 @@ extern Elf_Dyn _DYNAMIC;
 #endif
 
 int osreldate, pagesize;
-
-/*
- * These are the functions the dynamic linker exports to application
- * programs.  They are the only symbols the dynamic linker is willing
- * to export from itself.
- */
-static func_ptr_type exports[] = {
-    (func_ptr_type) &_rtld_error,
-    (func_ptr_type) &dlclose,
-    (func_ptr_type) &dlerror,
-    (func_ptr_type) &dlopen,
-    (func_ptr_type) &dlsym,
-    (func_ptr_type) &dlfunc,
-    (func_ptr_type) &dlvsym,
-    (func_ptr_type) &dladdr,
-    (func_ptr_type) &dllockinit,
-    (func_ptr_type) &dlinfo,
-    (func_ptr_type) &_rtld_thread_init,
-#ifdef __i386__
-    (func_ptr_type) &___tls_get_addr,
-#endif
-    (func_ptr_type) &__tls_get_addr,
-    (func_ptr_type) &_rtld_allocate_tls,
-    (func_ptr_type) &_rtld_free_tls,
-    (func_ptr_type) &dl_iterate_phdr,
-    (func_ptr_type) &_rtld_atfork_pre,
-    (func_ptr_type) &_rtld_atfork_post,
-    NULL
-};
 
 /*
  * Global declarations normally provided by crt1.  The dynamic linker is
@@ -1442,19 +1414,6 @@ initlist_add_objects(Obj_Entry *obj, Obj_Entry **tail, Objlist *list)
 #define FPTR_TARGET(f)	((Elf_Addr) (f))
 #endif
 
-static bool
-is_exported(const Elf_Sym *def)
-{
-    Elf_Addr value;
-    const func_ptr_type *p;
-
-    value = (Elf_Addr)(obj_rtld.relocbase + def->st_value);
-    for (p = exports;  *p != NULL;  p++)
-	if (FPTR_TARGET(*p) == value)
-	    return true;
-    return false;
-}
-
 /*
  * Given a shared object, traverse its list of needed objects, and load
  * each of them.  Returns 0 on success.  Generates an error message and
@@ -2158,12 +2117,11 @@ do_dlsym(void *handle, const char *name, void *retaddr, const Ver_Entry *ve,
 	    /*
 	     * Search the dynamic linker itself, and possibly resolve the
 	     * symbol from there.  This is how the application links to
-	     * dynamic linker services such as dlopen.  Only the values listed
-	     * in the "exports" array can be resolved from the dynamic linker.
+	     * dynamic linker services such as dlopen.
 	     */
 	    if (def == NULL || ELF_ST_BIND(def->st_info) == STB_WEAK) {
 		symp = symlook_obj(name, hash, &obj_rtld, ve, flags);
-		if (symp != NULL && is_exported(symp)) {
+		if (symp != NULL) {
 		    def = symp;
 		    defobj = &obj_rtld;
 		}
@@ -2258,6 +2216,24 @@ dlvsym(void *handle, const char *name, const char *version)
 	ventry.flags= 0;
 	return do_dlsym(handle, name, __builtin_return_address(0), &ventry,
 	    SYMLOOK_DLSYM);
+}
+
+int
+_rtld_addr_phdr(const void *addr, struct dl_phdr_info *phdr_info)
+{
+    const Obj_Entry *obj;
+    int lockstate;
+
+    lockstate = rlock_acquire(rtld_bind_lock);
+    obj = obj_from_addr(addr);
+    if (obj == NULL) {
+        _rtld_error("No shared object contains address");
+	rlock_release(rtld_bind_lock, lockstate);
+        return (0);
+    }
+    rtld_fill_dl_phdr_info(obj, phdr_info);
+    rlock_release(rtld_bind_lock, lockstate);
+    return (1);
 }
 
 int
@@ -2362,6 +2338,21 @@ dlinfo(void *handle, int request, void *p)
     return (error);
 }
 
+static void
+rtld_fill_dl_phdr_info(const Obj_Entry *obj, struct dl_phdr_info *phdr_info)
+{
+
+	phdr_info->dlpi_addr = (Elf_Addr)obj->relocbase;
+	phdr_info->dlpi_name = STAILQ_FIRST(&obj->names) ?
+	    STAILQ_FIRST(&obj->names)->name : obj->path;
+	phdr_info->dlpi_phdr = obj->phdr;
+	phdr_info->dlpi_phnum = obj->phsize / sizeof(obj->phdr[0]);
+	phdr_info->dlpi_tls_modid = obj->tlsindex;
+	phdr_info->dlpi_tls_data = obj->tlsinit;
+	phdr_info->dlpi_adds = obj_loads;
+	phdr_info->dlpi_subs = obj_loads - obj_count;
+}
+
 int
 dl_iterate_phdr(__dl_iterate_hdr_callback callback, void *param)
 {
@@ -2375,16 +2366,7 @@ dl_iterate_phdr(__dl_iterate_hdr_callback callback, void *param)
     error = 0;
 
     for (obj = obj_list;  obj != NULL;  obj = obj->next) {
-	phdr_info.dlpi_addr = (Elf_Addr)obj->relocbase;
-	phdr_info.dlpi_name = STAILQ_FIRST(&obj->names) ?
-	    STAILQ_FIRST(&obj->names)->name : obj->path;
-	phdr_info.dlpi_phdr = obj->phdr;
-	phdr_info.dlpi_phnum = obj->phsize / sizeof(obj->phdr[0]);
-	phdr_info.dlpi_tls_modid = obj->tlsindex;
-	phdr_info.dlpi_tls_data = obj->tlsinit;
-	phdr_info.dlpi_adds = obj_loads;
-	phdr_info.dlpi_subs = obj_loads - obj_count;
-
+	rtld_fill_dl_phdr_info(obj, &phdr_info);
 	if ((error = callback(&phdr_info, sizeof phdr_info, param)) != 0)
 		break;
 
@@ -2719,12 +2701,11 @@ symlook_default(const char *name, unsigned long hash, const Obj_Entry *refobj,
     /*
      * Search the dynamic linker itself, and possibly resolve the
      * symbol from there.  This is how the application links to
-     * dynamic linker services such as dlopen.  Only the values listed
-     * in the "exports" array can be resolved from the dynamic linker.
+     * dynamic linker services such as dlopen.
      */
     if (def == NULL || ELF_ST_BIND(def->st_info) == STB_WEAK) {
 	symp = symlook_obj(name, hash, &obj_rtld, ventry, flags);
-	if (symp != NULL && is_exported(symp)) {
+	if (symp != NULL) {
 	    def = symp;
 	    defobj = &obj_rtld;
 	}
@@ -3665,6 +3646,10 @@ fetch_ventry(const Obj_Entry *obj, unsigned long symnum)
     return NULL;
 }
 
+/*
+ * Overrides for libc_pic-provided functions.
+ */
+
 int
 __getosreldate(void)
 {
@@ -3683,4 +3668,12 @@ __getosreldate(void)
 	if (error == 0 && osrel > 0 && len == sizeof(osrel))
 		osreldate = osrel;
 	return (osreldate);
+}
+
+/*
+ * No unresolved symbols for rtld.
+ */
+void
+__pthread_cxa_finalize(struct dl_phdr_info *a)
+{
 }

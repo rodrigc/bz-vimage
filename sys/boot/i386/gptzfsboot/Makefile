@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/gptzfsboot/Makefile,v 1.3 2008/12/17 18:12:01 dfr Exp $
+# $FreeBSD: src/sys/boot/i386/gptzfsboot/Makefile,v 1.4 2010/08/23 01:42:09 imp Exp $
 
 .PATH:		${.CURDIR}/../boot2 ${.CURDIR}/../gptboot ${.CURDIR}/../zfsboot
 
@@ -64,7 +64,7 @@ gptzfsboot.out: ${BTXCRT} zfsboot.o sio.o
 
 zfsboot.o: ${.CURDIR}/../../zfs/zfsimpl.c
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend zfsboot.o: machine
 CLEANFILES+=	machine
 machine:

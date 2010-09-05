@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.371 2010/08/15 21:25:52 brueffer Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.373 2010/09/01 19:50:03 mlaier Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -701,6 +701,7 @@ MLINKS+=ieee80211_vap.9 ieee80211_vap_attach.9 \
 MLINKS+=ifnet.9 ifaddr.9 \
 	ifnet.9 if_data.9 \
 	ifnet.9 ifqueue.9
+MLINKS+=insmntque.9 insmntque1.9
 MLINKS+=ithread.9 ithread_add_handler.9 \
 	ithread.9 ithread_create.9 \
 	ithread.9 ithread_destroy.9 \
@@ -986,6 +987,7 @@ MLINKS+=rman.9 rman_activate_resource.9 \
 MLINKS+=rmlock.9 rm_destroy.9 \
 	rmlock.9 rm_init.9 \
 	rmlock.9 rm_rlock.9 \
+	rmlock.9 rm_try_rlock.9 \
 	rmlock.9 rm_runlock.9 \
 	rmlock.9 RM_SYSINIT.9 \
 	rmlock.9 rm_wlock.9 \

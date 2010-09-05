@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)limits.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/include/limits.h,v 1.17 2010/02/16 19:39:50 imp Exp $
+ * $FreeBSD: src/include/limits.h,v 1.18 2010/08/29 22:22:15 jilles Exp $
  */
 
 #ifndef _LIMITS_H_
@@ -70,7 +70,7 @@
 #endif
 
 #if __POSIX_VISIBLE >= 199309
-#define	_POSIX_AIO_LISTIO_MAX	16
+#define	_POSIX_AIO_LISTIO_MAX	2
 #define	_POSIX_AIO_MAX		1
 #define	_POSIX_DELAYTIMER_MAX	32
 #define	_POSIX_MQ_OPEN_MAX	8

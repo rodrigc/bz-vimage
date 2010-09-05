@@ -31,16 +31,17 @@
 /* $KAME: sctp_crc32.h,v 1.5 2004/08/17 04:06:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_crc32.h,v 1.8 2010/03/12 22:58:52 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_crc32.h,v 1.9 2010/08/29 18:50:30 tuexen Exp $");
 
 #ifndef __crc32c_h__
 #define __crc32c_h__
 
-#if defined(_KERNEL) || defined(__Userspace__)
-
+#if defined(_KERNEL)
+#if !defined(SCTP_WITH_NO_CSUM)
 uint32_t sctp_calculate_cksum(struct mbuf *, uint32_t);
+
+#endif
 void sctp_delayed_cksum(struct mbuf *, uint32_t offset);
 
 #endif				/* _KERNEL */
-
 #endif				/* __crc32c_h__ */

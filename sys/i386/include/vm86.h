@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/include/vm86.h,v 1.18 2010/08/05 18:48:30 jkim Exp $
+ * $FreeBSD: src/sys/i386/include/vm86.h,v 1.19 2010/08/25 21:13:23 jkim Exp $
  */
 
 #ifndef _MACHINE_VM86_H_
@@ -100,7 +100,7 @@ struct vm86frame {
 #define vmf_eflags	eflags.r_ex
 };
 
-#define VM86_PMAPSIZE	8
+#define VM86_PMAPSIZE	24
 #define VMAP_MALLOC	1	/* page was malloced by us */
 
 struct vm86context {

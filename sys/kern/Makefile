@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 3/21/94
-# $FreeBSD: src/sys/kern/Makefile,v 1.15 2007/12/14 21:30:51 obrien Exp $
+# $FreeBSD: src/sys/kern/Makefile,v 1.16 2010/08/23 06:22:35 imp Exp $
 
 # Makefile for kernel tags files, init_sysent, etc.
 
@@ -28,7 +28,7 @@ init_sysent.c syscalls.c systrace_args.c ../sys/syscall.h \
 # are placed in each source directory.  We need to have links to tags files
 # from the generic directories that are relative to the machine type, even
 # via remote mounts; therefore we use symlinks to $SYSTAGS, which points at
-# ${SYSDIR}/${MACHINE_ARCH}/tags.
+# ${SYSDIR}/${MACHINE}/tags.
 
 SYSTAGS=/var/db/sys_tags
 SYSDIR=/sys
@@ -51,7 +51,7 @@ tags::
 
 links::
 	rm -f ${SYSTAGS}
-	ln -s ${SYSDIR}/${MACHINE_ARCH}/tags ${SYSTAGS}
+	ln -s ${SYSDIR}/${MACHINE}/tags ${SYSTAGS}
 	-for i in ${DGEN}; do \
 	    (cd ../$$i && { rm -f tags; ln -s ${SYSTAGS} tags; }) done
 	-for i in ${ARCH}; do \

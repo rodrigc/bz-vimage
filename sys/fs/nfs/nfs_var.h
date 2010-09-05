@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfs_var.h,v 1.14 2010/08/03 01:49:28 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfs_var.h,v 1.15 2010/08/28 21:41:18 rmacklem Exp $
  */
 
 /*
@@ -251,6 +251,7 @@ int nfsv4_lock(struct nfsv4lock *, int, int *, void *);
 void nfsv4_unlock(struct nfsv4lock *, int);
 void nfsv4_relref(struct nfsv4lock *);
 void nfsv4_getref(struct nfsv4lock *, int *, void *);
+int nfsv4_getref_nonblock(struct nfsv4lock *);
 int nfsv4_testlock(struct nfsv4lock *);
 int nfsrv_mtostr(struct nfsrv_descript *, char *, int);
 int nfsrv_checkutf8(u_int8_t *, int);

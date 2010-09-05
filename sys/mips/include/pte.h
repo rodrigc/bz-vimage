@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/pte.h,v 1.11 2010/08/07 01:49:44 neel Exp $
+ * $FreeBSD: src/sys/mips/include/pte.h,v 1.12 2010/08/30 08:23:22 jchandra Exp $
  */
 
 #ifndef	_MACHINE_PTE_H_
@@ -130,9 +130,6 @@ typedef	pt_entry_t *pd_entry_t;
 
 /*
  * PTE management functions for bits defined above.
- *
- * XXX Can make these atomics, but some users of them are using PTEs in local
- * registers and such and don't need the overhead.
  */
 #define	pte_clear(pte, bit)	(*(pte) &= ~(bit))
 #define	pte_set(pte, bit)	(*(pte) |= (bit))

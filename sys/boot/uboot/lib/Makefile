@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/uboot/lib/Makefile,v 1.5 2010/05/25 15:21:39 raj Exp $
+# $FreeBSD: src/sys/boot/uboot/lib/Makefile,v 1.6 2010/08/23 01:50:34 imp Exp $
 
 LIB=		uboot
 INTERNALLIB=
@@ -23,7 +23,7 @@ CFLAGS+= -DDISK_DEBUG
 .endif
 
 machine:
-	ln -sf ${.CURDIR}/../../../${MACHINE_ARCH}/include machine
+	ln -sf ${.CURDIR}/../../../${MACHINE_CPUARCH}/include machine
 
 CLEANFILES+=	machine
 

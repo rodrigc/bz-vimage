@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.cpu.mk,v 1.74 2010/07/10 02:32:50 nwhitehorn Exp $
+# $FreeBSD: src/share/mk/bsd.cpu.mk,v 1.75 2010/08/28 21:06:13 imp Exp $
 
 # Set default CPU compile flags and baseline CPUTYPE for each arch.  The
 # compile flags must support the minimum CPU type for each architecture but
@@ -203,13 +203,6 @@ LD += -EB
 .endif
 
 .if ${MACHINE_ARCH} == "mips" 
-. if defined(TARGET_BIG_ENDIAN)
-CFLAGS += -EB
-LD += -EB
-. else
-CFLAGS += -EL
-LD += -EL
-. endif
 CFLAGS += -G0
 .endif
 

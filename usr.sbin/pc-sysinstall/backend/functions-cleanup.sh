@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.3 2010/07/31 19:25:51 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
 
 # Functions which perform the final cleanup after an install
 
@@ -166,8 +166,8 @@ setup_fstab()
     # Set mount options for file-systems
     case $PARTFS in
       UFS+J) MNTOPTS="rw,noatime,async" ;;
-       SWAP) MNTOPTS="sw" ;;
-          *) MNTOPTS="rw,noatime" ;;
+      SWAP) MNTOPTS="sw" ;;
+      *) MNTOPTS="rw,noatime" ;;
     esac
 
 
@@ -391,30 +391,28 @@ set_root_pw()
 
 run_final_cleanup()
 {
+  # Check if we need to run any gmirror setup
+  ls ${MIRRORCFGDIR}/* >/dev/null 2>/dev/null
+  if [ "$?" = "0" ]
+  then
+    # Lets setup gmirror now
+    setup_gmirror
+  fi
 
- # Check if we need to run any gmirror setup
- ls ${MIRRORCFGDIR}/* >/dev/null 2>/dev/null
- if [ "$?" = "0" ]
- then
-   # Lets setup gmirror now
-   setup_gmirror
- fi
+  # Check if we need to save any geli keys
+  ls ${GELIKEYDIR}/* >/dev/null 2>/dev/null
+  if [ "$?" = "0" ]
+  then
+    # Lets setup geli loading
+    setup_geli_loading
+  fi
 
- # Check if we need to save any geli keys
- ls ${GELIKEYDIR}/* >/dev/null 2>/dev/null
- if [ "$?" = "0" ]
- then
-   # Lets setup geli loading
-   setup_geli_loading
- fi
+  # Set a hostname on the install system
+  setup_hostname
 
- # Set a hostname on the install system
- setup_hostname
+  # Set the root_pw if it is specified
+  set_root_pw
 
- # Set the root_pw if it is specified
- set_root_pw
-
- # Generate the fstab for the installed system
- setup_fstab
-
+  # Generate the fstab for the installed system
+  setup_fstab
 };

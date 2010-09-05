@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonsubs.c,v 1.5 2010/03/30 23:11:50 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonsubs.c,v 1.6 2010/08/28 21:41:18 rmacklem Exp $");
 
 /*
  * These functions support the macros and help fiddle mbuf chains for
@@ -1821,6 +1821,21 @@ nfsv4_getref(struct nfsv4lock *lp, int *isleptp, void *mutex)
 	}
 
 	lp->nfslock_usecnt++;
+}
+
+/*
+ * Get a reference as above, but return failure instead of sleeping if
+ * an exclusive lock is held.
+ */
+APPLESTATIC int
+nfsv4_getref_nonblock(struct nfsv4lock *lp)
+{
+
+	if ((lp->nfslock_lock & NFSV4LOCK_LOCK) != 0)
+		return (0);
+
+	lp->nfslock_usecnt++;
+	return (1);
 }
 
 /*

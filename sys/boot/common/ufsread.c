@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/common/ufsread.c,v 1.19 2009/05/28 08:22:36 dfr Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/common/ufsread.c,v 1.20 2010/08/24 12:56:45 rpaulo Exp $");
 
 #include <ufs/ufs/dinode.h>
 #include <ufs/ufs/dir.h>
@@ -223,14 +223,19 @@ fsread(ino_t inode, void *buf, size_t nbyte)
 			return -1;
 		n = INO_TO_VBO(n, inode);
 #if defined(UFS1_ONLY)
-		dp1 = ((struct ufs1_dinode *)blkbuf)[n];
+		memcpy(&dp1, (struct ufs1_dinode *)blkbuf + n,
+		    sizeof(struct ufs1_dinode));
 #elif defined(UFS2_ONLY)
-		dp2 = ((struct ufs2_dinode *)blkbuf)[n];
+		memcpy(&dp2, (struct ufs2_dinode *)blkbuf + n,
+		    sizeof(struct ufs2_dinode));
 #else
 		if (fs->fs_magic == FS_UFS1_MAGIC)
-			dp1 = ((struct ufs1_dinode *)blkbuf)[n];
+			memcpy(&dp1, (struct ufs1_dinode *)blkbuf + n,
+			    sizeof(struct ufs1_dinode));
 		else
-			dp2 = ((struct ufs2_dinode *)blkbuf)[n];
+			memcpy(&dp2, (struct ufs2_dinode *)blkbuf + n,
+			    sizeof(struct ufs2_dinode));
+
 #endif
 		inomap = inode;
 		fs_off = 0;

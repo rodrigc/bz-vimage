@@ -26,7 +26,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * RMI_BSD */
+ * RMI_BSD
+ * $FreeBSD: src/sys/mips/rmi/iomap.h,v 1.2 2010/08/30 13:05:21 jchandra Exp $
+ */
 #ifndef _RMI_IOMAP_H_
 #define _RMI_IOMAP_H_
 

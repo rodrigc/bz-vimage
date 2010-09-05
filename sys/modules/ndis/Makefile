@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/ndis/Makefile,v 1.13 2009/03/07 07:26:22 weongyo Exp $
+# $FreeBSD: src/sys/modules/ndis/Makefile,v 1.14 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../compat/ndis
 
@@ -8,11 +8,11 @@ SRCS+=	kern_windrv.c subr_usbd.c
 SRCS+=	device_if.h bus_if.h pci_if.h vnode_if.h
 SRCS+=	opt_bus.h opt_usb.h usb_if.h usbdevs.h
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 SRCS+=	winx64_wrap.S
 .endif
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 SRCS+=	winx32_wrap.S
 .endif
 

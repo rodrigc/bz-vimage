@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/calendar/calendar.h,v 1.16 2010/03/30 06:42:01 edwin Exp $
+ * $FreeBSD: src/usr.bin/calendar/calendar.h,v 1.17 2010/08/30 22:45:32 edwin Exp $
  */
 
 #include <sys/types.h>
@@ -80,6 +80,7 @@ extern int EastLongitude;
 #define	F_SEPEQUINOX		0x08000
 #define	F_JUNSOLSTICE		0x10000
 #define	F_DECSOLSTICE		0x20000
+#define	F_YEAR			0x40000
 
 #define	STRING_EASTER		"Easter"
 #define	STRING_PASKHA		"Paskha"

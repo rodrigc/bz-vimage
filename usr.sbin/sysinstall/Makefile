@@ -1,6 +1,6 @@
-# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.152 2010/07/19 20:22:21 gabor Exp $
+# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.153 2010/08/23 22:24:11 imp Exp $
 
-.if ${MACHINE_ARCH} != "ia64"
+.if ${MACHINE_CPUARCH} != "ia64"
 _wizard=	wizard.c
 .endif
 

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdsocket.c,v 1.5 2010/06/13 05:24:27 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdsocket.c,v 1.6 2010/08/28 21:41:18 rmacklem Exp $");
 
 /*
  * Socket operations for use by the nfs server.
@@ -533,8 +533,6 @@ nfsrvd_compound(struct nfsrv_descript *nd, int isdgram,
 		    NFSV4ROOTLOCKMUTEXPTR);
 	NFSUNLOCKV4ROOTMUTEX();
 	if (igotlock) {
-		NFSLOCKSTATE();	/* to avoid a race with */
-		NFSUNLOCKSTATE();	/* nfsrv_servertimer() */
 		/*
 		 * If I got the lock, I can update the stable storage file.
 		 * Done when the grace period is over or a client has long

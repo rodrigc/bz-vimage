@@ -1,4 +1,4 @@
-# $FreeBSD: src/sbin/sunlabel/Makefile,v 1.13 2010/02/15 14:07:40 uqs Exp $
+# $FreeBSD: src/sbin/sunlabel/Makefile,v 1.14 2010/08/23 22:24:11 imp Exp $
 
 .PATH: ${.CURDIR}/../../sys/geom
 
@@ -6,7 +6,7 @@ PROG=	sunlabel
 SRCS=	sunlabel.c geom_sunlabel_enc.c
 MAN=	sunlabel.8
 
-.if ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "sparc64"
 LINKS=	${BINDIR}/sunlabel ${BINDIR}/disklabel
 MLINKS=	sunlabel.8 disklabel.8
 .endif

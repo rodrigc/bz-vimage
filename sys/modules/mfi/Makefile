@@ -1,10 +1,10 @@
-# $FreeBSD: src/sys/modules/mfi/Makefile,v 1.5 2007/05/16 17:19:47 scottl Exp $
+# $FreeBSD: src/sys/modules/mfi/Makefile,v 1.6 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/mfi
 
 SUBDIR= mfip
 
-.if ${MACHINE_ARCH} == "i386" || ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
 SUBDIR+= mfi_linux
 .endif
 

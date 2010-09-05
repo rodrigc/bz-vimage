@@ -1,7 +1,7 @@
-# $FreeBSD: src/sys/modules/cpufreq/Makefile,v 1.13 2010/02/25 14:13:39 attilio Exp $
+# $FreeBSD: src/sys/modules/cpufreq/Makefile,v 1.14 2010/08/23 06:13:29 imp Exp $
 
 .PATH:	${.CURDIR}/../../dev/cpufreq		\
-	${.CURDIR}/../../${MACHINE_ARCH}/cpufreq
+	${.CURDIR}/../../${MACHINE_CPUARCH}/cpufreq
 
 KMOD=	cpufreq
 SRCS=	ichss.c

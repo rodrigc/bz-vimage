@@ -38,7 +38,7 @@
  *
  *	from: @(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
- * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.128 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.129 2010/08/31 15:27:46 nwhitehorn Exp $
  */
 /*-
  * Copyright (c) 1994, 1995, 1996 Carnegie-Mellon University.
@@ -235,15 +235,6 @@ void
 cpu_exit(td)
 	register struct thread *td;
 {
-}
-
-/*
- * Reset back to firmware.
- */
-void
-cpu_reset()
-{
-	OF_reboot();
 }
 
 /*

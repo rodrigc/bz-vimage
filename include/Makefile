@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 1/4/94
-# $FreeBSD: src/include/Makefile,v 1.298 2010/07/13 21:19:59 nwhitehorn Exp $
+# $FreeBSD: src/include/Makefile,v 1.299 2010/08/23 22:24:11 imp Exp $
 #
 # Doing a "make install" builds /usr/include.
 
@@ -115,8 +115,8 @@ INCSLINKS+=	machine/$i ${INCLUDEDIR}/$i
 INCSLINKS+=	sys/$i ${INCLUDEDIR}/$i
 .endfor
 
-.if ${MACHINE} != ${MACHINE_ARCH}
-_MARCH=${MACHINE_ARCH}
+.if ${MACHINE} != ${MACHINE_CPUARCH}
+_MARCH=${MACHINE_CPUARCH}
 .endif
 
 .include <bsd.prog.mk>

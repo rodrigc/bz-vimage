@@ -1,2 +1,0 @@
-.\" $FreeBSD: src/tools/build/options/WITH_GNU_GREP,v 1.1 2010/07/22 19:11:57 gabor Exp $
-Set to build the base system with GNU grep instead of BSD grep

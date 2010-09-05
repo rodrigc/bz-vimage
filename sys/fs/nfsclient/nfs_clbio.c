@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clbio.c,v 1.18 2010/06/13 05:24:27 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clbio.c,v 1.19 2010/09/05 00:47:44 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -510,10 +510,7 @@ ncl_bioread(struct vnode *vp, struct uio *uio, int ioflag, struct ucred *cred)
 			    rabp = nfs_getcacheblk(vp, rabn, biosize, td);
 			    if (!rabp) {
 				error = newnfs_sigintr(nmp, td);
-				if (error)
-				    return (error);
-				else
-				    break;
+				return (error ? error : EINTR);
 			    }
 			    if ((rabp->b_flags & (B_CACHE|B_DELWRI)) == 0) {
 				rabp->b_flags |= B_ASYNC;

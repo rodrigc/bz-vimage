@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.116 2010/08/17 20:39:28 rpaulo Exp $
+# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.117 2010/08/23 22:24:11 imp Exp $
 
 # Part of a unified Makefile for building kernels.  This part contains all
 # of the definitions that need to be before %BEFORE_DEPEND.
@@ -32,7 +32,7 @@ CTFFLAGS+=	-g
 . else
 _MINUS_O=	-O2
 . endif
-. if ${MACHINE_ARCH} == "amd64"
+. if ${MACHINE_CPUARCH} == "amd64"
 COPTFLAGS?=-O2 -frename-registers -pipe
 . else
 COPTFLAGS?=${_MINUS_O} -pipe

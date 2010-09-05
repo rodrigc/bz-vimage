@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/uhci.c,v 1.26 2010/06/22 20:57:48 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/uhci.c,v 1.27 2010/09/02 04:01:18 thompsa Exp $");
 
 /*
  * USB Universal Host Controller driver.
@@ -3084,7 +3084,7 @@ uhci_xfer_unsetup(struct usb_xfer *xfer)
 }
 
 static void
-uhci_get_dma_delay(struct usb_bus *bus, uint32_t *pus)
+uhci_get_dma_delay(struct usb_device *udev, uint32_t *pus)
 {
 	/*
 	 * Wait until hardware has finished any possible use of the

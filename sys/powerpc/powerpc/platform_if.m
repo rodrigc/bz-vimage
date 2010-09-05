@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/powerpc/powerpc/platform_if.m,v 1.1 2009/05/14 00:34:26 nwhitehorn Exp $
+# $FreeBSD: src/sys/powerpc/powerpc/platform_if.m,v 1.2 2010/08/31 15:27:46 nwhitehorn Exp $
 #
 
 #include <sys/param.h>
@@ -159,5 +159,12 @@ METHOD int smp_get_bsp {
 METHOD int smp_start_cpu {
 	platform_t	_plat;
 	struct pcpu	*_cpu;
+};
+
+/**
+ * @brief Reset system
+ */
+METHOD void reset {
+	platform_t	_plat;
 };
 

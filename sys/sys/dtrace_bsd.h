@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/dtrace_bsd.h,v 1.4 2010/04/20 17:03:30 rpaulo Exp $
+ * $FreeBSD: src/sys/sys/dtrace_bsd.h,v 1.5 2010/08/25 12:35:36 rpaulo Exp $
  *
  * This file contains BSD shims for Sun's DTrace code.
  */
@@ -37,6 +37,7 @@ struct trapframe;
 struct thread;
 struct vattr;
 struct vnode;
+struct reg;
 
 /*
  * Cyclic clock function type definition used to hook the cyclic
@@ -70,6 +71,14 @@ typedef void (*dtrace_doubletrap_func_t)(void);
 /* Global variables in trap.c */
 extern	dtrace_invop_func_t	dtrace_invop_func;
 extern	dtrace_doubletrap_func_t	dtrace_doubletrap_func;
+
+/* Pid provider hooks */
+typedef int (*dtrace_fasttrap_probe_ptr_t)(struct reg *);
+extern	dtrace_fasttrap_probe_ptr_t	dtrace_fasttrap_probe_ptr;
+typedef int (*dtrace_pid_probe_ptr_t)(struct reg *);
+extern	dtrace_pid_probe_ptr_t	dtrace_pid_probe_ptr;
+typedef int (*dtrace_return_probe_ptr_t)(struct reg *);
+extern	dtrace_return_probe_ptr_t	dtrace_return_probe_ptr;
 
 /* Virtual time hook function type. */
 typedef	void (*dtrace_vtime_switch_func_t)(struct thread *);

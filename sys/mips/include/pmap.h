@@ -40,7 +40,7 @@
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: src/sys/i386/include/pmap.h,v 1.65.2.2 2000/11/30 01:54:42 peter
  *	JNPR: pmap.h,v 1.7.2.1 2007/09/10 07:44:12 girish
- *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.19 2010/08/12 10:09:28 jchandra Exp $
+ *      $FreeBSD: src/sys/mips/include/pmap.h,v 1.20 2010/08/29 05:39:21 jchandra Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -125,11 +125,6 @@ typedef struct pv_entry {
 	TAILQ_ENTRY(pv_entry) pv_plist;
 	vm_page_t pv_ptem;	/* VM page for pte */
 }       *pv_entry_t;
-
-
-#if defined(DIAGNOSTIC)
-#define	PMAP_DIAGNOSTIC
-#endif
 
 /*
  * physmem_desc[] is a superset of phys_avail[] and describes all the

@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_subr.c,v 1.362 2010/08/18 17:39:47 andre Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_subr.c,v 1.363 2010/08/27 18:17:46 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_inet.h"
@@ -1016,11 +1016,9 @@ tcp_pcblist(SYSCTL_HANDLER_ARGS)
 	 * resource-intensive to repeat twice on every request.
 	 */
 	if (req->oldptr == NULL) {
-		m = syncache_pcbcount();
-		n = V_tcbinfo.ipi_count;
-		n += imax((m + n) / 8, 10);
-		req->oldidx = 2 * (sizeof xig) +
-		    (m + n) * sizeof(struct xtcpcb);
+		n = V_tcbinfo.ipi_count + syncache_pcbcount();
+		n += imax(n / 8, 10);
+		req->oldidx = 2 * (sizeof xig) + n * sizeof(struct xtcpcb);
 		return (0);
 	}
 

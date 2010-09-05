@@ -1,5 +1,6 @@
 /*-
  * Copyright (c) 2010 The FreeBSD Foundation
+ * Copyright (c) 2010 Pawel Jakub Dawidek <pjd@FreeBSD.org>
  * All rights reserved.
  *
  * This software was developed by Pawel Jakub Dawidek under sponsorship from
@@ -26,15 +27,22 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/hooks.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/hooks.h,v 1.3 2010/08/29 21:39:49 pjd Exp $
  */
 
 #ifndef	_HOOKS_H_
 #define	_HOOKS_H_
 
-#include <stdarg.h>
+#include <sys/types.h>
 
-int hook_exec(const char *path, ...);
-int hook_execv(const char *path, va_list ap);
+#include <stdarg.h>
+#include <stdbool.h>
+
+void hook_init(void);
+void hook_fini(void);
+void hook_check_one(pid_t pid, int status);
+void hook_check(bool sigchld);
+void hook_exec(const char *path, ...);
+void hook_execv(const char *path, va_list ap);
 
 #endif	/* !_HOOKS_H_ */

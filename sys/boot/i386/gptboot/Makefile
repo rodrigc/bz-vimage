@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.62 2007/10/26 15:56:22 jhb Exp $
+# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.63 2010/08/23 01:42:09 imp Exp $
 
 .PATH:		${.CURDIR}/../boot2
 
@@ -67,7 +67,7 @@ gptboot.out: ${BTXCRT} gptboot.o sio.o
 
 gptboot.o: ${.CURDIR}/../../common/ufsread.c
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend gptboot.o: machine
 CLEANFILES+=	machine
 machine:

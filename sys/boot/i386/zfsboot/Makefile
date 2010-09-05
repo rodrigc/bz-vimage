@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/zfsboot/Makefile,v 1.2 2008/12/17 18:12:01 dfr Exp $
+# $FreeBSD: src/sys/boot/i386/zfsboot/Makefile,v 1.3 2010/08/23 01:42:09 imp Exp $
 
 .PATH:		${.CURDIR}/../boot2
 
@@ -98,7 +98,7 @@ zfsboot.h: zfsldr.out
 	    ORG1=`printf "%d" ${ORG1}` \
 	    REL1=`printf "%d" ${REL1}` > ${.TARGET}
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend zfsboot.s: machine
 CLEANFILES+=	machine
 machine:

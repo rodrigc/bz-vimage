@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/libi386/Makefile,v 1.47 2009/11/27 03:55:42 sobomax Exp $
+# $FreeBSD: src/sys/boot/i386/libi386/Makefile,v 1.48 2010/08/23 01:42:09 imp Exp $
 #
 LIB=			i386
 INTERNALLIB=
@@ -53,7 +53,7 @@ CFLAGS+=	-I${.CURDIR}/../../common -I${.CURDIR}/../btx/lib \
 # the location of libstand
 CFLAGS+=	-I${.CURDIR}/../../../../lib/libstand/
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 CLEANFILES+=	machine
 machine:
 	ln -sf ${.CURDIR}/../../../i386/include machine
@@ -61,6 +61,6 @@ machine:
 
 .include <bsd.lib.mk>
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend ${OBJS}: machine
 .endif

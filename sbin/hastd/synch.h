@@ -26,14 +26,16 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/synch.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/synch.h,v 1.3 2010/08/29 21:37:21 pjd Exp $
  */
 
 #ifndef	_SYNCH_H_
 #define	_SYNCH_H_
 
 #include <assert.h>
+#include <errno.h>
 #include <pthread.h>
+#include <pthread_np.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -43,6 +45,14 @@ mtx_init(pthread_mutex_t *lock)
 	int error;
 
 	error = pthread_mutex_init(lock, NULL);
+	assert(error == 0);
+}
+static __inline void
+mtx_destroy(pthread_mutex_t *lock)
+{
+	int error;
+
+	error = pthread_mutex_destroy(lock);
 	assert(error == 0);
 }
 static __inline void
@@ -70,6 +80,12 @@ mtx_unlock(pthread_mutex_t *lock)
 	error = pthread_mutex_unlock(lock);
 	assert(error == 0);
 }
+static __inline bool
+mtx_owned(pthread_mutex_t *lock)
+{
+
+	return (pthread_mutex_isowned_np(lock) != 0);
+}
 
 static __inline void
 rw_init(pthread_rwlock_t *lock)
@@ -77,6 +93,14 @@ rw_init(pthread_rwlock_t *lock)
 	int error;
 
 	error = pthread_rwlock_init(lock, NULL);
+	assert(error == 0);
+}
+static __inline void
+rw_destroy(pthread_rwlock_t *lock)
+{
+	int error;
+
+	error = pthread_rwlock_destroy(lock);
 	assert(error == 0);
 }
 static __inline void

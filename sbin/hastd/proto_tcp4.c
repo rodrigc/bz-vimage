@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/proto_tcp4.c,v 1.6 2010/08/16 21:59:56 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/proto_tcp4.c,v 1.7 2010/08/27 13:54:17 pjd Exp $");
 
 #include <sys/param.h>	/* MAXHOSTNAMELEN */
 
@@ -242,8 +242,8 @@ tcp4_connect(void *ctx)
 		return (errno);
 	}
 	/*
-	 * We make socket non-blocking so we have decided about connection
-	 * timeout.
+	 * We make socket non-blocking so we can handle connection timeout
+	 * manually.
 	 */
 	flags |= O_NONBLOCK;
 	if (fcntl(tctx->tc_fd, F_SETFL, flags) == -1) {

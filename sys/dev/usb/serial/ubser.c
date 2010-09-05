@@ -70,7 +70,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.16 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.18 2010/09/02 04:39:45 thompsa Exp $");
 
 /*
  * BWCT serial adapter driver
@@ -104,7 +104,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.16 2010/04/22 21:31:34 th
 #define	USB_DEBUG_VAR ubser_debug
 #include <dev/usb/usb_debug.h>
 #include <dev/usb/usb_process.h>
-#include <dev/usb/usb_device.h>
 
 #include <dev/usb/serial/usb_serial.h>
 
@@ -215,6 +214,7 @@ static driver_t ubser_driver = {
 DRIVER_MODULE(ubser, uhub, ubser_driver, ubser_devclass, NULL, 0);
 MODULE_DEPEND(ubser, ucom, 1, 1, 1);
 MODULE_DEPEND(ubser, usb, 1, 1, 1);
+MODULE_VERSION(ubser, 1);
 
 static int
 ubser_probe(device_t dev)
@@ -225,7 +225,7 @@ ubser_probe(device_t dev)
 		return (ENXIO);
 	}
 	/* check if this is a BWCT vendor specific ubser interface */
-	if ((strcmp(uaa->device->manufacturer, "BWCT") == 0) &&
+	if ((strcmp(usb_get_manufacturer(uaa->device), "BWCT") == 0) &&
 	    (uaa->info.bInterfaceClass == 0xff) &&
 	    (uaa->info.bInterfaceSubClass == 0x00))
 		return (0);

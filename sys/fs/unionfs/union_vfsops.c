@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)union_vfsops.c	8.20 (Berkeley) 5/20/95
- * $FreeBSD: src/sys/fs/unionfs/union_vfsops.c,v 1.96 2009/05/11 15:33:26 attilio Exp $
+ * $FreeBSD: src/sys/fs/unionfs/union_vfsops.c,v 1.97 2010/09/05 04:58:16 daichi Exp $
  */
 
 #include <sys/param.h>
@@ -89,7 +89,6 @@ unionfs_domount(struct mount *mp)
 	u_short		ufile;
 	unionfs_copymode copymode;
 	unionfs_whitemode whitemode;
-	struct componentname fakecn;
 	struct nameidata nd, *ndp;
 	struct vattr	va;
 
@@ -278,26 +277,6 @@ unionfs_domount(struct mount *mp)
 	 * Copy upper layer's RDONLY flag.
 	 */
 	mp->mnt_flag |= ump->um_uppervp->v_mount->mnt_flag & MNT_RDONLY;
-
-	/*
-	 * Check whiteout
-	 */
-	if ((mp->mnt_flag & MNT_RDONLY) == 0) {
-		memset(&fakecn, 0, sizeof(fakecn));
-		fakecn.cn_nameiop = LOOKUP;
-		fakecn.cn_thread = td;
-		error = VOP_WHITEOUT(ump->um_uppervp, &fakecn, LOOKUP);
-		if (error) {
-			if (below) {
-				VOP_UNLOCK(ump->um_uppervp, 0);
-				vrele(upperrootvp);
-			} else
-				vput(ump->um_uppervp);
-			free(ump, M_UNIONFSMNT);
-			mp->mnt_data = NULL;
-			return (error);
-		}
-	}
 
 	/*
 	 * Unlock the node

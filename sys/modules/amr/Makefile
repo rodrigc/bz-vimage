@@ -1,9 +1,9 @@
-# $FreeBSD: src/sys/modules/amr/Makefile,v 1.13 2008/11/03 04:13:27 scottl Exp $
+# $FreeBSD: src/sys/modules/amr/Makefile,v 1.14 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/amr
 
 SUBDIR= amr_cam
-.if ${MACHINE_ARCH} == "i386" || ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
 SUBDIR+= amr_linux
 .endif
 

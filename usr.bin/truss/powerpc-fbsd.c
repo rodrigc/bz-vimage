@@ -27,7 +27,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/usr.bin/truss/powerpc-fbsd.c,v 1.8 2010/03/10 20:31:30 imp Exp $";
+  "$FreeBSD: src/usr.bin/truss/powerpc-fbsd.c,v 1.9 2010/08/28 15:04:53 nwhitehorn Exp $";
 #endif /* not lint */
 
 /*
@@ -63,7 +63,12 @@ static const char rcsid[] =
 
 static int cpid = -1;
 
+#ifdef __powerpc64__	/* 32-bit compatibility */
+#include "freebsd32_syscalls.h"
+#define  syscallnames freebsd32_syscallnames
+#else			/* native 32-bit */
 #include "syscalls.h"
+#endif
 
 static int nsyscalls = sizeof(syscallnames) / sizeof(syscallnames[0]);
 

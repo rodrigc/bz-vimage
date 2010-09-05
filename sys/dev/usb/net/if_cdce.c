@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.21 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.22 2010/09/02 03:55:08 thompsa Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -312,14 +312,14 @@ cdce_ncm_init(struct cdce_softc *sc)
 	/* Read correct set of parameters according to device mode */
 
 	if (usbd_get_mode(sc->sc_ue.ue_udev) == USB_MODE_HOST) {
-		sc->sc_ncm.rx_max = UGETW(temp.dwNtbInMaxSize);
-		sc->sc_ncm.tx_max = UGETW(temp.dwNtbOutMaxSize);
+		sc->sc_ncm.rx_max = UGETDW(temp.dwNtbInMaxSize);
+		sc->sc_ncm.tx_max = UGETDW(temp.dwNtbOutMaxSize);
 		sc->sc_ncm.tx_remainder = UGETW(temp.wNdpOutPayloadRemainder);
 		sc->sc_ncm.tx_modulus = UGETW(temp.wNdpOutDivisor);
 		sc->sc_ncm.tx_struct_align = UGETW(temp.wNdpOutAlignment);
 	} else {
-		sc->sc_ncm.rx_max = UGETW(temp.dwNtbOutMaxSize);
-		sc->sc_ncm.tx_max = UGETW(temp.dwNtbInMaxSize);
+		sc->sc_ncm.rx_max = UGETDW(temp.dwNtbOutMaxSize);
+		sc->sc_ncm.tx_max = UGETDW(temp.dwNtbInMaxSize);
 		sc->sc_ncm.tx_remainder = UGETW(temp.wNdpInPayloadRemainder);
 		sc->sc_ncm.tx_modulus = UGETW(temp.wNdpInDivisor);
 		sc->sc_ncm.tx_struct_align = UGETW(temp.wNdpInAlignment);

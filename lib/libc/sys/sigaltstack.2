@@ -26,7 +26,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)sigaltstack.2	8.2 (Berkeley) 5/1/95
-.\" $FreeBSD: src/lib/libc/sys/sigaltstack.2,v 1.23 2010/05/06 22:06:14 jilles Exp $
+.\" $FreeBSD: src/lib/libc/sys/sigaltstack.2,v 1.24 2010/08/29 16:38:08 kib Exp $
 .\"
 .Dd May 6, 2010
 .Dt SIGALTSTACK 2
@@ -104,7 +104,7 @@ if ((sigstk.ss_sp = malloc(SIGSTKSZ)) == NULL)
 	/* error return */
 sigstk.ss_size = SIGSTKSZ;
 sigstk.ss_flags = 0;
-if (sigaltstack(&sigstk,0) < 0)
+if (sigaltstack(&sigstk, NULL) < 0)
 	perror("sigaltstack");
 .Ed
 An alternative approach is provided for programs with signal handlers

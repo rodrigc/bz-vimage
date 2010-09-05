@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_default.c,v 1.160 2010/05/12 21:24:46 zml Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_default.c,v 1.162 2010/08/25 18:09:51 brian Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -285,6 +285,9 @@ get_next_dirent(struct vnode *vp, struct dirent **dpp, char *dirbuf,
 
 		*cpos = dirbuf;
 		*len = (dirbuflen - uio.uio_resid);
+
+		if (*len == 0)
+			return (ENOENT);
 	}
 
 	dp = (struct dirent *)(*cpos);

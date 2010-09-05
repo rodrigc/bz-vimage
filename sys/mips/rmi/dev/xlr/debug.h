@@ -26,7 +26,9 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * RMI_BSD */
+ * RMI_BSD
+ * $FreeBSD: src/sys/mips/rmi/dev/xlr/debug.h,v 1.1 2010/08/30 13:26:07 jchandra Exp $
+ */
 #ifndef _RMI_DEBUG_H_
 #define _RMI_DEBUG_H_
 

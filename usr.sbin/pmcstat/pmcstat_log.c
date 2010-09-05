@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcstat_log.c,v 1.23 2010/08/03 13:46:25 fabient Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcstat_log.c,v 1.24 2010/09/03 13:54:02 fabient Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -2168,6 +2168,7 @@ pmcstat_shutdown_logging(void)
 		PRINT("#samples/total", samples_total);
 		PRINT("#samples/unclaimed", samples_unknown_offset);
 		PRINT("#samples/unknown-object", samples_indeterminable);
+		PRINT("#samples/unknown-function", samples_unknown_function);
 		PRINT("#callchain/dubious-frames", callchain_dubious_frames);
 	}
 

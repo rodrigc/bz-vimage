@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_umtx.c,v 1.18 2009/12/14 01:26:01 marcel Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_umtx.c,v 1.20 2010/09/01 03:11:21 davidxu Exp $
  *
  */
 
@@ -45,6 +45,13 @@ _thr_umutex_init(struct umutex *mtx)
 	static struct umutex default_mtx = DEFAULT_UMUTEX;
 
 	*mtx = default_mtx;
+}
+
+void
+_thr_urwlock_init(struct urwlock *rwl)
+{
+	static struct urwlock default_rwl = DEFAULT_URWLOCK;
+	*rwl = default_rwl;
 }
 
 int
@@ -216,4 +223,43 @@ int
 __thr_rwlock_unlock(struct urwlock *rwlock)
 {
 	return _umtx_op_err(rwlock, UMTX_OP_RW_UNLOCK, 0, NULL, NULL);
+}
+
+void
+_thr_rwl_rdlock(struct urwlock *rwlock)
+{
+	int ret;
+
+	for (;;) {
+		if (_thr_rwlock_tryrdlock(rwlock, URWLOCK_PREFER_READER) == 0)
+			return;
+		ret = __thr_rwlock_rdlock(rwlock, URWLOCK_PREFER_READER, NULL);
+		if (ret == 0)
+			return;
+		if (ret != EINTR)
+			PANIC("rdlock error");
+	}
+}
+
+void
+_thr_rwl_wrlock(struct urwlock *rwlock)
+{
+	int ret;
+
+	for (;;) {
+		if (_thr_rwlock_trywrlock(rwlock) == 0)
+			return;
+		ret = __thr_rwlock_wrlock(rwlock, NULL);
+		if (ret == 0)
+			return;
+		if (ret != EINTR)
+			PANIC("wrlock error");
+	}
+}
+
+void
+_thr_rwl_unlock(struct urwlock *rwlock)
+{
+	if (_thr_rwlock_unlock(rwlock))
+		PANIC("unlock error");
 }

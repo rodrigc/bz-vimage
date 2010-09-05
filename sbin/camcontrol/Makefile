@@ -1,4 +1,4 @@
-# $FreeBSD: src/sbin/camcontrol/Makefile,v 1.18 2009/10/19 16:00:24 ru Exp $
+# $FreeBSD: src/sbin/camcontrol/Makefile,v 1.19 2010/08/23 22:24:11 imp Exp $
 
 PROG=	camcontrol
 SRCS=	camcontrol.c util.c
@@ -7,7 +7,8 @@ SRCS+=	modeedit.c
 .else
 CFLAGS+= -DMINIMALISTIC
 .endif
-.if ${MACHINE_ARCH} == "arm"
+# This is verboten
+.if ${MACHINE_CPUARCH} == "arm"
 WARNS?= 3
 .endif
 DPADD=	${LIBCAM} ${LIBSBUF} ${LIBUTIL}

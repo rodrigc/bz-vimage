@@ -21,7 +21,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/usbdi_util.h,v 1.23 2009/06/23 02:19:59 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/usbdi_util.h,v 1.24 2010/09/02 04:39:45 thompsa Exp $
  */
 #ifndef _USB_USBDI_UTIL_H_
 #define _USB_USBDI_UTIL_H_
@@ -78,4 +78,11 @@ usb_error_t usbd_req_set_protocol(struct usb_device *udev, struct mtx *mtx,
 usb_error_t usbd_req_set_report(struct usb_device *udev, struct mtx *mtx,
 		    void *data, uint16_t len, uint8_t iface_index,
 		    uint8_t type, uint8_t id);
+
+/* The following functions will not return NULL strings. */
+
+const char *usb_get_manufacturer(struct usb_device *);
+const char *usb_get_product(struct usb_device *);
+const char *usb_get_serial(struct usb_device *);
+
 #endif /* _USB_USBDI_UTIL_H_ */

@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)buf.h	8.9 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/sys/bio.h,v 1.149 2009/12/11 10:35:58 luigi Exp $
+ * $FreeBSD: src/sys/sys/bio.h,v 1.150 2010/09/02 19:40:28 gibbs Exp $
  */
 
 #ifndef _SYS_BIO_H_
@@ -54,6 +54,7 @@
 #define BIO_ERROR	0x01
 #define BIO_DONE	0x02
 #define BIO_ONQUEUE	0x04
+#define BIO_ORDERED	0x08
 
 #ifdef _KERNEL
 struct disk;

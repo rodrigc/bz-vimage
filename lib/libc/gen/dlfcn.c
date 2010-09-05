@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/dlfcn.c,v 1.17 2010/03/24 15:59:51 gahr Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/dlfcn.c,v 1.18 2010/08/23 15:27:03 kib Exp $");
 
 /*
  * Linkage to services provided by the dynamic linker.
@@ -156,4 +156,12 @@ _rtld_atfork_pre(int *locks)
 void
 _rtld_atfork_post(int *locks)
 {
+}
+
+#pragma weak _rtld_addr_phdr
+int
+_rtld_addr_phdr(const void *addr, struct dl_phdr_info *phdr_info)
+{
+
+	return (0);
 }

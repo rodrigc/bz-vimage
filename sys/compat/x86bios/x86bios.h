@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.7 2010/08/05 18:48:30 jkim Exp $
+ * $FreeBSD: src/sys/compat/x86bios/x86bios.h,v 1.8 2010/08/25 21:03:50 jkim Exp $
  */
 /*
  * x86 registers were borrowed from x86emu.h x86emu_regs.h
@@ -151,6 +151,7 @@ void	 x86bios_init_regs(struct x86regs *regs);
 void	 x86bios_intr(struct x86regs *regs, int intno);
 int	 x86bios_match_device(uint32_t offset, device_t dev);
 void	*x86bios_offset(uint32_t offset);
+void	 x86bios_set_intr(int intno, uint32_t saddr);
 __END_DECLS
 
 #endif /* !_X86BIOS_H_ */

@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_igb.h,v 1.14 2010/06/30 21:05:51 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_igb.h,v 1.15 2010/08/28 00:34:22 yongari Exp $*/
 
 #ifndef _IGB_H_DEFINED_
 #define _IGB_H_DEFINED_
@@ -422,6 +422,8 @@ struct adapter {
 	u32			rx_mbuf_sz;
 	u32			rx_mask;
 
+	/* Multicast array memory */
+	u8		*mta;
 	/* Misc stats maintained by the driver */
 	unsigned long	dropped_pkts;
 	unsigned long	mbuf_defrag_failed;

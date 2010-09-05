@@ -1,5 +1,5 @@
 /*      $NetBSD: usbhidaction.c,v 1.8 2002/06/11 06:06:21 itojun Exp $ */
-/*	$FreeBSD: src/usr.bin/usbhidaction/usbhidaction.c,v 1.10 2010/02/16 21:43:57 imp Exp $ */
+/*	$FreeBSD: src/usr.bin/usbhidaction/usbhidaction.c,v 1.11 2010/08/31 07:19:10 kevlo Exp $ */
 
 /*
  * Copyright (c) 2000, 2002 The NetBSD Foundation, Inc.
@@ -165,7 +165,8 @@ main(int argc, char **argv)
 	if (demon) {
 		fp = open(pidfile, O_WRONLY|O_CREAT, S_IRUSR|S_IRGRP|S_IROTH);
 		if (fp >= 0) {
-			sz1 = snprintf(buf, sizeof buf, "%d\n", getpid());
+			sz1 = snprintf(buf, sizeof buf, "%ld\n", 
+			    (long)getpid());
 			if (sz1 > sizeof buf)
 				sz1 = sizeof buf;
 			write(fp, buf, sz1);

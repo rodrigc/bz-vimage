@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/Makefile.inc1,v 1.664 2010/08/21 17:29:59 rpaulo Exp $
+# $FreeBSD: src/Makefile.inc1,v 1.668 2010/08/28 15:03:11 nwhitehorn Exp $
 #
 # Make command line options:
 #	-DNO_CLEANDIR run ${MAKE} clean, instead of ${MAKE} cleandir
@@ -29,7 +29,6 @@
 #		obj depend all install clean cleandepend cleanobj
 
 .include <bsd.own.mk>
-
 .include <bsd.arch.inc.mk>
 
 # We must do share/info early so that installation of info `dir'
@@ -1142,8 +1141,6 @@ _prereq_libs= gnu/lib/libssp/libssp_nonshared gnu/lib/libgcc
 _startup_libs=	gnu/lib/csu
 .if exists(${.CURDIR}/lib/csu/${MACHINE_ARCH}-elf)
 _startup_libs+=	lib/csu/${MACHINE_ARCH}-elf
-.elif exists(${.CURDIR}/lib/csu/${MACHINE_CPUARCH}-elf)
-_startup_libs+=	lib/csu/${MACHINE_CPUARCH}-elf
 .elif exists(${.CURDIR}/lib/csu/${MACHINE_ARCH})
 _startup_libs+=	lib/csu/${MACHINE_ARCH}
 .else

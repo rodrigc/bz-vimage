@@ -1,4 +1,4 @@
-# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.48 2010/07/10 17:43:24 nwhitehorn Exp $
+# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.50 2010/08/24 23:19:14 nwhitehorn Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -10,7 +10,12 @@ SRCS=		rtld_start.S \
 MAN=		rtld.1
 CSTD?=		gnu99
 CFLAGS+=	-Wall -DFREEBSD_ELF -DIN_RTLD
-CFLAGS+=	-I${.CURDIR}/${MACHINE_ARCH} -I${.CURDIR}
+.if exists(${.CURDIR}/${MACHINE_ARCH})
+RTLD_ARCH=	${MACHINE_ARCH}
+.else
+RTLD_ARCH=	${MACHINE_CPUARCH}
+.endif
+CFLAGS+=	-I${.CURDIR}/${RTLD_ARCH} -I${.CURDIR}
 .if ${MACHINE_ARCH} == "powerpc64"
 LDFLAGS+=	-nostdlib -e _rtld_start
 .else
@@ -29,7 +34,7 @@ LDFLAGS+=	-shared -Wl,-Bsymbolic
 DPADD=		${LIBC_PIC}
 LDADD=		-lc_pic -lssp_nonshared
 
-.if ${MACHINE_ARCH} != "ia64"
+.if ${MACHINE_CPUARCH} != "ia64"
 .if ${MK_SYMVER} == "yes"
 LIBCDIR=	${.CURDIR}/../../lib/libc
 VERSION_DEF=	${LIBCDIR}/Versions.def
@@ -39,15 +44,13 @@ LDFLAGS+=	-Wl,--version-script=${VERSION_MAP}
 
 ${PROG}:	${VERSION_MAP}
 
-.if exists(${.CURDIR}/${MACHINE_ARCH}/Symbol.map)
-SYMBOL_MAPS+=	${.CURDIR}/${MACHINE_ARCH}/Symbol.map
+.if exists(${.CURDIR}/${RTLD_ARCH}/Symbol.map)
+SYMBOL_MAPS+=	${.CURDIR}/${RTLD_ARCH}/Symbol.map
 .endif
 .endif
 .endif
 
-.if exists(${.CURDIR}/${MACHINE_ARCH}/Makefile.inc)
-.include "${.CURDIR}/${MACHINE_ARCH}/Makefile.inc"
-.endif
+.sinclude "${.CURDIR}/${RTLD_ARCH}/Makefile.inc"
 
 # Since moving rtld-elf to /libexec, we need to create a symlink.
 # Fixup the existing binary that's there so we can symlink over it.
@@ -56,7 +59,7 @@ beforeinstall:
 	-chflags noschg ${DESTDIR}/usr/libexec/${PROG}
 .endif
 
-.PATH: ${.CURDIR}/${MACHINE_ARCH}
+.PATH: ${.CURDIR}/${RTLD_ARCH}
 
 .include <bsd.symver.mk>
 .include <bsd.prog.mk>

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/syscons/Makefile,v 1.16 2010/04/07 17:20:55 jkim Exp $
+# $FreeBSD: src/sys/modules/syscons/Makefile,v 1.17 2010/08/23 06:13:29 imp Exp $
 
 SUBDIR=	${_apm} \
 	${_beastie} \
@@ -14,11 +14,12 @@ SUBDIR=	${_apm} \
 	${_star} \
 	${_warp}
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 _apm=		apm
 .endif
 
-.if ${MACHINE_ARCH} != "sparc64"
+.if ${MACHINE_CPUARCH} != "sparc64"
+_beastie=	beastie
 _beastie=	beastie
 _daemon=	daemon
 _dragon=	dragon

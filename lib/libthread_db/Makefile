@@ -1,6 +1,6 @@
-# $FreeBSD: src/lib/libthread_db/Makefile,v 1.16 2010/01/02 09:58:07 ed Exp $
+# $FreeBSD: src/lib/libthread_db/Makefile,v 1.17 2010/08/23 22:24:11 imp Exp $
 
-.PATH:	${.CURDIR}/arch/${MACHINE_ARCH}
+.PATH:	${.CURDIR}/arch/${MACHINE_CPUARCH}
 
 LIB=	thread_db
 SHLIB_MAJOR= 3

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/efi/Makefile,v 1.1 2010/04/07 18:16:05 rpaulo Exp $
+# $FreeBSD: src/sys/boot/i386/efi/Makefile,v 1.2 2010/08/31 19:01:12 delphij Exp $
 
 NO_MAN=
 WITHOUT_SSP=
@@ -42,7 +42,7 @@ ${PROG}:	${LDSCRIPT}
 
 CLEANFILES=	vers.c loader.efi
 
-NEWVERSWHAT=	"EFI loader" ${MACHINE_ARCH}
+NEWVERSWHAT=	"EFI loader" x86
 
 vers.c:	${.CURDIR}/../../common/newvers.sh ${.CURDIR}/version
 	sh ${.CURDIR}/../../common/newvers.sh ${.CURDIR}/version ${NEWVERSWHAT}

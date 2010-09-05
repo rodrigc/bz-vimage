@@ -18,7 +18,7 @@
  *
  * CDDL HEADER END
  *
- * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.4 2010/08/22 10:53:32 rpaulo Exp $
+ * $FreeBSD: src/sys/cddl/dev/dtrace/dtrace_load.c,v 1.5 2010/09/01 12:08:32 rpaulo Exp $
  *
  */
 
@@ -163,7 +163,7 @@ dtrace_load(void *dummy)
 #else
 	dtrace_dev = make_dev(&dtrace_cdevsw, 0, UID_ROOT, GID_WHEEL, 0600,
 	    "dtrace/dtrace");
-	helper_dev = make_dev(&helper_cdevsw, 0, UID_ROOT, GID_WHEEL, 0600,
+	helper_dev = make_dev(&helper_cdevsw, 0, UID_ROOT, GID_WHEEL, 0660,
 	    "dtrace/helper");
 #endif
 

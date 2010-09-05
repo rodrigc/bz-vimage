@@ -53,7 +53,7 @@ static char sccsid[] = "@(#)disklabel.c	8.2 (Berkeley) 1/7/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.121 2010/08/15 17:49:41 jh Exp $");
+__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.122 2010/08/27 11:08:11 jh Exp $");
 
 #include <sys/param.h>
 #include <stdint.h>
@@ -80,6 +80,7 @@ __FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.121 2010/08/15 17:49:41 jh 
 #include "pathnames.h"
 
 static void	makelabel(const char *, struct disklabel *);
+static int	geom_bsd_available(void);
 static int	writelabel(void);
 static int	readlabel(int flag);
 static void	display(FILE *, const struct disklabel *);
@@ -379,10 +380,33 @@ readboot(void)
 }
 
 static int
+geom_bsd_available(void)
+{
+	struct gclass *class;
+	struct gmesh mesh;
+	int error;
+
+	error = geom_gettree(&mesh);
+	if (error != 0)
+		errc(1, error, "Cannot get GEOM tree");
+
+	LIST_FOREACH(class, &mesh.lg_class, lg_class) {
+		if (strcmp(class->lg_name, "BSD") == 0) {
+			geom_deletetree(&mesh);
+			return (1);
+		}
+	}
+
+	geom_deletetree(&mesh);
+
+	return (0);
+}
+
+static int
 writelabel(void)
 {
 	uint64_t *p, sum;
-	int i, fd;
+	int i, fd, serrno;
 	struct gctl_req *grq;
 	char const *errstr;
 	struct disklabel *lp = &lab;
@@ -416,6 +440,13 @@ writelabel(void)
 		if (is_file) {
 			warn("cannot open file %s for writing label", specname);
 			return(1);
+		} else
+			serrno = errno;
+
+		/* Give up if GEOM_BSD is not available. */
+		if (geom_bsd_available() == 0) {
+			warnc(serrno, "%s", specname);
+			return (1);
 		}
 
 		grq = gctl_get_handle();

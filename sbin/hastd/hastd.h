@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/hastd.h,v 1.2 2010/08/05 19:16:31 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/hastd.h,v 1.3 2010/08/27 15:16:52 pjd Exp $
  */
 
 #ifndef	_HASTD_H_
@@ -40,7 +40,7 @@
 #include "hast.h"
 
 extern const char *cfgpath;
-extern bool sigexit_received, sighup_received;
+extern bool sigchld_received, sigexit_received, sighup_received;
 extern struct pidfh *pfh;
 
 void hastd_primary(struct hast_resource *res);

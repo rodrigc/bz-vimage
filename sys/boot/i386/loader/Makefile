@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/loader/Makefile,v 1.92 2010/07/22 18:57:47 rpaulo Exp $
+# $FreeBSD: src/sys/boot/i386/loader/Makefile,v 1.94 2010/08/31 19:01:12 delphij Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -6,7 +6,7 @@ MK_SSP=		no
 LOADER?=	loader
 PROG=		${LOADER}.sym
 INTERNALPROG=
-NEWVERSWHAT?=	"bootstrap loader" i386
+NEWVERSWHAT?=	"bootstrap loader" x86
 
 # architecture-specific loader code
 SRCS=		main.c conf.c vers.c
@@ -119,7 +119,7 @@ LDADD=	${LIBFICL} ${LIBFIREWIRE} ${LIBZFS} ${LIBI386} ${LIBSTAND}
 
 .include <bsd.prog.mk>
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 beforedepend ${OBJS}: machine
 CLEANFILES+=	machine
 machine:

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sbin/gbde/Makefile,v 1.12 2010/02/15 14:07:40 uqs Exp $
+# $FreeBSD: src/sbin/gbde/Makefile,v 1.13 2010/08/23 22:24:11 imp Exp $
 
 PROG=	gbde
 SRCS=	gbde.c template.c
@@ -9,7 +9,7 @@ SRCS+=	g_bde_lock.c
 
 # rijndael-fst.c does evil casting things which results in warnings on
 # 64 bit machines, the test-vectors check out however, so it works right.
-.if ${MACHINE_ARCH} != "i386"
+.if ${MACHINE_CPUARCH} != "i386"
 WARNS?=	3
 .endif
 

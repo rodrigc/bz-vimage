@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/gdb/gdbserver/Makefile,v 1.9 2010/04/14 20:31:06 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/gdb/gdbserver/Makefile,v 1.10 2010/08/23 22:24:11 imp Exp $
 
 # Not elf specific so don't install in /usr/libexec/elf
 BINDIR=/usr/bin
@@ -14,11 +14,10 @@ SRCS=	inferiors.c mem-break.c regcache.c remote-utils.c	\
 	server.c signals.c target.c utils.c
 SRCS+=	fbsd-low.c
 
-SRCS+= fbsd-${MACHINE_ARCH}-low.c reg-${MACHINE_ARCH}.c
-.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
+SRCS+=	fbsd-${MACHINE_CPUARCH}-low.c reg-${MACHINE_CPUARCH}.c
+.if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
 SRCS+= i387-fp.c
 .endif
-
 #CFLAGS+=	-I${.CURDIR}/../arch/${MACHINE_ARCH}
 CFLAGS+=	-I${GDBDIR}/gdb/gdbserver
 CFLAGS+=	-I${GDBDIR}/gdb/regformats

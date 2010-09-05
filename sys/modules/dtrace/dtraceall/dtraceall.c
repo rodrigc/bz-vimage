@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/modules/dtrace/dtraceall/dtraceall.c,v 1.4 2009/05/26 20:28:22 sson Exp $
+ * $FreeBSD: src/sys/modules/dtrace/dtraceall/dtraceall.c,v 1.5 2010/08/24 13:21:05 rpaulo Exp $
  */
 
 #include <sys/cdefs.h>
@@ -68,6 +68,7 @@ MODULE_DEPEND(dtraceall, dtmalloc, 1, 1, 1);
 MODULE_DEPEND(dtraceall, dtnfsclient, 1, 1, 1);
 #if defined(__amd64__) || defined(__i386__)
 MODULE_DEPEND(dtraceall, fbt, 1, 1, 1);
+MODULE_DEPEND(dtraceall, fasttrap, 1, 1, 1);
 #endif
 MODULE_DEPEND(dtraceall, lockstat, 1, 1, 1);
 MODULE_DEPEND(dtraceall, sdt, 1, 1, 1);

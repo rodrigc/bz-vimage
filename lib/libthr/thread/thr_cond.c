@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_cond.c,v 1.26 2010/08/20 05:15:39 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_cond.c,v 1.27 2010/09/01 02:18:33 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -210,10 +210,10 @@ cond_wait_common(pthread_cond_t *cond, pthread_mutex_t *mutex,
 
 	if (cancel) {
 		THR_CLEANUP_PUSH(curthread, cond_cancel_handler, &info);
-		_thr_cancel_enter_defer(curthread, 0);
+		_thr_cancel_enter2(curthread, 0);
 		ret = _thr_ucond_wait(&cv->c_kerncv, &cv->c_lock, tsp, 1);
 		info.cond = NULL;
-		_thr_cancel_leave_defer(curthread, (ret != 0));
+		_thr_cancel_leave(curthread, (ret != 0));
 		THR_CLEANUP_POP(curthread, 0);
 	} else {
 		ret = _thr_ucond_wait(&cv->c_kerncv, &cv->c_lock, tsp, 0);

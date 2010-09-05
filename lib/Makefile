@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/Makefile,v 1.253 2010/07/31 16:12:47 rpaulo Exp $
+# $FreeBSD: src/lib/Makefile,v 1.256 2010/08/28 15:03:11 nwhitehorn Exp $
 
 .include <bsd.own.mk>
 
@@ -114,8 +114,10 @@ SUBDIR=	${SUBDIR_ORDERED} \
 
 .if exists(${.CURDIR}/csu/${MACHINE_ARCH}-elf)
 _csu=csu/${MACHINE_ARCH}-elf
-.elif exists(${.CURDIR}/csu/${MACHINE_ARCH}/Makefile)
+.elif exists(${.CURDIR}/csu/${MACHINE_ARCH})
 _csu=csu/${MACHINE_ARCH}
+.elif exists(${.CURDIR}/csu/${MACHINE_CPUARCH}/Makefile)
+_csu=csu/${MACHINE_CPUARCH}
 .else
 _csu=csu
 .endif
@@ -168,7 +170,7 @@ _libnetgraph=	libnetgraph
 _libypclnt=	libypclnt
 .endif
 
-.if ${MACHINE_ARCH} == "i386" || ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
 .if ${MK_NCP} != "no"
 _libncp=	libncp
 .endif
@@ -178,16 +180,22 @@ _libproc=	libproc
 _librtld_db=	librtld_db
 .endif
 
-.if ${MACHINE_ARCH} == "ia64"
+.if ${MACHINE_CPUARCH} == "ia64"
 _libefi=	libefi
 _libsmb=	libsmb
+.endif
+
+.if ${MACHINE_CPUARCH} == "amd64"
+.if ${MK_NCP} != "no"
+_libncp=	libncp
+.endif
 .endif
 
 .if ${MACHINE_CPUARCH} == "powerpc"
 _libsmb=	libsmb
 .endif
 
-.if ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "sparc64"
 _libsmb=	libsmb
 .endif
 

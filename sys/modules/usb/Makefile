@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/sys/modules/usb/Makefile,v 1.32 2010/01/28 22:24:54 thompsa Exp $
+# $FreeBSD: src/sys/modules/usb/Makefile,v 1.33 2010/08/23 06:13:29 imp Exp $
 #
 # Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
 #
@@ -35,16 +35,16 @@ SUBDIR += uether aue axe cdce cue kue rue udav uhso
 SUBDIR += usfs umass urio
 SUBDIR += quirk template
 
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 _urtw=		urtw
 .endif
 
-.if ${MACHINE_ARCH} == "arm"
+.if ${MACHINE_CPUARCH} == "arm"
 _at91dci=	at91dci
 _atmegadci=	atmegadci
 .endif
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 _urtw=		urtw
 .endif
 

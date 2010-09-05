@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.24 2010/08/17 09:13:26 kib Exp $
+ * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.25 2010/08/23 15:38:02 kib Exp $
  *
  * Private definitions for libc, libc_r and libpthread.
  *
@@ -214,5 +214,7 @@ extern int	__sys_fcntl(int, int, ...);
 int _execvpe(const char *, char * const *, char * const *);
 
 int _elf_aux_info(int aux, void *buf, int buflen);
+struct dl_phdr_info;
+int __elf_phdr_match_addr(struct dl_phdr_info *, void *);
 
 #endif /* _LIBC_PRIVATE_H_ */

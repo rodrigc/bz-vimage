@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/hast_proto.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/hast_proto.h,v 1.2 2010/08/30 22:26:42 pjd Exp $
  */
 
 #ifndef	_HAST_PROTO_H_
@@ -37,12 +37,12 @@
 #include <nv.h>
 #include <proto.h>
 
-int hast_proto_send(struct hast_resource *res, struct proto_conn *conn,
+int hast_proto_send(const struct hast_resource *res, struct proto_conn *conn,
     struct nv *nv, const void *data, size_t size);
-int hast_proto_recv(struct hast_resource *res, struct proto_conn *conn,
+int hast_proto_recv(const struct hast_resource *res, struct proto_conn *conn,
     struct nv **nvp, void *data, size_t size);
-int hast_proto_recv_hdr(struct proto_conn *conn, struct nv **nvp);
-int hast_proto_recv_data(struct hast_resource *res, struct proto_conn *conn,
-    struct nv *nv, void *data, size_t size);
+int hast_proto_recv_hdr(const struct proto_conn *conn, struct nv **nvp);
+int hast_proto_recv_data(const struct hast_resource *res,
+    struct proto_conn *conn, struct nv *nv, void *data, size_t size);
 
 #endif	/* !_HAST_PROTO_H_ */

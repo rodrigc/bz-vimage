@@ -43,7 +43,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_malloc.c,v 1.175 2010/08/11 22:10:37 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_malloc.c,v 1.176 2010/08/31 16:57:58 mdf Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kdtrace.h"
@@ -566,11 +566,8 @@ realloc(void *addr, unsigned long size, struct malloc_type *mtp, int flags)
 	 */
 
 #ifdef DEBUG_MEMGUARD
-	if (is_memguard_addr(addr)) {
-		slab = NULL;
-		alloc = size;
-		goto remalloc;
-	}
+	if (is_memguard_addr(addr))
+		return (memguard_realloc(addr, size, mtp, flags));
 #endif
 
 #ifdef DEBUG_REDZONE
@@ -594,10 +591,6 @@ realloc(void *addr, unsigned long size, struct malloc_type *mtp, int flags)
 	    && (size > (alloc >> REALLOC_FRACTION) || alloc == MINALLOCSIZE))
 		return (addr);
 #endif /* !DEBUG_REDZONE */
-
-#ifdef DEBUG_MEMGUARD
-remalloc:
-#endif
 
 	/* Allocate a new, bigger (or smaller) block */
 	if ((newaddr = malloc(size, mtp, flags)) == NULL)

@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.177 2010/08/03 15:32:08 jkim Exp $
+ * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.178 2010/08/30 21:19:42 jkim Exp $
  */
 
 #include <machine/asmacros.h>
@@ -338,19 +338,16 @@ ENTRY(savectx)
 
 	movl	$MSR_FSBASE,%ecx
 	rdmsr
-	shlq	$32,%rdx
-	leaq	(%rax,%rdx),%rax
-	movq	%rax,PCB_FSBASE(%rdi)
+	movl	%eax,PCB_FSBASE(%rdi)
+	movl	%edx,PCB_FSBASE+4(%rdi)
 	movl	$MSR_GSBASE,%ecx
 	rdmsr
-	shlq	$32,%rdx
-	leaq	(%rax,%rdx),%rax
-	movq	%rax,PCB_GSBASE(%rdi)
+	movl	%eax,PCB_GSBASE(%rdi)
+	movl	%edx,PCB_GSBASE+4(%rdi)
 	movl	$MSR_KGSBASE,%ecx
 	rdmsr
-	shlq	$32,%rdx
-	leaq	(%rax,%rdx),%rax
-	movq	%rax,PCB_KGSBASE(%rdi)
+	movl	%eax,PCB_KGSBASE(%rdi)
+	movl	%edx,PCB_KGSBASE+4(%rdi)
 
 	sgdt	PCB_GDT(%rdi)
 	sidt	PCB_IDT(%rdi)

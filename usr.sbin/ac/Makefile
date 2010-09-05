@@ -1,10 +1,10 @@
-# $FreeBSD: src/usr.sbin/ac/Makefile,v 1.11 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/ac/Makefile,v 1.12 2010/08/23 22:24:11 imp Exp $
 
 PROG=	ac
 MAN=	ac.8
 
 # Temporary, while tracking down problem wrt 64-bit time_t's on sparc64
-.if ${MACHINE_ARCH} == "sparc64"
+.if ${MACHINE_CPUARCH} == "sparc64"
 CFLAGS+=-DDEBUG
 .endif
 

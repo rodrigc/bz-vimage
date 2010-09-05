@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.14 2010/03/03 10:18:03 joel Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.15 2010/09/01 23:47:53 thompsa Exp $ */
 /*	$NetBSD: ugensa.c,v 1.9.2.1 2007/03/24 14:55:50 yamt Exp $	*/
 
 /*
@@ -153,6 +153,7 @@ static driver_t ugensa_driver = {
 DRIVER_MODULE(ugensa, uhub, ugensa_driver, ugensa_devclass, NULL, 0);
 MODULE_DEPEND(ugensa, ucom, 1, 1, 1);
 MODULE_DEPEND(ugensa, usb, 1, 1, 1);
+MODULE_VERSION(ugensa, 1);
 
 static const struct usb_device_id ugensa_devs[] = {
 	{USB_VPI(USB_VENDOR_AIRPRIME, USB_PRODUCT_AIRPRIME_PC5220, 0)},

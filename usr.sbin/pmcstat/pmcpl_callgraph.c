@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_callgraph.c,v 1.4 2010/04/14 21:53:27 fabient Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmcstat/pmcpl_callgraph.c,v 1.5 2010/09/03 13:54:02 fabient Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -149,6 +149,8 @@ pmcstat_cgnode_hash_lookup_pc(struct pmcstat_process *pp, pmc_id_t pmcid,
 	 */
 	if ((sym = pmcstat_symbol_search(image, pc)) != NULL)
 		pc = sym->ps_start;
+	else
+		pmcstat_stats.ps_samples_unknown_function++;
 
 	for (hash = i = 0; i < sizeof(uintfptr_t); i++)
 		hash += (pc >> i) & 0xFF;

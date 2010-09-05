@@ -1,5 +1,5 @@
-# $FreeBSD: src/lib/libthr/arch/powerpc/Makefile.inc,v 1.3 2008/02/13 05:25:43 obrien Exp $
+# $FreeBSD: src/lib/libthr/arch/powerpc/Makefile.inc,v 1.4 2010/08/24 20:50:08 nwhitehorn Exp $
 
-.PATH: ${.CURDIR}/arch/${MACHINE_ARCH}/${MACHINE_ARCH}
+.PATH: ${.CURDIR}/arch/${MACHINE_CPUARCH}/${MACHINE_CPUARCH}
 
 SRCS+=	pthread_md.c

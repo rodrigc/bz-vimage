@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/asr/Makefile,v 1.6 2006/07/27 19:12:48 marcel Exp $
+# $FreeBSD: src/sys/modules/asr/Makefile,v 1.7 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/asr
 
@@ -7,7 +7,7 @@ SRCS=	asr.c
 SRCS+=	opt_scsi.h opt_cam.h
 SRCS+=	device_if.h bus_if.h pci_if.h
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 SRCS+=	opt_asr.h
 .endif
 

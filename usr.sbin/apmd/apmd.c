@@ -29,7 +29,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/apmd/apmd.c,v 1.11 2010/05/19 08:52:51 uqs Exp $";
+  "$FreeBSD: src/usr.sbin/apmd/apmd.c,v 1.12 2010/08/31 07:19:10 kevlo Exp $";
 #endif /* not lint */
 
 #include <assert.h>
@@ -435,7 +435,7 @@ write_pid(void)
 	FILE *fp = fopen(apmd_pidfile, "w");
 
 	if (fp) {
-		fprintf(fp, "%d\n", getpid());
+		fprintf(fp, "%ld\n", (long)getpid());
 		fclose(fp);
 	}
 }

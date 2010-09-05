@@ -1,11 +1,11 @@
-# $FreeBSD: src/sbin/hastd/Makefile,v 1.4 2010/04/22 19:18:10 pjd Exp $
+# $FreeBSD: src/sbin/hastd/Makefile,v 1.5 2010/08/30 23:26:10 pjd Exp $
 
 .include <bsd.own.mk>
 
 PROG=	hastd
 SRCS=	activemap.c
 SRCS+=	control.c
-SRCS+=	ebuf.c
+SRCS+=	ebuf.c event.c
 SRCS+=	hast_proto.c hastd.c hooks.c
 SRCS+=	metadata.c
 SRCS+=	nv.c

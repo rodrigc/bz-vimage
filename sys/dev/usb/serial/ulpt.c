@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.15 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.16 2010/09/01 23:47:53 thompsa Exp $");
 
 /*	$NetBSD: ulpt.c,v 1.60 2003/10/04 21:19:50 augustss Exp $	*/
 
@@ -745,3 +745,4 @@ static driver_t ulpt_driver = {
 DRIVER_MODULE(ulpt, uhub, ulpt_driver, ulpt_devclass, NULL, 0);
 MODULE_DEPEND(ulpt, usb, 1, 1, 1);
 MODULE_DEPEND(ulpt, ucom, 1, 1, 1);
+MODULE_VERSION(ulpt, 1);

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.post.mk,v 1.108 2010/07/13 13:11:18 nwhitehorn Exp $
+# $FreeBSD: src/sys/conf/kern.post.mk,v 1.109 2010/08/23 22:24:11 imp Exp $
 
 # Part of a unified Makefile for building kernels.  This part includes all
 # the definitions that need to be after all the % directives except %RULES
@@ -84,8 +84,8 @@ gdbinit:
 	grep -v '# XXX' ${S}/../tools/debugscripts/dot.gdbinit | \
 	    sed "s:MODPATH:${.OBJDIR}/modules:" > .gdbinit
 	cp ${S}/../tools/debugscripts/gdbinit.kernel ${.CURDIR}
-.if exists(${S}/../tools/debugscripts/gdbinit.${MACHINE_ARCH})
-	cp ${S}/../tools/debugscripts/gdbinit.${MACHINE_ARCH} \
+.if exists(${S}/../tools/debugscripts/gdbinit.${MACHINE_CPUARCH})
+	cp ${S}/../tools/debugscripts/gdbinit.${MACHINE_CPUARCH} \
 	    ${.CURDIR}/gdbinit.machine
 .endif
 .endif

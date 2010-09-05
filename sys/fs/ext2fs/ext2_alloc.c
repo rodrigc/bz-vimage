@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ffs_alloc.c	8.8 (Berkeley) 2/21/94
- * $FreeBSD: src/sys/fs/ext2fs/ext2_alloc.c,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_alloc.c,v 1.2 2010/09/01 05:34:17 lulf Exp $
  */
 
 #include <sys/param.h>
@@ -61,20 +61,6 @@ static daddr_t	ext2_nodealloccg(struct inode *, int, daddr_t, int);
 static daddr_t  ext2_mapsearch(struct m_ext2fs *, char *, daddr_t);
 /*
  * Allocate a block in the file system.
- *
- * A preference may be optionally specified. If a preference is given
- * the following hierarchy is used to allocate a block:
- *   1) allocate the requested block.
- *   2) allocate a rotationally optimal block in the same cylinder.
- *   3) allocate a block in the same cylinder group.
- *   4) quadradically rehash into other cylinder groups, until an
- *        available block is located.
- * If no block preference is given the following hierarchy is used
- * to allocate a block:
- *   1) allocate a block in the cylinder group that contains the
- *        inode for the file.
- *   2) quadradically rehash into other cylinder groups, until an
- *        available block is located.
  *
  * A preference may be optionally specified. If a preference is given
  * the following hierarchy is used to allocate a block:

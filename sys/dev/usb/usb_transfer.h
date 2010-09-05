@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_transfer.h,v 1.13 2010/04/22 22:15:08 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_transfer.h,v 1.14 2010/09/02 04:01:18 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -131,7 +131,7 @@ usb_callback_t usb_handle_request_callback;
 usb_callback_t usb_do_clear_stall_callback;
 void	usbd_transfer_timeout_ms(struct usb_xfer *xfer,
 	    void (*cb) (void *arg), usb_timeout_t ms);
-usb_timeout_t usbd_get_dma_delay(struct usb_bus *bus);
+usb_timeout_t usbd_get_dma_delay(struct usb_device *udev);
 void	usbd_transfer_power_ref(struct usb_xfer *xfer, int val);
 
 #endif					/* _USB_TRANSFER_H_ */

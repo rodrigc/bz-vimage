@@ -1,16 +1,16 @@
-# $FreeBSD: src/sys/modules/cyclic/Makefile,v 1.3 2010/04/20 16:30:17 rpaulo Exp $
+# $FreeBSD: src/sys/modules/cyclic/Makefile,v 1.4 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../cddl/dev/cyclic
 
 KMOD=		cyclic
 SRCS=		cyclic.c
-		
+
 SRCS+=		vnode_if.h
 
 CFLAGS+=	-I${.CURDIR}/../../cddl/compat/opensolaris		\
 		-I${.CURDIR}/../../cddl/contrib/opensolaris/uts/common	\
 		-I${.CURDIR}/../..					\
-		-I${.CURDIR}/../../cddl/dev/cyclic/${MACHINE_ARCH:S/amd64/i386/}
+		-I${.CURDIR}/../../cddl/dev/cyclic/${MACHINE_CPUARCH:S/amd64/i386/}
 
 CFLAGS+=	-DDEBUG=1
 

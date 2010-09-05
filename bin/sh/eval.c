@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)eval.c	8.9 (Berkeley) 6/8/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.85 2010/08/13 20:29:43 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.86 2010/09/04 21:23:46 jilles Exp $");
 
 #include <paths.h>
 #include <signal.h>
@@ -995,7 +995,7 @@ cmddone:
 	goto out;
 
 parent:	/* parent process gets here (if we forked) */
-	if (mode == 0) {	/* argument to fork */
+	if (mode == FORK_FG) {	/* argument to fork */
 		INTOFF;
 		exitstatus = waitforjob(jp, &realstatus);
 		INTON;
@@ -1003,7 +1003,7 @@ parent:	/* parent process gets here (if we forked) */
 			evalskip = SKIPBREAK;
 			skipcount = loopnest;
 		}
-	} else if (mode == 2) {
+	} else if (mode == FORK_NOJOB) {
 		backcmd->fd = pip[0];
 		close(pip[1]);
 		backcmd->jp = jp;

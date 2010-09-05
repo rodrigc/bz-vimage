@@ -1,5 +1,5 @@
 #  @(#)Makefile 5.1beta 93/09/24
-# $FreeBSD: src/lib/msun/Makefile,v 1.99 2010/07/10 14:40:57 nwhitehorn Exp $
+# $FreeBSD: src/lib/msun/Makefile,v 1.101 2010/08/28 15:03:11 nwhitehorn Exp $
 #
 #  ====================================================
 #  Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
@@ -75,8 +75,13 @@ COMMON_SRCS= b_exp.c b_log.c b_tgamma.c \
 
 # Location of fpmath.h and _fpmath.h
 LIBCDIR=	${.CURDIR}/../libc
+.if exists(${LIBCDIR}/${MACHINE_ARCH})
+LIBC_ARCH=${MACHINE_ARCH}
+.else
+LIBC_ARCH=${MACHINE_CPUARCH}
+.endif
 CFLAGS+=	-I${.CURDIR}/src -I${LIBCDIR}/include \
-	-I${LIBCDIR}/${MACHINE_ARCH}
+	-I${LIBCDIR}/${LIBC_ARCH}
 SYM_MAPS+=	${.CURDIR}/Symbol.map
 
 VERSION_DEF=	${LIBCDIR}/Versions.def

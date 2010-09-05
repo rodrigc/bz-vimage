@@ -31,7 +31,7 @@
  *
  *	@(#)ucontext.h	8.1 (Berkeley) 6/10/93
  *	JNPR: ucontext.h,v 1.2 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/ucontext.h,v 1.3 2010/03/02 07:27:30 imp Exp $
+ * $FreeBSD: src/sys/mips/include/ucontext.h,v 1.4 2010/08/27 07:45:50 jchandra Exp $
  */
 
 #ifndef _MACHINE_UCONTEXT_H_
@@ -48,13 +48,13 @@ typedef struct	__mcontext {
 	int		mc_onstack;	/* sigstack state to restore */
 	register_t	mc_pc;		/* pc at time of signal */
 	register_t	mc_regs[32];	/* processor regs 0 to 31 */
-        register_t      sr;             /* status register */
-        register_t	mullo, mulhi;	/* mullo and mulhi registers... */
+	register_t	sr;		/* status register */
+	register_t	mullo, mulhi;	/* mullo and mulhi registers... */
 	int		mc_fpused;	/* fp has been used */
 	f_register_t	mc_fpregs[33];	/* fp regs 0 to 31 and csr */
 	register_t	mc_fpc_eir;	/* fp exception instruction reg */
 	void		*mc_tls;	/* pointer to TLS area */
-	int	__spare__[8];	/* XXX reserved */ 
+	int		__spare__[8];	/* XXX reserved */ 
 } mcontext_t;
 #endif
 
@@ -101,7 +101,7 @@ typedef struct	__mcontext {
 #define	UCR_SP		UCTX_REG(29)
 #define	UCR_S8		UCTX_REG(30)
 #define	UCR_RA		UCTX_REG(31)
-#define UCR_SR          UCTX_REG(32)
+#define	UCR_SR		UCTX_REG(32)
 #define	UCR_MDLO	UCTX_REG(33)
 #define	UCR_MDHI	UCTX_REG(34)
 

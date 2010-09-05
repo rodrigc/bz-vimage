@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/ieee80211_node.9,v 1.8 2010/04/28 13:29:48 rpaulo Exp $
+.\" $FreeBSD: src/share/man/man9/ieee80211_node.9,v 1.9 2010/08/28 16:32:01 brucec Exp $
 .\"
 .Dd April 28, 2010
 .Dt IEEE80211_NODE 9
@@ -101,7 +101,7 @@ Node table entries are reference counted.
 That is, there is a count of all long term references that determines
 when an entry may be reclaimed.
 References are held by every in-flight frame sent to a station to
-insure the entry is not reclaimed while the frame is queued or otherwise
+ensure the entry is not reclaimed while the frame is queued or otherwise
 held by a driver.
 Routines that lookup a table entry return a
 .Dq held reference

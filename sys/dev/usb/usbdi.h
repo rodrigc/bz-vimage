@@ -21,7 +21,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/usbdi.h,v 1.74 2009/12/17 21:42:10 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/usbdi.h,v 1.75 2010/09/02 04:05:00 thompsa Exp $
  */
 #ifndef _USB_USBDI_H_
 #define _USB_USBDI_H_
@@ -479,6 +479,7 @@ void	usbd_set_parent_iface(struct usb_device *udev, uint8_t iface_index,
 uint8_t	usbd_get_bus_index(struct usb_device *udev);
 uint8_t	usbd_get_device_index(struct usb_device *udev);
 void	usbd_set_power_mode(struct usb_device *udev, uint8_t power_mode);
+uint8_t	usbd_filter_power_mode(struct usb_device *udev, uint8_t power_mode);
 uint8_t	usbd_device_attached(struct usb_device *udev);
 
 void	usbd_xfer_status(struct usb_xfer *xfer, int *actlen, int *sumlen,

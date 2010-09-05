@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_taskqueue.c,v 1.60 2010/08/13 19:20:35 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_taskqueue.c,v 1.61 2010/08/28 08:38:03 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -141,7 +141,6 @@ taskqueue_free(struct taskqueue *queue)
 
 	TQ_LOCK(queue);
 	queue->tq_flags &= ~TQ_FLAGS_ACTIVE;
-	taskqueue_run(queue, &queue->tq_running);
 	taskqueue_terminate(queue->tq_threads, queue);
 	mtx_destroy(&queue->tq_mutex);
 	free(queue->tq_threads, M_TASKQUEUE);
@@ -372,6 +371,7 @@ taskqueue_thread_loop(void *arg)
 			break;
 		TQ_SLEEP(tq, tq, &tq->tq_mutex, 0, "-", 0);
 	}
+	taskqueue_run(tq, &running);
 
 	/* rendezvous with thread that asked us to terminate */
 	tq->tq_tcount--;

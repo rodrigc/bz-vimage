@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-info.sh,v 1.3 2010/08/19 06:07:49 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-info.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
 
 # Query a disk for partitions and display them
 #############################
@@ -54,7 +54,6 @@ HEADS="${VAL}"
 get_disk_sectors "${DISK}"
 SECS="${VAL}"
 
-
 # Now get the disks size in MB
 KB="`diskinfo -v ${1} | grep 'bytes' | cut -d '#' -f 1 | tr -s '\t' ' ' | tr -d ' '`"
 MB=$(convert_byte_to_megabyte ${KB})
@@ -62,10 +61,9 @@ MB=$(convert_byte_to_megabyte ${KB})
 # Now get the Controller Type
 CTYPE="`dmesg | grep "^${1}:" | grep "B <" | cut -d '>' -f 2 | cut -d ' ' -f 3-10`"
 
-
 echo "cylinders=${CYLS}"
 echo "heads=${HEADS}"
 echo "sectors=${SECS}"
-echo "size=$MB"
-echo "type=$CTYPE"
+echo "size=${MB}"
+echo "type=${CTYPE}"
 

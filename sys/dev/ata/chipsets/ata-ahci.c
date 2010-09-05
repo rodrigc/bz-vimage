@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-ahci.c,v 1.32 2010/01/07 21:01:37 mbr Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-ahci.c,v 1.33 2010/09/01 06:43:41 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -815,7 +815,7 @@ ata_ahci_hardreset(device_t dev, int port, uint32_t *signature)
     if (!ata_sata_phy_reset(dev, port, 0))
 	return (ENOENT);
     /* Wait for clearing busy status. */
-    if (ata_ahci_wait_ready(dev, 10000)) {
+    if (ata_ahci_wait_ready(dev, 15000)) {
 	device_printf(dev, "hardware reset timeout\n");
 	return (EBUSY);
     }

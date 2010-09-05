@@ -1,4 +1,3 @@
-/* $FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.7 2010/08/17 09:13:26 kib Exp $ */
 /* $NetBSD: stack_protector.c,v 1.4 2006/11/22 17:23:25 christos Exp $	*/
 /* $OpenBSD: stack_protector.c,v 1.10 2006/03/31 05:34:44 deraadt Exp $	*/
 /*
@@ -29,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.7 2010/08/17 09:13:26 kib Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.9 2010/08/24 13:02:22 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -116,8 +115,6 @@ __chk_fail(void)
 	__fail("buffer overflow detected; terminated");
 }
 
-#ifdef PIC
-__sym_compat(__stack_chk_fail_local, __stack_chk_fail, FBSD_1.0);
-#else
+#ifndef PIC
 __weak_reference(__stack_chk_fail, __stack_chk_fail_local);
 #endif

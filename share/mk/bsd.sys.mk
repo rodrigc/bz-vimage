@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.sys.mk,v 1.54 2010/08/17 20:39:28 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.sys.mk,v 1.55 2010/08/23 22:24:11 imp Exp $
 #
 # This file contains common settings used for building FreeBSD
 # sources.
@@ -79,8 +79,9 @@ CWARNFLAGS	+=	-Werror
 CWARNFLAGS	+=	-Wno-unknown-pragmas
 .endif
 
-.if ${MK_SSP} != "no" && ${CC:T:Micc} != "icc" && ${MACHINE_ARCH} != "ia64" && \
-	${MACHINE_ARCH} != "arm" && ${MACHINE_ARCH} != "mips"
+.if ${MK_SSP} != "no" && ${CC:T:Micc} != "icc" && \
+	${MACHINE_CPUARCH} != "ia64" && \
+	${MACHINE_CPUARCH} != "arm" && ${MACHINE_CPUARCH} != "mips"
 # Don't use -Wstack-protector as it breaks world with -Werror.
 SSP_CFLAGS	?=	-fstack-protector
 CFLAGS		+=	${SSP_CFLAGS}

@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.25 2010/07/28 08:48:35 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.26 2010/09/01 23:47:53 thompsa Exp $");
 
 /*
  * NOTE: all function names beginning like "uftdi_cfg_" can only
@@ -205,6 +205,7 @@ static driver_t uftdi_driver = {
 DRIVER_MODULE(uftdi, uhub, uftdi_driver, uftdi_devclass, NULL, 0);
 MODULE_DEPEND(uftdi, ucom, 1, 1, 1);
 MODULE_DEPEND(uftdi, usb, 1, 1, 1);
+MODULE_VERSION(uftdi, 1);
 
 static struct usb_device_id uftdi_devs[] = {
 #define	UFTDI_DEV(v,p,t) \

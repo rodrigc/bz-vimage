@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_controller.h,v 1.17 2009/07/30 00:14:34 alfred Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_controller.h,v 1.19 2010/09/02 04:05:00 thompsa Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -62,7 +62,7 @@ struct usb_bus_methods {
 		    struct usb_endpoint_descriptor *, struct usb_endpoint *);
 	void    (*xfer_setup) (struct usb_setup_params *);
 	void    (*xfer_unsetup) (struct usb_xfer *);
-	void    (*get_dma_delay) (struct usb_bus *, uint32_t *);
+	void    (*get_dma_delay) (struct usb_device *, uint32_t *);
 	void    (*device_suspend) (struct usb_device *);
 	void    (*device_resume) (struct usb_device *);
 	void    (*set_hw_power) (struct usb_bus *);
@@ -102,6 +102,10 @@ struct usb_bus_methods {
 	/* Optional transfer polling support */
 
 	void	(*xfer_poll) (struct usb_bus *);
+
+	/* Optional fixed power mode support */
+
+	void	(*get_power_mode) (struct usb_device *udev, int8_t *pmode);
 };
 
 /*

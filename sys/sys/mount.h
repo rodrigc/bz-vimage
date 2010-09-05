@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)mount.h	8.21 (Berkeley) 5/20/95
- * $FreeBSD: src/sys/sys/mount.h,v 1.251 2010/04/24 07:05:35 jeff Exp $
+ * $FreeBSD: src/sys/sys/mount.h,v 1.252 2010/08/28 08:57:15 pjd Exp $
  */
 
 #ifndef _SYS_MOUNT_H_
@@ -730,7 +730,7 @@ void	vfs_msync(struct mount *, int);
 int	vfs_busy(struct mount *, int);
 int	vfs_export			 /* process mount export info */
 	    (struct mount *, struct export_args *);
-int	vfs_allocate_syncvnode(struct mount *);
+void	vfs_allocate_syncvnode(struct mount *);
 int	vfs_donmount(struct thread *td, int fsflags, struct uio *fsoptions);
 void	vfs_getnewfsid(struct mount *);
 struct cdev *vfs_getrootfsid(struct mount *);

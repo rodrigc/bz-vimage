@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/token.l,v 1.2 2010/04/29 15:36:32 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/token.l,v 1.3 2010/08/27 15:16:52 pjd Exp $
  */
 
 #include <stdio.h>
@@ -49,6 +49,7 @@ listen			{ DP; return LISTEN; }
 port			{ DP; return PORT; }
 replication		{ DP; return REPLICATION; }
 timeout			{ DP; return TIMEOUT; }
+exec			{ DP; return EXEC; }
 resource		{ DP; return RESOURCE; }
 name			{ DP; return NAME; }
 local			{ DP; return LOCAL; }

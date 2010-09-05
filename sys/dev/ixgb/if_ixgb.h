@@ -30,7 +30,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgb/if_ixgb.h,v 1.11 2009/11/19 18:37:55 jhb Exp $*/
+/*$FreeBSD: src/sys/dev/ixgb/if_ixgb.h,v 1.12 2010/08/28 00:34:22 yongari Exp $*/
 
 #ifndef _IXGB_H_DEFINED_
 #define _IXGB_H_DEFINED_
@@ -344,6 +344,8 @@ struct adapter {
 	struct sysctl_ctx_list sysctl_ctx;
 	struct sysctl_oid *sysctl_tree;
 
+	/* Multicast array memory */
+	u_int8_t	*mta;
 	/* Misc stats maintained by the driver */
 	unsigned long   dropped_pkts;
 	unsigned long   mbuf_alloc_failed;

@@ -19,10 +19,10 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/add/main.c,v 1.85 2010/04/23 11:07:43 flz Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/add/main.c,v 1.86 2010/08/30 21:58:52 nwhitehorn Exp $");
 
 #include <sys/param.h>
-#include <sys/utsname.h>
+#include <sys/sysctl.h>
 #include <err.h>
 #include <getopt.h>
 
@@ -301,7 +301,9 @@ getpackagesite(void)
 {
     int reldate, i;
     static char sitepath[MAXPATHLEN];
-    struct utsname u;
+    int archmib[] = { CTL_HW, HW_MACHINE_ARCH };
+    char arch[64];
+    size_t archlen = sizeof(arch);
 
     if (getenv("PACKAGESITE")) {
 	if (strlcpy(sitepath, getenv("PACKAGESITE"), sizeof(sitepath))
@@ -324,8 +326,10 @@ getpackagesite(void)
 	>= sizeof(sitepath))
 	return NULL;
 
-    uname(&u);
-    if (strlcat(sitepath, u.machine, sizeof(sitepath)) >= sizeof(sitepath))
+    if (sysctl(archmib, 2, arch, &archlen, NULL, 0) == -1)
+	return NULL;
+    arch[archlen-1] = 0;
+    if (strlcat(sitepath, arch, sizeof(sitepath)) >= sizeof(sitepath))
 	return NULL;
 
     reldate = getosreldate();

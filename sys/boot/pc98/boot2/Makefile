@@ -1,4 +1,11 @@
-# $FreeBSD: src/sys/boot/pc98/boot2/Makefile,v 1.26 2009/12/31 15:03:33 nyan Exp $
+# $FreeBSD: src/sys/boot/pc98/boot2/Makefile,v 1.27 2010/08/31 17:38:20 dim Exp $
+
+.include <bsd.own.mk>
+
+# XXX: clang can compile the boot code just fine, but boot2 gets too big
+.if ${CC:T:Mclang} == "clang"
+CC=gcc
+.endif
 
 FILES=		boot boot1 boot2
 

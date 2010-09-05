@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/set-mirror.sh,v 1.1 2010/08/19 05:59:27 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/set-mirror.sh,v 1.2 2010/08/24 06:11:46 imp Exp $
 
 . ${PROGDIR}/backend/functions.sh
 . ${PROGDIR}/backend/functions-ftp.sh
@@ -32,8 +32,8 @@ MIRROR="${1}"
 
 if [ -z "${MIRROR}" ]
 then
-	echo "Error: No mirror specified!"
-	exit 1
+  echo "Error: No mirror specified!"
+  exit 1
 fi
 
 set_ftp_mirror "${MIRROR}"

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/ofw_machdep.c,v 1.31 2010/07/13 05:32:19 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/ofw_machdep.c,v 1.32 2010/08/31 15:27:46 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -527,20 +527,21 @@ openfirmware(void *args)
 }
 
 void
-OF_halt()
-{
-	int retval;	/* dummy, this may not be needed */
-
-	OF_interpret("shut-down", 1, &retval);
-	for (;;);	/* just in case */
-}
-
-void
 OF_reboot()
 {
-	int retval;	/* dummy, this may not be needed */
+	struct {
+		cell_t name;
+		cell_t nargs;
+		cell_t nreturns;
+		cell_t arg;
+	} args;
 
-	OF_interpret("reset-all", 1, &retval);
+	args.name = (cell_t)(uintptr_t)"interpret";
+	args.nargs = 1;
+	args.nreturns = 0;
+	args.arg = (cell_t)(uintptr_t)"reset-all";
+	openfirmware_core(&args); /* Don't do rendezvous! */
+
 	for (;;);	/* just in case */
 }
 

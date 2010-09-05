@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.104 2010/06/13 13:02:43 raj Exp $
+# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.105 2010/08/23 10:04:26 gabor Exp $
 
 .include <bsd.own.mk>
 
@@ -28,16 +28,16 @@ _groff=		groff
 .endif
 .endif
 
+.if ${MK_BSD_GREP} != "yes"
+_grep=          grep
+.endif
+
 .if ${MK_CVS} != "no"
 _cvs=		cvs
 .endif
 
 .if ${MK_FDT}	!= "no"
 _dtc=		dtc
-.endif
-
-.if ${MK_GNU_GREP} != "no"
-_grep=		grep
 .endif
 
 .if ${MK_INFO} != "no"

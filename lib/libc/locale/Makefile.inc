@@ -1,8 +1,8 @@
 #	from @(#)Makefile.inc	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/libc/locale/Makefile.inc,v 1.62 2008/01/21 23:48:12 ache Exp $
+# $FreeBSD: src/lib/libc/locale/Makefile.inc,v 1.64 2010/08/24 20:54:43 imp Exp $
 
 # locale sources
-.PATH: ${.CURDIR}/${MACHINE_ARCH}/locale ${.CURDIR}/locale
+.PATH: ${.CURDIR}/${LIBC_ARCH}/locale ${.CURDIR}/locale
 
 SRCS+=	ascii.c big5.c btowc.c collate.c collcmp.c euc.c fix_grouping.c \
 	gb18030.c gb2312.c gbk.c isctype.c iswctype.c \

@@ -22,12 +22,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/copyright.h,v 1.30 2010/01/02 01:12:10 imp Exp $
+ * $FreeBSD: src/sys/sys/copyright.h,v 1.31 2010/09/02 14:05:32 emaste Exp $
  */
 
 
 /* Copyrights macros  */
-  
+
 /* FreeBSD */
 #define COPYRIGHT_FreeBSD \
 	"Copyright (c) 1992-2010 The FreeBSD Project.\n"

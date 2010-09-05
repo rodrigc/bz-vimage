@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/procfs/Makefile,v 1.34 2010/03/11 14:49:06 nwhitehorn Exp $
+# $FreeBSD: src/sys/modules/procfs/Makefile,v 1.35 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../fs/procfs
 
@@ -34,7 +34,7 @@ opt_compat.h:
 	echo "#define COMPAT_FREEBSD4 1" >> ${.TARGET}
 	echo "#define COMPAT_FREEBSD5 1" >> ${.TARGET}
 	echo "#define COMPAT_FREEBSD6 1" >> ${.TARGET}
-.if ${MACHINE_ARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64"
 	echo "#define COMPAT_FREEBSD32 1" >> ${.TARGET}
 	echo "#define COMPAT_LINUX32 1" >> ${.TARGET}
 .endif

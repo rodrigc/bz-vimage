@@ -3,7 +3,7 @@
 #	All rights reserved.
 # Author: Harti Brandt <brandt@fokus.gmd.de>
 #
-# $FreeBSD: src/sbin/atm/atmconfig/Makefile,v 1.9 2009/10/19 16:00:24 ru Exp $
+# $FreeBSD: src/sbin/atm/atmconfig/Makefile,v 1.10 2010/08/23 22:24:11 imp Exp $
 
 PROG=	atmconfig
 .ifndef RESCUE
@@ -27,7 +27,8 @@ LDADD=	-lbsnmp
 CLEANFILES+= oid.h
 .endif
 
-.if ${MACHINE_ARCH} == "arm"
+# XXX - this is verboten
+.if ${MACHINE_CPUARCH} == "arm"
 WARNS?= 3
 .endif
 

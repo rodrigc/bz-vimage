@@ -1,6 +1,6 @@
-# $FreeBSD: src/lib/libdisk/Makefile,v 1.48 2006/10/09 05:12:54 kmacy Exp $
+# $FreeBSD: src/lib/libdisk/Makefile,v 1.49 2010/08/23 22:24:11 imp Exp $
 
-.if ${MACHINE_ARCH} == "ia64"
+.if ${MACHINE_CPUARCH} == "ia64"
 _open_disk=	open_ia64_disk.c
 .else
 _change	=	change.c

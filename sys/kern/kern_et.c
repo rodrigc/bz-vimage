@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_et.c,v 1.3 2010/07/21 12:23:49 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_et.c,v 1.4 2010/09/05 06:16:04 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -235,6 +235,7 @@ sysctl_kern_eventtimer_choice(SYSCTL_HANDLER_ARGS)
 
 	spc = "";
 	error = 0;
+	buf[0] = 0;
 	off = 0;
 	ET_LOCK();
 	SLIST_FOREACH(et, &eventtimers, et_all) {

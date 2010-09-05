@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.39 2010/06/22 20:57:48 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.40 2010/09/02 04:01:18 thompsa Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -3804,7 +3804,7 @@ done:
 }
 
 static void
-ehci_get_dma_delay(struct usb_bus *bus, uint32_t *pus)
+ehci_get_dma_delay(struct usb_device *udev, uint32_t *pus)
 {
 	/*
 	 * Wait until the hardware has finished any possible use of

@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ucycom.c,v 1.13 2009/11/26 00:43:17 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ucycom.c,v 1.14 2010/09/01 23:47:53 thompsa Exp $");
 
 /*-
  * Copyright (c) 2004 Dag-Erling Coïdan Smørgrav
@@ -176,6 +176,7 @@ static driver_t ucycom_driver = {
 DRIVER_MODULE(ucycom, uhub, ucycom_driver, ucycom_devclass, NULL, 0);
 MODULE_DEPEND(ucycom, ucom, 1, 1, 1);
 MODULE_DEPEND(ucycom, usb, 1, 1, 1);
+MODULE_VERSION(ucycom, 1);
 
 /*
  * Supported devices

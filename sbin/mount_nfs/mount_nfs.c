@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mount_nfs.c	8.11 (Berkeley) 5/4/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/mount_nfs/mount_nfs.c,v 1.92 2010/02/04 15:17:49 ume Exp $");
+__FBSDID("$FreeBSD: src/sbin/mount_nfs/mount_nfs.c,v 1.93 2010/09/04 08:42:19 kevlo Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -866,6 +866,7 @@ nfs_tryproto(struct addrinfo *ai, char *hostp, char *spec, char **errstr,
 	enum clnt_stat stat;
 	enum mountmode trymntmode;
 
+	sotype = 0;
 	trymntmode = mountmode;
 	errbuf[0] = '\0';
 	*errstr = errbuf;

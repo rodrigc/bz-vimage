@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_fork.c,v 1.14 2009/05/11 16:45:53 green Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_fork.c,v 1.20 2010/09/01 07:09:46 davidxu Exp $
  */
 
 /*
@@ -59,6 +59,7 @@
 
 #include "namespace.h"
 #include <errno.h>
+#include <link.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -88,10 +89,42 @@ _pthread_atfork(void (*prepare)(void), void (*parent)(void),
 	af->prepare = prepare;
 	af->parent = parent;
 	af->child = child;
-	THR_UMUTEX_LOCK(curthread, &_thr_atfork_lock);
+	THR_CRITICAL_ENTER(curthread);
+	_thr_rwl_wrlock(&_thr_atfork_lock);
 	TAILQ_INSERT_TAIL(&_thr_atfork_list, af, qe);
-	THR_UMUTEX_UNLOCK(curthread, &_thr_atfork_lock);
+	_thr_rwl_unlock(&_thr_atfork_lock);
+	THR_CRITICAL_LEAVE(curthread);
 	return (0);
+}
+
+void
+__pthread_cxa_finalize(struct dl_phdr_info *phdr_info)
+{
+	atfork_head    temp_list = TAILQ_HEAD_INITIALIZER(temp_list);
+	struct pthread *curthread;
+	struct pthread_atfork *af, *af1;
+
+	_thr_check_init();
+
+	curthread = _get_curthread();
+	THR_CRITICAL_ENTER(curthread);
+	_thr_rwl_wrlock(&_thr_atfork_lock);
+	TAILQ_FOREACH_SAFE(af, &_thr_atfork_list, qe, af1) {
+		if (__elf_phdr_match_addr(phdr_info, af->prepare) ||
+		    __elf_phdr_match_addr(phdr_info, af->parent) ||
+		    __elf_phdr_match_addr(phdr_info, af->child)) {
+			TAILQ_REMOVE(&_thr_atfork_list, af, qe);
+			TAILQ_INSERT_TAIL(&temp_list, af, qe);
+		}
+	}
+	_thr_rwl_unlock(&_thr_atfork_lock);
+	THR_CRITICAL_LEAVE(curthread);
+	while ((af = TAILQ_FIRST(&temp_list)) != NULL) {
+		TAILQ_REMOVE(&temp_list, af, qe);
+		free(af);
+	}
+	_thr_tsd_unload(phdr_info);
+	_thr_sigact_unload(phdr_info);
 }
 
 __weak_reference(_fork, fork);
@@ -113,13 +146,19 @@ _fork(void)
 
 	curthread = _get_curthread();
 
-	THR_UMUTEX_LOCK(curthread, &_thr_atfork_lock);
+	_thr_rwl_rdlock(&_thr_atfork_lock);
 
 	/* Run down atfork prepare handlers. */
 	TAILQ_FOREACH_REVERSE(af, &_thr_atfork_list, atfork_head, qe) {
 		if (af->prepare != NULL)
 			af->prepare();
 	}
+
+	/*
+	 * Block all signals until we reach a safe point.
+	 */
+	_thr_signal_block(curthread);
+	_thr_signal_prefork();
 
 	/*
 	 * All bets are off as to what should happen soon if the parent
@@ -133,11 +172,6 @@ _fork(void)
 	} else {
 		was_threaded = 0;
 	}
-
-	/*
-	 * Block all signals until we reach a safe point.
-	 */
-	_thr_signal_block(curthread);
 
 	/* Fork a new process: */
 	if ((ret = __sys_fork()) == 0) {
@@ -157,7 +191,9 @@ _fork(void)
 
 		/* clear other threads locked us. */
 		_thr_umutex_init(&curthread->lock);
-		_thr_umutex_init(&_thr_atfork_lock);
+		_mutex_fork(curthread);
+
+		_thr_signal_postfork_child();
 
 		if (was_threaded)
 			_rtld_atfork_post(rtld_locks);
@@ -165,13 +201,12 @@ _fork(void)
 
 		/* reinitialize libc spinlocks. */
 		_thr_spinlock_init();
-		_mutex_fork(curthread);
 
 		/* reinitalize library. */
 		_libpthread_init(curthread);
 
-		/* Ready to continue, unblock signals. */ 
-		_thr_signal_unblock(curthread);
+		/* atfork is reinitializeded by _libpthread_init()! */
+		_thr_rwl_rdlock(&_thr_atfork_lock);
 
 		if (was_threaded) {
 			__isthreaded = 1;
@@ -179,22 +214,28 @@ _fork(void)
 			__isthreaded = 0;
 		}
 
+		/* Ready to continue, unblock signals. */ 
+		_thr_signal_unblock(curthread);
+
 		/* Run down atfork child handlers. */
 		TAILQ_FOREACH(af, &_thr_atfork_list, qe) {
 			if (af->child != NULL)
 				af->child();
 		}
+		_thr_rwlock_unlock(&_thr_atfork_lock);
 	} else {
 		/* Parent process */
 		errsave = errno;
 
-		/* Ready to continue, unblock signals. */ 
-		_thr_signal_unblock(curthread);
+		_thr_signal_postfork();
 
 		if (was_threaded) {
 			_rtld_atfork_post(rtld_locks);
 			_malloc_postfork();
 		}
+
+		/* Ready to continue, unblock signals. */ 
+		_thr_signal_unblock(curthread);
 
 		/* Run down atfork parent handlers. */
 		TAILQ_FOREACH(af, &_thr_atfork_list, qe) {
@@ -202,7 +243,7 @@ _fork(void)
 				af->parent();
 		}
 
-		THR_UMUTEX_UNLOCK(curthread, &_thr_atfork_lock);
+		_thr_rwlock_unlock(&_thr_atfork_lock);
 	}
 	errno = errsave;
 

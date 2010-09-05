@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/i386/exception.s,v 1.124 2010/06/23 20:44:07 kib Exp $
+ * $FreeBSD: src/sys/i386/i386/exception.s,v 1.125 2010/08/28 08:03:29 rpaulo Exp $
  */
 
 #include "opt_apic.h"
@@ -108,6 +108,8 @@ IDTVEC(nmi)
 	pushl $0; TRAP(T_NMI)
 IDTVEC(bpt)
 	pushl $0; TRAP(T_BPTFLT)
+IDTVEC(dtrace_ret)
+	pushl $0; TRAP(T_DTRACE_RET)
 IDTVEC(ofl)
 	pushl $0; TRAP(T_OFLOW)
 IDTVEC(bnd)

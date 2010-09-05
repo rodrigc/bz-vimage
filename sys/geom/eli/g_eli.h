@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/eli/g_eli.h,v 1.13 2007/09/01 06:33:01 pjd Exp $
+ * $FreeBSD: src/sys/geom/eli/g_eli.h,v 1.14 2010/08/28 08:30:20 pjd Exp $
  */
 
 #ifndef	_G_ELI_H_
@@ -57,11 +57,11 @@
  * 1 - Added data authentication support (md_aalgo field and
  *     G_ELI_FLAG_AUTH flag).
  * 2 - Added G_ELI_FLAG_READONLY.
- *   - IV is generated from offset converted to little-endian
- *     (flag G_ELI_FLAG_NATIVE_BYTE_ORDER will be set for older versions).
  * 3 - Added 'configure' subcommand.
+ * 4 - IV is generated from offset converted to little-endian
+ *     (flag G_ELI_FLAG_NATIVE_BYTE_ORDER will be set for older versions).
  */
-#define	G_ELI_VERSION		3
+#define	G_ELI_VERSION		4
 
 /* ON DISK FLAGS. */
 /* Use random, onetime keys. */
@@ -394,7 +394,7 @@ g_eli_keylen(u_int algo, u_int keylen)
 				keylen = 0;
 		}
 		return (keylen);
-	case CRYPTO_AES_CBC: /* FALLTHROUGH */
+	case CRYPTO_AES_CBC:
 	case CRYPTO_CAMELLIA_CBC:
 		switch (keylen) {
 		case 0:

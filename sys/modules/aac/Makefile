@@ -1,8 +1,8 @@
-# $FreeBSD: src/sys/modules/aac/Makefile,v 1.8 2004/08/30 03:35:17 scottl Exp $
+# $FreeBSD: src/sys/modules/aac/Makefile,v 1.9 2010/08/23 06:13:29 imp Exp $
 
 .PATH: ${.CURDIR}/../../dev/aac
 
-.if ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "i386"
 SUBDIR= aac_linux
 .endif
 

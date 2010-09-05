@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/truss/extern.h,v 1.16 2010/03/10 20:31:30 imp Exp $
+ * $FreeBSD: src/usr.bin/truss/extern.h,v 1.17 2010/08/28 15:04:53 nwhitehorn Exp $
  */
 
 extern int setup_and_wait(char **);
@@ -58,6 +58,8 @@ extern long ia64_syscall_exit(struct trussinfo *, int);
 #ifdef __powerpc__
 extern void powerpc_syscall_entry(struct trussinfo *, int);
 extern long powerpc_syscall_exit(struct trussinfo *, int);
+extern void powerpc64_syscall_entry(struct trussinfo *, int);
+extern long powerpc64_syscall_exit(struct trussinfo *, int);
 #endif
 #ifdef __sparc64__
 extern void sparc64_syscall_entry(struct trussinfo *, int);

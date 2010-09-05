@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/x86bios/x86bios.c,v 1.30 2010/08/10 15:22:48 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/x86bios/x86bios.c,v 1.32 2010/08/25 21:03:50 jkim Exp $");
 
 #include "opt_x86bios.h"
 
@@ -201,6 +201,13 @@ x86bios_get_intr(int intno)
 {
 
 	return (readl(BIOS_PADDRTOVADDR(intno * 4)));
+}
+
+void
+x86bios_set_intr(int intno, uint32_t saddr)
+{
+
+	writel(BIOS_PADDRTOVADDR(intno * 4), saddr);
 }
 
 void
@@ -619,11 +626,15 @@ x86bios_call(struct x86regs *regs, uint16_t seg, uint16_t off)
 uint32_t
 x86bios_get_intr(int intno)
 {
-	uint32_t *iv;
 
-	iv = (uint32_t *)((vm_offset_t)x86bios_ivt + intno * 4);
+	return (le32toh(*((uint32_t *)x86bios_ivt + intno)));
+}
 
-	return (le32toh(*iv));
+void
+x86bios_set_intr(int intno, uint32_t saddr)
+{
+
+	*((uint32_t *)x86bios_ivt + intno) = htole32(saddr);
 }
 
 void
@@ -801,7 +812,8 @@ x86bios_get_orm(uint32_t offset)
 
 	/* Does the shadow ROM contain BIOS POST code for x86? */
 	p = x86bios_offset(offset);
-	if (p == NULL || p[0] != 0x55 || p[1] != 0xaa || p[3] != 0xe9)
+	if (p == NULL || p[0] != 0x55 || p[1] != 0xaa ||
+	    (p[3] != 0xe9 && p[3] != 0xeb))
 		return (NULL);
 
 	return (p);

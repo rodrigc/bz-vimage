@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/serial/uark.c,v 1.11 2009/11/26 00:43:17 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/serial/uark.c,v 1.12 2010/09/01 23:47:53 thompsa Exp $
  */
 
 /*
@@ -169,6 +169,7 @@ static driver_t uark_driver = {
 DRIVER_MODULE(uark, uhub, uark_driver, uark_devclass, NULL, 0);
 MODULE_DEPEND(uark, ucom, 1, 1, 1);
 MODULE_DEPEND(uark, usb, 1, 1, 1);
+MODULE_VERSION(uark, 1);
 
 static const struct usb_device_id uark_devs[] = {
 	{USB_VPI(USB_VENDOR_ARKMICRO, USB_PRODUCT_ARKMICRO_ARK3116, 0)},

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/platform.c,v 1.1 2009/05/14 00:34:26 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/platform.c,v 1.2 2010/08/31 15:27:46 nwhitehorn Exp $");
 
 /*
  * Dispatch platform calls to the appropriate platform implementation
@@ -46,6 +46,7 @@ __FBSDID("$FreeBSD: src/sys/powerpc/powerpc/platform.c,v 1.1 2009/05/14 00:34:26
 #include <vm/vm.h>
 #include <vm/vm_page.h>
 
+#include <machine/cpu.h>
 #include <machine/platform.h>
 #include <machine/platformvar.h>
 #include <machine/smp.h>
@@ -102,6 +103,15 @@ int
 platform_smp_start_cpu(struct pcpu *cpu)
 {
 	return (PLATFORM_SMP_START_CPU(plat_obj, cpu));
+}
+
+/*
+ * Reset back to firmware.
+ */
+void
+cpu_reset()
+{
+        PLATFORM_RESET(plat_obj);
 }
 
 /*

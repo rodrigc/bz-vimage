@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/powerpc/conf/GENERIC64,v 1.3 2010/07/31 13:22:34 nwhitehorn Exp $
+# $FreeBSD: src/sys/powerpc/conf/GENERIC64,v 1.4 2010/09/03 03:56:09 grehan Exp $
 
 cpu		AIM
 ident		GENERIC
@@ -76,8 +76,8 @@ options 	WITNESS			#Enable checks to detect deadlocks and cycles
 options 	WITNESS_SKIPSPIN	#Don't run witness on spinlocks for speed
 options 	MALLOC_DEBUG_MAXZONES=8	# Separate malloc(9) zones
 
-# To make an SMP kernel, the next line is needed
-#options 	SMP			# Symmetric MultiProcessor Kernel
+# Make an SMP-capable kernel by default
+options 	SMP			# Symmetric MultiProcessor Kernel
 
 # CPU frequency control
 device		cpufreq

@@ -1,6 +1,6 @@
 # ex:ts=8
 #
-# $FreeBSD: src/usr.sbin/amd/Makefile.inc,v 1.15 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/amd/Makefile.inc,v 1.16 2010/08/23 22:24:11 imp Exp $
 #
 # Makefile for amd
 # 	This file is under a "BSD" copyright (c) by David O'Brien 1998.
@@ -27,7 +27,7 @@ CFLAGS+= -DHAVE_LOCALCONFIG_H
 CFLAGS+= -DYES_HESIOD
 .endif
 
-CFLAGS+= -DHOST_CPU=\"${MACHINE_ARCH}\" -DHOST_ARCH=\"${MACHINE_ARCH}\"
+CFLAGS+= -DHOST_CPU=\"${MACHINE_CPUARCH}\" -DHOST_ARCH=\"${MACHINE_ARCH}\"
 
 .if exists(${.OBJDIR}/../libamu)
 LIBAMUDIR=	${.OBJDIR}/../libamu

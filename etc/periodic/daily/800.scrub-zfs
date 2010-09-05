@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $FreeBSD: src/etc/periodic/daily/800.scrub-zfs,v 1.1 2010/06/15 08:58:16 netchild Exp $
+# $FreeBSD: src/etc/periodic/daily/800.scrub-zfs,v 1.2 2010/08/25 08:09:42 netchild Exp $
 #
 
 # If there is a global system configuration file, suck it in.
@@ -53,7 +53,7 @@ case "$daily_scrub_zfs_enable" in
 		# Now minus last scrub (both in seconds) converted to days.
 		_scrub_diff=$(expr -e \( $(date +%s) - \
 		    $(date -j -f %F.%T ${_last_scrub} +%s) \) / 60 / 60 / 24)
-		if [ ${_scrub_diff} -le ${_pool_threshold} ]; then
+		if [ ${_scrub_diff} -lt ${_pool_threshold} ]; then
 			echo "   skipping scrubbing of pool '${pool}':"
 			echo "      last scrubbing is ${_scrub_diff} days ago, threshold is set to ${_pool_threshold} days"
 			continue
@@ -65,11 +65,11 @@ case "$daily_scrub_zfs_enable" in
 				echo "   scrubbing of pool '${pool}' already in progress, skipping:"
 				;;
 			*"none requested"*)
-				echo "   starting first scrubbing (after reboot) of pool '${pool}':"
+				echo "   starting first scrub (since reboot) of pool '${pool}':"
 				zpool scrub ${pool}
 				;;
 			*)
-				echo "   starting scrubbing of pool '${pool}':"
+				echo "   starting scrub of pool '${pool}':"
 				zpool scrub ${pool}
 				;;
 		esac

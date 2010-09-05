@@ -28,9 +28,9 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 .\" THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/rl.4,v 1.47 2010/01/15 16:01:22 ru Exp $
+.\" $FreeBSD: src/share/man/man4/rl.4,v 1.49 2010/08/23 00:10:43 yongari Exp $
 .\"
-.Dd November 1, 2008
+.Dd August 22, 2010
 .Dt RL 4
 .Os
 .Sh NAME
@@ -203,6 +203,13 @@ SOHO (PRAGMATIC) UE-1211C
 .El
 .Sh LOADER TUNABLES
 .Bl -tag -width indent
+.It Va dev.rl.%unit.prefer_iomap
+This tunable controls which register mapping should be used on the
+specified device.
+A non-zero value enables I/O space register mapping.
+For controllers that have no I/O space register mapping this tunable
+should be set to 0 to use memory space register mapping.
+The default value is 1 to use I/O space register mapping.
 .It Va dev.rl.%unit.twister_enable
 Non-zero value enables the long cable tuning on the specified device.
 Disabled by default.

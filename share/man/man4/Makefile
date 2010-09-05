@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/18/93
-# $FreeBSD: src/share/man/man4/Makefile,v 1.486 2010/08/13 05:01:44 takawata Exp $
+# $FreeBSD: src/share/man/man4/Makefile,v 1.487 2010/08/23 22:24:11 imp Exp $
 
 MAN=	aac.4 \
 	acpi.4 \
@@ -628,7 +628,7 @@ MLINKS+=xe.4 if_xe.4
 MLINKS+=xl.4 if_xl.4
 MLINKS+=zyd.4 if_zyd.4
 
-.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386"
 _acpi_asus.4=	acpi_asus.4
 _acpi_dock.4=	acpi_dock.4
 _acpi_fujitsu.4=acpi_fujitsu.4
@@ -678,7 +678,7 @@ _wpi.4=		wpi.4
 MLINKS+=lindev.4 full.4
 .endif
 
-.if ${MACHINE_ARCH} == "powerpc"
+.if ${MACHINE_CPUARCH} == "powerpc"
 _atp.4=		atp.4
 .endif
 

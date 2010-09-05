@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.162 2010/08/11 00:51:50 will Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.163 2010/09/04 16:06:01 bz Exp $");
 
 #include "opt_mpath.h"
 
@@ -1092,9 +1092,10 @@ in_addprefix(struct in_ifaddr *target, int flags)
 		if (ia->ia_flags & IFA_ROUTE) {
 #ifdef RADIX_MPATH
 			if (ia->ia_addr.sin_addr.s_addr == 
-			    target->ia_addr.sin_addr.s_addr)
+			    target->ia_addr.sin_addr.s_addr) {
+				IN_IFADDR_RUNLOCK();
 				return (EEXIST);
-			else
+			} else
 				break;
 #endif
 			if (V_sameprefixcarponly &&

@@ -1,5 +1,5 @@
 # $Id$
-# $FreeBSD: src/sys/modules/hptrr/Makefile,v 1.1 2007/12/15 00:56:17 scottl Exp $
+# $FreeBSD: src/sys/modules/hptrr/Makefile,v 1.2 2010/08/23 06:13:29 imp Exp $
 
 HPTRR=  ${.CURDIR}/../../dev/hptrr
 .PATH: ${HPTRR}
@@ -9,6 +9,6 @@ SRCS+= hptrr_os_bsd.c hptrr_osm_bsd.c hptrr_config.c
 OBJS = hptrr_lib.o
 
 hptrr_lib.o:
-	uudecode -p < ${HPTRR}/$(MACHINE_ARCH)-elf.hptrr_lib.o.uu > hptrr_lib.o
+	uudecode -p < ${HPTRR}/$(MACHINE_CPUARCH)-elf.hptrr_lib.o.uu > hptrr_lib.o
 
 .include <bsd.kmod.mk>

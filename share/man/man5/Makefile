@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/5/93
-#	$FreeBSD: src/share/man/man5/Makefile,v 1.83 2010/01/13 19:03:48 ed Exp $
+#	$FreeBSD: src/share/man/man5/Makefile,v 1.84 2010/08/23 22:24:11 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -83,7 +83,7 @@ MLINKS+=resolver.5 resolv.conf.5
 MAN+=	hesiod.conf.5 
 .endif
 
-.if ${MACHINE_ARCH} == "amd64" || ${MACHINE_ARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386"
 _boot.config.5=	boot.config.5
 .endif
 

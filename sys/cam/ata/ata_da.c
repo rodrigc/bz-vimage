@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/ata/ata_da.c,v 1.19 2010/07/25 15:43:52 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/ata/ata_da.c,v 1.20 2010/09/02 19:40:28 gibbs Exp $");
 
 #include <sys/param.h>
 
@@ -874,7 +874,8 @@ adastart(struct cam_periph *periph, union ccb *start_ccb)
 		}
 		bioq_remove(&softc->bio_queue, bp);
 
-		if ((softc->flags & ADA_FLAG_NEED_OTAG) != 0) {
+		if ((bp->bio_flags & BIO_ORDERED) != 0
+		 || (softc->flags & ADA_FLAG_NEED_OTAG) != 0) {
 			softc->flags &= ~ADA_FLAG_NEED_OTAG;
 			softc->ordered_tag_count++;
 			tag_code = 0;

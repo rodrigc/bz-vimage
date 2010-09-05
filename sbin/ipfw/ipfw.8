@@ -1,5 +1,5 @@
 .\"
-.\" $FreeBSD: src/sbin/ipfw/ipfw.8,v 1.239 2010/08/16 15:18:30 joel Exp $
+.\" $FreeBSD: src/sbin/ipfw/ipfw.8,v 1.240 2010/08/28 16:32:01 brucec Exp $
 .\"
 .Dd July 27, 2010
 .Dt IPFW 8
@@ -2303,7 +2303,7 @@ Information necessary to route link-local packets to an
 interface is not available after processing by
 .Nm dummynet
 so those packets are dropped in the output path.
-Care should be taken to insure that link-local packets are not passed to
+Care should be taken to ensure that link-local packets are not passed to
 .Nm dummynet .
 .Sh CHECKLIST
 Here are some important points to consider when designing your

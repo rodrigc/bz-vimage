@@ -34,7 +34,7 @@
 .\"          Archie Cobbs <archie@FreeBSD.org>
 .\"
 .\" $Whistle: netgraph.4,v 1.7 1999/01/28 23:54:52 julian Exp $
-.\" $FreeBSD: src/share/man/man4/netgraph.4,v 1.55 2010/08/16 15:18:30 joel Exp $
+.\" $FreeBSD: src/share/man/man4/netgraph.4,v 1.56 2010/08/28 16:32:01 brucec Exp $
 .\"
 .Dd May 25, 2008
 .Dt NETGRAPH 4
@@ -892,7 +892,7 @@ by returning
 Each type should have an include file that defines the commands,
 argument format, and cookie for its own messages.
 The typecookie
-insures that the same header file was included by both sender and
+ensures that the same header file was included by both sender and
 receiver; when an incompatible change in the header file is made,
 the typecookie
 .Em must

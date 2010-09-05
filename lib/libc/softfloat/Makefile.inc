@@ -1,11 +1,11 @@
 #	$NetBSD: Makefile.inc,v 1.3 2003/05/06 08:58:20 rearnsha Exp $
-# $FreeBSD: src/lib/libc/softfloat/Makefile.inc,v 1.3 2006/03/13 01:14:59 deischen Exp $
+# $FreeBSD: src/lib/libc/softfloat/Makefile.inc,v 1.5 2010/08/24 20:54:43 imp Exp $
 
 SOFTFLOAT_BITS?=64
-.PATH:		${MACHINE_ARCH}/softfloat \
+.PATH:		${LIBC_ARCH}/softfloat \
 		${.CURDIR}/softfloat/bits${SOFTFLOAT_BITS} ${.CURDIR}/softfloat
 
-CFLAGS+=	-I${.CURDIR}/${MACHINE_ARCH}/softfloat -I${.CURDIR}/softfloat
+CFLAGS+=	-I${.CURDIR}/${LIBC_ARCH}/softfloat -I${.CURDIR}/softfloat
 CFLAGS+=	-DSOFTFLOAT_FOR_GCC
 
 SRCS+=		softfloat.c

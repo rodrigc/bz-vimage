@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	5.20 (Berkeley) 6/12/93
-# $FreeBSD: src/usr.sbin/Makefile,v 1.427 2010/07/20 07:27:36 nwhitehorn Exp $
+# $FreeBSD: src/usr.sbin/Makefile,v 1.429 2010/08/26 15:49:52 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -412,7 +412,8 @@ _crunch=	crunch
 .endif
 
 .if ${MK_USB} != "no"
-.if ${MACHINE_ARCH} != "ia64"
+.if ${MACHINE_ARCH} != "ia64" && \
+   !(${MACHINE_ARCH} == "mips" && defined(TARGET_ABI) && ${TARGET_ABI} == "n64")
 _uathload=	uathload
 .endif
 _uhsoctl=	uhsoctl

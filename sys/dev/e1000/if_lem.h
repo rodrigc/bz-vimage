@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.2 2010/03/31 20:43:24 marius Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.3 2010/08/28 00:34:22 yongari Exp $*/
 
 
 #ifndef _LEM_H_DEFINED_
@@ -339,6 +339,8 @@ struct adapter {
 	bool		has_manage;
 	bool		has_amt;
 
+	/* Multicast array memory */
+	u8		*mta;
 	/* Info about the board itself */
 	uint8_t		link_active;
 	uint16_t	link_speed;

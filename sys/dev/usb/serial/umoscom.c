@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.12 2010/04/22 21:31:34 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.13 2010/09/01 23:47:53 thompsa Exp $ */
 /*	$OpenBSD: umoscom.c,v 1.2 2006/10/26 06:02:43 jsg Exp $	*/
 
 /*
@@ -279,6 +279,7 @@ static driver_t umoscom_driver = {
 DRIVER_MODULE(umoscom, uhub, umoscom_driver, umoscom_devclass, NULL, 0);
 MODULE_DEPEND(umoscom, ucom, 1, 1, 1);
 MODULE_DEPEND(umoscom, usb, 1, 1, 1);
+MODULE_VERSION(umoscom, 1);
 
 static const struct usb_device_id umoscom_devs[] = {
 	{USB_VPI(USB_VENDOR_MOSCHIP, USB_PRODUCT_MOSCHIP_MCS7703, 0)}

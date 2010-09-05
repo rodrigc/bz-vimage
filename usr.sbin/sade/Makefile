@@ -1,6 +1,6 @@
-# $FreeBSD: src/usr.sbin/sade/Makefile,v 1.148 2008/05/03 02:42:57 delphij Exp $
+# $FreeBSD: src/usr.sbin/sade/Makefile,v 1.149 2010/08/23 22:24:11 imp Exp $
 
-.if ${MACHINE_ARCH} != "ia64"
+.if ${MACHINE_CPUARCH} != "ia64"
 _wizard=	wizard.c
 .endif
 

@@ -91,7 +91,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.146 2010/07/13 05:32:19 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.147 2010/08/27 05:29:59 nwhitehorn Exp $");
 
 /*
  * Manages physical address maps.
@@ -2436,8 +2436,6 @@ moea_mapdev(mmu_t mmu, vm_offset_t pa, vm_size_t size)
 	offset = pa & PAGE_MASK;
 	size = roundup(offset + size, PAGE_SIZE);
 	
-	GIANT_REQUIRED;
-
 	/*
 	 * If the physical address lies within a valid BAT table entry,
 	 * return the 1:1 mapping. This currently doesn't work

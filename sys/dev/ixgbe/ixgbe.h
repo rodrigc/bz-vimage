@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgbe/ixgbe.h,v 1.17 2010/07/01 05:03:24 kevlo Exp $*/
+/*$FreeBSD: src/sys/dev/ixgbe/ixgbe.h,v 1.18 2010/08/28 00:34:22 yongari Exp $*/
 
 
 #ifndef _IXGBE_H_
@@ -421,6 +421,8 @@ struct adapter {
 	u64			que_mask;
 	u32			rx_process_limit;
 
+	/* Multicast array memory */
+	u8			*mta;
 	/* Misc stats maintained by the driver */
 	unsigned long   	dropped_pkts;
 	unsigned long   	mbuf_defrag_failed;

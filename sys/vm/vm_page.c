@@ -98,8 +98,9 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.419 2010/07/21 09:27:00 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.420 2010/09/03 10:40:53 avg Exp $");
 
+#include "opt_msgbuf.h"
 #include "opt_vm.h"
 
 #include <sys/param.h>

@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.59 2010/06/15 23:55:42 imp Exp $
+# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.60 2010/09/03 03:48:06 imp Exp $
 #
 
 set -e
@@ -503,7 +503,7 @@ create_i386_diskimage ( ) (
 		mount /dev/${MD}s2a ${MNT}
 		for f in ${MNT}/etc/fstab ${MNT}/conf/base/etc/fstab
 		do
-			sed -i "" "s/${NANO_DRIVE}s1/${NANO_DRIVE}s2/g" $f
+			sed -i "" "s=${NANO_DRIVE}s1=${NANO_DRIVE}s2=g" $f
 		done
 		umount ${MNT}
 	fi

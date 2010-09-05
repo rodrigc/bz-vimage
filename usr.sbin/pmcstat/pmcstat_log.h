@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/pmcstat/pmcstat_log.h,v 1.2 2010/04/02 13:34:28 fabient Exp $
+ * $FreeBSD: src/usr.sbin/pmcstat/pmcstat_log.h,v 1.3 2010/09/03 13:54:02 fabient Exp $
  */
 
 #ifndef	_PMCSTAT_LOG_H_
@@ -164,6 +164,7 @@ struct pmcstat_stats {
 	int ps_samples_skipped; /* #samples filtered out for any reason */
 	int ps_samples_unknown_offset;	/* #samples of rank 0 not in a map */
 	int ps_samples_indeterminable;	/* #samples in indeterminable images */
+	int ps_samples_unknown_function;/* #samples with unknown function at offset */
 	int ps_callchain_dubious_frames;/* #dubious frame pointers seen */
 };
 extern struct pmcstat_stats pmcstat_stats; /* statistics */
