@@ -1964,6 +1964,7 @@ pf_send_tcp(const struct pf_rule *r, sa_family_t af,
 		h->ip_hl = sizeof(*h) >> 2;
 		h->ip_tos = IPTOS_LOWDELAY;
 #ifdef __FreeBSD__
+		CURVNET_SET(vnet0);
 		h->ip_off = V_path_mtu_discovery ? IP_DF : 0;
 		h->ip_len = len;
 #else
@@ -1972,6 +1973,7 @@ pf_send_tcp(const struct pf_rule *r, sa_family_t af,
 #endif
 		h->ip_ttl = ttl ? ttl : V_ip_defttl;
 		h->ip_sum = 0;
+		CURVNET_RESTORE();
 		if (eh == NULL) {
 #ifdef __FreeBSD__
 			PF_UNLOCK();
@@ -2990,21 +2992,27 @@ pf_socket_lookup(int direction, struct pf_pdesc *pd)
 		return (1);
 	}
 #endif
+	CURVNET_SET(vnet0);
 	switch (pd->proto) {
 	case IPPROTO_TCP:
-		if (pd->hdr.tcp == NULL)
+		if (pd->hdr.tcp == NULL) {
+			CURVNET_RESTORE();
 			return (-1);
+		}
 		sport = pd->hdr.tcp->th_sport;
 		dport = pd->hdr.tcp->th_dport;
 #ifdef __FreeBSD__
 		pi = &V_tcbinfo;
+		CURVNET_RESTORE();
 #else
 		tb = &tcbtable;
 #endif
 		break;
 	case IPPROTO_UDP:
-		if (pd->hdr.udp == NULL)
+		if (pd->hdr.udp == NULL) {
+			CURVNET_RESTORE();
 			return (-1);
+		}
 		sport = pd->hdr.udp->uh_sport;
 		dport = pd->hdr.udp->uh_dport;
 #ifdef __FreeBSD__
@@ -3014,8 +3022,10 @@ pf_socket_lookup(int direction, struct pf_pdesc *pd)
 #endif
 		break;
 	default:
+		CURVNET_RESTORE();
 		return (-1);
 	}
+	CURVNET_RESTORE();
 	if (direction == PF_IN) {
 		saddr = pd->src;
 		daddr = pd->dst;
@@ -3140,7 +3150,7 @@ pf_get_mss(struct mbuf *m, int off, u_int16_t th_off, sa_family_t af)
 	int		 hlen;
 	u_int8_t	 hdr[60];
 	u_int8_t	*opt, optlen;
-	u_int16_t	 mss = V_tcp_mssdflt;
+	u_int16_t	 mss;
 
 	hlen = th_off << 2;	/* hlen <= sizeof(hdr) */
 	if (hlen <= sizeof(struct tcphdr))
@@ -3149,6 +3159,9 @@ pf_get_mss(struct mbuf *m, int off, u_int16_t th_off, sa_family_t af)
 		return (0);
 	opt = hdr + sizeof(struct tcphdr);
 	hlen -= sizeof(struct tcphdr);
+	CURVNET_SET(vnet0);
+	mss = V_tcp_mssdflt;
+	CURVNET_RESTORE();
 	while (hlen >= TCPOLEN_MAXSEG) {
 		switch (*opt) {
 		case TCPOPT_EOL:
@@ -3185,7 +3198,7 @@ pf_calc_mss(struct pf_addr *addr, sa_family_t af, u_int16_t offer)
 #endif /* INET6 */
 	struct rtentry		*rt = NULL;
 	int			 hlen = 0;	/* make the compiler happy */
-	u_int16_t		 mss = V_tcp_mssdflt;
+	u_int16_t		 mss;
 
 	switch (af) {
 #ifdef INET
@@ -3231,11 +3244,14 @@ pf_calc_mss(struct pf_addr *addr, sa_family_t af, u_int16_t offer)
 #endif /* INET6 */
 	}
 
+	CURVNET_SET(vnet0);
 	if (rt && rt->rt_ifp) {
 		mss = rt->rt_ifp->if_mtu - hlen - sizeof(struct tcphdr);
 		mss = max(V_tcp_mssdflt, mss);
 		RTFREE(rt);
-	}
+	} else
+		mss = V_tcp_mssdflt;
+	CURVNET_RESTORE();
 	mss = min(mss, offer);
 	mss = max(mss, 64);		/* sanity - at least max opt space */
 	return (mss);
@@ -3289,7 +3305,7 @@ pf_test_tcp(struct pf_rule **rm, struct pf_state **sm, int direction,
 	u_short			 reason;
 	int			 rewrite = 0;
 	int			 tag = -1, rtableid = -1;
-	u_int16_t		 mss = V_tcp_mssdflt;
+	u_int16_t		 mss;
 	int			 asd = 0;
 	int			 match = 0;
 

@@ -141,7 +141,7 @@ __FBSDID("$FreeBSD: src/sys/contrib/pf/net/pf_ioctl.c,v 1.47 2009/08/01 19:26:27
 #ifdef __FreeBSD__
 void			 init_zone_var(void);
 void			 cleanup_pf_zone(void);
-int			 pfattach(void);
+static int		 pfattach(void);
 #else
 void			 pfattach(int);
 void			 pf_thread_create(void *);
@@ -289,7 +289,7 @@ cleanup_pf_zone(void)
 	UMA_DESTROY(pfi_addr_pl);
 }
 
-int
+static int
 pfattach(void)
 {
 	u_int32_t *my_timeout = pf_default_rule.timeout;
@@ -1401,9 +1401,11 @@ pfioctl(dev_t dev, u_long cmd, caddr_t addr, int flags, struct proc *p)
 			error = EEXIST;
 		else {
 #ifdef __FreeBSD__
+			CURVNET_SET(vnet0);
 			PF_UNLOCK();
 			error = hook_pf();
 			PF_LOCK();
+			CURVNET_RESTORE();
 			if (error) {
 				DPFPRINTF(PF_DEBUG_MISC,
 				    ("pf: pfil registeration fail\n"));
@@ -1426,9 +1428,11 @@ pfioctl(dev_t dev, u_long cmd, caddr_t addr, int flags, struct proc *p)
 		else {
 			pf_status.running = 0;
 #ifdef __FreeBSD__
+			CURVNET_SET(vnet0);
 			PF_UNLOCK();
 			error = dehook_pf();
 			PF_LOCK();
+			CURVNET_RESTORE();
 			if (error) {
 				pf_status.running = 1;
 				DPFPRINTF(PF_DEBUG_MISC,
@@ -3713,8 +3717,10 @@ pf_check6_in(void *arg, struct mbuf **m, struct ifnet *ifp, int dir,
 	 * order to support scoped addresses. In order to support stateful
 	 * filtering we have change this to lo0 as it is the case in IPv4.
 	 */
+	CURVNET_SET(vnet0);
 	chk = pf_test6(PF_IN, (*m)->m_flags & M_LOOP ? V_loif : ifp, m,
 	    NULL, inp);
+	CURVNET_RESTORE();
 	if (chk && *m) {
 		m_freem(*m);
 		*m = NULL;
@@ -3836,7 +3842,9 @@ pf_unload(void)
 	PF_LOCK();
 	pf_status.running = 0;
 	PF_UNLOCK();
+	CURVNET_SET(vnet0);
 	error = dehook_pf();
+	CURVNET_RESTORE();
 	if (error) {
 		/*
 		 * Should not happen!

@@ -403,17 +403,25 @@ pflog_modevent(module_t mod, int type, void *data)
 
 	switch (type) {
 	case MOD_LOAD:
+	{
+		CURVNET_SET(vnet0);
 		pflogattach(1);
+		CURVNET_RESTORE();
 		PF_LOCK();
 		pflog_packet_ptr = pflog_packet;
 		PF_UNLOCK();
 		break;
+	}
 	case MOD_UNLOAD:
+	{
 		PF_LOCK();
 		pflog_packet_ptr = NULL;
 		PF_UNLOCK();
+		CURVNET_SET(vnet0);
 		if_clone_detach(&pflog_cloner);
+		CURVNET_RESTORE();
 		break;
+	}
 	default:
 		error = EINVAL;
 		break;

@@ -143,12 +143,14 @@ pfi_initialize(void)
 	struct ifg_group *ifg;
 	struct ifnet *ifp;
 
+	CURVNET_SET(vnet0);
 	IFNET_RLOCK();
 	TAILQ_FOREACH(ifg, &V_ifg_head, ifg_next)
 		pfi_attach_ifgroup(ifg);
 	TAILQ_FOREACH(ifp, &V_ifnet, if_link)
 		pfi_attach_ifnet(ifp);
 	IFNET_RUNLOCK();
+	CURVNET_RESTORE();
 
 	pfi_attach_cookie = EVENTHANDLER_REGISTER(ifnet_arrival_event,
 	    pfi_attach_ifnet_event, NULL, EVENTHANDLER_PRI_ANY);
