@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ofw/openfirm.c,v 1.29 2010/07/08 14:29:23 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ofw/openfirm.c,v 1.30 2010/09/11 18:55:00 marius Exp $");
 
 #include "opt_platform.h"
 
@@ -165,7 +165,7 @@ int
 OF_interpret(const char *cmd, int nreturns, ...)
 {
 	va_list ap;
-	unsigned long slots[16];
+	cell_t slots[16];
 	int i = 0;
 	int status;
 

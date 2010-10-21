@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)shell.h	8.2 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/shell.h,v 1.18 2008/04/27 20:46:45 stefanf Exp $
+ * $FreeBSD: src/bin/sh/shell.h,v 1.21 2010/10/13 22:18:03 obrien Exp $
  */
 
 #ifndef SHELL_H_
@@ -44,7 +44,7 @@
  *	define DEBUG=1 to compile in debugging (set global "debug" to turn on)
  *	define DEBUG=2 to compile in and turn on debugging.
  *
- * When debugging is on, debugging info will be written to $HOME/trace and
+ * When debugging is on, debugging info will be written to ./trace and
  * a quit signal will generate a core dump.
  */
 
@@ -61,7 +61,6 @@ typedef intmax_t arith_t;
 #define	strtoarith_t(nptr, endptr, base)  strtoimax(nptr, endptr, base)
 
 typedef void *pointer;
-#define STATIC  static
 #define MKINIT  /* empty */
 
 #include <sys/cdefs.h>

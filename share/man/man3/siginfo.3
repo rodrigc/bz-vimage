@@ -25,7 +25,7 @@
 .\" OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 .\" EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man3/siginfo.3,v 1.4 2010/08/02 13:11:27 uqs Exp $
+.\" $FreeBSD: src/share/man/man3/siginfo.3,v 1.5 2010/09/11 08:15:18 davidxu Exp $
 .\"
 .Dd December 8, 2005
 .Dt SIGINFO 3
@@ -272,10 +272,6 @@ the ID of the message queue which generated the signal
 Currently, the kernel never generates the
 .Dv SIGPOLL
 signal.
-Also, the
-.Xr kill 2
-system call does not queue signals, so you will not get code
-.Dv SI_USER .
 .Dv SIGCHLD
 signal is queued when a process changed its status or exited.
 .Tn POSIX

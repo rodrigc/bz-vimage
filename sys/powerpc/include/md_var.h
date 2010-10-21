@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/md_var.h,v 1.38 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/md_var.h,v 1.39 2010/09/11 04:45:51 mav Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -46,8 +46,6 @@ extern	int	busdma_swi_pending;
 
 extern	vm_offset_t	kstack0;
 extern	vm_offset_t	kstack0_phys;
-
-extern	u_long	ns_per_tick;
 
 extern	int powerpc_pow_enabled;
 extern	int cacheline_size;

@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/named/Makefile,v 1.46 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/named/Makefile,v 1.47 2010/09/22 18:46:17 dougb Exp $
 
 BIND_DIR=	${.CURDIR}/../../contrib/bind9
 LIB_BIND_REL=	../../lib/bind
@@ -9,7 +9,7 @@ SRCDIR=		${BIND_DIR}/bin/named
 
 PROG=		named
 
-CONFIGARGS='--prefix=/usr' '--infodir=/usr/share/info' '--mandir=/usr/share/man' '--enable-threads' '--disable-ipv6' '--enable-getifaddrs' '--disable-linux-caps' '--with-openssl=/usr' '--with-randomdev=/dev/random'
+CONFIGARGS='--prefix=/usr' '--infodir=/usr/share/info' '--mandir=/usr/share/man' '--enable-threads' '--enable-getifaddrs' '--disable-linux-caps' '--with-openssl=/usr' '--with-randomdev=/dev/random'
 
 # Optional features
 .if ${MK_BIND_LARGE_FILE} == "yes"

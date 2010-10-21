@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_hub.h,v 1.12 2009/11/22 21:16:43 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_hub.h,v 1.13 2010/10/04 23:18:05 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -78,5 +78,6 @@ void	usb_needs_explore_all(void);
 void	usb_bus_power_update(struct usb_bus *bus);
 void	usb_bus_powerd(struct usb_bus *bus);
 void	uhub_root_intr(struct usb_bus *, const uint8_t *, uint8_t);
+usb_error_t uhub_query_info(struct usb_device *, uint8_t *, uint8_t *);
 
 #endif					/* _USB_HUB_H_ */

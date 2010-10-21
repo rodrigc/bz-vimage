@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/mv/mv_sata.c,v 1.7 2010/06/13 13:28:53 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/mv/mv_sata.c,v 1.8 2010/10/18 11:30:13 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -710,7 +710,7 @@ sata_channel_status(device_t dev)
 	if ((icr & SATA_ICR_DEV(ch->unit)) || iecr) {
 		/* Disable EDMA before accessing SATA registers */
 		sata_edma_ctrl(dev, 0);
-		ata_sata_phy_check_events(dev);
+		ata_sata_phy_check_events(dev, -1);
 
 		/* Ack device and error interrupt */
 		SATA_OUTL(sc, SATA_ICR, ~SATA_ICR_DEV(ch->unit));

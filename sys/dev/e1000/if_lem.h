@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.3 2010/08/28 00:34:22 yongari Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.4 2010/09/20 16:04:44 jhb Exp $*/
 
 
 #ifndef _LEM_H_DEFINED_
@@ -407,9 +407,6 @@ struct adapter {
         unsigned long	no_tx_dma_setup;
 	unsigned long	watchdog_events;
 	unsigned long	rx_overruns;
-	unsigned long	rx_irq;
-	unsigned long	tx_irq;
-	unsigned long	link_irq;
 
 	/* 82547 workaround */
 	uint32_t	tx_fifo_size;

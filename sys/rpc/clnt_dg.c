@@ -37,7 +37,7 @@
 static char sccsid[] = "@(#)clnt_dg.c 1.19 89/03/16 Copyr 1988 Sun Micro";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/clnt_dg.c,v 1.9 2010/01/07 21:01:37 mbr Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/clnt_dg.c,v 1.10 2010/10/13 00:57:14 rmacklem Exp $");
 
 /*
  * Implements a connectionless client side RPC.
@@ -193,6 +193,7 @@ clnt_dg_create(
 	struct rpc_msg call_msg;
 	struct __rpc_sockinfo si;
 	XDR xdrs;
+	int error;
 
 	if (svcaddr == NULL) {
 		rpc_createerr.cf_stat = RPC_UNKNOWNADDR;
@@ -264,7 +265,12 @@ clnt_dg_create(
 	 */
 	cu->cu_closeit = FALSE;
 	cu->cu_socket = so;
-	soreserve(so, 256*1024, 256*1024);
+	error = soreserve(so, (u_long)sendsz, (u_long)recvsz);
+	if (error != 0) {
+		rpc_createerr.cf_stat = RPC_FAILED;
+		rpc_createerr.cf_error.re_errno = error;
+		goto err2;
+	}
 
 	sb = &so->so_rcv;
 	SOCKBUF_LOCK(&so->so_rcv);

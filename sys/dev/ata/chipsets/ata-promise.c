@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-promise.c,v 1.20 2010/07/10 15:36:27 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-promise.c,v 1.21 2010/10/18 11:30:13 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -830,6 +830,25 @@ ata_promise_mio_pm_read(device_t dev, int port, int reg, u_int32_t *result)
     struct ata_channel *ch = device_get_softc(dev);
     int timeout = 0;
 
+    if (port < 0) {
+	*result = ATA_IDX_INL(ch, reg);
+	return (0);
+    }
+    if (port < ATA_PM) {
+	switch (reg) {
+	case ATA_SSTATUS:
+	    reg = 0;
+	    break;
+	case ATA_SERROR:
+	    reg = 1;
+	    break;
+	case ATA_SCONTROL:
+	    reg = 2;
+	    break;
+	default:
+	    return (EINVAL);
+	}
+    }
     /* set portmultiplier port */
     ATA_OUTB(ctlr->r_res2, 0x4e8 + (ch->unit << 8), 0x0f);
 
@@ -862,6 +881,25 @@ ata_promise_mio_pm_write(device_t dev, int port, int reg, u_int32_t value)
     struct ata_channel *ch = device_get_softc(dev);
     int timeout = 0;
 
+    if (port < 0) {
+	ATA_IDX_OUTL(ch, reg, value);
+	return (0);
+    }
+    if (port < ATA_PM) {
+	switch (reg) {
+	case ATA_SSTATUS:
+	    reg = 0;
+	    break;
+	case ATA_SERROR:
+	    reg = 1;
+	    break;
+	case ATA_SCONTROL:
+	    reg = 2;
+	    break;
+	default:
+	    return (EINVAL);
+	}
+    }
     /* set portmultiplier port */
     ATA_OUTB(ctlr->r_res2, 0x4e8 + (ch->unit << 8), 0x0f);
 

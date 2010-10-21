@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.230 2010/08/17 16:41:16 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.231 2010/09/12 18:04:47 qingli Exp $");
 
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
@@ -742,6 +742,8 @@ rip_ctlinput(int cmd, struct sockaddr *sa, void *vip)
 		if (err == 0)
 			ia->ia_flags |= IFA_ROUTE;
 		err = ifa_add_loopback_route((struct ifaddr *)ia, sa);
+		if (err == 0)
+			ia->ia_flags |= IFA_RTSELF;
 		ifa_free(&ia->ia_ifa);
 		break;
 	}

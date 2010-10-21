@@ -1,5 +1,5 @@
 This fortune brought to you by:
-$FreeBSD: src/games/fortune/datfiles/fortunes,v 1.290 2010/09/03 03:20:34 jmg Exp $
+$FreeBSD: src/games/fortune/datfiles/fortunes,v 1.291 2010/09/29 23:47:06 cperciva Exp $
 %
 =======================================================================
 ||								     ||
@@ -50601,6 +50601,12 @@ back in '62.  It slipped out of the cables while we were lowering it out
 of its twelfth story apartment, and crushed six innocents in an insane bid
 for freedom.
 		-- Stig's Inferno
+%
+They're basically very smelly houseplants until they get to the crawling
+age.  You're constantly terrified that they're going to randomly die on
+you, but the rules for preventing that outcome are straightforward and
+hard to forget.
+		-- Thomas Ptacek, giving advice to a new father
 %
 They're giving bank robbing a bad name.
 		-- John Dillinger, on Bonnie and Clyde

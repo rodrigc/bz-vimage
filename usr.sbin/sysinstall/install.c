@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.390 2010/08/17 09:39:06 brucec Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/install.c,v 1.391 2010/10/03 17:50:43 nwhitehorn Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -979,7 +979,7 @@ installFixupKernel(dialogMenuItem *self, int dists)
 	 *     already and the /boot/kernel we remove is empty.
 	 */
 	vsystem("rm -rf /boot/kernel");
-		vsystem("mv /boot/GENERIC /boot/kernel");
+		vsystem("mv /boot/" GENERIC_KERNEL_NAME " /boot/kernel");
     }
     return DITEM_SUCCESS | DITEM_RESTORE;
 }

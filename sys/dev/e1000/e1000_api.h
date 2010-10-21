@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.5 2010/06/30 21:05:51 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.6 2010/09/28 00:13:15 jfv Exp $*/
 
 #ifndef _E1000_API_H_
 #define _E1000_API_H_
@@ -97,6 +97,9 @@ void e1000_power_up_phy(struct e1000_hw *hw);
 void e1000_power_down_phy(struct e1000_hw *hw);
 s32  e1000_read_mac_addr(struct e1000_hw *hw);
 s32  e1000_read_pba_num(struct e1000_hw *hw, u32 *part_num);
+s32  e1000_read_pba_string(struct e1000_hw *hw, u8 *pba_num, 
+                           u32 pba_num_size);
+s32  e1000_read_pba_length(struct e1000_hw *hw, u32 *pba_num_size);
 void e1000_reload_nvm(struct e1000_hw *hw);
 s32  e1000_update_nvm_checksum(struct e1000_hw *hw);
 s32  e1000_validate_nvm_checksum(struct e1000_hw *hw);

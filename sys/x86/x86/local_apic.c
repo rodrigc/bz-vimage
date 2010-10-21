@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/local_apic.c,v 1.11 2010/08/30 18:12:21 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/local_apic.c,v 1.12 2010/09/13 07:25:35 mav Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -261,7 +261,7 @@ lapic_init(vm_paddr_t addr)
 		lapic_et.et_quality = 600;
 		if (!arat) {
 			lapic_et.et_flags |= ET_FLAGS_C3STOP;
-			lapic_et.et_quality -= 100;
+			lapic_et.et_quality -= 200;
 		}
 		lapic_et.et_frequency = 0;
 		/* We don't know frequency yet, so trying to guess. */

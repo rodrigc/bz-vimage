@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	8.1 (Berkeley) 5/31/93
-# $FreeBSD: src/bin/Makefile,v 1.29 2009/11/17 22:47:20 jilles Exp $
+# $FreeBSD: src/bin/Makefile,v 1.30 2010/09/13 01:29:51 imp Exp $
 
 .include <bsd.own.mk>
 
@@ -8,7 +8,6 @@ SUBDIR= cat \
 	chio \
 	chmod \
 	cp \
-	${_csh} \
 	date \
 	dd \
 	df \
@@ -29,10 +28,8 @@ SUBDIR= cat \
 	ps \
 	pwait \
 	pwd \
-	${_rcp} \
 	realpath \
 	rm \
-	${_rmail} \
 	rmdir \
 	setfacl \
 	sh \
@@ -43,15 +40,19 @@ SUBDIR= cat \
 	uuidgen
 
 .if ${MK_RCMDS} != "no"
-_rcp=	rcp
+SUBDIR+=	rcp
 .endif
 
 .if ${MK_SENDMAIL} != "no"
-_rmail=	rmail
+SUBDIR+=	rmail
 .endif
 
 .if ${MK_TCSH} != "no"
-_csh=	csh
+SUBDIR+=	csh
 .endif
+
+.include <bsd.arch.inc.mk>
+
+SUBDIR:=	${SUBDIR:O}
 
 .include <bsd.subdir.mk>

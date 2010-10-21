@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.own.mk,v 1.90 2010/08/23 10:04:26 gabor Exp $
+# $FreeBSD: src/share/mk/bsd.own.mk,v 1.91 2010/10/05 21:19:20 gonzo Exp $
 #
 # The include file <bsd.own.mk> set common variables for owner,
 # group, mode, and directories. Defaults are in brackets.
@@ -422,6 +422,7 @@ MK_${var}:=	yes
     BSD_GREP \
     ${_clang_no} \
     FDT \
+    GPIO \
     HESIOD \
     IDEA
 .if defined(WITH_${var}) && defined(WITHOUT_${var})

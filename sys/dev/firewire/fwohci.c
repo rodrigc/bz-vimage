@@ -31,7 +31,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * 
- * $FreeBSD: src/sys/dev/firewire/fwohci.c,v 1.98 2009/02/13 17:44:07 sbruno Exp $
+ * $FreeBSD: src/sys/dev/firewire/fwohci.c,v 1.99 2010/10/18 14:26:29 brucec Exp $
  *
  */
 
@@ -1971,8 +1971,8 @@ fwohci_intr_dma(struct fwohci_softc *sc, uint32_t stat, int count)
 			OWRITE(sc, OHCI_LNKCTLCLR, OHCI_CNTL_CYCTIMER);
 #endif
 			OWRITE(sc, FWOHCI_INTMASKCLR,  OHCI_INT_CYC_LOST);
-			device_printf(fc->dev, "too many cycle lost, "
-			 "no cycle master presents?\n");
+			device_printf(fc->dev, "too many cycles lost, "
+			 "no cycle master present?\n");
 		}
 	}
 	if (stat & OHCI_INT_DMA_ATRQ) {

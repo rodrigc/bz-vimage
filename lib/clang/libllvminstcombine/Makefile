@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvminstcombine/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvminstcombine/Makefile,v 1.3 2010/09/19 10:54:58 dim Exp $
 
 LIB=	llvminstcombine
 
@@ -17,6 +17,6 @@ SRCS=	InstCombineAddSub.cpp \
 	InstCombineVectorOps.cpp \
 	InstructionCombining.cpp
 
-TGHDRS= Intrinsics
+TGHDRS=	Intrinsics
 
 .include "../clang.lib.mk"

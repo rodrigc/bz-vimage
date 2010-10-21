@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/include/apicvar.h,v 1.40 2010/06/20 21:33:29 mav Exp $
+ * $FreeBSD: src/sys/i386/include/apicvar.h,v 1.41 2010/09/13 07:25:35 mav Exp $
  */
 
 #ifndef _MACHINE_APICVAR_H_
@@ -124,8 +124,7 @@
 #define	IPI_AST		0 	/* Generate software trap. */
 #define IPI_PREEMPT     1
 #define IPI_HARDCLOCK   2 
-#define IPI_STATCLOCK   3 
-#define IPI_BITMAP_LAST IPI_STATCLOCK
+#define IPI_BITMAP_LAST IPI_HARDCLOCK
 #define IPI_IS_BITMAPED(x) ((x) <= IPI_BITMAP_LAST)
 
 #define	IPI_STOP	(APIC_IPI_INTS + 7)	/* Stop CPU until restarted. */
@@ -152,8 +151,7 @@
 #define	IPI_AST		0 	/* Generate software trap. */
 #define IPI_PREEMPT     1
 #define IPI_HARDCLOCK   2 
-#define IPI_STATCLOCK   3 
-#define IPI_BITMAP_LAST IPI_STATCLOCK
+#define IPI_BITMAP_LAST IPI_HARDCLOCK
 #define IPI_IS_BITMAPED(x) ((x) <= IPI_BITMAP_LAST)
 
 #define	IPI_STOP	(APIC_IPI_INTS + 7)	/* Stop CPU until restarted. */

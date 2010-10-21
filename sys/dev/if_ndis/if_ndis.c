@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis.c,v 1.175 2010/01/06 13:13:14 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis.c,v 1.177 2010/10/19 19:11:36 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1644,10 +1644,6 @@ ndis_linksts_done(adapter)
 	default:
 		break;
 	}
-
-	/* Notify possible listners of interface change. */
-
-	rt_ifmsg(ifp);
 }
 
 static void
@@ -2115,7 +2111,7 @@ ndis_set_cipher(sc, cipher)
 
 	len = sizeof(arg);
 
-	if (cipher == WPA_CSE_WEP40 || WPA_CSE_WEP104) {
+	if (cipher == WPA_CSE_WEP40 || cipher == WPA_CSE_WEP104) {
 		if (!(ic->ic_cryptocaps & IEEE80211_CRYPTO_WEP))
 			return (ENOTSUP);
 		arg = NDIS_80211_WEPSTAT_ENC1ENABLED;

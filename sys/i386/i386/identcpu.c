@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.210 2010/06/23 10:40:28 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.211 2010/10/05 15:31:56 kib Exp $");
 
 #include "opt_cpu.h"
 
@@ -742,7 +742,7 @@ printcpuinfo(void)
 				"\017xTPR"	/* Send Task Priority Messages*/
 				"\020PDCM"	/* Perf/Debug Capability MSR */
 				"\021<b16>"
-				"\022<b17>"
+				"\022PCID"	/* Process-context Identifiers */
 				"\023DCA"	/* Direct Cache Access */
 				"\024SSE4.1"
 				"\025SSE4.2"

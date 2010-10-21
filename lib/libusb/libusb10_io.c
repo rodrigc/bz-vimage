@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libusb/libusb10_io.c,v 1.7 2010/05/13 00:25:30 thompsa Exp $ */
+/* $FreeBSD: src/lib/libusb/libusb10_io.c,v 1.8 2010/10/14 20:18:39 hselasky Exp $ */
 /*-
  * Copyright (c) 2009 Sylvestre Gallon. All rights reserved.
  *
@@ -141,7 +141,7 @@ libusb10_handle_events_sub(struct libusb_context *ctx, struct timeval *tv)
 		err = LIBUSB_ERROR_IO;
 
 	if (err < 1) {
-		for (i = 0; i != nfds; i++) {
+		for (i = 0; i != (int)nfds; i++) {
 			if (ppdev[i] != NULL) {
 				CTX_UNLOCK(ctx);
 				libusb_unref_device(libusb_get_device(ppdev[i]));
@@ -150,7 +150,7 @@ libusb10_handle_events_sub(struct libusb_context *ctx, struct timeval *tv)
 		}
 		goto do_done;
 	}
-	for (i = 0; i != nfds; i++) {
+	for (i = 0; i != (int)nfds; i++) {
 		if (ppdev[i] != NULL) {
 			dev = libusb_get_device(ppdev[i]);
 

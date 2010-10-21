@@ -1,4 +1,4 @@
-# $FreeBSD: src/tools/regression/bin/sh/errors/assignment-error1.0,v 1.2 2010/05/09 16:04:32 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/errors/assignment-error1.0,v 1.3 2010/10/12 18:20:38 obrien Exp $
 IFS=,
 
 SPECIAL="break,\
@@ -16,15 +16,15 @@ SPECIAL="break,\
 	unset foo"
 
 # If there is no command word, the shell must abort on an assignment error.
-sh -c "readonly a=0; a=2; exit 0" 2>/dev/null && exit 1
+${SH} -c "readonly a=0; a=2; exit 0" 2>/dev/null && exit 1
 
 # Special built-in utilities must abort on an assignment error.
 set -- ${SPECIAL}
 for cmd in "$@"
 do
-	sh -c "readonly a=0; a=2 ${cmd}; exit 0" 2>/dev/null && exit 1
+	${SH} -c "readonly a=0; a=2 ${cmd}; exit 0" 2>/dev/null && exit 1
 done
 
 # Other utilities must not abort; we currently still execute them.
-sh -c 'readonly a=0; a=1 true; exit $a' 2>/dev/null || exit 1
-sh -c 'readonly a=0; a=1 command :; exit $a' 2>/dev/null || exit 1
+${SH} -c 'readonly a=0; a=1 true; exit $a' 2>/dev/null || exit 1
+${SH} -c 'readonly a=0; a=1 command :; exit $a' 2>/dev/null || exit 1

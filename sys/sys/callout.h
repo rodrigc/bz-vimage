@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)callout.h	8.2 (Berkeley) 1/21/94
- * $FreeBSD: src/sys/sys/callout.h,v 1.34 2008/08/02 17:42:38 sam Exp $
+ * $FreeBSD: src/sys/sys/callout.h,v 1.36 2010/09/14 08:48:06 mav Exp $
  */
 
 #ifndef _SYS_CALLOUT_H_
@@ -96,7 +96,8 @@ int	callout_schedule_on(struct callout *, int, int);
 #define	callout_stop(c)		_callout_stop_safe(c, 0)
 int	_callout_stop_safe(struct callout *, int);
 void	callout_tick(void);
-
+int	callout_tickstofirst(int limit);
+extern void (*callout_new_inserted)(int cpu, int ticks);
 
 #endif
 

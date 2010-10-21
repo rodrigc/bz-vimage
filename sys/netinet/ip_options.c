@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_options.c,v 1.23 2010/05/25 20:42:35 qingli Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_options.c,v 1.24 2010/10/14 12:32:49 bz Exp $");
 
 #include "opt_ipstealth.h"
 
@@ -341,7 +341,7 @@ dropit:
 				}
 				(void)memcpy(&ipaddr.sin_addr, sin,
 				    sizeof(struct in_addr));
-				if (ifa_ifwithaddr((SA)&ipaddr) == NULL)
+				if (ifa_ifwithaddr_check((SA)&ipaddr) == 0)
 					continue;
 				cp[IPOPT_OFFSET] += sizeof(struct in_addr);
 				off += sizeof(struct in_addr);

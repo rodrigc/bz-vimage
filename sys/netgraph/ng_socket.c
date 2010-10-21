@@ -37,7 +37,7 @@
  *
  * Author: Julian Elischer <julian@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_socket.c,v 1.90 2010/05/19 15:06:09 attilio Exp $
+ * $FreeBSD: src/sys/netgraph/ng_socket.c,v 1.91 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_socket.c,v 1.28 1999/11/01 09:24:52 julian Exp $
  */
 
@@ -621,7 +621,7 @@ ng_detach_common(struct ngpcb *pcbp, int which)
 			priv->datasock = NULL;
 			break;
 		default:
-			panic(__func__);
+			panic("%s", __func__);
 		}
 		pcbp->sockdata = NULL;
 

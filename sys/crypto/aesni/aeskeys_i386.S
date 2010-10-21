@@ -52,7 +52,7 @@ _key_expansion_256a:
 	pxor	%xmm1,%xmm0
 	movaps	%xmm0,(%edx)
 	addl	$0x10,%edx
-	retq
+	retl
 	.cfi_endproc
 END(_key_expansion_128)
 
@@ -76,7 +76,7 @@ ENTRY(_key_expansion_192a)
 	shufps	$0b01001110,%xmm2,%xmm1
 	movaps	%xmm1,0x10(%edx)
 	addl	$0x20,%edx
-	retq
+	retl
 	.cfi_endproc
 END(_key_expansion_192a)
 
@@ -270,4 +270,4 @@ ENTRY(aesni_set_deckey)
 	.cfi_endproc
 END(aesni_set_deckey)
 
-	.ident	"$FreeBSD: src/sys/crypto/aesni/aeskeys_i386.S,v 1.1 2010/07/23 11:00:46 kib Exp $"
+	.ident	"$FreeBSD: src/sys/crypto/aesni/aeskeys_i386.S,v 1.2 2010/10/13 17:55:53 dim Exp $"

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_syscalls.c,v 1.15 2010/06/28 18:06:46 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_syscalls.c,v 1.16 2010/10/21 08:57:25 delphij Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -184,10 +184,7 @@ syscall_module_handler(struct module *mod, int what, void *arg)
 		return EOPNOTSUPP;
 	}
 
-	if (data->chainevh)
-		return (data->chainevh(mod, what, data->chainarg));
-	else
-		return (0);
+	/* NOTREACHED */
 }
 
 int

@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.20 2010/09/01 17:35:31 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.24 2010/10/20 09:41:36 jchandra Exp $");
 
 #include "opt_ddb.h"
 
@@ -105,7 +105,7 @@ int xlr_hwtid_to_cpuid[MAXCPU];
 static void 
 xlr_setup_mmu_split(void)
 {
-	int mmu_setup;
+	uint64_t mmu_setup;
 	int val = 0;
 
 	if (xlr_threads_per_core == 4 && xlr_shtlb_enabled == 0)
@@ -120,7 +120,7 @@ xlr_setup_mmu_split(void)
 		val = 3; break;
 	}
 	
-	mmu_setup = read_32bit_phnx_ctrl_reg(4, 0);
+	mmu_setup = read_xlr_ctrl_register(4, 0);
 	mmu_setup = mmu_setup & ~0x06;
 	mmu_setup |= (val << 1);
 
@@ -128,7 +128,7 @@ xlr_setup_mmu_split(void)
 	if (xlr_shtlb_enabled)
 		mmu_setup |= 0x01;
 
-	write_32bit_phnx_ctrl_reg(4, 0, mmu_setup);
+	write_xlr_ctrl_register(4, 0, mmu_setup);
 }
 
 static void
@@ -167,6 +167,14 @@ xlr_parse_mmu_options(void)
 	 */
 	xlr_ncores = 1;
 	cpu_map = xlr_boot1_info.cpu_online_map;
+
+#ifndef SMP /* Uniprocessor! */
+	if (cpu_map != 0x1) {
+		printf("WARNING: Starting uniprocessor kernel on cpumask [0x%lx]!\n"
+		   "WARNING: Other CPUs will be unused.\n", (u_long)cpu_map);
+		cpu_map = 0x1;
+	}
+#endif
 	core0_thr_mask = cpu_map & 0xf;
 	switch (core0_thr_mask) {
 	case 1:
@@ -188,9 +196,9 @@ xlr_parse_mmu_options(void)
 			xlr_ncores++;
 		}
 	}
+	xlr_hw_thread_mask = cpu_map;
 
 	/* setup hardware processor id to cpu id mapping */
-	xlr_hw_thread_mask = xlr_boot1_info.cpu_online_map;
 	for (i = 0; i< MAXCPU; i++)
 		xlr_cpuid_to_hwtid[i] = 
 		    xlr_hwtid_to_cpuid [i] = -1;
@@ -297,7 +305,7 @@ xlr_pic_init(void)
 		2000,                   /* quality (adjusted in code) */
 	};
 	xlr_reg_t *mmio = xlr_io_mmio(XLR_IO_PIC_OFFSET);
-	int i, level, irq;
+	int i, irq;
 
 	write_c0_eimr64(0ULL);
 	mtx_init(&xlr_pic_lock, "pic", NULL, MTX_SPIN);
@@ -306,17 +314,14 @@ xlr_pic_init(void)
 	/* Initialize all IRT entries */
 	for (i = 0; i < PIC_NUM_IRTS; i++) {
 		irq = PIC_INTR_TO_IRQ(i);
-		level = PIC_IS_EDGE_TRIGGERED(i);
-
-		/* Bind all PIC irqs to cpu 0 */
-		xlr_write_reg(mmio, PIC_IRT_0(i), 0x01);
 
 		/*
-		 * Use local scheduling and high polarity for all IRTs
-		 * Invalidate all IRTs, by default
+		 * Disable all IRTs. Set defaults (local scheduling, high
+		 * polarity, level * triggered, and CPU irq)
 		 */
-		xlr_write_reg(mmio, PIC_IRT_1(i), (level << 30) | (1 << 6) |
-		    irq);
+		xlr_write_reg(mmio, PIC_IRT_1(i), (1 << 30) | (1 << 6) | irq);
+		/* Bind all PIC irqs to cpu 0 */
+		xlr_write_reg(mmio, PIC_IRT_0(i), 0x01);
 	}
 
 	/* Setup timer 7 of PIC as a timestamp, no interrupts */
@@ -599,7 +604,6 @@ platform_ipi_send(int cpuid)
 {
 
 	pic_send_ipi(xlr_cpuid_to_hwtid[cpuid], platform_ipi_intrnum());
-
 }
 
 void

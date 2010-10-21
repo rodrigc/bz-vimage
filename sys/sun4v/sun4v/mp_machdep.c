@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.15 2010/08/11 23:22:53 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.16 2010/09/13 07:25:35 mav Exp $");
 
 #include "opt_trap_trace.h"
 
@@ -472,15 +472,18 @@ cpu_ipi_preempt(struct trapframe *tf)
 void
 cpu_ipi_hardclock(struct trapframe *tf)
 {
+	struct trapframe *oldframe;
+	struct thread *td;
 
-	hardclockintr(tf);
-}
-
-void
-cpu_ipi_statclock(struct trapframe *tf)
-{
-
-	statclockintr(tf);
+	critical_enter();
+	td = curthread;
+	td->td_intr_nesting_level++;
+	oldframe = td->td_intr_frame;
+	td->td_intr_frame = tf;
+	hardclockintr();
+	td->td_intr_frame = oldframe;
+	td->td_intr_nesting_level--;
+	critical_exit();
 }
 
 void

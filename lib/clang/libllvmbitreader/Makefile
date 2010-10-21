@@ -1,11 +1,10 @@
-# $FreeBSD: src/lib/clang/libllvmbitreader/Makefile,v 1.3 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmbitreader/Makefile,v 1.5 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmbitreader
 
 SRCDIR=	lib/Bitcode/Reader
-SRCS=	BitReader.cpp \
-	BitcodeReader.cpp
+SRCS=	BitcodeReader.cpp
 
-TGHDRS= Intrinsics
+TGHDRS=	Intrinsics
 
 .include "../clang.lib.mk"

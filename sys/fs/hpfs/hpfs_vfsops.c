@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/hpfs/hpfs_vfsops.c,v 1.68 2009/05/11 15:33:26 attilio Exp $
+ * $FreeBSD: src/sys/fs/hpfs/hpfs_vfsops.c,v 1.69 2010/10/10 07:05:47 kib Exp $
  */
 
 
@@ -76,14 +76,16 @@ hpfs_cmount (
 	int flags)
 {
 	struct hpfs_args args;
+	struct export_args exp;
 	int error;
 
 	error = copyin(data, (caddr_t)&args, sizeof (struct hpfs_args));
 	if (error)
 		return (error);
+	vfs_oexport_conv(&args.export, &exp);
 
 	ma = mount_argsu(ma, "from", args.fspec, MAXPATHLEN);
-	ma = mount_arg(ma, "export", &args.export, sizeof args.export);
+	ma = mount_arg(ma, "export", &exp, sizeof(exp));
 	ma = mount_argf(ma, "uid", "%d", args.uid);
 	ma = mount_argf(ma, "gid", "%d", args.gid);
 	ma = mount_argf(ma, "mode", "%d", args.mode);

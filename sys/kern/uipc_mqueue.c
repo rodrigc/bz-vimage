@@ -43,7 +43,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_mqueue.c,v 1.47 2010/06/21 09:55:56 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_mqueue.c,v 1.48 2010/10/09 02:50:23 davidxu Exp $");
 
 #include "opt_compat.h"
 
@@ -1747,15 +1747,23 @@ static void
 mqueue_send_notification(struct mqueue *mq)
 {
 	struct mqueue_notifier *nt;
+	struct thread *td;
 	struct proc *p;
+	int error;
 
 	mtx_assert(&mq->mq_mutex, MA_OWNED);
 	nt = mq->mq_notifier;
 	if (nt->nt_sigev.sigev_notify != SIGEV_NONE) {
 		p = nt->nt_proc;
-		PROC_LOCK(p);
-		if (!KSI_ONQ(&nt->nt_ksi))
-			psignal_event(p, &nt->nt_sigev, &nt->nt_ksi);
+		error = sigev_findtd(p, &nt->nt_sigev, &td);
+		if (error) {
+			mq->mq_notifier = NULL;
+			return;
+		}
+		if (!KSI_ONQ(&nt->nt_ksi)) {
+			ksiginfo_set_sigev(&nt->nt_ksi, &nt->nt_sigev);
+			tdsendsignal(p, td, nt->nt_ksi.ksi_signo, &nt->nt_ksi);
+		}
 		PROC_UNLOCK(p);
 	}
 	mq->mq_notifier = NULL;

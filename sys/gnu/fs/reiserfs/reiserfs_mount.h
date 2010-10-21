@@ -4,7 +4,7 @@
  * 
  * Ported to FreeBSD by Jean-Sébastien Pédron <jspedron@club-internet.fr>
  * 
- * $FreeBSD: src/sys/gnu/fs/reiserfs/reiserfs_mount.h,v 1.2 2005/06/21 10:11:13 dumbbell Exp $
+ * $FreeBSD: src/sys/gnu/fs/reiserfs/reiserfs_mount.h,v 1.3 2010/10/10 07:05:47 kib Exp $
  */
 
 #ifndef _GNU_REISERFS_REISERFS_MOUNT_H
@@ -39,7 +39,7 @@ struct reiserfs_mount {
 /* Arguments to mount ReiserFS filesystems. */
 struct reiserfs_args {
 	char	*fspec;		/* blocks special holding the fs to mount */
-	struct export_args export;	/* network export information */
+	struct oexport_args export;	/* network export information */
 };
 
 #endif /* !defined _GNU_REISERFS_REISERFS_MOUNT_H */

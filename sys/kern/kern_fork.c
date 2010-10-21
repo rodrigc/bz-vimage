@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.311 2010/08/22 11:18:57 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.313 2010/10/09 02:50:23 davidxu Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_ktrace.h"
@@ -456,7 +456,7 @@ again:
 	AUDIT_ARG_PID(p2->p_pid);
 	LIST_INSERT_HEAD(&allproc, p2, p_list);
 	LIST_INSERT_HEAD(PIDHASH(p2->p_pid), p2, p_hash);
-
+	tidhash_add(td2);
 	PROC_LOCK(p2);
 	PROC_LOCK(p1);
 
@@ -671,15 +671,6 @@ again:
 		p2->p_pfsflags = p1->p_pfsflags;
 	}
 
-#ifdef KDTRACE_HOOKS
-	/*
-	 * Tell the DTrace fasttrap provider about the new process
-	 * if it has registered an interest.
-	 */
-	if (dtrace_fasttrap_fork)
-		dtrace_fasttrap_fork(p1, p2);
-#endif
-
 	/*
 	 * This begins the section where we must prevent the parent
 	 * from being swapped.
@@ -744,6 +735,21 @@ again:
 	PROC_SLOCK(p2);
 	p2->p_state = PRS_NORMAL;
 	PROC_SUNLOCK(p2);
+#ifdef KDTRACE_HOOKS
+	/*
+	 * Tell the DTrace fasttrap provider about the new process
+	 * if it has registered an interest. We have to do this only after
+	 * p_state is PRS_NORMAL since the fasttrap module will use pfind()
+	 * later on.
+	 */
+	if (dtrace_fasttrap_fork) {
+		PROC_LOCK(p1);
+		PROC_LOCK(p2);
+		dtrace_fasttrap_fork(p1, p2);
+		PROC_UNLOCK(p2);
+		PROC_UNLOCK(p1);
+	}
+#endif
 
 	/*
 	 * If RFSTOPPED not requested, make child runnable and add to

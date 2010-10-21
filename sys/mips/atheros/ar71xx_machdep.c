@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_machdep.c,v 1.7 2010/08/19 02:15:39 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_machdep.c,v 1.9 2010/09/17 01:13:48 thompsa Exp $");
 
 #include <sys/param.h>
 #include <machine/cpuregs.h>
@@ -145,7 +145,7 @@ platform_start(__register_t a0 __unused, __register_t a1 __unused,
 {
 	uint64_t platform_counter_freq;
 	int argc, i, count = 0;
-	char **argv, **envp;
+	char **argv, **envp, *var;
 	vm_offset_t kernend;
 
 	/* 
@@ -167,19 +167,9 @@ platform_start(__register_t a0 __unused, __register_t a1 __unused,
 	 * Protect ourselves from garbage in registers 
 	 */
 	if (MIPS_IS_VALID_PTR(envp)) {
-		for (i = 0; envp[i]; i += 2)
-		{
+		for (i = 0; envp[i]; i += 2) {
 			if (strcmp(envp[i], "memsize") == 0)
 				realmem = btoc(strtoul(envp[i+1], NULL, 16));
-			else if (strcmp(envp[i], "ethaddr") == 0) {
-				count = sscanf(envp[i+1], "%x.%x.%x.%x.%x.%x", 
-				    &ar711_base_mac[0], &ar711_base_mac[1],
-				    &ar711_base_mac[2], &ar711_base_mac[3],
-				    &ar711_base_mac[4], &ar711_base_mac[5]);
-				if (count < 6)
-					memset(ar711_base_mac, 0,
-					    sizeof(ar711_base_mac));
-			}
 		}
 	}
 
@@ -244,6 +234,22 @@ platform_start(__register_t a0 __unused, __register_t a1 __unused,
 	}
 	else 
 		printf ("envp is invalid\n");
+
+	/*
+	 * "ethaddr" is passed via envp on RedBoot platforms
+	 * "kmac" is passed via argv on RouterBOOT platforms
+	 */
+	if ((var = getenv("ethaddr")) != NULL ||
+	    (var = getenv("kmac")) != NULL) {
+		count = sscanf(var, "%x%*c%x%*c%x%*c%x%*c%x%*c%x",
+		    &ar711_base_mac[0], &ar711_base_mac[1],
+		    &ar711_base_mac[2], &ar711_base_mac[3],
+		    &ar711_base_mac[4], &ar711_base_mac[5]);
+		if (count < 6)
+			memset(ar711_base_mac, 0,
+			    sizeof(ar711_base_mac));
+		freeenv(var);
+	}
 
 	init_param2(physmem);
 	mips_cpu_init();

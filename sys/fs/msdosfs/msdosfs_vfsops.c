@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_vfsops.c,v 1.199 2010/04/02 15:22:23 avg Exp $ */
+/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_vfsops.c,v 1.200 2010/10/10 07:05:47 kib Exp $ */
 /*	$NetBSD: msdosfs_vfsops.c,v 1.51 1997/11/17 15:36:58 ws Exp $	*/
 
 /*-
@@ -200,6 +200,7 @@ static int
 msdosfs_cmount(struct mntarg *ma, void *data, int flags)
 {
 	struct msdosfs_args args;
+	struct export_args exp;
 	int error;
 
 	if (data == NULL)
@@ -207,9 +208,10 @@ msdosfs_cmount(struct mntarg *ma, void *data, int flags)
 	error = copyin(data, &args, sizeof args);
 	if (error)
 		return (error);
+	vfs_oexport_conv(&args.export, &exp);
 
 	ma = mount_argsu(ma, "from", args.fspec, MAXPATHLEN);
-	ma = mount_arg(ma, "export", &args.export, sizeof args.export);
+	ma = mount_arg(ma, "export", &exp, sizeof(exp));
 	ma = mount_argf(ma, "uid", "%d", args.uid);
 	ma = mount_argf(ma, "gid", "%d", args.gid);
 	ma = mount_argf(ma, "mask", "%d", args.mask);

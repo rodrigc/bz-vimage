@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.45 2009/11/28 14:29:32 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.46 2010/09/12 17:04:51 nwhitehorn Exp $
  */
 
 #ifndef RTLD_H /* { */
@@ -261,6 +261,7 @@ extern void *xcalloc(size_t);
 extern void *xmalloc(size_t);
 extern char *xstrdup(const char *);
 extern Elf_Addr _GLOBAL_OFFSET_TABLE_[];
+extern Elf_Sym sym_zero;	/* For resolving undefined weak refs. */
 
 extern void dump_relocations (Obj_Entry *);
 extern void dump_obj_relocations (Obj_Entry *);

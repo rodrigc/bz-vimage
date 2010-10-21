@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvmtransformutils/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmtransformutils/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmtransformutils
 
@@ -24,7 +24,6 @@ SRCS=	AddrModeMatcher.cpp \
 	Mem2Reg.cpp \
 	PromoteMemoryToRegister.cpp \
 	SSAUpdater.cpp \
-	SSI.cpp \
 	SimplifyCFG.cpp \
 	UnifyFunctionExitNodes.cpp \
 	ValueMapper.cpp

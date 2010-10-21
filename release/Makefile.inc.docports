@@ -1,4 +1,4 @@
-# $FreeBSD: src/release/Makefile.inc.docports,v 1.29 2010/04/09 14:27:17 kensmith Exp $
+# $FreeBSD: src/release/Makefile.inc.docports,v 1.30 2010/09/17 07:40:02 jhay Exp $
 #
 # List of (dependent) ports that are minimally required to be
 # checked out from CVS in order to get ${DOCPORTS} built and
@@ -26,9 +26,12 @@ MINIMALDOCPORTS= \
 MINIMALDOCPORTS+= \
 	ports/archivers/unzip \
 	ports/converters/libiconv \
+	ports/devel/autoconf267 \
+	ports/devel/autoconf-wrapper \
 	ports/devel/gettext \
 	ports/devel/gmake \
-	ports/devel/libtool15 \
+	ports/devel/libtool22 \
+	ports/devel/m4 \
 	ports/devel/pkg-config \
 	ports/graphics/gd \
 	ports/graphics/jbigkit \
@@ -37,6 +40,7 @@ MINIMALDOCPORTS+= \
 	ports/graphics/png \
 	ports/graphics/scr2png \
 	ports/graphics/tiff \
+	ports/misc/help2man \
 	ports/print/freetype2 \
 	ports/print/ghostscript8 \
 	ports/print/ghostscript8-nox11 \

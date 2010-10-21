@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/_task.h,v 1.10 2010/07/22 16:41:09 mdf Exp $
+ * $FreeBSD: src/sys/sys/_task.h,v 1.11 2010/10/13 22:59:04 mdf Exp $
  */
 
 #ifndef _SYS__TASK_H_
@@ -44,7 +44,6 @@
 typedef void task_fn_t(void *context, int pending);
 
 struct task {
-	struct task **ta_running;	/* (q) queue's running task pointer */
 	STAILQ_ENTRY(task) ta_link;	/* (q) link for queue */
 	u_short	ta_pending;		/* (q) count times queued */
 	u_short	ta_priority;		/* (c) Priority */

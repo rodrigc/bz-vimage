@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)fs.h	8.13 (Berkeley) 3/21/95
- * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.55 2010/04/24 07:05:35 jeff Exp $
+ * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.56 2010/09/14 18:04:05 mckusick Exp $
  */
 
 #ifndef _UFS_FFS_FS_H_
@@ -661,7 +661,7 @@ lbn_level(ufs_lbn_t lbn)
 
 /*
  * Size of the segment record header.  There is at most one for each disk
- * block n the journal.  The segment header is followed by an array of
+ * block in the journal.  The segment header is followed by an array of
  * records.  fsck depends on the first element in each record being 'op'
  * and the second being 'ino'.  Segments may span multiple disk blocks but
  * the header is present on each.

@@ -27,7 +27,7 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/timeout.9,v 1.35 2010/07/31 10:01:15 joel Exp $
+.\" $FreeBSD: src/share/man/man9/timeout.9,v 1.36 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd August 2, 2008
 .Dt TIMEOUT 9
@@ -50,7 +50,6 @@
 .Sh SYNOPSIS
 .In sys/types.h
 .In sys/systm.h
-.Pp
 .Bd -literal
 typedef void timeout_t (void *);
 .Ed
@@ -58,7 +57,6 @@ typedef void timeout_t (void *);
 .Fn timeout "timeout_t *func" "void *arg" "int ticks"
 .Ft void
 .Fn callout_handle_init "struct callout_handle *handle"
-.Pp
 .Bd -literal
 struct callout_handle handle = CALLOUT_HANDLE_INITIALIZER(&handle)
 .Ed

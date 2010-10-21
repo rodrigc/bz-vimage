@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_thr.c,v 1.84 2010/08/24 07:29:55 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_thr.c,v 1.86 2010/10/20 00:41:38 davidxu Exp $");
 
 #include "opt_compat.h"
 #include "opt_posix.h"
@@ -240,6 +240,9 @@ create_thread(struct thread *td, mcontext_t *ctx,
 	if (P_SHOULDSTOP(p))
 		newtd->td_flags |= TDF_ASTPENDING | TDF_NEEDSUSPCHK;
 	PROC_UNLOCK(p);
+
+	tidhash_add(newtd);
+
 	thread_lock(newtd);
 	if (rtp != NULL) {
 		if (!(td->td_pri_class == PRI_TIMESHARE &&
@@ -281,6 +284,8 @@ thr_exit(struct thread *td, struct thr_exit_args *uap)
 		kern_umtx_wake(td, uap->state, INT_MAX, 0);
 	}
 
+	tidhash_remove(td);
+
 	PROC_LOCK(p);
 	tdsigcleanup(td);
 	PROC_SLOCK(p);
@@ -309,18 +314,17 @@ thr_kill(struct thread *td, struct thr_kill_args *uap)
 	int error;
 
 	p = td->td_proc;
-	error = 0;
 	ksiginfo_init(&ksi);
 	ksi.ksi_signo = uap->sig;
 	ksi.ksi_code = SI_LWP;
 	ksi.ksi_pid = p->p_pid;
 	ksi.ksi_uid = td->td_ucred->cr_ruid;
-	PROC_LOCK(p);
 	if (uap->id == -1) {
 		if (uap->sig != 0 && !_SIG_VALID(uap->sig)) {
 			error = EINVAL;
 		} else {
 			error = ESRCH;
+			PROC_LOCK(p);
 			FOREACH_THREAD_IN_PROC(p, ttd) {
 				if (ttd != td) {
 					error = 0;
@@ -329,22 +333,21 @@ thr_kill(struct thread *td, struct thr_kill_args *uap)
 					tdksignal(ttd, uap->sig, &ksi);
 				}
 			}
+			PROC_UNLOCK(p);
 		}
 	} else {
-		if (uap->id != td->td_tid)
-			ttd = thread_find(p, uap->id);
-		else
-			ttd = td;
+		error = 0;
+		ttd = tdfind((lwpid_t)uap->id, p->p_pid);
 		if (ttd == NULL)
-			error = ESRCH;
-		else if (uap->sig == 0)
+			return (ESRCH);
+		if (uap->sig == 0)
 			;
 		else if (!_SIG_VALID(uap->sig))
 			error = EINVAL;
-		else
+		else 
 			tdksignal(ttd, uap->sig, &ksi);
+		PROC_UNLOCK(ttd->td_proc);
 	}
-	PROC_UNLOCK(p);
 	return (error);
 }
 
@@ -359,51 +362,49 @@ thr_kill2(struct thread *td, struct thr_kill2_args *uap)
 
 	AUDIT_ARG_SIGNUM(uap->sig);
 
-	if (uap->pid == td->td_proc->p_pid) {
-		p = td->td_proc;
-		PROC_LOCK(p);
-	} else if ((p = pfind(uap->pid)) == NULL) {
-		return (ESRCH);
-	}
-	AUDIT_ARG_PROCESS(p);
-
-	error = p_cansignal(td, p, uap->sig);
-	if (error == 0) {
-		ksiginfo_init(&ksi);
-		ksi.ksi_signo = uap->sig;
-		ksi.ksi_code = SI_LWP;
-		ksi.ksi_pid = td->td_proc->p_pid;
-		ksi.ksi_uid = td->td_ucred->cr_ruid;
-		if (uap->id == -1) {
-			if (uap->sig != 0 && !_SIG_VALID(uap->sig)) {
-				error = EINVAL;
-			} else {
-				error = ESRCH;
-				FOREACH_THREAD_IN_PROC(p, ttd) {
-					if (ttd != td) {
-						error = 0;
-						if (uap->sig == 0)
-							break;
-						tdksignal(ttd, uap->sig, &ksi);
-					}
+	ksiginfo_init(&ksi);
+	ksi.ksi_signo = uap->sig;
+	ksi.ksi_code = SI_LWP;
+	ksi.ksi_pid = td->td_proc->p_pid;
+	ksi.ksi_uid = td->td_ucred->cr_ruid;
+	if (uap->id == -1) {
+		if ((p = pfind(uap->pid)) == NULL)
+			return (ESRCH);
+		AUDIT_ARG_PROCESS(p);
+		error = p_cansignal(td, p, uap->sig);
+		if (error) {
+			PROC_UNLOCK(p);
+			return (error);
+		}
+		if (uap->sig != 0 && !_SIG_VALID(uap->sig)) {
+			error = EINVAL;
+		} else {
+			error = ESRCH;
+			FOREACH_THREAD_IN_PROC(p, ttd) {
+				if (ttd != td) {
+					error = 0;
+					if (uap->sig == 0)
+						break;
+					tdksignal(ttd, uap->sig, &ksi);
 				}
 			}
-		} else {
-			if (uap->id != td->td_tid)
-				ttd = thread_find(p, uap->id);
-			else
-				ttd = td;
-			if (ttd == NULL)
-				error = ESRCH;
-			else if (uap->sig == 0)
-				;
-			else if (!_SIG_VALID(uap->sig))
-				error = EINVAL;
-			else
-				tdksignal(ttd, uap->sig, &ksi);
 		}
+		PROC_UNLOCK(p);
+	} else {
+		ttd = tdfind((lwpid_t)uap->id, uap->pid);
+		if (ttd == NULL)
+			return (ESRCH);
+		p = ttd->td_proc;
+		AUDIT_ARG_PROCESS(p);
+		error = p_cansignal(td, p, uap->sig);
+		if (uap->sig == 0)
+			;
+		else if (!_SIG_VALID(uap->sig))
+			error = EINVAL;
+		else
+			tdksignal(ttd, uap->sig, &ksi);
+		PROC_UNLOCK(p);
 	}
-	PROC_UNLOCK(p);
 	return (error);
 }
 
@@ -429,40 +430,40 @@ thr_suspend(struct thread *td, struct thr_suspend_args *uap)
 int
 kern_thr_suspend(struct thread *td, struct timespec *tsp)
 {
+	struct proc *p = td->td_proc;
 	struct timeval tv;
 	int error = 0;
 	int timo = 0;
-
-	if (tsp != NULL) {
-		if (tsp->tv_nsec < 0 || tsp->tv_nsec > 1000000000)
-			return (EINVAL);
-	}
 
 	if (td->td_pflags & TDP_WAKEUP) {
 		td->td_pflags &= ~TDP_WAKEUP;
 		return (0);
 	}
 
-	PROC_LOCK(td->td_proc);
-	if ((td->td_flags & TDF_THRWAKEUP) == 0) {
+	if (tsp != NULL) {
+		if (tsp->tv_nsec < 0 || tsp->tv_nsec > 1000000000)
+			return (EINVAL);
 		if (tsp->tv_sec == 0 && tsp->tv_nsec == 0)
 			error = EWOULDBLOCK;
 		else {
 			TIMESPEC_TO_TIMEVAL(&tv, tsp);
 			timo = tvtohz(&tv);
-			error = msleep((void *)td, &td->td_proc->p_mtx,
-				 PCATCH, "lthr", timo);
 		}
 	}
+
+	PROC_LOCK(p);
+	if (error == 0 && (td->td_flags & TDF_THRWAKEUP) == 0)
+		error = msleep((void *)td, &p->p_mtx,
+			 PCATCH, "lthr", timo);
 
 	if (td->td_flags & TDF_THRWAKEUP) {
 		thread_lock(td);
 		td->td_flags &= ~TDF_THRWAKEUP;
 		thread_unlock(td);
-		PROC_UNLOCK(td->td_proc);
+		PROC_UNLOCK(p);
 		return (0);
 	}
-	PROC_UNLOCK(td->td_proc);
+	PROC_UNLOCK(p);
 	if (error == EWOULDBLOCK)
 		error = ETIMEDOUT;
 	else if (error == ERESTART) {
@@ -485,12 +486,9 @@ thr_wake(struct thread *td, struct thr_wake_args *uap)
 	} 
 
 	p = td->td_proc;
-	PROC_LOCK(p);
-	ttd = thread_find(p, uap->id);
-	if (ttd == NULL) {
-		PROC_UNLOCK(p);
+	ttd = tdfind((lwpid_t)uap->id, p->p_pid);
+	if (ttd == NULL)
 		return (ESRCH);
-	}
 	thread_lock(ttd);
 	ttd->td_flags |= TDF_THRWAKEUP;
 	thread_unlock(ttd);
@@ -502,7 +500,7 @@ thr_wake(struct thread *td, struct thr_wake_args *uap)
 int
 thr_set_name(struct thread *td, struct thr_set_name_args *uap)
 {
-	struct proc *p = td->td_proc;
+	struct proc *p;
 	char name[MAXCOMLEN + 1];
 	struct thread *ttd;
 	int error;
@@ -515,15 +513,11 @@ thr_set_name(struct thread *td, struct thr_set_name_args *uap)
 		if (error)
 			return (error);
 	}
-	PROC_LOCK(p);
-	if (uap->id == td->td_tid)
-		ttd = td;
-	else
-		ttd = thread_find(p, uap->id);
-	if (ttd != NULL)
-		strcpy(ttd->td_name, name);
-	else 
-		error = ESRCH;
+	p = td->td_proc;
+	ttd = tdfind((lwpid_t)uap->id, p->p_pid);
+	if (ttd == NULL)
+		return (ESRCH);
+	strcpy(ttd->td_name, name);
 	PROC_UNLOCK(p);
 	return (error);
 }

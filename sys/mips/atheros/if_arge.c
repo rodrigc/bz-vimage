@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/if_arge.c,v 1.9 2010/08/19 16:29:08 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/if_arge.c,v 1.10 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * AR71XX gigabit ethernet driver
@@ -424,10 +424,11 @@ arge_attach(device_t dev)
 
 	if (phys_total == 1) {
 		/* Do MII setup. */
-		if (mii_phy_probe(dev, &sc->arge_miibus,
-		    arge_ifmedia_upd, arge_ifmedia_sts)) {
-			device_printf(dev, "MII without any phy!\n");
-			error = ENXIO;
+		error = mii_attach(dev, &sc->arge_miibus, ifp,
+		    arge_ifmedia_upd, arge_ifmedia_sts, BMSR_DEFCAPMASK,
+		    MII_PHY_ANY, MII_OFFSET_ANY, 0);
+		if (error != 0) {
+			device_printf(dev, "attaching PHYs failed\n");
 			goto fail;
 		}
 	}

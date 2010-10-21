@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.bin/xz/Makefile,v 1.2 2010/05/10 07:47:31 mm Exp $
+# $FreeBSD: src/usr.bin/xz/Makefile,v 1.3 2010/10/11 21:16:50 mm Exp $
 
 PROG=	xz
 
@@ -32,7 +32,9 @@ SRCS=	args.c \
 SRCS+=	tuklib_open_stdxxx.c \
 	tuklib_progname.c \
 	tuklib_exit.c \
-	tuklib_cpucores.c
+	tuklib_cpucores.c \
+	tuklib_mbstr_width.c \
+	tuklib_mbstr_fw.c
 
 WARNS?=	3
 

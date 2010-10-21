@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-rx.c,v 1.1 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-rx.c,v 1.2 2010/09/25 04:39:12 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -37,6 +37,8 @@ __FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-rx.c,v 1.1 2010/07/20 19:2
 #include <sys/kernel.h>
 #include <sys/mbuf.h>
 #include <sys/socket.h>
+#include <sys/proc.h>
+#include <sys/sched.h>
 #include <sys/smp.h>
 #include <sys/taskqueue.h>
 
@@ -167,13 +169,16 @@ static inline int cvm_oct_check_rcv_error(cvmx_wqe_t *work)
  */
 void cvm_oct_tasklet_rx(void *context, int pending)
 {
-	const int           coreid = cvmx_get_core_num();
+	int                 coreid;
 	uint64_t            old_group_mask;
 	uint64_t            old_scratch;
 	int                 rx_count = 0;
 	int                 number_to_free;
 	int                 num_freed;
 	int                 packet_not_copied;
+
+	sched_pin();
+	coreid = cvmx_get_core_num();
 
 	/* Prefetch cvm_oct_device since we know we need it soon */
 	CVMX_PREFETCH(cvm_oct_device, 0);
@@ -388,6 +393,7 @@ void cvm_oct_tasklet_rx(void *context, int pending)
 			}
 		}
 	}
+	sched_unpin();
 }
 
 

@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/iwi/if_iwivar.h,v 1.21 2009/05/21 15:30:59 sam Exp $	*/
+/*	$FreeBSD: src/sys/dev/iwi/if_iwivar.h,v 1.22 2010/10/12 16:52:13 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2004, 2005
@@ -193,6 +193,7 @@ struct iwi_softc {
 	struct task		sc_restarttask;	/* restart adapter processing */
 	struct task		sc_disassoctask;
 	struct task		sc_wmetask;	/* set wme parameters */
+	struct task		sc_monitortask;
 
 	unsigned int		sc_softled : 1,	/* enable LED gpio status */
 				sc_ledstate: 1,	/* LED on/off state */

@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libclangcodegen/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangcodegen/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangcodegen
 
@@ -38,8 +38,8 @@ SRCS=	BackendUtil.cpp \
 	ModuleBuilder.cpp \
 	TargetInfo.cpp
 
-TGHDRS=	Attrs \
-	AttrList \
+TGHDRS=	AttrList \
+	Attrs \
 	DeclNodes \
 	DiagnosticCommonKinds \
 	DiagnosticFrontendKinds \

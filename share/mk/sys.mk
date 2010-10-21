@@ -1,5 +1,5 @@
 #	from: @(#)sys.mk	8.2 (Berkeley) 3/21/94
-# $FreeBSD: src/share/mk/sys.mk,v 1.110 2010/08/12 20:46:49 will Exp $
+# $FreeBSD: src/share/mk/sys.mk,v 1.111 2010/09/10 16:19:58 rpaulo Exp $
 
 unix		?=	We run FreeBSD, not UNIX.
 .FreeBSD	?=	true
@@ -69,6 +69,7 @@ CTFFLAGS	?=	-L VERSION
 
 CTFCONVERT	?=	ctfconvert
 CTFMERGE	?=	ctfmerge
+DTRACE		?=	dtrace
 .if defined(CFLAGS) && (${CFLAGS:M-g} != "")
 CTFFLAGS	+=	-g
 .else

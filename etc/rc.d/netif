@@ -22,7 +22,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# $FreeBSD: src/etc/rc.d/netif,v 1.36 2010/04/09 01:35:09 dougb Exp $
+# $FreeBSD: src/etc/rc.d/netif,v 1.38 2010/09/13 19:55:40 hrs Exp $
 #
 
 # PROVIDE: netif
@@ -34,7 +34,6 @@
 . /etc/network.subr
 
 name="network"
-start_precmd="network_prestart"
 start_cmd="network_start"
 stop_cmd="network_stop"
 cloneup_cmd="clone_up"
@@ -42,13 +41,8 @@ clonedown_cmd="clone_down"
 extra_commands="cloneup clonedown"
 cmdifn=
 
-network_prestart()
-{
-	if [ -n "$ipv6_enable" ]; then
-		warn 'The ipv6_enable option is deprecated.'
-		warn 'See rc.conf(5) for information on disabling IPv6.'
-	fi
-}
+set_rcvar_obsolete ipv6_enable ipv6_activate_all_interfaces
+set_rcvar_obsolete ipv6_prefer
 
 network_start()
 {

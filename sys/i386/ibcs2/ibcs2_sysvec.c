@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/ibcs2/ibcs2_sysvec.c,v 1.35 2010/05/23 18:32:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/ibcs2/ibcs2_sysvec.c,v 1.36 2010/10/12 09:18:17 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -134,4 +134,4 @@ static moduledata_t ibcs2_mod = {
 	ibcs2_modevent,
 	0
 };
-DECLARE_MODULE(ibcs2, ibcs2_mod, SI_SUB_PSEUDO, SI_ORDER_ANY);
+DECLARE_MODULE_TIED(ibcs2, ibcs2_mod, SI_SUB_PSEUDO, SI_ORDER_ANY);

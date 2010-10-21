@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfs/nfs_lock.c,v 1.15 2010/07/24 22:11:11 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfs/nfs_lock.c,v 1.16 2010/10/19 00:20:00 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -61,6 +61,9 @@ __FBSDID("$FreeBSD: src/sys/nfs/nfs_lock.c,v 1.15 2010/07/24 22:11:11 rmacklem E
 #include <nfsclient/nlminfo.h>
 
 extern void (*nlminfo_release_p)(struct proc *p);
+
+vop_advlock_t	*nfs_advlock_p = nfs_dolock;
+vop_reclaim_t	*nfs_reclaim_p = NULL;
 
 MALLOC_DEFINE(M_NFSLOCK, "nfsclient_lock", "NFS lock request");
 MALLOC_DEFINE(M_NLMINFO, "nfsclient_nlminfo", "NFS lock process structure");
@@ -236,20 +239,19 @@ nfs_dolock(struct vop_advlock_args *ap)
 	int error;
 	struct flock *fl;
 	struct proc *p;
+	struct nfsmount *nmp;
 
 	td = curthread;
 	p = td->td_proc;
 
 	vp = ap->a_vp;
 	fl = ap->a_fl;
+	nmp = VFSTONFS(vp->v_mount);
 
 	ASSERT_VOP_LOCKED(vp, "nfs_dolock");
 
-	bcopy(VFSTONFS(vp->v_mount)->nm_nam, &msg.lm_addr,
-		min(sizeof msg.lm_addr, VFSTONFS(vp->v_mount)->nm_nam->sa_len));
-	msg.lm_fh_len = NFS_ISV3(vp) ? VTONFS(vp)->n_fhsize : NFSX_V2FH;
-	bcopy(VTONFS(vp)->n_fhp, msg.lm_fh, msg.lm_fh_len);
-	msg.lm_nfsv3 = NFS_ISV3(vp);
+	nmp->nm_getinfo(vp, msg.lm_fh, &msg.lm_fh_len, &msg.lm_addr,
+	    &msg.lm_nfsv3, NULL);
 	VOP_UNLOCK(vp, 0);
 
 	/*

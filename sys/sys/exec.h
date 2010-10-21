@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)exec.h	8.3 (Berkeley) 1/21/94
- * $FreeBSD: src/sys/sys/exec.h,v 1.32 2005/03/23 08:27:59 das Exp $
+ * $FreeBSD: src/sys/sys/exec.h,v 1.33 2010/10/12 09:18:17 kib Exp $
  */
 
 #ifndef _SYS_EXEC_H_
@@ -115,7 +115,8 @@ int exec_unregister(const struct execsw *);
 		__CONCAT(name,_modevent), \
 		(void *)& execsw_arg \
 	}; \
-	DECLARE_MODULE(name, __CONCAT(name,_mod), SI_SUB_EXEC, SI_ORDER_ANY)
+	DECLARE_MODULE_TIED(name, __CONCAT(name,_mod), SI_SUB_EXEC, \
+	    SI_ORDER_ANY)
 #endif
 
 #endif

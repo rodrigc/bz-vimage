@@ -16,13 +16,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the NetBSD
- *	Foundation, Inc. and its contributors.
- * 4. Neither the name of The NetBSD Foundation nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
  * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
@@ -48,11 +41,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by Manuel Bouyer.
- * 4. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -67,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/tlphy.c,v 1.24 2008/08/23 15:29:28 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/tlphy.c,v 1.28 2010/10/15 14:52:11 marius Exp $");
 
 /*
  * Driver for Texas Instruments's ThunderLAN PHYs
@@ -156,12 +144,13 @@ tlphy_attach(device_t dev)
 	mii = device_get_softc(sc->sc_mii.mii_dev);
 	LIST_INSERT_HEAD(&mii->mii_phys, &sc->sc_mii, mii_list);
 
+	sc->sc_mii.mii_flags = miibus_get_flags(dev);
 	sc->sc_mii.mii_inst = mii->mii_instance;
 	sc->sc_mii.mii_phy = ma->mii_phyno;
 	sc->sc_mii.mii_service = tlphy_service;
 	sc->sc_mii.mii_pdata = mii;
 
-	capmask = 0xFFFFFFFF;
+	capmask = BMSR_DEFCAPMASK;
 	if (mii->mii_instance &&
 	    device_get_children(sc->sc_mii.mii_dev, &devlist, &devs) == 0) {
 		for (i = 0; i < devs; i++) {
@@ -176,9 +165,7 @@ tlphy_attach(device_t dev)
 
 	mii->mii_instance++;
 
-	sc->sc_mii.mii_flags &= ~MIIF_NOISOLATE;
 	mii_phy_reset(&sc->sc_mii);
-	sc->sc_mii.mii_flags |= MIIF_NOISOLATE;
 
 	/*
 	 * Note that if we're on a device that also supports 100baseTX,
@@ -188,7 +175,7 @@ tlphy_attach(device_t dev)
 	 * the TLPHY_MEDIA_NO_10_T bit.
 	 */
 	sc->sc_mii.mii_capabilities =
-	    PHY_READ(&sc->sc_mii, MII_BMSR) & capmask /*ma->mii_capmask*/;
+	    PHY_READ(&sc->sc_mii, MII_BMSR) & capmask;
 
 #define	ADD(m, c)	ifmedia_add(&mii->mii_media, (m), (c), NULL)
 
@@ -230,24 +217,9 @@ tlphy_service(struct mii_softc *self, struct mii_data *mii, int cmd)
 
 	switch (cmd) {
 	case MII_POLLSTAT:
-		/*
-		 * If we're not polling our PHY instance, just return.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->sc_mii.mii_inst)
-			return (0);
 		break;
 
 	case MII_MEDIACHG:
-		/*
-		 * If the media indicates a different PHY instance,
-		 * isolate ourselves.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->sc_mii.mii_inst) {
-			reg = PHY_READ(&sc->sc_mii, MII_BMCR);
-			PHY_WRITE(&sc->sc_mii, MII_BMCR, reg | BMCR_ISO);
-			return (0);
-		}
-
 		/*
 		 * If the interface is not up, don't do anything.
 		 */
@@ -279,12 +251,6 @@ tlphy_service(struct mii_softc *self, struct mii_data *mii, int cmd)
 		break;
 
 	case MII_TICK:
-		/*
-		 * If we're not currently selected, just return.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->sc_mii.mii_inst)
-			return (0);
-
 		/*
 		 * Is the interface even up?
 		 */
@@ -368,6 +334,8 @@ tlphy_status(struct tlphy_softc *sc)
 	 */
 	if (bmcr & BMCR_FDX)
 		mii->mii_media_active |= IFM_FDX;
+	else
+		mii->mii_media_active |= IFM_HDX;
 	mii->mii_media_active |= IFM_10_T;
 }
 

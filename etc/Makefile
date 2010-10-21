@@ -1,5 +1,5 @@
 #	from: @(#)Makefile	5.11 (Berkeley) 5/21/91
-# $FreeBSD: src/etc/Makefile,v 1.385 2010/06/16 08:20:01 avg Exp $
+# $FreeBSD: src/etc/Makefile,v 1.386 2010/10/04 01:07:04 gordon Exp $
 
 .include <bsd.own.mk>
 
@@ -66,10 +66,6 @@ BIN1+=	hosts.lpd printcap
 
 .if ${MK_MAIL} != "no"
 BIN1+=	${.CURDIR}/../usr.bin/mail/misc/mail.rc
-.endif
-
-.if ${MK_MAN_UTILS} != "no"
-BIN1+=	${.CURDIR}/../gnu/usr.bin/man/manpath/manpath.config
 .endif
 
 .if ${MK_NTP} != "no"

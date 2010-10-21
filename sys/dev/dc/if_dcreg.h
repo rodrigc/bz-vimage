@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/dc/if_dcreg.h,v 1.59 2010/01/03 23:28:32 imp Exp $
+ * $FreeBSD: src/sys/dev/dc/if_dcreg.h,v 1.60 2010/10/14 17:22:38 yongari Exp $
  */
 
 /*
@@ -745,6 +745,7 @@ struct dc_softc {
 	int			dc_if_media;
 	u_int32_t		dc_flags;
 	u_int32_t		dc_txthresh;
+	u_int32_t		dc_eaddr[2];
 	u_int8_t		*dc_srom;
 	struct dc_mediainfo	*dc_mi;
 	struct dc_list_data	*dc_ldata;

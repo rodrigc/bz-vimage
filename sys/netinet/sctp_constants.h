@@ -31,7 +31,7 @@
 /* $KAME: sctp_constants.h,v 1.17 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.53 2010/06/06 20:34:17 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.54 2010/09/17 16:20:29 tuexen Exp $");
 
 #ifndef __sctp_constants_h__
 #define __sctp_constants_h__
@@ -947,6 +947,9 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.53 2010/06/06 20:34:17 
  * Number of seconds of time wait for a vtag.
  */
 #define SCTP_TIME_WAIT 60
+
+#define SCTP_SEND_BUFFER_SPLITTING 0x00000001
+#define SCTP_RECV_BUFFER_SPLITTING 0x00000002
 
 /* The system retains a cache of free chunks such to
  * cut down on calls the memory allocation system. There

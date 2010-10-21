@@ -21,7 +21,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/usbdi.h,v 1.75 2010/09/02 04:05:00 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/usbdi.h,v 1.76 2010/10/04 23:18:05 hselasky Exp $
  */
 #ifndef _USB_USBDI_H_
 #define _USB_USBDI_H_
@@ -135,6 +135,7 @@ struct usb_endpoint {
 	struct usb_xfer_queue endpoint_q;	/* queue of USB transfers */
 
 	struct usb_endpoint_descriptor *edesc;
+	struct usb_endpoint_ss_comp_descriptor *ecomp;
 	struct usb_pipe_methods *methods;	/* set by HC driver */
 
 	uint16_t isoc_next;

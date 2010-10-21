@@ -1,11 +1,9 @@
-# $FreeBSD: src/lib/clang/libclangparse/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangparse/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangparse
 
 SRCDIR=	tools/clang/lib/Parse
-SRCS=	AttributeList.cpp \
-	DeclSpec.cpp \
-	MinimalAction.cpp \
+SRCS=	ParseAST.cpp \
 	ParseCXXInlineMethods.cpp \
 	ParseDecl.cpp \
 	ParseDeclCXX.cpp \
@@ -19,7 +17,12 @@ SRCS=	AttributeList.cpp \
 	ParseTentative.cpp \
 	Parser.cpp
 
-TGHDRS=	DiagnosticCommonKinds \
-	DiagnosticParseKinds
+TGHDRS=	AttrList \
+	Attrs \
+	DeclNodes \
+	DiagnosticCommonKinds \
+	DiagnosticParseKinds \
+	DiagnosticSemaKinds \
+	StmtNodes
 
 .include "../clang.lib.mk"

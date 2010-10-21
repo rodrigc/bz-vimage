@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/mii/Makefile,v 1.36 2009/03/30 16:01:09 imp Exp $
+# $FreeBSD: src/sys/modules/mii/Makefile,v 1.38 2010/10/15 15:46:58 marius Exp $
 
 .PATH: ${.CURDIR}/../../dev/mii
 
@@ -12,8 +12,8 @@ SRCS+=	rgephy.c rlphy.c ruephy.c tdkphy.c tlphy.c truephy.c ukphy.c
 SRCS+=	ukphy_subr.c
 SRCS+=	xmphy.c
 
-EXPORT_SYMS=	mii_mediachg	\
-		mii_phy_probe	\
+EXPORT_SYMS=	mii_attach	\
+		mii_mediachg	\
 		mii_phy_reset	\
 		mii_pollstat	\
 		mii_tick

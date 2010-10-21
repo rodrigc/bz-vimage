@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/storage/umass.c,v 1.37 2010/09/02 04:39:45 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/storage/umass.c,v 1.39 2010/10/16 19:29:37 mav Exp $");
 
 /*-
  * Copyright (c) 1999 MAEKAWA Masahide <bishop@rr.iij4u.or.jp>,
@@ -27,7 +27,7 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/storage/umass.c,v 1.37 2010/09/02 04:39:45 t
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/sys/dev/usb/storage/umass.c,v 1.37 2010/09/02 04:39:45 thompsa Exp $
+ *	$FreeBSD: src/sys/dev/usb/storage/umass.c,v 1.39 2010/10/16 19:29:37 mav Exp $
  *	$NetBSD: umass.c,v 1.28 2000/04/02 23:46:53 augustss Exp $
  */
 
@@ -231,6 +231,7 @@ TUNABLE_INT("hw.usb.umass.debug", &umass_debug);
 /* Approximate maximum transfer speeds (assumes 33% overhead). */
 #define	UMASS_FULL_TRANSFER_SPEED	1000
 #define	UMASS_HIGH_TRANSFER_SPEED	40000
+#define	UMASS_SUPER_TRANSFER_SPEED	400000
 #define	UMASS_FLOPPY_TRANSFER_SPEED	20
 
 #define	UMASS_TIMEOUT			5000	/* ms */
@@ -2412,13 +2413,22 @@ umass_cam_action(struct cam_sim *sim, union ccb *ccb)
 				if (sc->sc_quirks & FLOPPY_SPEED) {
 					cpi->base_transfer_speed =
 					    UMASS_FLOPPY_TRANSFER_SPEED;
-				} else if (usbd_get_speed(sc->sc_udev) ==
-				    USB_SPEED_HIGH) {
-					cpi->base_transfer_speed =
-					    UMASS_HIGH_TRANSFER_SPEED;
 				} else {
-					cpi->base_transfer_speed =
-					    UMASS_FULL_TRANSFER_SPEED;
+					switch (usbd_get_speed(sc->sc_udev)) {
+					case USB_SPEED_SUPER:
+						cpi->base_transfer_speed =
+						    UMASS_SUPER_TRANSFER_SPEED;
+						cpi->maxio = MAXPHYS;
+						break;
+					case USB_SPEED_HIGH:
+						cpi->base_transfer_speed =
+						    UMASS_HIGH_TRANSFER_SPEED;
+						break;
+					default:
+						cpi->base_transfer_speed =
+						    UMASS_FULL_TRANSFER_SPEED;
+						break;
+					}
 				}
 				cpi->max_lun = sc->sc_maxlun;
 			}

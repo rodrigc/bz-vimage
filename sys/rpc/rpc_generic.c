@@ -34,7 +34,7 @@
 
 /* #pragma ident	"@(#)rpc_generic.c	1.17	94/04/24 SMI" */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/rpc_generic.c,v 1.5 2009/08/24 10:09:30 zec Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/rpc_generic.c,v 1.7 2010/10/13 00:57:14 rmacklem Exp $");
 
 /*
  * rpc_generic.c, Miscl routines for RPC.
@@ -62,6 +62,8 @@ __FBSDID("$FreeBSD: src/sys/rpc/rpc_generic.c,v 1.5 2009/08/24 10:09:30 zec Exp 
 #include <rpc/nettype.h>
 
 #include <rpc/rpc_com.h>
+
+extern	u_long sb_max_adj;	/* not defined in socketvar.h */
 
 #if __FreeBSD_version < 700000
 #define strrchr rindex
@@ -113,9 +115,8 @@ u_int
 /*ARGSUSED*/
 __rpc_get_t_size(int af, int proto, int size)
 {
-	int maxsize, defsize;
+	int defsize;
 
-	maxsize = 256 * 1024;	/* XXX */
 	switch (proto) {
 	case IPPROTO_TCP:
 		defsize = 64 * 1024;	/* XXX */
@@ -131,7 +132,7 @@ __rpc_get_t_size(int af, int proto, int size)
 		return defsize;
 
 	/* Check whether the value is within the upper max limit */
-	return (size > maxsize ? (u_int)maxsize : (u_int)size);
+	return (size > sb_max_adj ? (u_int)sb_max_adj : (u_int)size);
 }
 
 /*
@@ -308,7 +309,7 @@ __rpc_taddr2uaddr_af(int af, const struct netbuf *nbuf)
 	switch (af) {
 	case AF_INET:
 		sin = nbuf->buf;
-		if (__rpc_inet_ntop(af, &sin->sin_addr, namebuf, sizeof namebuf)
+		if (inet_ntop(af, &sin->sin_addr, namebuf, sizeof namebuf)
 		    == NULL)
 			return NULL;
 		port = ntohs(sin->sin_port);
@@ -320,7 +321,7 @@ __rpc_taddr2uaddr_af(int af, const struct netbuf *nbuf)
 #ifdef INET6
 	case AF_INET6:
 		sin6 = nbuf->buf;
-		if (__rpc_inet_ntop(af, &sin6->sin6_addr, namebuf6, sizeof namebuf6)
+		if (inet_ntop(af, &sin6->sin6_addr, namebuf6, sizeof namebuf6)
 		    == NULL)
 			return NULL;
 		port = ntohs(sin6->sin6_port);
@@ -398,7 +399,7 @@ __rpc_uaddr2taddr_af(int af, const char *uaddr)
 		memset(sin, 0, sizeof *sin);
 		sin->sin_family = AF_INET;
 		sin->sin_port = htons(port);
-		if (__rpc_inet_pton(AF_INET, addrstr, &sin->sin_addr) <= 0) {
+		if (inet_pton(AF_INET, addrstr, &sin->sin_addr) <= 0) {
 			free(sin, M_RPC);
 			free(ret, M_RPC);
 			ret = NULL;
@@ -416,7 +417,7 @@ __rpc_uaddr2taddr_af(int af, const char *uaddr)
 		memset(sin6, 0, sizeof *sin6);
 		sin6->sin6_family = AF_INET6;
 		sin6->sin6_port = htons(port);
-		if (__rpc_inet_pton(AF_INET6, addrstr, &sin6->sin6_addr) <= 0) {
+		if (inet_pton(AF_INET6, addrstr, &sin6->sin6_addr) <= 0) {
 			free(sin6, M_RPC);
 			free(ret, M_RPC);
 			ret = NULL;

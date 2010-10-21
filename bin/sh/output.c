@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)output.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/output.c,v 1.23 2009/12/24 18:41:14 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/output.c,v 1.25 2010/10/13 22:18:03 obrien Exp $");
 
 /*
  * Shell output routines.  We use our own output routines because:
@@ -165,7 +165,7 @@ outqstr(const char *p, struct output *file)
 		outc('\'', file);
 }
 
-STATIC char out_junk[16];
+static char out_junk[16];
 
 void
 emptyoutbuf(struct output *dest)

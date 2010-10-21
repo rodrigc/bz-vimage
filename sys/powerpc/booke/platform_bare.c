@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/platform_bare.c,v 1.5 2010/08/31 15:27:46 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/platform_bare.c,v 1.6 2010/09/11 04:45:51 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -82,7 +82,7 @@ static platform_method_t bare_methods[] = {
 	PLATFORMMETHOD(platform_smp_get_bsp,	bare_smp_get_bsp),
 	PLATFORMMETHOD(platform_smp_start_cpu,	bare_smp_start_cpu),
 
-	PLATFORMMETHOD(platform_reset,		e500_reset);
+	PLATFORMMETHOD(platform_reset,		e500_reset),
 
 	{ 0, 0 }
 };

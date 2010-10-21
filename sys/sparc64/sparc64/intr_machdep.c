@@ -59,7 +59,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/intr_machdep.c,v 1.40 2010/07/29 12:08:46 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/intr_machdep.c,v 1.41 2010/09/13 07:25:35 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -97,8 +97,7 @@ static const char *const pil_names[] = {
 	"stop",		/* PIL_STOP */
 	"preempt",	/* PIL_PREEMPT */
 	"hardclock",	/* PIL_HARDCLOCK */
-	"statclock",	/* PIL_STATCLOCK */
-	"stray", "stray", "stray",
+	"stray", "stray", "stray", "stray",
 	"filter",	/* PIL_FILTER */
 	"fast",		/* PIL_FAST */
 	"tick",		/* PIL_TICK */

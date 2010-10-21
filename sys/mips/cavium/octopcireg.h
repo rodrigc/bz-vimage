@@ -35,7 +35,7 @@
  * For any questions regarding licensing please contact marketing@caviumnetworks.com
  *
  ***********************license end**************************************/
-/* $FreeBSD: src/sys/mips/cavium/octopcireg.h,v 1.1 2010/07/20 19:25:11 jmallett Exp $ */
+/* $FreeBSD: src/sys/mips/cavium/octopcireg.h,v 1.2 2010/09/24 00:14:24 jmallett Exp $ */
 
 #ifndef	_CAVIUM_OCTOPCIREG_H_
 #define	_CAVIUM_OCTOPCIREG_H_
@@ -96,10 +96,10 @@ typedef union
 #define CVMX_OCT_SUBDID_PCI_MEM3    5
 #define CVMX_OCT_SUBDID_PCI_MEM4    6
 
-#define	CVMX_OCT_PCI_IO_BASE	0x00001000
+#define	CVMX_OCT_PCI_IO_BASE	0x00004000
 #define	CVMX_OCT_PCI_IO_SIZE	0x08000000
 
-#define	CVMX_OCT_PCI_MEM1_BASE	0x80000000
-#define	CVMX_OCT_PCI_MEM1_SIZE	0x40000000
+#define	CVMX_OCT_PCI_MEM1_BASE	0xf0000000
+#define	CVMX_OCT_PCI_MEM1_SIZE	0x0f000000
 
 #endif /* !_CAVIUM_OCTOPCIREG_H_ */

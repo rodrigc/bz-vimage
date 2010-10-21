@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>                  /* RCS ID & Copyright macro defns */
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/interrupt.c,v 1.5 2010/06/18 14:06:27 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/interrupt.c,v 1.6 2010/09/11 04:45:51 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -116,11 +116,15 @@ void
 powerpc_decr_interrupt(struct trapframe *framep)
 {
 	struct thread *td;
+	struct trapframe *oldframe;
 
 	td = PCPU_GET(curthread);
 	critical_enter();
 	atomic_add_int(&td->td_intr_nesting_level, 1);
+	oldframe = td->td_intr_frame;
+	td->td_intr_frame = framep;
 	decr_intr(framep);
+	td->td_intr_frame = oldframe;
 	atomic_subtract_int(&td->td_intr_nesting_level, 1);
 	critical_exit();
 	framep->srr1 &= ~PSL_WE;

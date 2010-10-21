@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  * $Id$
- * $FreeBSD: src/lib/libbluetooth/bluetooth.h,v 1.6 2009/10/26 17:27:30 emax Exp $
+ * $FreeBSD: src/lib/libbluetooth/bluetooth.h,v 1.7 2010/09/22 23:41:02 emax Exp $
  */
 
 #ifndef _BLUETOOTH_H_
@@ -59,6 +59,10 @@ __BEGIN_DECLS
 #define	bacpy(dst, src)	memcpy((dst), (src), sizeof(bdaddr_t))
 #define ba2str(ba, str)	bt_ntoa((ba), (str))
 #define str2ba(str, ba)	(bt_aton((str), (ba)) == 1? 0 : -1)
+#define htobs(d)	htole16(d)
+#define htobl(d)	htole32(d)
+#define btohs(d)	le16toh(d)
+#define btohl(d)	le32toh(d)
 
 /*
  * Interface to the outside world

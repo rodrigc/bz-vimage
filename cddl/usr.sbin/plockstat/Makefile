@@ -1,9 +1,8 @@
-# $FreeBSD: src/cddl/usr.sbin/plockstat/Makefile,v 1.1 2010/08/21 13:54:33 rpaulo Exp $
+# $FreeBSD: src/cddl/usr.sbin/plockstat/Makefile,v 1.2 2010/09/15 10:18:18 rpaulo Exp $
 
 .PATH: ${.CURDIR}/../../../cddl/contrib/opensolaris/cmd/plockstat
 
 PROG=		plockstat
-NO_MAN=
 SRCS=		plockstat.c 
 BINDIR?=	/usr/sbin
 

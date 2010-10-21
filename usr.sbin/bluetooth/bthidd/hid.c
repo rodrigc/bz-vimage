@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  * $Id$
- * $FreeBSD: src/usr.sbin/bluetooth/bthidd/hid.c,v 1.7 2010/05/09 09:20:25 kaiw Exp $
+ * $FreeBSD: src/usr.sbin/bluetooth/bthidd/hid.c,v 1.8 2010/09/08 20:00:27 emax Exp $
  */
 
 #include <sys/consio.h>
@@ -160,7 +160,8 @@ hid_interrupt(bthid_session_p s, uint8_t *data, int32_t len)
 
 	for (d = hid_start_parse(hid_device->desc, 1 << hid_input, -1);
 	     hid_get_item(d, &h) > 0; ) {
-		if ((h.flags & HIO_CONST) || (h.report_ID != report_id))
+		if ((h.flags & HIO_CONST) || (h.report_ID != report_id) ||
+		    (h.kind != hid_input))
 			continue;
 
 		page = HID_PAGE(h.usage);

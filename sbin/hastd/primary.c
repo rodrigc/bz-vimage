@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/primary.c,v 1.28 2010/08/31 06:22:03 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/primary.c,v 1.36 2010/10/08 15:05:39 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -234,21 +234,17 @@ cleanup(struct hast_resource *res)
 	/* Remember errno. */
 	rerrno = errno;
 
-	/*
-	 * Close descriptor to /dev/hast/<name>
-	 * to work-around race in the kernel.
-	 */
-	close(res->hr_localfd);
-
 	/* Destroy ggate provider if we created one. */
 	if (res->hr_ggateunit >= 0) {
 		struct g_gate_ctl_destroy ggiod;
 
+		bzero(&ggiod, sizeof(ggiod));
 		ggiod.gctl_version = G_GATE_VERSION;
 		ggiod.gctl_unit = res->hr_ggateunit;
 		ggiod.gctl_force = 1;
 		if (ioctl(res->hr_ggatefd, G_GATE_CMD_DESTROY, &ggiod) < 0) {
-			pjdlog_warning("Unable to destroy hast/%s device",
+			pjdlog_errno(LOG_WARNING,
+			    "Unable to destroy hast/%s device",
 			    res->hr_provname);
 		}
 		res->hr_ggateunit = -1;
@@ -258,7 +254,7 @@ cleanup(struct hast_resource *res)
 	errno = rerrno;
 }
 
-static void
+static __dead2 void
 primary_exit(int exitcode, const char *fmt, ...)
 {
 	va_list ap;
@@ -271,7 +267,7 @@ primary_exit(int exitcode, const char *fmt, ...)
 	exit(exitcode);
 }
 
-static void
+static __dead2 void
 primary_exitx(int exitcode, const char *fmt, ...)
 {
 	va_list ap;
@@ -313,7 +309,6 @@ init_environment(struct hast_resource *res __unused)
 {
 	struct hio *hio;
 	unsigned int ii, ncomps;
-	sigset_t mask;
 
 	/*
 	 * In the future it might be per-resource value.
@@ -420,15 +415,6 @@ init_environment(struct hast_resource *res __unused)
 		hio->hio_ggio.gctl_error = 0;
 		TAILQ_INSERT_HEAD(&hio_free_list, hio, hio_free_next);
 	}
-
-	/*
-	 * Turn on signals handling.
-	 */
-	PJDLOG_VERIFY(sigemptyset(&mask) == 0);
-	PJDLOG_VERIFY(sigaddset(&mask, SIGHUP) == 0);
-	PJDLOG_VERIFY(sigaddset(&mask, SIGINT) == 0);
-	PJDLOG_VERIFY(sigaddset(&mask, SIGTERM) == 0);
-	PJDLOG_VERIFY(sigprocmask(SIG_SETMASK, &mask, NULL) == 0);
 }
 
 static void
@@ -715,6 +701,7 @@ init_ggate(struct hast_resource *res)
 	 * Create provider before trying to connect, as connection failure
 	 * is not critical, but may take some time.
 	 */
+	bzero(&ggiocreate, sizeof(ggiocreate));
 	ggiocreate.gctl_version = G_GATE_VERSION;
 	ggiocreate.gctl_mediasize = res->hr_datasize;
 	ggiocreate.gctl_sectorsize = res->hr_local_sectorsize;
@@ -724,7 +711,6 @@ init_ggate(struct hast_resource *res)
 	ggiocreate.gctl_unit = G_GATE_NAME_GIVEN;
 	snprintf(ggiocreate.gctl_name, sizeof(ggiocreate.gctl_name), "hast/%s",
 	    res->hr_provname);
-	bzero(ggiocreate.gctl_info, sizeof(ggiocreate.gctl_info));
 	if (ioctl(res->hr_ggatefd, G_GATE_CMD_CREATE, &ggiocreate) == 0) {
 		pjdlog_info("Device hast/%s created.", res->hr_provname);
 		res->hr_ggateunit = ggiocreate.gctl_unit;
@@ -742,6 +728,7 @@ init_ggate(struct hast_resource *res)
 	 * provider died and didn't clean up. In that case we will start from
 	 * where he left of.
 	 */
+	bzero(&ggiocancel, sizeof(ggiocancel));
 	ggiocancel.gctl_version = G_GATE_VERSION;
 	ggiocancel.gctl_unit = G_GATE_NAME_GIVEN;
 	snprintf(ggiocancel.gctl_name, sizeof(ggiocancel.gctl_name), "hast/%s",
@@ -800,17 +787,30 @@ hastd_primary(struct hast_resource *res)
 
 	setproctitle("%s (primary)", res->hr_name);
 
-	signal(SIGHUP, SIG_DFL);
-	signal(SIGCHLD, SIG_DFL);
-
 	/* Declare that we are sender. */
 	proto_send(res->hr_event, NULL, 0);
 
 	init_local(res);
-	if (real_remote(res) && init_remote(res, NULL, NULL))
-		sync_start();
 	init_ggate(res);
 	init_environment(res);
+	/*
+	 * Create the guard thread first, so we can handle signals from the
+	 * very begining.
+	 */
+	error = pthread_create(&td, NULL, guard_thread, res);
+	assert(error == 0);
+	/*
+	 * Create the control thread before sending any event to the parent,
+	 * as we can deadlock when parent sends control request to worker,
+	 * but worker has no control thread started yet, so parent waits.
+	 * In the meantime worker sends an event to the parent, but parent
+	 * is unable to handle the event, because it waits for control
+	 * request response.
+	 */
+	error = pthread_create(&td, NULL, ctrl_thread, res);
+	assert(error == 0);
+	if (real_remote(res) && init_remote(res, NULL, NULL))
+		sync_start();
 	error = pthread_create(&td, NULL, ggate_recv_thread, res);
 	assert(error == 0);
 	error = pthread_create(&td, NULL, local_send_thread, res);
@@ -821,11 +821,7 @@ hastd_primary(struct hast_resource *res)
 	assert(error == 0);
 	error = pthread_create(&td, NULL, ggate_send_thread, res);
 	assert(error == 0);
-	error = pthread_create(&td, NULL, sync_thread, res);
-	assert(error == 0);
-	error = pthread_create(&td, NULL, ctrl_thread, res);
-	assert(error == 0);
-	(void)guard_thread(res);
+	(void)sync_thread(res);
 }
 
 static void

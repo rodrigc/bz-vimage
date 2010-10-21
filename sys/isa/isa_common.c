@@ -58,7 +58,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/isa/isa_common.c,v 1.49 2008/11/18 21:01:54 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/isa/isa_common.c,v 1.50 2010/09/10 11:19:03 avg Exp $");
 
 #include "opt_isa.h"
 
@@ -597,7 +597,7 @@ isa_probe_children(device_t dev)
  * Add a new child with default ivars.
  */
 static device_t
-isa_add_child(device_t dev, int order, const char *name, int unit)
+isa_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct	isa_device *idev;

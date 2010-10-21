@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.105 2010/09/01 03:11:21 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.117 2010/10/20 02:34:02 davidxu Exp $
  */
 
 #ifndef _THR_PRIVATE_H
@@ -69,6 +69,11 @@
 #include "pthread_md.h"
 #include "thr_umtx.h"
 #include "thread_db.h"
+
+#ifdef _PTHREAD_FORCED_UNWIND
+#define _BSD_SOURCE
+#include <unwind.h>
+#endif
 
 typedef TAILQ_HEAD(pthreadlist, pthread) pthreadlist;
 typedef TAILQ_HEAD(atfork_head, pthread_atfork) atfork_head;
@@ -120,6 +125,15 @@ TAILQ_HEAD(mutex_queue, pthread_mutex);
 			(dst)->tv_nsec += 1000000000;		\
 		}						\
 	} while (0)
+
+/* XXX These values should be same as those defined in pthread.h */
+#define	THR_MUTEX_INITIALIZER		((struct pthread_mutex *)NULL)
+#define	THR_ADAPTIVE_MUTEX_INITIALIZER	((struct pthread_mutex *)1)
+#define	THR_MUTEX_DESTROYED		((struct pthread_mutex *)2)
+#define	THR_COND_INITIALIZER		((struct pthread_cond *)NULL)
+#define	THR_COND_DESTROYED		((struct pthread_cond *)1)
+#define	THR_RWLOCK_INITIALIZER		((struct pthread_rwlock *)NULL)
+#define	THR_RWLOCK_DESTROYED		((struct pthread_rwlock *)1)
 
 struct pthread_mutex {
 	/*
@@ -352,9 +366,8 @@ struct pthread {
 	struct pthread_attr	attr;
 
 #define	SHOULD_CANCEL(thr)					\
-	((thr)->cancel_pending &&				\
-	 ((thr)->cancel_point || (thr)->cancel_async) &&	\
-	 (thr)->cancel_enable && (thr)->cancelling == 0)
+	((thr)->cancel_pending && (thr)->cancel_enable &&	\
+	 (thr)->no_cancel == 0)
 
 	/* Cancellation is enabled */
 	int			cancel_enable;
@@ -365,8 +378,8 @@ struct pthread {
 	/* Thread is at cancellation point */
 	int			cancel_point;
 
-	/* Cancellation should be synchoronized */
-	int			cancel_defer;
+	/* Cancellation is temporarily disabled */
+	int			no_cancel;
 
 	/* Asynchronouse cancellation is enabled */
 	int			cancel_async;
@@ -415,13 +428,13 @@ struct pthread {
 #define THR_FLAGS_PRIVATE	0x0001
 #define	THR_FLAGS_NEED_SUSPEND	0x0002	/* thread should be suspended */
 #define	THR_FLAGS_SUSPENDED	0x0004	/* thread is suspended */
+#define	THR_FLAGS_DETACHED	0x0008	/* thread is detached */
 
 	/* Thread list flags; only set with thread list lock held. */
 	int			tlflags;
 #define	TLFLAGS_GC_SAFE		0x0001	/* thread safe for cleaning */
 #define	TLFLAGS_IN_TDLIST	0x0002	/* thread in all thread list */
 #define	TLFLAGS_IN_GCLIST	0x0004	/* thread in gc list */
-#define	TLFLAGS_DETACHED	0x0008	/* thread is detached */
 
 	/* Queue of currently owned NORMAL or PRIO_INHERIT type mutexes. */
 	struct mutex_queue	mutexq;
@@ -446,6 +459,12 @@ struct pthread {
 	/* Cleanup handlers Link List */
 	struct pthread_cleanup	*cleanup;
 
+#ifdef _PTHREAD_FORCED_UNWIND
+	struct _Unwind_Exception	ex;
+	void			*unwind_stackend;
+	int			unwind_disabled;
+#endif
+
 	/*
 	 * Magic value to help recognize a valid thread structure
 	 * from an invalid one:
@@ -462,6 +481,10 @@ struct pthread {
 	/* Event */
 	td_event_msg_t		event_buf;
 };
+
+#define THR_SHOULD_GC(thrd) 						\
+	((thrd)->refcount == 0 && (thrd)->state == PS_DEAD &&		\
+	 ((thrd)->flags & THR_FLAGS_DETACHED) != 0)
 
 #define	THR_IN_CRITICAL(thrd)				\
 	(((thrd)->locklevel > 0) ||			\
@@ -517,14 +540,23 @@ do {							\
 #define	THR_THREAD_LOCK(curthrd, thr)	THR_LOCK_ACQUIRE(curthrd, &(thr)->lock)
 #define	THR_THREAD_UNLOCK(curthrd, thr)	THR_LOCK_RELEASE(curthrd, &(thr)->lock)
 
-#define	THREAD_LIST_LOCK(curthrd)				\
+#define	THREAD_LIST_RDLOCK(curthrd)				\
 do {								\
-	THR_LOCK_ACQUIRE((curthrd), &_thr_list_lock);		\
+	(curthrd)->locklevel++;					\
+	_thr_rwl_rdlock(&_thr_list_lock);			\
+} while (0)
+
+#define	THREAD_LIST_WRLOCK(curthrd)				\
+do {								\
+	(curthrd)->locklevel++;					\
+	_thr_rwl_wrlock(&_thr_list_lock);			\
 } while (0)
 
 #define	THREAD_LIST_UNLOCK(curthrd)				\
 do {								\
-	THR_LOCK_RELEASE((curthrd), &_thr_list_lock);		\
+	_thr_rwl_unlock(&_thr_list_lock);			\
+	(curthrd)->locklevel--;					\
+	_thr_ast(curthrd);					\
 } while (0)
 
 /*
@@ -558,6 +590,16 @@ do {								\
 		(thrd)->tlflags &= ~TLFLAGS_IN_GCLIST;		\
 		_gc_count--;					\
 	}							\
+} while (0)
+
+#define THR_REF_ADD(curthread, pthread) {			\
+	THR_CRITICAL_ENTER(curthread);				\
+	pthread->refcount++;					\
+} while (0)
+
+#define THR_REF_DEL(curthread, pthread) {			\
+	pthread->refcount--;					\
+	THR_CRITICAL_LEAVE(curthread);				\
 } while (0)
 
 #define GC_NEEDED()	(_gc_count >= 5)
@@ -595,6 +637,7 @@ extern struct pthread_attr _pthread_attr_default __hidden;
 
 /* Default mutex attributes: */
 extern struct pthread_mutex_attr _pthread_mutexattr_default __hidden;
+extern struct pthread_mutex_attr _pthread_mutexattr_adaptive_default __hidden;
 
 /* Default condition variable attributes: */
 extern struct pthread_cond_attr _pthread_condattr_default __hidden;
@@ -618,7 +661,7 @@ extern struct umutex	_mutex_static_lock __hidden;
 extern struct umutex	_cond_static_lock __hidden;
 extern struct umutex	_rwlock_static_lock __hidden;
 extern struct umutex	_keytable_lock __hidden;
-extern struct umutex	_thr_list_lock __hidden;
+extern struct urwlock	_thr_list_lock __hidden;
 extern struct umutex	_thr_event_lock __hidden;
 
 /*
@@ -673,6 +716,7 @@ int	_thr_setscheduler(lwpid_t, int, const struct sched_param *) __hidden;
 void	_thr_signal_prefork(void) __hidden;
 void	_thr_signal_postfork(void) __hidden;
 void	_thr_signal_postfork_child(void) __hidden;
+void	_thr_try_gc(struct pthread *, struct pthread *) __hidden;
 int	_rtp_to_schedparam(const struct rtprio *rtp, int *policy,
 		struct sched_param *param) __hidden;
 int	_schedparam_to_rtp(int policy, const struct sched_param *param,
@@ -684,7 +728,8 @@ int	_sched_yield(void);
 void	_pthread_cleanup_push(void (*)(void *), void *);
 void	_pthread_cleanup_pop(int);
 void	_pthread_exit_mask(void *status, sigset_t *mask) __dead2 __hidden;
-
+void	_pthread_cancel_enter(int maycancel);
+void 	_pthread_cancel_leave(int maycancel);
 
 /* #include <fcntl.h> */
 #ifdef  _SYS_FCNTL_H_

@@ -1,20 +1,20 @@
-# $FreeBSD: src/lib/clang/libllvmmc/Makefile,v 1.3 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmmc/Makefile,v 1.4 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmmc
 
 SRCDIR=	lib/MC
-SRCS=	MCAsmInfo.cpp \
+SRCS=	ELFObjectWriter.cpp \
+	MCAsmInfo.cpp \
 	MCAsmInfoCOFF.cpp \
 	MCAsmInfoDarwin.cpp \
 	MCAsmStreamer.cpp \
 	MCAssembler.cpp \
 	MCCodeEmitter.cpp \
 	MCContext.cpp \
-	MCDisassembler.cpp \
+	MCELFStreamer.cpp \
 	MCExpr.cpp \
 	MCInst.cpp \
 	MCInstPrinter.cpp \
-	MCLabel.cpp \
 	MCLoggingStreamer.cpp \
 	MCMachOStreamer.cpp \
 	MCNullStreamer.cpp \
@@ -26,7 +26,6 @@ SRCS=	MCAsmInfo.cpp \
 	MCSectionMachO.cpp \
 	MCStreamer.cpp \
 	MCSymbol.cpp \
-	MCValue.cpp \
 	MachObjectWriter.cpp \
 	TargetAsmBackend.cpp \
 	WinCOFFObjectWriter.cpp \

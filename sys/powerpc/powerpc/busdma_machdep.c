@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/busdma_machdep.c,v 1.30 2010/07/08 15:38:55 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/busdma_machdep.c,v 1.31 2010/09/29 21:53:11 neel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -529,7 +529,7 @@ bus_dmamem_alloc(bus_dma_tag_t dmat, void** vaddr, int flags,
 		CTR4(KTR_BUSDMA, "%s: tag %p tag flags 0x%x error %d",
 		    __func__, dmat, dmat->flags, ENOMEM);
 		return (ENOMEM);
-	} else if ((uintptr_t)*vaddr & (dmat->alignment - 1)) {
+	} else if (vtophys(*vaddr) & (dmat->alignment - 1)) {
 		printf("bus_dmamem_alloc failed to align memory properly.\n");
 	}
 #ifdef NOTYET

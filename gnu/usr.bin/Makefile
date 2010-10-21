@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.105 2010/08/23 10:04:26 gabor Exp $
+# $FreeBSD: src/gnu/usr.bin/Makefile,v 1.106 2010/10/03 22:24:14 gordon Exp $
 
 .include <bsd.own.mk>
 
@@ -13,7 +13,6 @@ SUBDIR= ${_binutils} \
 	${_gperf} \
 	${_grep} \
 	${_groff} \
-	${_man} \
 	patch \
 	${_rcs} \
 	sdiff \
@@ -42,10 +41,6 @@ _dtc=		dtc
 
 .if ${MK_INFO} != "no"
 _texinfo=	texinfo
-.endif
-
-.if ${MK_MAN_UTILS} != "no"
-_man=		man
 .endif
 
 .if ${MK_RCS} != "no"

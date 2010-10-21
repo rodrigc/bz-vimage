@@ -33,7 +33,7 @@
 
 #include <sys/cdefs.h>
 
-__FBSDID("$FreeBSD: src/usr.bin/tr/str.c,v 1.27 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/tr/str.c,v 1.28 2010/09/29 22:24:18 jilles Exp $");
 
 #ifndef lint
 static const char sccsid[] = "@(#)str.c	8.2 (Berkeley) 4/28/95";
@@ -156,7 +156,7 @@ bracket(s)
 		s->str = p + 1;
 		return (1);
 	case '=':				/* "[=equiv=]" */
-		if ((p = strchr(s->str + 2, ']')) == NULL)
+		if (s->str[2] == '\0' || (p = strchr(s->str + 3, ']')) == NULL)
 			return (0);
 		if (*(p - 1) != '=' || p - s->str < 4)
 			goto repeat;

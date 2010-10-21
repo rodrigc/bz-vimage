@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.16 2010/06/18 14:06:27 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.17 2010/09/09 20:26:30 jhb Exp $");
 
 /*
  * Driver for `Schizo' Fireplane/Safari to PCI 2.1 and `Tomatillo' JBus to
@@ -849,7 +849,7 @@ schizo_pci_bus(void *arg)
 		fatal = 1;
 	if ((status & (PCIM_STATUS_PERR | PCIM_STATUS_SERR |
 	    PCIM_STATUS_RMABORT | PCIM_STATUS_RTABORT |
-	    PCIM_STATUS_PERRREPORT)) != 0 ||
+	    PCIM_STATUS_MDPERR)) != 0 ||
 	    (csr & (SCZ_PCI_CTRL_BUS_UNUS | TOM_PCI_CTRL_DTO_ERR |
 	    STX_PCI_CTRL_TTO_ERR | STX_PCI_CTRL_RTRY_ERR |
 	    SCZ_PCI_CTRL_SBH_ERR | STX_PCI_CTRL_SERR)) != 0 ||

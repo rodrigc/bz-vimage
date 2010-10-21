@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_taskq.c,v 1.3 2010/05/16 15:12:34 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_taskq.c,v 1.4 2010/10/13 17:13:43 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -73,7 +73,7 @@ taskq_create(const char *name, int nthreads, pri_t pri, int minalloc __unused,
 	tq = kmem_alloc(sizeof(*tq), KM_SLEEP);
 	tq->tq_queue = taskqueue_create(name, M_WAITOK, taskqueue_thread_enqueue,
 	    &tq->tq_queue);
-	(void) taskqueue_start_threads(&tq->tq_queue, nthreads, pri, name);
+	(void) taskqueue_start_threads(&tq->tq_queue, nthreads, pri, "%s", name);
 
 	return ((taskq_t *)tq);
 }

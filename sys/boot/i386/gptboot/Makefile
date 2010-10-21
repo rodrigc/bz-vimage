@@ -1,6 +1,6 @@
-# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.63 2010/08/23 01:42:09 imp Exp $
+# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.65 2010/10/08 10:27:52 pho Exp $
 
-.PATH:		${.CURDIR}/../boot2
+.PATH:		${.CURDIR}/../boot2 ${.CURDIR}/../common ${.CURDIR}/../../common
 
 FILES=		gptboot
 
@@ -19,20 +19,24 @@ GPTBOOT_UFS?=	UFS1_AND_UFS2
 #GPTBOOT_UFS?=	UFS2_ONLY
 #GPTBOOT_UFS?=	UFS1_ONLY
 
-CFLAGS=	-Os \
+CFLAGS=	-DBOOTPROG=\"gptboot\" \
+	-Os \
 	-fno-guess-branch-probability \
 	-fomit-frame-pointer \
 	-fno-unit-at-a-time \
 	-mno-align-long-strings \
 	-mrtd \
 	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
+	-DGPT \
 	-D${GPTBOOT_UFS} \
 	-DSIOPRT=${BOOT_COMCONSOLE_PORT} \
 	-DSIOFMT=${B2SIOFMT} \
 	-DSIOSPD=${BOOT_COMCONSOLE_SPEED} \
 	-I${.CURDIR}/../../common \
+	-I${.CURDIR}/../common \
 	-I${.CURDIR}/../btx/lib -I. \
 	-I${.CURDIR}/../boot2 \
+	-I${.CURDIR}/../../.. \
 	-Wall -Waggregate-return -Wbad-function-cast -Wcast-align \
 	-Wmissing-declarations -Wmissing-prototypes -Wnested-externs \
 	-Wpointer-arith -Wshadow -Wstrict-prototypes -Wwrite-strings \
@@ -57,13 +61,13 @@ gptldr.bin: gptldr.out
 gptldr.out: gptldr.o
 	${LD} ${LDFLAGS} -e start -Ttext ${ORG1} -o ${.TARGET} gptldr.o
 
-CLEANFILES+=	gptboot.bin gptboot.out gptboot.o sio.o
+CLEANFILES+=	gptboot.bin gptboot.out gptboot.o sio.o ufsread.o
 
 gptboot.bin: gptboot.out
 	objcopy -S -O binary gptboot.out ${.TARGET}
 
-gptboot.out: ${BTXCRT} gptboot.o sio.o
-	${LD} ${LDFLAGS} -Ttext ${ORG2} -o ${.TARGET} ${.ALLSRC}
+gptboot.out: ${BTXCRT} gptboot.o sio.o gpt.o crc32.o drv.o cons.o util.o
+	${LD} ${LDFLAGS} -Ttext ${ORG2} -o ${.TARGET} ${.ALLSRC} ${LIBSTAND}
 
 gptboot.o: ${.CURDIR}/../../common/ufsread.c
 

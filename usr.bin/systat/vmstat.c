@@ -33,7 +33,7 @@
 
 #include <sys/cdefs.h>
 
-__FBSDID("$FreeBSD: src/usr.bin/systat/vmstat.c,v 1.91 2010/07/19 02:26:59 mav Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/systat/vmstat.c,v 1.92 2010/09/08 07:30:46 mav Exp $");
 
 #ifdef lint
 static const char sccsid[] = "@(#)vmstat.c	8.2 (Berkeley) 1/12/94";
@@ -443,6 +443,9 @@ showkre(void)
 	for (i = 0; i < nintr; i++) {
 		if (s.intrcnt[i] == 0)
 			continue;
+		X(intrcnt);
+		l = (int)((float)s.intrcnt[i]/etime + 0.5);
+		inttotal += l;
 		if (intrloc[i] == 0) {
 			if (nextintsrow == LINES)
 				continue;
@@ -450,9 +453,6 @@ showkre(void)
 			mvprintw(intrloc[i], INTSCOL + 6, "%-10.10s",
 				intrname[i]);
 		}
-		X(intrcnt);
-		l = (int)((float)s.intrcnt[i]/etime + 0.5);
-		inttotal += l;
 		putint(l, intrloc[i], INTSCOL, 5);
 	}
 	putint(inttotal, INTSROW + 1, INTSCOL, 5);

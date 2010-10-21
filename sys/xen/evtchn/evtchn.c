@@ -8,7 +8,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/xen/evtchn/evtchn.c,v 1.11 2009/07/21 16:54:11 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/xen/evtchn/evtchn.c,v 1.12 2010/10/19 20:53:30 gibbs Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -492,15 +492,15 @@ bind_listening_port_to_irqhandler(unsigned int remote_domain,
 int 
 bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
     unsigned int remote_port, const char *devname,
-    driver_filter_t filter, driver_intr_t handler,
-    unsigned long irqflags, unsigned int *irqp)
+    driver_intr_t handler, void *arg, unsigned long irqflags,
+    unsigned int *irqp)
 {
 	unsigned int irq;
 	int error;
 
 	irq = bind_interdomain_evtchn_to_irq(remote_domain, remote_port);
 	intr_register_source(&xp->xp_pins[irq].xp_intsrc);
-	error = intr_add_handler(devname, irq, filter, handler, NULL,
+	error = intr_add_handler(devname, irq, NULL, handler, arg,
 	    irqflags, &xp->xp_pins[irq].xp_cookie);
 	if (error) {
 		unbind_from_irq(irq);

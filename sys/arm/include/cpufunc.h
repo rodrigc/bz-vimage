@@ -38,7 +38,7 @@
  *
  * Prototypes for cpu, mmu and tlb related functions.
  *
- * $FreeBSD: src/sys/arm/include/cpufunc.h,v 1.17 2010/05/04 10:14:05 kevlo Exp $
+ * $FreeBSD: src/sys/arm/include/cpufunc.h,v 1.18 2010/09/18 16:57:05 mav Exp $
  */
 
 #ifndef _MACHINE_CPUFUNC_H_
@@ -400,6 +400,7 @@ extern unsigned arm10_dcache_index_max;
 extern unsigned arm10_dcache_index_inc;
 
 u_int	sheeva_control_ext 		(u_int, u_int);
+void	sheeva_cpu_sleep		(int);
 void	sheeva_setttb			(u_int);
 void	sheeva_dcache_wbinv_range	(vm_offset_t, vm_size_t);
 void	sheeva_dcache_inv_range		(vm_offset_t, vm_size_t);

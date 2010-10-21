@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_rename.c,v 1.7 2009/04/18 16:36:27 lulf Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_rename.c,v 1.8 2010/10/01 06:12:13 lulf Exp $");
 
 #include <sys/param.h>
 #include <sys/libkern.h>
@@ -173,7 +173,7 @@ gv_rename_plex(struct gv_softc *sc, struct gv_plex *p, char *newname, int flags)
 	/* Fix up references and potentially rename subdisks. */
 	LIST_FOREACH(s, &p->subdisks, in_plex) {
 		strlcpy(s->plex, p->name, sizeof(s->plex));
-		if (flags && GV_FLAG_R) {
+		if (flags & GV_FLAG_R) {
 			/*
 			 * Look for the two last dots in the string, and assume
 			 * that the old value was ok.
@@ -243,7 +243,7 @@ gv_rename_vol(struct gv_softc *sc, struct gv_volume *v, char *newname,
 	/* Fix up references and potentially rename plexes. */
 	LIST_FOREACH(p, &v->plexes, in_volume) {
 		strlcpy(p->volume, v->name, sizeof(p->volume));
-		if (flags && GV_FLAG_R) {
+		if (flags & GV_FLAG_R) {
 			/*
 			 * Look for the last dot in the string, and assume that
 			 * the old value was ok.

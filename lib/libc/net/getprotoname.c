@@ -31,7 +31,7 @@
 static char sccsid[] = "@(#)getprotoname.c	8.1 (Berkeley) 6/4/93";
 #endif /* LIBC_SCCS and not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/net/getprotoname.c,v 1.8 2010/08/13 06:39:54 ume Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/net/getprotoname.c,v 1.9 2010/10/05 15:40:59 ume Exp $");
 
 #include <errno.h>
 #include <netdb.h>
@@ -131,7 +131,7 @@ getprotobyname_r(const char *name, struct protoent *pptr, char *buffer,
 
 	if (rv != NS_SUCCESS) {
 		errno = ret_errno;
-		return ((ret_errno != 0) ? ret_errno : -1);
+		return (ret_errno);
 	}
 	return (0);
 }

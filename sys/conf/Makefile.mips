@@ -1,5 +1,5 @@
 # Makefile.mips
-# $FreeBSD: src/sys/conf/Makefile.mips,v 1.2 2010/01/10 05:34:46 imp Exp $
+# $FreeBSD: src/sys/conf/Makefile.mips,v 1.3 2010/09/13 16:39:33 imp Exp $
 #
 # Makefile for FreeBSD
 #
@@ -54,20 +54,12 @@ SYSTEM_LD+=-EB
 EXTRA_FLAGS+=-EB 
 TRAMP_LDFLAGS+=-Wl,-EB 
 HACK_EXTRA_FLAGS+=-EB -Wl,-EB
-.if defined(TARGET_64BIT)
-SYSTEM_LD+=-m elf64btsmip_fbsd
-HACK_EXTRA_FLAGS+=-Wl,-m,elf64btsmip_fbsd
-.endif
 .else
 CFLAGS+=-EL
 SYSTEM_LD+=-EL
 EXTRA_FLAGS+=-EL
 TRAMP_LDFLAGS+=-Wl,-EL
 HACK_EXTRA_FLAGS+=-EL -Wl,-EL
-.if defined(TARGET_64BIT)
-SYSTEM_LD+=-m elf64ltsmip_fbsd
-HACK_EXTRA_FLAGS+=-Wl,-m,elf64ltsmip_fbsd
-.endif
 .endif
 
 

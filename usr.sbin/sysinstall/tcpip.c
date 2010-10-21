@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/usr.sbin/sysinstall/tcpip.c,v 1.143 2010/06/11 20:56:40 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/tcpip.c,v 1.144 2010/10/13 09:33:26 brucec Exp $
  *
  * Copyright (c) 1995
  *      Gary J Palmer. All rights reserved.
@@ -72,12 +72,12 @@ static char	ipv6addr[INET6_ADDRSTRLEN];
 static Layout layout[] = {
 #define LAYOUT_HOSTNAME		0
     { 1, 2, 25, HOSTNAME_FIELD_LEN - 1,
-      "Host:", "Your fully-qualified hostname, e.g. foo.bar.com",
+      "Host:", "Your fully-qualified hostname, e.g. foo.example.com",
       hostname, STRINGOBJ, NULL },
 #define LAYOUT_DOMAINNAME	1
     { 1, 35, 20, HOSTNAME_FIELD_LEN - 1,
       "Domain:",
-      "The name of the domain that your machine is in, e.g. bar.com",
+      "The name of the domain that your machine is in, e.g. example.com",
       domainname, STRINGOBJ, NULL },
 #define LAYOUT_GATEWAY		2
     { 5, 2, 18, IPADDR_FIELD_LEN - 1,

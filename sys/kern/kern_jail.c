@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.137 2010/08/08 23:22:55 jamie Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.138 2010/09/10 21:45:42 jamie Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -594,12 +594,15 @@ kern_jail_set(struct thread *td, struct uio *optuio, int flags)
 		gotchildmax = 1;
 
 	error = vfs_copyopt(opts, "enforce_statfs", &enforce, sizeof(enforce));
-	gotenforce = (error == 0);
-	if (gotenforce) {
-		if (enforce < 0 || enforce > 2)
-			return (EINVAL);
-	} else if (error != ENOENT)
+	if (error == ENOENT)
+		gotenforce = 0;
+	else if (error != 0)
 		goto done_free;
+	else if (enforce < 0 || enforce > 2) {
+		error = EINVAL;
+		goto done_free;
+	} else
+		gotenforce = 1;
 
 	pr_flags = ch_flags = 0;
 	for (fi = 0; fi < sizeof(pr_flag_names) / sizeof(pr_flag_names[0]);

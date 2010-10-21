@@ -1,4 +1,4 @@
-$FreeBSD: src/share/examples/etc/README.examples,v 1.17 2006/10/19 05:19:00 imp Exp $
+$FreeBSD: src/share/examples/etc/README.examples,v 1.18 2010/10/09 05:57:23 gordon Exp $
 
 The /usr/share/examples/etc directory contains the original
 distribution versions of the files which are shipped in /etc.  This is
@@ -35,7 +35,6 @@ login.conf	- login class capabilities database (see login.conf(5))
 mac.conf	- TrustedBSD MAC userland policy configuration file
 mail.rc		- systemwide initialization files for mail(1)
 make.conf	- example configuration variables for system builds
-manpath.config	- configuration file for man(1)
 motd		- sample Message of the Day
 netconfig	- network configuration data base
 netstart	- network startup script run from /etc/rc

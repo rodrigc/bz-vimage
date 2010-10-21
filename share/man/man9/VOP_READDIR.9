@@ -26,7 +26,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/VOP_READDIR.9,v 1.16 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/share/man/man9/VOP_READDIR.9,v 1.17 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd July 24, 1996
 .Dt VOP_READDIR 9
@@ -89,7 +89,6 @@ The value of
 the cookie should be the offset within the directory where the on-disc
 version of the appropriate directory entry starts.
 Memory for the cookies should be allocated using:
-.Pp
 .Bd -literal
 	...;
 	*ncookies = number of entries read;

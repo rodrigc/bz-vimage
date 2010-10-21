@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.21 2010/08/14 20:12:10 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.22 2010/10/12 11:05:32 joel Exp $");
 
 /*
  * The Broadcom Wireless LAN controller driver.
@@ -2907,7 +2907,7 @@ bwn_set_channel(struct ieee80211com *ic)
 			bwn_rf_turnon(mac);
 			if (!(mac->mac_flags & BWN_MAC_FLAG_RADIO_ON))
 				device_printf(sc->sc_dev,
-				    "please turns on the RF switch\n");
+				    "please turn on the RF switch\n");
 		} else
 			bwn_rf_turnoff(mac);
 	}

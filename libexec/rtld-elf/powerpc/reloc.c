@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/powerpc/reloc.c,v 1.11 2010/05/18 08:55:23 rdivacky Exp $
+ * $FreeBSD: src/libexec/rtld-elf/powerpc/reloc.c,v 1.12 2010/10/04 16:02:11 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -38,6 +38,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <machine/cpu.h>
+#include <machine/cpufunc.h>
 #include <machine/md_var.h>
 
 #include "debug.h"
@@ -481,6 +482,7 @@ reloc_jmpslot(Elf_Addr *wherep, Elf_Addr target, const Obj_Entry *defobj,
 
 		jmptab = obj->pltgot + JMPTAB_BASE(N);
 		jmptab[reloff] = target;
+		powerpc_mb(); /* Order jmptab update before next changes */
 
 		if (reloff < PLT_EXTENDED_BEGIN) {
 			/* for extended PLT entries, we keep the old code */
@@ -489,7 +491,8 @@ reloc_jmpslot(Elf_Addr *wherep, Elf_Addr target, const Obj_Entry *defobj,
 
 			/* li   r11,reloff */
 			/* b    pltcall  # use indirect pltcall routine */
-			wherep[0] = 0x39600000 | reloff;
+
+			/* first instruction same as before */
 			wherep[1] = 0x48000000 | (distance & 0x03fffffc);
 			__syncicache(wherep, 8);
 		}
@@ -577,7 +580,7 @@ init_pltgot(Obj_Entry *obj)
 	 * Sync the icache for the byte range represented by the
 	 * trampoline routines and call slots.
 	 */
-	__syncicache(pltcall, 72 + N * 8);
+	__syncicache(obj->pltgot, JMPTAB_BASE(N)*4);
 }
 
 void

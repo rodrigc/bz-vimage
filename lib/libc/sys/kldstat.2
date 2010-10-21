@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libc/sys/kldstat.2,v 1.23 2010/08/16 15:18:30 joel Exp $
+.\" $FreeBSD: src/lib/libc/sys/kldstat.2,v 1.24 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd March 3, 1999
 .Dt KLDSTAT 2
@@ -56,7 +56,6 @@ struct kld_file_stat {
 	char        pathname[MAXPATHLEN];
 };
 .Ed
-.Pp
 .Bl -tag -width XXXaddress
 .It version
 This field is set to the size of the structure mentioned above by the code

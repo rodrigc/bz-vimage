@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_pass.c,v 1.55 2010/01/28 08:41:30 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_pass.c,v 1.56 2010/09/20 19:42:14 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -169,7 +169,11 @@ passcleanup(struct cam_periph *periph)
 		xpt_print(periph->path, "removing device entry\n");
 	devstat_remove_entry(softc->device_stats);
 	cam_periph_unlock(periph);
-	destroy_dev(softc->dev);
+	/*
+	 * passcleanup() is indirectly a d_close method via passclose,
+	 * so using destroy_dev(9) directly can result in deadlock.
+	 */
+	destroy_dev_sched(softc->dev);
 	cam_periph_lock(periph);
 	free(softc, M_DEVBUF);
 }

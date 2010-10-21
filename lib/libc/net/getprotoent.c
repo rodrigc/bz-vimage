@@ -31,7 +31,7 @@
 static char sccsid[] = "@(#)getprotoent.c	8.1 (Berkeley) 6/4/93";
 #endif /* LIBC_SCCS and not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/net/getprotoent.c,v 1.10 2010/08/13 06:39:54 ume Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/net/getprotoent.c,v 1.11 2010/10/05 15:40:59 ume Exp $");
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -494,7 +494,7 @@ getprotoent_r(struct protoent *pptr, char *buffer, size_t buflen,
 
 	if (rv != NS_SUCCESS) {
 		errno = ret_errno;
-		return ((ret_errno != 0) ? ret_errno : -1);
+		return (ret_errno);
 	}
 	return (0);
 }

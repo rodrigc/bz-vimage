@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)unistd.h	8.2 (Berkeley) 1/7/94
- * $FreeBSD: src/sys/sys/unistd.h,v 1.51 2009/06/25 12:46:59 trasz Exp $
+ * $FreeBSD: src/sys/sys/unistd.h,v 1.52 2010/09/19 12:01:50 tijl Exp $
  */
 
 #ifndef _SYS_UNISTD_H_
@@ -68,7 +68,7 @@
 #define	_POSIX_PRIORITY_SCHEDULING	200112L
 #define	_POSIX_RAW_SOCKETS		200112L
 #define	_POSIX_REALTIME_SIGNALS		200112L
-#define	_POSIX_SEMAPHORES		-1
+#define	_POSIX_SEMAPHORES		200112L
 #define	_POSIX_SHARED_MEMORY_OBJECTS	200112L
 #define	_POSIX_SPORADIC_SERVER		-1
 #define	_POSIX_SYNCHRONIZED_IO		-1

@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.373 2010/09/01 19:50:03 mlaier Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.378 2010/10/20 06:29:11 avg Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -324,7 +324,7 @@ MAN=	accept_filter.9 \
 	vm_page_lookup.9 \
 	vm_page_protect.9 \
 	vm_page_rename.9 \
-	vm_page_sleep_busy.9 \
+	vm_page_sleep_if_busy.9 \
 	vm_page_wakeup.9 \
 	vm_page_wire.9 \
 	vm_page_zero_fill.9 \
@@ -365,7 +365,6 @@ MAN=	accept_filter.9 \
 	VOP_STRATEGY.9 \
 	VOP_VPTOCNP.9 \
 	VOP_VPTOFH.9 \
-	vput.9 \
 	vref.9 \
 	vrefcnt.9 \
 	vrele.9 \
@@ -1026,12 +1025,13 @@ MLINKS+=sbuf.9 sbuf_bcat.9 \
 	sbuf.9 sbuf_data.9 \
 	sbuf.9 sbuf_delete.9 \
 	sbuf.9 sbuf_done.9 \
+	sbuf.9 sbuf_error.9 \
 	sbuf.9 sbuf_finish.9 \
 	sbuf.9 sbuf_len.9 \
 	sbuf.9 sbuf_new.9 \
-	sbuf.9 sbuf_overflowed.9 \
 	sbuf.9 sbuf_printf.9 \
 	sbuf.9 sbuf_putc.9 \
+	sbuf.9 sbuf_set_drain.9 \
 	sbuf.9 sbuf_setpos.9 \
 	sbuf.9 sbuf_trim.9 \
 	sbuf.9 sbuf_vprintf.9
@@ -1213,11 +1213,17 @@ MLINKS+=sysctl_ctx_init.9 sysctl_ctx_entry_add.9 \
 	sysctl_ctx_init.9 sysctl_ctx_free.9
 MLINKS+=taskqueue.9 TASK_INIT.9 \
 	taskqueue.9 taskqueue_create.9 \
+	taskqueue.9 taskqueue_create_fast.9 \
 	taskqueue.9 TASKQUEUE_DECLARE.9 \
 	taskqueue.9 TASKQUEUE_DEFINE.9 \
+	taskqueue.9 TASKQUEUE_DEFINE_THREAD.9 \
+	taskqueue.9 taskqueue_drain.9 \
 	taskqueue.9 taskqueue_enqueue.9 \
-	taskqueue.9 taskqueue_find.9 \
+	taskqueue.9 taskqueue_enqueue_fast.9 \
+	taskqueue.9 TASKQUEUE_FAST_DEFINE.9 \
+	taskqueue.9 TASKQUEUE_FAST_DEFINE_THREAD.9 \
 	taskqueue.9 taskqueue_free.9 \
+	taskqueue.9 taskqueue_member.9 \
 	taskqueue.9 taskqueue_run.9
 MLINKS+=time.9 boottime.9 \
 	time.9 time_second.9 \
@@ -1366,6 +1372,8 @@ MLINKS+=VOP_RDWR.9 VOP_READ.9 \
 	VOP_RDWR.9 VOP_WRITE.9
 MLINKS+=VOP_REMOVE.9 VOP_RMDIR.9
 MLINKS+=vref.9 VREF.9
+MLINKS+=vrele.9 vput.9 \
+	vrele.9 vunref.9
 MLINKS+=vslock.9 vsunlock.9
 MLINKS+=zero_copy.9 zero_copy_sockets.9
 MLINKS+=zone.9 uma.9 \

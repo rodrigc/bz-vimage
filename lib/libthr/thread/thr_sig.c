@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.35 2010/09/01 13:22:55 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.39 2010/09/21 06:47:04 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -67,7 +67,7 @@ int	_sigtimedwait(const sigset_t *set, siginfo_t *info,
 	const struct timespec * timeout);
 int	__sigwaitinfo(const sigset_t *set, siginfo_t *info);
 int	_sigwaitinfo(const sigset_t *set, siginfo_t *info);
-int	__sigwait(const sigset_t *set, int *sig);
+int	___sigwait(const sigset_t *set, int *sig);
 int	_sigwait(const sigset_t *set, int *sig);
 int	__sigsuspend(const sigset_t *sigmask);
 int	_sigaction(int, const struct sigaction *, struct sigaction *);
@@ -187,7 +187,6 @@ handle_signal(struct sigaction *actp, int sig, siginfo_t *info, ucontext_t *ucp)
 	struct pthread *curthread = _get_curthread();
 	ucontext_t uc2;
 	__siginfohandler_t *sigfunc;
-	int cancel_defer;
 	int cancel_point;
 	int cancel_async;
 	int cancel_enable;
@@ -213,12 +212,10 @@ handle_signal(struct sigaction *actp, int sig, siginfo_t *info, ucontext_t *ucp)
 	 * cancellation is pending, to avoid this problem while thread is in
 	 * deferring mode, cancellation is temporarily disabled.
 	 */
-	cancel_defer = curthread->cancel_defer;
 	cancel_point = curthread->cancel_point;
 	cancel_async = curthread->cancel_async;
 	cancel_enable = curthread->cancel_enable;
 	curthread->cancel_point = 0;
-	curthread->cancel_defer = 0;
 	if (!cancel_async)
 		curthread->cancel_enable = 0;
 
@@ -245,7 +242,6 @@ handle_signal(struct sigaction *actp, int sig, siginfo_t *info, ucontext_t *ucp)
 	err = errno;
 
 	curthread->in_sigsuspend = in_sigsuspend;
-	curthread->cancel_defer = cancel_defer;
 	curthread->cancel_point = cancel_point;
 	curthread->cancel_enable = cancel_enable;
 
@@ -274,46 +270,44 @@ static void
 check_cancel(struct pthread *curthread, ucontext_t *ucp)
 {
 
-	if (__predict_true(!curthread->cancel_pending || !curthread->cancel_enable ||
-	    curthread->cancelling))
+	if (__predict_true(!curthread->cancel_pending ||
+	    !curthread->cancel_enable || curthread->no_cancel))
 		return;
 
-	if (curthread->cancel_async) {
+	/*
+ 	 * Otherwise, we are in defer mode, and we are at
+	 * cancel point, tell kernel to not block the current
+	 * thread on next cancelable system call.
+	 * 
+	 * There are three cases we should call thr_wake() to
+	 * turn on TDP_WAKEUP or send SIGCANCEL in kernel:
+	 * 1) we are going to call a cancelable system call,
+	 *    non-zero cancel_point means we are already in
+	 *    cancelable state, next system call is cancelable.
+	 * 2) because _thr_ast() may be called by
+	 *    THR_CRITICAL_LEAVE() which is used by rtld rwlock
+	 *    and any libthr internal locks, when rtld rwlock
+	 *    is used, it is mostly caused my an unresolved PLT.
+	 *    those routines may clear the TDP_WAKEUP flag by
+	 *    invoking some system calls, in those cases, we
+	 *    also should reenable the flag.
+	 * 3) thread is in sigsuspend(), and the syscall insists
+	 *    on getting a signal before it agrees to return.
+ 	 */
+	if (curthread->cancel_point) {
+		if (curthread->in_sigsuspend && ucp) {
+			SIGADDSET(ucp->uc_sigmask, SIGCANCEL);
+			curthread->unblock_sigcancel = 1;
+			_thr_send_sig(curthread, SIGCANCEL);
+		} else
+			thr_wake(curthread->tid);
+	} else if (curthread->cancel_async) {
 		/*
-	 	 * asynchronous cancellation mode, act upon
+		 * asynchronous cancellation mode, act upon
 		 * immediately.
-	 	 */
+		 */
 		_pthread_exit_mask(PTHREAD_CANCELED,
 		    ucp? &ucp->uc_sigmask : NULL);
-	} else {
-		/*
-	 	 * Otherwise, we are in defer mode, and we are at
-		 * cancel point, tell kernel to not block the current
-		 * thread on next cancelable system call.
-		 * 
-		 * There are three cases we should call thr_wake() to
-		 * turn on TDP_WAKEUP or send SIGCANCEL in kernel:
-		 * 1) we are going to call a cancelable system call,
-		 *    non-zero cancel_point means we are already in
-		 *    cancelable state, next system call is cancelable.
-		 * 2) because _thr_ast() may be called by
-		 *    THR_CRITICAL_LEAVE() which is used by rtld rwlock
-		 *    and any libthr internal locks, when rtld rwlock
-		 *    is used, it is mostly caused my an unresolved PLT.
-		 *    those routines may clear the TDP_WAKEUP flag by
-		 *    invoking some system calls, in those cases, we
-		 *    also should reenable the flag.
-		 * 3) thread is in sigsuspend(), and the syscall insists
-		 *    on getting a signal before it agrees to return.
-	 	 */
-		if (curthread->cancel_point) {
-			if (curthread->in_sigsuspend && ucp) {
-				SIGADDSET(ucp->uc_sigmask, SIGCANCEL);
-				curthread->unblock_sigcancel = 1;
-				_thr_send_sig(curthread, SIGCANCEL);
-			} else
-				thr_wake(curthread->tid);
-		}
 	}
 }
 
@@ -418,6 +412,7 @@ _thr_signal_init(void)
 void
 _thr_sigact_unload(struct dl_phdr_info *phdr_info)
 {
+#if 0
 	struct pthread *curthread = _get_curthread();
 	struct urwlock *rwlp;
 	struct sigaction *actp;
@@ -426,13 +421,13 @@ _thr_sigact_unload(struct dl_phdr_info *phdr_info)
 	int sig;
  
 	_thr_signal_block(curthread);
-	for (sig = 1; sig < _SIG_MAXSIG; sig++) {
-		actp = &_thr_sigact[sig].sigact;
+	for (sig = 1; sig <= _SIG_MAXSIG; sig++) {
+		actp = &_thr_sigact[sig-1].sigact;
 retry:
 		handler = actp->sa_handler;
 		if (handler != SIG_DFL && handler != SIG_IGN &&
 		    __elf_phdr_match_addr(phdr_info, handler)) {
-			rwlp = &_thr_sigact[sig].lock;
+			rwlp = &_thr_sigact[sig-1].lock;
 			_thr_rwl_wrlock(rwlp);
 			if (handler != actp->sa_handler) {
 				_thr_rwl_unlock(rwlp);
@@ -449,6 +444,7 @@ retry:
 		}
 	}
 	_thr_signal_unblock(curthread);
+#endif
 }
 
 void
@@ -632,7 +628,7 @@ __sigsuspend(const sigset_t * set)
 	return (ret);
 }
 
-__weak_reference(__sigwait, sigwait);
+__weak_reference(___sigwait, sigwait);
 __weak_reference(__sigtimedwait, sigtimedwait);
 __weak_reference(__sigwaitinfo, sigwaitinfo);
 
@@ -706,15 +702,17 @@ _sigwait(const sigset_t *set, int *sig)
  *   it is not canceled.
  */ 
 int
-__sigwait(const sigset_t *set, int *sig)
+___sigwait(const sigset_t *set, int *sig)
 {
 	struct pthread	*curthread = _get_curthread();
 	sigset_t newset;
 	int ret;
 
-	_thr_cancel_enter(curthread);
-	ret = __sys_sigwait(thr_remove_thr_signals(set, &newset), sig);
-	_thr_cancel_leave(curthread, (ret != 0));
+	do {
+		_thr_cancel_enter(curthread);
+		ret = __sys_sigwait(thr_remove_thr_signals(set, &newset), sig);
+		_thr_cancel_leave(curthread, (ret != 0));
+	} while (ret == EINTR);
 	return (ret);
 }
 

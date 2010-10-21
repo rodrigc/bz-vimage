@@ -23,7 +23,7 @@
 \ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 \ SUCH DAMAGE.
 \
-\ $FreeBSD: src/sys/boot/forth/beastie.4th,v 1.12 2006/03/31 21:36:17 scottl Exp $
+\ $FreeBSD: src/sys/boot/forth/beastie.4th,v 1.13 2010/09/08 20:10:29 jhb Exp $
 
 marker task-beastie.4th
 
@@ -240,7 +240,10 @@ set-current
 		drop
 		10
 	else
-		0 0 2swap >number drop drop drop
+		2dup s" -1" compare 0= if
+			0 boot
+		then
+		0 s>d 2swap >number 2drop drop
 	then
 	begin
 		dup tkey

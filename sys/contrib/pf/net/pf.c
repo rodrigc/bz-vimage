@@ -41,7 +41,7 @@
 #include "opt_inet6.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/contrib/pf/net/pf.c,v 1.71 2009/12/24 00:43:44 delphij Exp $");
+__FBSDID("$FreeBSD: src/sys/contrib/pf/net/pf.c,v 1.72 2010/09/10 00:00:06 bz Exp $");
 #endif
 
 #ifdef __FreeBSD__
@@ -6391,6 +6391,7 @@ pf_route(struct mbuf **m, struct pf_rule *r, int dir, struct ifnet *oifp,
 	m0->m_pkthdr.csum_flags &= ifp->if_hwassist;
 
 	if (ntohs(ip->ip_len) <= ifp->if_mtu ||
+	    (m0->m_pkthdr.csum_flags & ifp->if_hwassist & CSUM_TSO) != 0 ||
 	    (ifp->if_hwassist & CSUM_FRAGMENT &&
 		((ip->ip_off & htons(IP_DF)) == 0))) {
 		/*
@@ -6465,7 +6466,7 @@ pf_route(struct mbuf **m, struct pf_rule *r, int dir, struct ifnet *oifp,
 	 * Too large for interface; fragment if possible.
 	 * Must be able to put at least 8 bytes per fragment.
 	 */
-	if (ip->ip_off & htons(IP_DF)) {
+	if (ip->ip_off & htons(IP_DF) || (m0->m_pkthdr.csum_flags & CSUM_TSO)) {
 		KMOD_IPSTAT_INC(ips_cantfrag);
 		if (r->rt != PF_DUPTO) {
 #ifdef __FreeBSD__

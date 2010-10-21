@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  * $Id$
- * $FreeBSD: src/sys/dev/kbdmux/kbdmux.c,v 1.23 2009/06/08 20:24:29 ed Exp $
+ * $FreeBSD: src/sys/dev/kbdmux/kbdmux.c,v 1.24 2010/10/13 11:37:12 rpaulo Exp $
  */
 
 #include "opt_compat.h"
@@ -1115,7 +1115,7 @@ kbdmux_ioctl(keyboard_t *kbd, u_long cmd, caddr_t arg)
 
 		/* KDSETLED on all slave keyboards */
 		SLIST_FOREACH(k, &state->ks_kbds, next)
-			kbdd_ioctl(k->kbd, KDSETLED, arg);
+			(void)kbdd_ioctl(k->kbd, KDSETLED, arg);
 
 		KBDMUX_UNLOCK(state);
 		break;
@@ -1146,7 +1146,7 @@ kbdmux_ioctl(keyboard_t *kbd, u_long cmd, caddr_t arg)
 
 		/* KDSKBSTATE on all slave keyboards */
 		SLIST_FOREACH(k, &state->ks_kbds, next)
-			kbdd_ioctl(k->kbd, KDSKBSTATE, arg);
+			(void)kbdd_ioctl(k->kbd, KDSKBSTATE, arg);
 
 		KBDMUX_UNLOCK(state);
 
@@ -1192,7 +1192,7 @@ kbdmux_ioctl(keyboard_t *kbd, u_long cmd, caddr_t arg)
 
 		/* perform command on all slave keyboards */
 		SLIST_FOREACH(k, &state->ks_kbds, next)
-			kbdd_ioctl(k->kbd, cmd, arg);
+			(void)kbdd_ioctl(k->kbd, cmd, arg);
 
 		KBDMUX_UNLOCK(state);
 		break;
@@ -1205,7 +1205,7 @@ kbdmux_ioctl(keyboard_t *kbd, u_long cmd, caddr_t arg)
 
 		/* perform command on all slave keyboards */
 		SLIST_FOREACH(k, &state->ks_kbds, next)
-			kbdd_ioctl(k->kbd, cmd, arg);
+			(void)kbdd_ioctl(k->kbd, cmd, arg);
 
 		KBDMUX_UNLOCK(state);
                 /* FALLTHROUGH */

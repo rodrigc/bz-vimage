@@ -1,4 +1,4 @@
-/* $FreeBSD: src/usr.sbin/pkg_install/create/create.h,v 1.27 2008/05/27 05:10:54 keramida Exp $ */
+/* $FreeBSD: src/usr.sbin/pkg_install/create/create.h,v 1.28 2010/10/12 10:04:44 flz Exp $ */
 
 /*
  * FreeBSD install - a package for the installation and maintainance
@@ -48,7 +48,7 @@ extern int	PlistOnly;
 extern int	Recursive;
 extern int	Regenerate;
 
-enum zipper {NONE, GZIP, BZIP, BZIP2 };
+enum zipper {NONE, GZIP, BZIP, BZIP2, XZ };
 extern enum zipper	Zipper;
 
 void		add_cksum(Package *, PackingList, const char *);

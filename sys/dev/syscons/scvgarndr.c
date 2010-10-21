@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/syscons/scvgarndr.c,v 1.27 2010/07/19 20:31:04 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/syscons/scvgarndr.c,v 1.28 2010/09/17 23:09:31 jkim Exp $");
 
 #include "opt_syscons.h"
 #include "opt_vga.h"
@@ -716,8 +716,7 @@ vga_egadraw(scr_stat *scp, int from, int count, int flip)
 		}
 		++d;
 		if ((i % scp->xsize) == scp->xsize - 1)
-			d += scp->xoff*2 
-				 + (scp->font_size - 1)*line_width;
+			d += scp->font_size * line_width - scp->xsize;
 	}
 	outw(GDCIDX, 0x0000);		/* set/reset */
 	outw(GDCIDX, 0x0001);		/* set/reset enable */
@@ -769,9 +768,8 @@ vga_vgadraw_direct(scr_stat *scp, int from, int count, int flip)
 		d += 8 * pixel_size;
 
 		if ((i % scp->xsize) == scp->xsize - 1)
-			d += scp->xoff * scp->font_size * pixel_size +
-			    scp->font_size * line_width -
-			    scp->xpixel * pixel_size;
+			d += scp->font_size * line_width -
+			    scp->xsize * 8 * pixel_size;
 	}
 }
 
@@ -827,8 +825,7 @@ vga_vgadraw_planar(scr_stat *scp, int from, int count, int flip)
 		}
 		++d;
 		if ((i % scp->xsize) == scp->xsize - 1)
-			d += scp->xoff*2 
-				 + (scp->font_size - 1)*line_width;
+			d += scp->font_size * line_width - scp->xsize;
 	}
 	outw(GDCIDX, 0x0005);		/* read mode 0, write mode 0 */
 	outw(GDCIDX, 0x0000);		/* set/reset */

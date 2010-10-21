@@ -28,9 +28,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/siftr.4,v 1.1 2010/07/03 13:32:39 lstewart Exp $
+.\" $FreeBSD: src/share/man/man4/siftr.4,v 1.2 2010/09/25 09:16:46 lstewart Exp $
 .\"
-.Dd June 23, 2010
+.Dd September 25, 2010
 .Dt SIFTR 4
 .Os
 .Sh NAME
@@ -198,7 +198,7 @@ The data is CSV formatted.
 .Bd -literal -offset indent
 o,0xbec491a5,1238556193.463551,172.16.7.28,22,172.16.2.5,55931, \\
 1073725440,172312,6144,66560,66608,8,1,4,1448,936,1,996,255, \\
-33304,208,66608,0,208
+33304,208,66608,0,208,0
 .Ed
 .Pp
 Field descriptions are as follows:
@@ -327,6 +327,10 @@ The current number of bytes in the socket receive buffer.
 .It Va 25
 The current number of unacknowledged bytes in-flight.
 Bytes acknowledged via SACK are not excluded from this count.
+.El
+.Bl -tag -offset indent
+.It Va 26
+The current number of segments in the reassembly queue.
 .El
 .Pp
 The third type of log message is written to the file when the module is disabled

@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvmipo/Makefile,v 1.3 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmipo/Makefile,v 1.4 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmipo
 
@@ -12,7 +12,6 @@ SRCS=	ArgumentPromotion.cpp \
 	GlobalDCE.cpp \
 	GlobalOpt.cpp \
 	IPConstantPropagation.cpp \
-	IPO.cpp \
 	InlineAlways.cpp \
 	InlineSimple.cpp \
 	Inliner.cpp \
@@ -20,6 +19,7 @@ SRCS=	ArgumentPromotion.cpp \
 	LoopExtractor.cpp \
 	LowerSetJmp.cpp \
 	MergeFunctions.cpp \
+	PartialInlining.cpp \
 	PartialSpecialization.cpp \
 	PruneEH.cpp \
 	StripDeadPrototypes.cpp \

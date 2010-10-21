@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/idt/obio.c,v 1.4 2010/01/10 19:39:08 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/idt/obio.c,v 1.5 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -57,7 +57,7 @@ __FBSDID("$FreeBSD: src/sys/mips/idt/obio.c,v 1.4 2010/01/10 19:39:08 imp Exp $"
 
 static int	obio_activate_resource(device_t, device_t, int, int,
 		    struct resource *);
-static device_t	obio_add_child(device_t, int, const char *, int);
+static device_t	obio_add_child(device_t, u_int, const char *, int);
 static struct resource *
 		obio_alloc_resource(device_t, device_t, int, int *, u_long,
 		    u_long, u_long, u_int);
@@ -422,7 +422,7 @@ obio_hinted_child(device_t bus, const char *dname, int dunit)
 }
 
 static device_t
-obio_add_child(device_t bus, int order, const char *name, int unit)
+obio_add_child(device_t bus, u_int order, const char *name, int unit)
 {
 	device_t		child;
 	struct obio_ivar	*ivar;

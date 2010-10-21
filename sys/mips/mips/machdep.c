@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/machdep.c,v 1.33 2010/08/13 12:56:00 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/machdep.c,v 1.35 2010/09/17 02:20:12 neel Exp $");
 
 #include "opt_cputype.h"
 #include "opt_ddb.h"
@@ -356,7 +356,7 @@ mips_vector_init(void)
 	 * Mask all interrupts. Each interrupt will be enabled
 	 * when handler is installed for it
 	 */
-	set_intr_mask(MIPS_SR_INT_MASK);
+	set_intr_mask(0);
 
 	/* Clear BEV in SR so we start handling our own exceptions */
 	mips_wr_status(mips_rd_status() & ~MIPS_SR_BEV);
@@ -497,7 +497,7 @@ cpu_idle_wakeup(int cpu)
 }
 
 int
-is_physical_memory(vm_offset_t addr)
+is_cacheable_mem(vm_offset_t addr)
 {
 	int i;
 

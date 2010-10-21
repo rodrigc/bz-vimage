@@ -23,11 +23,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/tools/tools/netrate/juggle/juggle.c,v 1.3 2010/02/12 16:33:03 ru Exp $
+ * $FreeBSD: src/tools/tools/netrate/juggle/juggle.c,v 1.4 2010/10/08 14:31:49 pluknet Exp $
  */
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stdint.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
 #include <sys/wait.h>
@@ -497,7 +498,7 @@ main(int argc, char *argv[])
 	int fd1, fd2, i, j, p;
 	struct utsname uts;
 
-	printf("version, juggle.c %s\n", "$FreeBSD: src/tools/tools/netrate/juggle/juggle.c,v 1.3 2010/02/12 16:33:03 ru Exp $");
+	printf("version, juggle.c %s\n", "$FreeBSD: src/tools/tools/netrate/juggle/juggle.c,v 1.4 2010/10/08 14:31:49 pluknet Exp $");
 
 	if (uname(&uts) < 0)
 		err(-1, "utsname");
@@ -557,7 +558,8 @@ main(int argc, char *argv[])
 				if (j != 0)
 					printf(", ");
 				scale_timespec(&juggle_results[j], p);
-				printf("%u.%09lu", juggle_results[j].tv_sec,
+				printf("%jd.%09lu",
+				    (intmax_t)juggle_results[j].tv_sec,
 				    juggle_results[j].tv_nsec);
 			}
 			printf("\n");
@@ -567,7 +569,8 @@ main(int argc, char *argv[])
 				if (j != 0)
 					printf(", ");
 				scale_timespec(&process_results[j], p);
-				printf("%u.%09lu", process_results[j].tv_sec,
+				printf("%jd.%09lu",
+                                    (intmax_t)process_results[j].tv_sec,
 				    process_results[j].tv_nsec);
 			}
 			printf("\n");
@@ -577,7 +580,8 @@ main(int argc, char *argv[])
 				if (j != 0)
 					printf(", ");
 				scale_timespec(&thread_results[j], p);
-				printf("%u.%09lu", thread_results[j].tv_sec,
+				printf("%jd.%09lu",
+				    (intmax_t)thread_results[j].tv_sec,
 				    thread_results[j].tv_nsec);
 			}
 			printf("\n");

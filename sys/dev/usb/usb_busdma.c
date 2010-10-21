@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_busdma.c,v 1.16 2009/11/26 00:43:17 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_busdma.c,v 1.17 2010/09/14 20:41:06 marius Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -366,9 +366,9 @@ usb_dma_tag_create(struct usb_dma_tag *udt,
 	     /* filter    */ NULL,
 	     /* filterarg */ NULL,
 	     /* maxsize   */ size,
-	     /* nsegments */ (align == 1) ?
+	     /* nsegments */ (align == 1 && size > 1) ?
 	    (2 + (size / USB_PAGE_SIZE)) : 1,
-	     /* maxsegsz  */ (align == 1) ?
+	     /* maxsegsz  */ (align == 1 && size > USB_PAGE_SIZE) ?
 	    USB_PAGE_SIZE : size,
 	     /* flags     */ BUS_DMA_KEEP_PG_OFFSET,
 	     /* lockfn    */ &usb_dma_lock_cb,

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/mirror/g_mirror_ctl.c,v 1.19 2009/09/06 06:52:06 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/mirror/g_mirror_ctl.c,v 1.20 2010/09/13 08:56:07 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -192,7 +192,7 @@ g_mirror_ctl_configure(struct gctl_req *req, struct g_class *mp)
 		gctl_error(req, "No such device: %s.", name);
 		return;
 	}
-	if (strcmp(balancep, "none") == 0)
+	if (*balancep == '\0')
 		balance = sc->sc_balance;
 	else {
 		if (balance_id(balancep) == -1) {
@@ -215,7 +215,7 @@ g_mirror_ctl_configure(struct gctl_req *req, struct g_class *mp)
 	/* Enforce usage() of -p not allowing any other options. */
 	if (do_priority && (*autosync || *noautosync || *failsync ||
 	    *nofailsync || *hardcode || *dynamic || *slicep != -1 ||
-	    strcmp(balancep, "none") != 0)) {
+	    *balancep != '\0')) {
 		sx_xunlock(&sc->sc_lock);
 		gctl_error(req, "only -p accepted when setting priority");
 		return;

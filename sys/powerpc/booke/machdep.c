@@ -79,7 +79,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/machdep.c,v 1.28 2010/07/19 18:47:18 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/machdep.c,v 1.29 2010/09/13 07:25:35 mav Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -488,9 +488,21 @@ cpu_idle (int busy)
 	}
 #endif
 
+	CTR2(KTR_SPARE2, "cpu_idle(%d) at %d",
+	    busy, curcpu);
+	if (!busy) {
+		critical_enter();
+		cpu_idleclock();
+	}
 	/* Freescale E500 core RM section 6.4.1. */
 	msr = msr | PSL_WE;
 	__asm __volatile("msync; mtmsr %0; isync" :: "r" (msr));
+	if (!busy) {
+		cpu_activeclock();
+		critical_exit();
+	}
+	CTR2(KTR_SPARE2, "cpu_idle(%d) at %d done",
+	    busy, curcpu);
 }
 
 int

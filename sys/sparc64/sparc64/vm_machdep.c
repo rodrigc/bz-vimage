@@ -43,7 +43,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/vm_machdep.c,v 1.83 2010/08/08 00:01:08 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/vm_machdep.c,v 1.84 2010/09/15 15:18:41 marius Exp $");
 
 #include "opt_pmap.h"
 
@@ -492,10 +492,7 @@ void
 swi_vm(void *v)
 {
 
-	/*
-	 * Nothing to do here yet - busdma bounce buffers are not yet
-	 * implemented.
-	 */
+	/* Nothing to do here - busdma bounce buffers are not implemented. */
 }
 
 void *
@@ -540,7 +537,7 @@ uma_small_alloc(uma_zone_t zone, int bytes, u_int8_t *flags, int wait)
 	}
 	va = (void *)TLB_PHYS_TO_DIRECT(pa);
 	if ((wait & M_ZERO) && (m->flags & PG_ZERO) == 0)
-		bzero(va, PAGE_SIZE);
+		cpu_block_zero(va, PAGE_SIZE);
 	return (va);
 }
 

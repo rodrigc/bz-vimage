@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libusb/libusb20_compat01.c,v 1.7 2010/05/13 00:26:30 thompsa Exp $ */
+/* $FreeBSD: src/lib/libusb/libusb20_compat01.c,v 1.8 2010/10/14 20:04:36 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -793,6 +793,19 @@ usb_reset(usb_dev_handle * dev)
 	 * handle after reset!
 	 */
 	return (usb_close(dev));
+}
+
+int
+usb_check_connected(usb_dev_handle * dev)
+{
+	int err;
+
+	err = libusb20_dev_check_connected((void *)dev);
+
+	if (err)
+		return (-1);
+
+	return (0);
 }
 
 const char *

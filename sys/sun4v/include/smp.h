@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.10 2010/08/11 23:22:53 jhb Exp $
+ * $FreeBSD: src/sys/sun4v/include/smp.h,v 1.11 2010/09/13 07:25:35 mav Exp $
  */
 
 #ifndef	_MACHINE_SMP_H_
@@ -47,7 +47,6 @@
 #define	IPI_STOP_HARD	PIL_STOP
 #define IPI_PREEMPT     PIL_PREEMPT
 #define	IPI_HARDCLOCK	PIL_HARDCLOCK
-#define	IPI_STATCLOCK	PIL_STATCLOCK
 
 #define	IPI_RETRIES	5000
 
@@ -83,7 +82,6 @@ void cpu_ipi_ast(struct trapframe *tf);
 void cpu_ipi_stop(struct trapframe *tf);
 void cpu_ipi_preempt(struct trapframe *tf);
 void cpu_ipi_hardclock(struct trapframe *tf);
-void cpu_ipi_statclock(struct trapframe *tf);
 
 void	ipi_all_but_self(u_int ipi);
 void	ipi_cpu(int cpu, u_int ipi);

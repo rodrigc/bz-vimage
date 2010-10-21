@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/powerpc64/reloc.c,v 1.1 2010/07/10 17:43:24 nwhitehorn Exp $
+ * $FreeBSD: src/libexec/rtld-elf/powerpc64/reloc.c,v 1.2 2010/09/12 17:04:51 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -405,8 +405,13 @@ reloc_jmpslots(Obj_Entry *obj)
 		    (void *)target, basename(defobj->path));
 #endif
 
-		reloc_jmpslot(where, target, defobj, obj,
-		    (const Elf_Rel *) rela);
+		if (def == &sym_zero) {
+			/* Zero undefined weak symbols */
+			bzero(where, sizeof(struct funcdesc));
+		} else {
+			reloc_jmpslot(where, target, defobj, obj,
+			    (const Elf_Rel *) rela);
+		}
 	}
 
 	obj->jmpslots_done = true;

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/smbfs/smbfs_vfsops.c,v 1.49 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/fs/smbfs/smbfs_vfsops.c,v 1.50 2010/10/02 17:58:57 alc Exp $
  */
 
 #include <sys/param.h>
@@ -175,8 +175,7 @@ smbfs_mount(struct mount *mp)
 #ifdef SMBFS_USEZONE
 	smp = zalloc(smbfsmount_zone);
 #else
-	smp = malloc(sizeof(*smp), M_SMBFSDATA,
-	    M_WAITOK|M_USE_RESERVE);
+	smp = malloc(sizeof(*smp), M_SMBFSDATA, M_WAITOK);
 #endif
         if (smp == NULL) {
 		printf("could not alloc smbmount\n");

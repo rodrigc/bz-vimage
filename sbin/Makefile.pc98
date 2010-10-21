@@ -1,0 +1,5 @@
+# $FreeBSD: src/sbin/Makefile.pc98,v 1.1 2010/09/13 02:25:21 imp Exp $
+
+SUBDIR += bsdlabel
+SUBDIR += fdisk_pc98
+SUBDIR += sconfig

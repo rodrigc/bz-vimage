@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2005 Pawel Jakub Dawidek <pjd@FreeBSD.org>
+ * Copyright (c) 2005-2010 Pawel Jakub Dawidek <pjd@FreeBSD.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli_crypto.c,v 1.6 2007/11/19 08:59:32 jb Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli_crypto.c,v 1.8 2010/09/23 12:02:08 pjd Exp $");
 
 #include <sys/param.h>
 #ifdef _KERNEL
@@ -68,6 +68,9 @@ g_eli_crypto_cipher(u_int algo, int enc, u_char *data, size_t datasize,
 	uint64_t sid;
 	u_char *p;
 	int error;
+
+	KASSERT(algo != CRYPTO_AES_XTS,
+	    ("%s: CRYPTO_AES_XTS unexpected here", __func__));
 
 	bzero(&cri, sizeof(cri));
 	cri.cri_alg = algo;
@@ -135,6 +138,8 @@ g_eli_crypto_cipher(u_int algo, int enc, u_char *data, size_t datasize,
 	const EVP_CIPHER *type;
 	u_char iv[keysize];
 	int outsize;
+
+	assert(algo != CRYPTO_AES_XTS);
 
 	switch (algo) {
 	case CRYPTO_NULL_CBC:
@@ -212,6 +217,10 @@ g_eli_crypto_encrypt(u_int algo, u_char *data, size_t datasize,
     const u_char *key, size_t keysize)
 {
 
+	/* We prefer AES-CBC for metadata protection. */
+	if (algo == CRYPTO_AES_XTS)
+		algo = CRYPTO_AES_CBC;
+
 	return (g_eli_crypto_cipher(algo, 1, data, datasize, key, keysize));
 }
 
@@ -219,6 +228,10 @@ int
 g_eli_crypto_decrypt(u_int algo, u_char *data, size_t datasize,
     const u_char *key, size_t keysize)
 {
+
+	/* We prefer AES-CBC for metadata protection. */
+	if (algo == CRYPTO_AES_XTS)
+		algo = CRYPTO_AES_CBC;
 
 	return (g_eli_crypto_cipher(algo, 0, data, datasize, key, keysize));
 }

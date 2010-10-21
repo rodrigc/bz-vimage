@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/igmp.c,v 1.90 2010/04/27 14:14:21 bms Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/igmp.c,v 1.91 2010/10/01 11:48:14 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1218,8 +1218,8 @@ igmp_input_v1_report(struct ifnet *ifp, /*const*/ struct ip *ip,
 	if (ifp->if_flags & IFF_LOOPBACK)
 		return (0);
 
-	if (!IN_MULTICAST(ntohl(igmp->igmp_group.s_addr) ||
-	    !in_hosteq(igmp->igmp_group, ip->ip_dst))) {
+	if (!IN_MULTICAST(ntohl(igmp->igmp_group.s_addr)) ||
+	    !in_hosteq(igmp->igmp_group, ip->ip_dst)) {
 		IGMPSTAT_INC(igps_rcv_badreports);
 		return (EINVAL);
 	}

@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/spibus/spibus.c,v 1.4 2009/06/11 17:06:58 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/spibus/spibus.c,v 1.5 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -127,7 +127,7 @@ spibus_read_ivar(device_t bus, device_t child, int which, u_int *result)
 }
 
 static device_t
-spibus_add_child(device_t dev, int order, const char *name, int unit)
+spibus_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct spibus_ivar *devi;

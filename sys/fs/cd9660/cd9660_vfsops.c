@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/cd9660/cd9660_vfsops.c,v 1.167 2010/07/16 19:52:03 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/cd9660/cd9660_vfsops.c,v 1.168 2010/10/10 07:05:47 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -98,14 +98,16 @@ static int
 cd9660_cmount(struct mntarg *ma, void *data, int flags)
 {
 	struct iso_args args;
+	struct export_args exp;
 	int error;
 
 	error = copyin(data, &args, sizeof args);
 	if (error)
 		return (error);
+	vfs_oexport_conv(&args.export, &exp);
 
 	ma = mount_argsu(ma, "from", args.fspec, MAXPATHLEN);
-	ma = mount_arg(ma, "export", &args.export, sizeof args.export);
+	ma = mount_arg(ma, "export", &exp, sizeof(exp));
 	ma = mount_argsu(ma, "cs_disk", args.cs_disk, 64);
 	ma = mount_argsu(ma, "cs_local", args.cs_local, 64);
 	ma = mount_argf(ma, "ssector", "%u", args.ssector);

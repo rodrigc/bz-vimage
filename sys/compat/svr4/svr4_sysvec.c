@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/svr4/svr4_sysvec.c,v 1.51 2010/05/23 18:32:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/svr4/svr4_sysvec.c,v 1.52 2010/10/12 09:18:17 kib Exp $");
 
 /* XXX we use functions that might not exist. */
 #include "opt_compat.h"
@@ -309,5 +309,5 @@ static moduledata_t svr4_elf_mod = {
 	svr4_elf_modevent,
 	0
 };
-DECLARE_MODULE(svr4elf, svr4_elf_mod, SI_SUB_EXEC, SI_ORDER_ANY);
+DECLARE_MODULE_TIED(svr4elf, svr4_elf_mod, SI_SUB_EXEC, SI_ORDER_ANY);
 MODULE_DEPEND(svr4elf, streams, 1, 1, 1);

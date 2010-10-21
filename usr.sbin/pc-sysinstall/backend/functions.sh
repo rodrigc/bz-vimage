@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions.sh,v 1.5 2010/10/09 08:52:09 imp Exp $
 
 # functions.sh
 # Library of functions which pc-sysinstall may call upon
@@ -282,4 +282,232 @@ get_zpool_name()
     echo "${NEWNAME}"
     return
   fi
+};
+
+iscompressed()
+{
+  local FILE
+  local RES
+
+  FILE="$1"
+  RES=1
+
+  if echo "${FILE}" | \
+    grep -iE '\.(Z|lzo|lzw|lzma|gz|bz2|xz|zip)$' >/dev/null 2>&1
+  then
+    RES=0
+  fi
+
+  return ${RES}
+}
+
+get_compression_type()
+{
+  local FILE
+  local SUFFIX
+
+  FILE="$1"
+  SUFFIX=`echo "${FILE}" | sed -E 's|^(.+)\.(.+)$|\2|'`
+
+  VAL=""
+  SUFFIX=`echo "${SUFFIX}" | tr A-Z a-z`
+  case "${SUFFIX}" in
+    z) VAL="lzw" ;;
+    lzo) VAL="lzo" ;;
+    lzw) VAL="lzw" ;;
+    lzma) VAL="lzma" ;;
+    gz) VAL="gzip" ;;
+    bz2) VAL="bzip2" ;;
+    xz) VAL="xz" ;;
+    zip) VAL="zip" ;;
+  esac
+
+  export VAL
+}
+
+decompress_file()
+{
+  local FILE
+  local COMPRESSION
+
+  FILE="$1"
+  COMPRESSION="$2"
+
+  if [ -n "${COMPRESSION}" ]
+  then
+    case "${COMPRESSION}" in
+      lzw)
+        rc_halt "uncompress ${FILE}"
+        VAL="${FILE%.Z}"
+        ;;
+
+      lzo)
+        rc_halt "lzop -d ${FILE}"
+        VAL="${FILE%.lzo}"
+        ;;
+
+      lzma)
+        rc_halt "lzma -d ${FILE}"
+        VAL="${FILE%.lzma}"
+        ;;
+
+      gzip)
+        rc_halt "gunzip ${FILE}"
+        VAL="${FILE%.gz}"
+        ;;
+
+      bzip2)
+        rc_halt "bunzip2 ${FILE}"
+        VAL="${FILE%.bz2}"
+        ;;
+
+      xz)
+        rc_halt "xz -d ${FILE}"
+        VAL="${FILE%.xz}"
+        ;;
+
+      zip)
+        rc_halt "unzip ${FILE}"
+        VAL="${FILE%.zip}"
+        ;;
+
+      *) 
+        exit_err "ERROR: ${COMPRESSION} compression is not supported"
+        ;;
+    esac
+  fi
+
+  export VAL
+}
+
+write_image()
+{
+  local IMAGE_FILE
+  local DEVICE_FILE
+
+  IMAGE_FILE="$1"
+  DEVICE_FILE="$2"
+
+  if [ -z "${IMAGE_FILE}" ]
+  then
+    exit_err "ERROR: Image file not specified!"
+  fi
+ 
+  if [ -z "${DEVICE_FILE}" ]
+  then
+    exit_err "ERROR: Device file not specified!"
+  fi
+ 
+  if [ ! -f "${IMAGE_FILE}" ]
+  then
+    exit_err "ERROR: '${IMAGE_FILE}' does not exist!"
+  fi
+
+  DEVICE_FILE="${DEVICE_FILE#/dev/}"
+  DEVICE_FILE="/dev/${DEVICE_FILE}"
+ 
+  if [ ! -c "${DEVICE_FILE}" ]
+  then
+    exit_err "ERROR: '${DEVICE_FILE}' is not a character device!"
+  fi
+
+  if iscompressed "${IMAGE_FILE}"
+  then
+	local COMPRESSION
+
+    get_compression_type "${IMAGE_FILE}"
+	COMPRESSION="${VAL}"
+
+	decompress_file "${IMAGE_FILE}" "${COMPRESSION}"
+	IMAGE_FILE="${VAL}"
+  fi
+
+  rc_halt "dd if=${IMAGE_FILE} of=${DEVICE_FILE} bs=128k"
+};
+
+install_fresh()
+{
+  # Lets start setting up the disk slices now
+  setup_disk_slice
+  
+  if [ -z "${ROOTIMAGE}" ]
+  then
+
+    # Disk setup complete, now lets parse WORKINGSLICES and setup the bsdlabels
+    setup_disk_label
+  
+    # Now we've setup the bsdlabels, lets go ahead and run newfs / zfs 
+    # to setup the filesystems
+    setup_filesystems
+
+    # Lets mount the partitions now
+    mount_all_filesystems
+
+    # We are ready to begin extraction, lets start now
+    init_extraction 
+
+    # Check if we have any optional modules to load 
+    install_components
+
+    # Check if we have any packages to install
+    install_packages
+
+    # Do any localization in configuration
+    run_localize
+  
+    # Save any networking config on the installed system
+    save_networking_install
+
+    # Now add any users
+    setup_users
+
+    # Now run any commands specified
+    run_commands
+  
+    # Do any last cleanup / setup before unmounting
+    run_final_cleanup
+
+    # Unmount and finish up
+    unmount_all_filesystems
+  fi
+
+  echo_log "Installation finished!"
+};
+
+install_image()
+{
+  # We are ready to begin extraction, lets start now
+  init_extraction 
+
+  echo_log "Installation finished!"
+};
+
+install_upgrade()
+{
+  # We're going to do an upgrade, skip all the disk setup 
+  # and start by mounting the target drive/slices
+  mount_upgrade
+  
+  # Start the extraction process
+  init_extraction
+
+  # Do any localization in configuration
+  run_localize
+
+  # ow run any commands specified
+  run_commands
+  
+  # Merge any old configuration files
+  merge_old_configs
+
+  # Check if we have any optional modules to load 
+  install_components
+
+  # Check if we have any packages to install
+  install_packages
+
+  # All finished, unmount the file-systems
+  unmount_upgrade
+
+  echo_log "Upgrade finished!"
 };

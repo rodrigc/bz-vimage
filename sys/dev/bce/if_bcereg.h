@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/bce/if_bcereg.h,v 1.32 2010/07/19 23:48:03 yongari Exp $
+ * $FreeBSD: src/sys/dev/bce/if_bcereg.h,v 1.33 2010/10/06 18:36:50 ambrisko Exp $
  */
 
 #ifndef	_BCEREG_H_DEFINED
@@ -6790,6 +6790,7 @@ struct bce_softc
 	/* Number of VLAN tagged frames stripped. */
 	u32			vlan_tagged_frames_stripped;
 #endif
+	uint8_t *nvram_buf;
 };
 
 #endif /* __BCEREG_H_DEFINED */

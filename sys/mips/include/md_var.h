@@ -28,7 +28,7 @@
  *
  *	from: src/sys/i386/include/md_var.h,v 1.35 2000/02/20 20:51:23 bsd
  *	JNPR: md_var.h,v 1.4 2006/10/16 12:30:34 katta
- * $FreeBSD: src/sys/mips/include/md_var.h,v 1.6 2010/07/15 01:58:20 imp Exp $
+ * $FreeBSD: src/sys/mips/include/md_var.h,v 1.8 2010/09/17 02:20:12 neel Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -52,10 +52,8 @@ void	cpu_swapin(struct proc *);
 uintptr_t MipsEmulateBranch(struct trapframe *, uintptr_t, int, uintptr_t);
 void MipsSwitchFPState(struct thread *, struct trapframe *);
 u_long	kvtop(void *addr);
-int	is_physical_memory(vm_offset_t addr);
+int	is_cacheable_mem(vm_offset_t addr);
 void	mips_generic_reset(void);
-
-#define	is_cacheable_mem(pa)	is_physical_memory((pa))
 
 #define	MIPS_DEBUG   0
 
@@ -75,9 +73,5 @@ void	mips_postboot_fixup(void);
 void	platform_identify(void);
 
 extern int busdma_swi_pending;
-void busdma_swi(void);
-
-u_int32_t set_intr_mask(u_int32_t);
-u_int32_t get_intr_mask(void);
-
+void	busdma_swi(void);
 #endif /* !_MACHINE_MD_VAR_H_ */

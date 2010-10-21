@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/truss/setup.c,v 1.28 2010/03/10 20:31:30 imp Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/truss/setup.c,v 1.29 2010/10/20 09:35:20 ed Exp $");
 
 /*
  * Various setup functions for truss.  Not the cleanest-written code,
@@ -78,7 +78,6 @@ setup_and_wait(char *command[])
 	}
 	if (pid == 0) {	/* Child */
 		ptrace(PT_TRACE_ME, 0, 0, 0);
-		setpgid (0, 0); 
 		execvp(command[0], command);
 		err(1, "execvp %s", command[0]);
 	}

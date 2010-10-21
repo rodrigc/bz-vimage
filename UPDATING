@@ -22,6 +22,53 @@ NOTE TO PEOPLE WHO THINK THAT FreeBSD 9.x IS SLOW:
 	machines to maximize performance.  (To disable malloc debugging, run
 	ln -s aj /etc/malloc.conf.)
 
+20101002:
+	The man(1) utility has been replaced by a new version that no longer
+	uses /etc/manpath.config. Please consult man.conf(5) for how to
+	migrate local entries to the new format.
+
+20100928:
+	The copyright strings printed by login(1) and sshd(8) at the time of a
+	new connection have been removed to follow other operating systems and
+	upstream sshd.
+
+20100915:
+	A workaround for a fixed ld bug has been removed in kernel code,
+	so make sure that your system ld is built from sources after
+	revision 210245 (r211583 if building head kernel on stable/8,
+	r211584 for stable/7).  A symptom of incorrect ld version is
+	different addresses for set_pcpu section and __start_set_pcpu
+	symbol in kernel and/or modules.
+
+20100913:
+	The $ipv6_prefer variable in rc.conf(5) has been split into
+	$ip6addrctl_policy and $ipv6_activate_all_interfaces.
+
+	The $ip6addrctl_policy is a variable to choose a pre-defined
+	address selection policy set by ip6addrctl(8).  A value
+	"ipv4_prefer", "ipv6_prefer" or "AUTO" can be specified.  The
+	default is "AUTO".
+
+	The $ipv6_activate_all_interfaces specifies whether IFDISABLED
+	flag (see an entry of 20090926) is set on an interface with no
+	corresponding $ifconfig_IF_ipv6 line.  The default is "NO" for
+	security reason.  If you want IPv6 link-local address on all
+	interfaces by default, set this to "YES".
+
+	The old ipv6_prefer="YES" is equivalent to
+	ipv6_activate_all_interfaces="YES" and
+	ip6addrctl_policy="ipv6_prefer".
+
+20100913:
+	DTrace has grown support for userland tracing. Due to this, DTrace is
+	now i386 and amd64 only.
+	dtruss(1) is now installed by default on those systems and a new
+	kernel module is needed for userland tracing: fasttrap.
+	No changes to your kernel config file are necessary to enable
+	userland tracing, but you might consider adding 'STRIP=' and
+	'CFLAGS+=-fno-omit-frame-pointer' to your make.conf if you want
+	to have informative userland stack traces in DTrace (ustack).
+
 20100725:
 	The acpi_aiboost(4) driver has been removed in favor of the new
 	aibs(4) driver. You should update your kernel configuration file.
@@ -1188,4 +1235,4 @@ POSSIBILITY OF SUCH DAMAGE.
 Contact Warner Losh if you have any questions about your use of
 this document.
 
-$FreeBSD: src/UPDATING,v 1.663 2010/07/25 18:32:59 rpaulo Exp $
+$FreeBSD: src/UPDATING,v 1.668 2010/10/07 17:26:22 emaste Exp $

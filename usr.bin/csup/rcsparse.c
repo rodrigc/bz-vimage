@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/csup/rcsparse.c,v 1.1 2010/03/02 07:26:07 lulf Exp $
+ * $FreeBSD: src/usr.bin/csup/rcsparse.c,v 1.2 2010/09/30 14:28:48 jhb Exp $
  */
 
 #include <assert.h>
@@ -317,6 +317,14 @@ parse_deltatexts(struct rcsfile *rf, yyscan_t *sp, int token)
 		/* Get delta we're adding text to. */
 		d = rcsfile_getdelta(rf, revnum);
 		free(revnum);
+
+		/*
+		 * XXX: The RCS file is corrupt, but lie and say it is ok.
+		 * If it is actually broken, then the MD5 mismatch will
+		 * trigger a fixup.
+		 */
+		if (d == NULL)
+			return (0);
 
 		/* log string */
 		asserttoken(sp, KEYWORD);

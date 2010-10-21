@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_vnops.c,v 1.199 2010/05/06 18:43:19 trasz Exp $ */
+/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_vnops.c,v 1.201 2010/10/08 07:17:22 kib Exp $ */
 /*	$NetBSD: msdosfs_vnops.c,v 1.68 1998/02/10 14:10:04 mrg Exp $	*/
 
 /*-
@@ -1258,6 +1258,14 @@ abortit:
 		}
 	}
 
+	/*
+	 * The msdosfs lookup is case insensitive. Several aliases may
+	 * be inserted for a single directory entry. As a consequnce,
+	 * name cache purge done by lookup for fvp when DELETE op for
+	 * namei is specified, might be not enough to expunge all
+	 * namecache entries that were installed for this direntry.
+	 */
+	cache_purge(fvp);
 	VOP_UNLOCK(fvp, 0);
 bad:
 	if (xp)

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_fork.c,v 1.20 2010/09/01 07:09:46 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_fork.c,v 1.23 2010/09/24 07:52:07 davidxu Exp $
  */
 
 /*
@@ -137,7 +137,7 @@ _fork(void)
 	struct pthread *curthread;
 	struct pthread_atfork *af;
 	pid_t ret;
-	int errsave;
+	int errsave, cancelsave;
 	int was_threaded;
 	int rtld_locks[MAX_RTLD_LOCKS];
 
@@ -145,7 +145,8 @@ _fork(void)
 		return (__sys_fork());
 
 	curthread = _get_curthread();
-
+	cancelsave = curthread->no_cancel;
+	curthread->no_cancel = 1;
 	_thr_rwl_rdlock(&_thr_atfork_lock);
 
 	/* Run down atfork prepare handlers. */
@@ -178,13 +179,13 @@ _fork(void)
 		/* Child process */
 		errsave = errno;
 		curthread->cancel_pending = 0;
-		curthread->flags &= ~THR_FLAGS_NEED_SUSPEND;
+		curthread->flags &= ~(THR_FLAGS_NEED_SUSPEND|THR_FLAGS_DETACHED);
 
 		/*
 		 * Thread list will be reinitialized, and later we call
 		 * _libpthread_init(), it will add us back to list.
 		 */
-		curthread->tlflags &= ~(TLFLAGS_IN_TDLIST | TLFLAGS_DETACHED);
+		curthread->tlflags &= ~TLFLAGS_IN_TDLIST;
 
 		/* child is a new kernel thread. */
 		thr_self(&curthread->tid);
@@ -223,6 +224,7 @@ _fork(void)
 				af->child();
 		}
 		_thr_rwlock_unlock(&_thr_atfork_lock);
+		curthread->no_cancel = cancelsave;
 	} else {
 		/* Parent process */
 		errsave = errno;
@@ -244,6 +246,10 @@ _fork(void)
 		}
 
 		_thr_rwlock_unlock(&_thr_atfork_lock);
+		curthread->no_cancel = cancelsave;
+		/* test async cancel */
+		if (curthread->cancel_async)
+			_thr_testcancel(curthread);
 	}
 	errno = errsave;
 

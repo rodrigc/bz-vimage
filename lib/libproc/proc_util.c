@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libproc/proc_util.c,v 1.3 2010/08/11 17:33:26 rpaulo Exp $
+ * $FreeBSD: src/lib/libproc/proc_util.c,v 1.4 2010/09/18 23:38:21 rpaulo Exp $
  */
 
 #include <sys/types.h>
@@ -145,7 +145,8 @@ proc_wstatus(struct proc_handle *phdl)
 	if (phdl == NULL)
 		return (-1);
 	if (waitpid(phdl->pid, &status, WUNTRACED) < 0) {
-		warn("waitpid");
+		if (errno != EINTR)
+			warn("waitpid");
 		return (-1);
 	}
 	if (WIFSTOPPED(status))

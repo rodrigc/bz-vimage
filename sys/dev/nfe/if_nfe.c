@@ -21,7 +21,7 @@
 /* Driver for NVIDIA nForce MCP Fast Ethernet and Gigabit Ethernet */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/nfe/if_nfe.c,v 1.36 2010/04/19 22:10:40 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/nfe/if_nfe.c,v 1.37 2010/10/15 15:00:30 marius Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -600,10 +600,10 @@ nfe_attach(device_t dev)
 #endif
 
 	/* Do MII setup */
-	if (mii_phy_probe(dev, &sc->nfe_miibus, nfe_ifmedia_upd,
-	    nfe_ifmedia_sts)) {
-		device_printf(dev, "MII without any phy!\n");
-		error = ENXIO;
+	error = mii_attach(dev, &sc->nfe_miibus, ifp, nfe_ifmedia_upd,
+	    nfe_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
+	if (error != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 	ether_ifattach(ifp, sc->eaddr);

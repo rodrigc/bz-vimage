@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_llatbl.c,v 1.21 2010/07/27 11:56:49 glebius Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_llatbl.c,v 1.22 2010/10/16 18:42:09 bz Exp $");
 
 #include "opt_ddb.h"
 #include "opt_inet.h"
@@ -182,6 +182,7 @@ lltable_free(struct lltable *llt)
 	free(llt, M_LLTABLE);
 }
 
+#if 0
 void
 lltable_drain(int af)
 {
@@ -196,15 +197,18 @@ lltable_drain(int af)
 
 		for (i=0; i < LLTBL_HASHTBL_SIZE; i++) {
 			LIST_FOREACH(lle, &llt->lle_head[i], lle_next) {
+				LLE_WLOCK(lle);
 				if (lle->la_hold) {
 					m_freem(lle->la_hold);
 					lle->la_hold = NULL;
 				}
+				LLE_WUNLOCK(lle);
 			}
 		}
 	}
 	LLTABLE_RUNLOCK();
 }
+#endif
 
 void
 lltable_prefix_free(int af, struct sockaddr *prefix, struct sockaddr *mask)

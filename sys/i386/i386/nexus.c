@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/nexus.c,v 1.77 2010/02/25 14:13:39 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/nexus.c,v 1.78 2010/09/10 11:19:03 avg Exp $");
 
 /*
  * This code implements a `root nexus' for Intel Architecture
@@ -87,7 +87,7 @@ static	int nexus_probe(device_t);
 static	int nexus_attach(device_t);
 static	int nexus_print_all_resources(device_t dev);
 static	int nexus_print_child(device_t, device_t);
-static device_t nexus_add_child(device_t bus, int order, const char *name,
+static device_t nexus_add_child(device_t bus, u_int order, const char *name,
 				int unit);
 static	struct resource *nexus_alloc_resource(device_t, device_t, int, int *,
 					      u_long, u_long, u_long, u_int);
@@ -305,7 +305,7 @@ nexus_print_child(device_t bus, device_t child)
 }
 
 static device_t
-nexus_add_child(device_t bus, int order, const char *name, int unit)
+nexus_add_child(device_t bus, u_int order, const char *name, int unit)
 {
 	device_t		child;
 	struct nexus_device	*ndev;

@@ -24,7 +24,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/uhso.c,v 1.7 2010/09/02 04:39:45 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/uhso.c,v 1.8 2010/10/13 20:51:06 hselasky Exp $");
 
 #include <sys/param.h>
 #include <sys/types.h>
@@ -1560,7 +1560,7 @@ uhso_attach_ifnet(struct uhso_softc *sc, struct usb_interface *iface, int type)
 	ifp->if_init = uhso_if_init;
 	ifp->if_start = uhso_if_start;
 	ifp->if_output = uhso_if_output;
-	ifp->if_flags = 0;
+	ifp->if_flags = IFF_BROADCAST | IFF_MULTICAST | IFF_NOARP;
 	ifp->if_softc = sc;
 	IFQ_SET_MAXLEN(&ifp->if_snd, ifqmaxlen);
 	ifp->if_snd.ifq_drv_maxlen = ifqmaxlen;

@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.bin/clang/tblgen/Makefile,v 1.3 2010/07/22 19:09:34 rpaulo Exp $
+# $FreeBSD: src/usr.bin/clang/tblgen/Makefile,v 1.4 2010/09/27 19:03:18 dim Exp $
 
 PROG_CXX=tblgen
 
@@ -39,7 +39,6 @@ SRCS=	ARMDecoderEmitter.cpp \
 	TableGenBackend.cpp \
 	X86DisassemblerTables.cpp \
 	X86RecognizableInstr.cpp
-MAN=
 LLVM_REQUIRES_EH=
 
 LIBDEPS=llvmsupport llvmsystem

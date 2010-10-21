@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)histedit.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.37 2010/08/01 16:37:51 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.39 2010/10/13 23:29:09 obrien Exp $");
 
 #include <sys/param.h>
 #include <limits.h>
@@ -68,7 +68,7 @@ EditLine *el;	/* editline cookie */
 int displayhist;
 static FILE *el_in, *el_out, *el_err;
 
-STATIC char *fc_replace(const char *, char *, char *);
+static char *fc_replace(const char *, char *, char *);
 
 /*
  * Set history and editing status.  Called whenever the status may
@@ -402,7 +402,7 @@ histcmd(int argc, char **argv)
 	return 0;
 }
 
-STATIC char *
+static char *
 fc_replace(const char *s, char *p, char *r)
 {
 	char *dest;
@@ -418,7 +418,7 @@ fc_replace(const char *s, char *p, char *r)
 		} else
 			STPUTC(*s++, dest);
 	}
-	STACKSTRNUL(dest);
+	STPUTC('\0', dest);
 	dest = grabstackstr(dest);
 
 	return (dest);

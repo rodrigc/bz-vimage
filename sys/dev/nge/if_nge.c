@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/nge/if_nge.c,v 1.103 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/nge/if_nge.c,v 1.104 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * National Semiconductor DP83820/DP83821 gigabit ethernet driver
@@ -1079,10 +1079,10 @@ nge_attach(device_t dev)
 	/*
 	 * Do MII setup.
 	 */
-	error = mii_phy_probe(dev, &sc->nge_miibus, nge_mediachange,
-	    nge_mediastatus);
+	error = mii_attach(dev, &sc->nge_miibus, ifp, nge_mediachange,
+	    nge_mediastatus, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
 	if (error != 0) {
-		device_printf(dev, "no PHY found!\n");
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 

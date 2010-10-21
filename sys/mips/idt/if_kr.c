@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/idt/if_kr.c,v 1.4 2009/06/17 10:23:25 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/idt/if_kr.c,v 1.5 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * RC32434 Ethernet interface driver
@@ -265,10 +265,10 @@ kr_attach(device_t dev)
 	CSR_WRITE_4(sc, KR_MIIMCFG, 0);
 
 	/* Do MII setup. */
-	if (mii_phy_probe(dev, &sc->kr_miibus,
-	    kr_ifmedia_upd, kr_ifmedia_sts)) {
-		device_printf(dev, "MII without any phy!\n");
-		error = ENXIO;
+	error = mii_attach(dev, &sc->kr_miibus, ifp, kr_ifmedia_upd,
+	    kr_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
+	if (error != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 

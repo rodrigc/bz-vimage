@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_reserv.c,v 1.3 2009/04/11 09:09:00 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_reserv.c,v 1.6 2010/09/16 16:13:12 mdf Exp $");
 
 #include "opt_vm.h"
 
@@ -180,12 +180,9 @@ sysctl_vm_reserv_partpopq(SYSCTL_HANDLER_ARGS)
 {
 	struct sbuf sbuf;
 	vm_reserv_t rv;
-	char *cbuf;
-	const int cbufsize = (VM_NRESERVLEVEL + 1) * 81;
 	int counter, error, level, unused_pages;
 
-	cbuf = malloc(cbufsize, M_TEMP, M_WAITOK | M_ZERO);
-	sbuf_new(&sbuf, cbuf, cbufsize, SBUF_FIXEDLEN);
+	sbuf_new_for_sysctl(&sbuf, NULL, 128, req);
 	sbuf_printf(&sbuf, "\nLEVEL     SIZE  NUMBER\n\n");
 	for (level = -1; level <= VM_NRESERVLEVEL - 2; level++) {
 		counter = 0;
@@ -199,10 +196,8 @@ sysctl_vm_reserv_partpopq(SYSCTL_HANDLER_ARGS)
 		sbuf_printf(&sbuf, "%5.5d: %6.6dK, %6.6d\n", level,
 		    unused_pages * (PAGE_SIZE / 1024), counter);
 	}
-	sbuf_finish(&sbuf);
-	error = SYSCTL_OUT(req, sbuf_data(&sbuf), sbuf_len(&sbuf));
+	error = sbuf_finish(&sbuf);
 	sbuf_delete(&sbuf);
-	free(cbuf, M_TEMP);
 	return (error);
 }
 

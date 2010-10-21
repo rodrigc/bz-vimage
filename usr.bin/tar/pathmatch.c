@@ -25,7 +25,7 @@
  */
 
 #include "bsdtar_platform.h"
-__FBSDID("$FreeBSD: src/usr.bin/tar/pathmatch.c,v 1.1 2010/02/07 02:00:26 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/tar/pathmatch.c,v 1.2 2010/10/06 04:30:40 kientzle Exp $");
 
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -35,7 +35,7 @@ __FBSDID("$FreeBSD: src/usr.bin/tar/pathmatch.c,v 1.1 2010/02/07 02:00:26 kientz
 
 /*
  * Check whether a character 'c' is matched by a list specification [...]:
- *    * Leading '!' negates the class.
+ *    * Leading '!' or '^' negates the class.
  *    * <char>-<char> is a range of characters
  *    * \<char> removes any special meaning for <char>
  *
@@ -60,7 +60,7 @@ pm_list(const char *start, const char *end, const char c, int flags)
 	(void)flags; /* UNUSED */
 
 	/* If this is a negated class, return success for nomatch. */
-	if (*p == '!' && p < end) {
+	if ((*p == '!' || *p == '^') && p < end) {
 		match = 0;
 		nomatch = 1;
 		++p;

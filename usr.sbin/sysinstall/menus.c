@@ -34,7 +34,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/sysinstall/menus.c,v 1.451 2010/07/16 20:42:20 brucec Exp $";
+  "$FreeBSD: src/usr.sbin/sysinstall/menus.c,v 1.452 2010/10/03 17:50:43 nwhitehorn Exp $";
 #endif
 
 #include "sysinstall.h"
@@ -993,7 +993,7 @@ DMenu MenuSubDistributions = {
 	dmenuFlagCheck,	dmenuSetFlag, NULL, &Dists, '[', 'X', ']', DIST_GAMES },
       { " info",	"GNU info files",
 	dmenuFlagCheck,	dmenuSetFlag, NULL, &Dists, '[', 'X', ']', DIST_INFO },
-#ifdef __amd64__
+#if defined(__amd64__) || defined(__powerpc64__)
       { " lib32",	"32-bit runtime compatibility libraries",
 	dmenuFlagCheck,	dmenuSetFlag, NULL, &Dists, '[', 'X', ']', DIST_LIB32 },
 #endif

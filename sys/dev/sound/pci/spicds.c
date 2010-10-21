@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THEPOSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/sound/pci/spicds.c,v 1.9 2010/03/29 20:27:17 joel Exp $
+ * $FreeBSD: src/sys/dev/sound/pci/spicds.c,v 1.10 2010/10/13 14:39:54 rpaulo Exp $
  */
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
@@ -283,7 +283,8 @@ spicds_set(struct spicds_info *codec, int dir, unsigned int left, unsigned int r
 		case SPICDS_TYPE_WM8770:
 			left = left + 27;
 			break;
-		case SPICDS_TYPE_AK4381 || SPICDS_TYPE_AK4396:
+		case SPICDS_TYPE_AK4381:
+		case SPICDS_TYPE_AK4396:
 			left = left * 255 / 100;
 			break;
 		default:

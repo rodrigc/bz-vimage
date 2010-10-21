@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/pcpu.h,v 1.33 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/pcpu.h,v 1.34 2010/09/16 03:46:17 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_PCPU_H_
@@ -55,7 +55,7 @@ struct pmap;
 
 #define PCPU_MD_AIM64_FIELDS						\
 	struct slb	pc_slb[64];					\
-	struct slb	*pc_userslb;
+	struct slb	**pc_userslb;
 
 #ifdef __powerpc64__
 #define PCPU_MD_AIM_FIELDS	PCPU_MD_AIM64_FIELDS

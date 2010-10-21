@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-mountdisk.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-mountdisk.sh,v 1.5 2010/10/09 08:52:09 imp Exp $
 
 # Functions related mounting the newly formatted disk partitions
 
@@ -124,8 +124,10 @@ mount_all_filesystems()
       case ${PARTFS} in
         UFS) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
         UFS+S) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
+        UFS+SUJ) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
         UFS+J) mount_partition ${PART}${EXT}.journal ${PARTFS} ${PARTMNT} "async,noatime" ;;
         ZFS) mount_partition ${PART} ${PARTFS} ${PARTMNT} ;;
+        IMAGE) mount_partition ${PART} ${PARTFS} ${PARTMNT} ;;
         *) exit_err "ERROR: Got unknown file-system type $PARTFS" ;;
       esac
     fi
@@ -158,6 +160,7 @@ mount_all_filesystems()
        case ${PARTFS} in
          UFS) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
          UFS+S) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
+         UFS+SUJ) mount_partition ${PART}${EXT} ${PARTFS} ${PARTMNT} "noatime" ;;
          UFS+J) mount_partition ${PART}${EXT}.journal ${PARTFS} ${PARTMNT} "async,noatime" ;;
          ZFS) mount_partition ${PART} ${PARTFS} ${PARTMNT} ;;
          SWAP)
@@ -174,7 +177,14 @@ mount_all_filesystems()
              rc_halt "swapon /dev/${PART}"
             fi
             ;;
-          *) exit_err "ERROR: Got unknown file-system type $PARTFS" ;;
+         IMAGE)
+           if [ ! -d "${PARTMNT}" ]
+           then
+             mkdir -p "${PARTMNT}" 
+           fi 
+           mount_partition ${PART} ${PARTFS} ${PARTMNT}
+           ;;
+         *) exit_err "ERROR: Got unknown file-system type $PARTFS" ;;
       esac
     fi
   done

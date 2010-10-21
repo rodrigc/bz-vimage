@@ -28,17 +28,18 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/control.c,v 1.3 2010/08/29 21:42:45 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/control.c,v 1.7 2010/10/08 15:02:15 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <signal.h>
 
 #include <assert.h>
 #include <errno.h>
 #include <pthread.h>
+#include <signal.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "hast.h"
 #include "hastd.h"
@@ -50,6 +51,19 @@ __FBSDID("$FreeBSD: src/sbin/hastd/control.c,v 1.3 2010/08/29 21:42:45 pjd Exp $
 #include "subr.h"
 
 #include "control.h"
+
+void
+child_cleanup(struct hast_resource *res)
+{
+
+	proto_close(res->hr_ctrl);
+	res->hr_ctrl = NULL;
+	if (res->hr_event != NULL) {
+		proto_close(res->hr_event);
+		res->hr_event = NULL;
+	}
+	res->hr_workerpid = 0;
+}
 
 static void
 control_set_role_common(struct hastd_config *cfg, struct nv *nvout,
@@ -109,7 +123,7 @@ control_set_role_common(struct hastd_config *cfg, struct nv *nvout,
 			pjdlog_debug(1, "Worker process %u stopped.",
 			    (unsigned int)res->hr_workerpid);
 		}
-		res->hr_workerpid = 0;
+		child_cleanup(res);
 	}
 
 	/* Start worker process if we are changing to primary. */
@@ -387,7 +401,8 @@ ctrl_thread(void *arg)
 				pthread_exit(NULL);
 			pjdlog_errno(LOG_ERR,
 			    "Unable to receive control message");
-			continue;
+			kill(getpid(), SIGTERM);
+			pthread_exit(NULL);
 		}
 		cmd = nv_get_uint8(nvin, "cmd");
 		if (cmd == 0) {

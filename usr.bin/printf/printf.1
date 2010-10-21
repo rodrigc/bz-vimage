@@ -33,9 +33,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)printf.1	8.1 (Berkeley) 6/6/93
-.\" $FreeBSD: src/usr.bin/printf/printf.1,v 1.34 2005/06/14 11:50:52 ru Exp $
+.\" $FreeBSD: src/usr.bin/printf/printf.1,v 1.36 2010/09/09 19:27:40 obrien Exp $
 .\"
-.Dd April 14, 2005
+.Dd September 5, 2010
 .Dt PRINTF 1
 .Os
 .Sh NAME
@@ -109,12 +109,13 @@ Write a <single quote> character.
 .It Cm \e\e
 Write a backslash character.
 .It Cm \e Ns Ar num
-.It Cm \e0 Ns Ar num
-Write an 8-bit character whose
-.Tn ASCII
+Write a byte whose
 value is the 1-, 2-, or 3-digit
 octal number
 .Ar num .
+Multibyte characters can be constructed using multiple
+.Cm \e Ns Ar num
+sequences.
 .El
 .Pp
 Each format specification is introduced by the percent character
@@ -289,6 +290,11 @@ As for
 .Cm s ,
 but interpret character escapes in backslash notation in the string
 .Ar argument .
+The permitted escape sequences are slightly different in that
+octal escapes are
+.Cm \e0 Ns Ar num
+instead of
+.Cm \e Ns Ar num .
 .It Cm \&%
 Print a `%'; no argument is used.
 .El
@@ -349,3 +355,10 @@ Multibyte characters are not recognized in format strings (this is only
 a problem if
 .Ql %
 can appear inside a multibyte character).
+.Pp
+Trying to print a dash ("-") as the first character causes
+.Nm
+to interpet the dash as a program argument.
+.Nm --
+must be used before 
+.Ar format .

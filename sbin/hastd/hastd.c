@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.16 2010/08/30 23:26:10 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.23 2010/10/17 15:47:27 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -63,43 +63,19 @@ __FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.16 2010/08/30 23:26:10 pjd Exp $"
 const char *cfgpath = HAST_CONFIG;
 /* Hastd configuration. */
 static struct hastd_config *cfg;
-/* Was SIGCHLD signal received? */
-bool sigchld_received = false;
-/* Was SIGHUP signal received? */
-bool sighup_received = false;
 /* Was SIGINT or SIGTERM signal received? */
 bool sigexit_received = false;
 /* PID file handle. */
 struct pidfh *pfh;
 
 /* How often check for hooks running for too long. */
-#define	REPORT_INTERVAL	10
+#define	REPORT_INTERVAL	5
 
 static void
 usage(void)
 {
 
 	errx(EX_USAGE, "[-dFh] [-c config] [-P pidfile]");
-}
-
-static void
-sighandler(int sig)
-{
-
-	switch (sig) {
-	case SIGINT:
-	case SIGTERM:
-		sigexit_received = true;
-		break;
-	case SIGCHLD:
-		sigchld_received = true;
-		break;
-	case SIGHUP:
-		sighup_received = true;
-		break;
-	default:
-		assert(!"invalid condition");
-	}
 }
 
 static void
@@ -158,13 +134,7 @@ child_exit(void)
 		pjdlog_prefix_set("[%s] (%s) ", res->hr_name,
 		    role2str(res->hr_role));
 		child_exit_log(pid, status);
-		proto_close(res->hr_ctrl);
-		res->hr_ctrl = NULL;
-		if (res->hr_event != NULL) {
-			proto_close(res->hr_event);
-			res->hr_event = NULL;
-		}
-		res->hr_workerpid = 0;
+		child_cleanup(res);
 		if (res->hr_role == HAST_ROLE_PRIMARY) {
 			/*
 			 * Restart child process if it was killed by signal
@@ -553,11 +523,12 @@ listen_accept(void)
 			} else {
 				child_exit_log(res->hr_workerpid, status);
 			}
-			res->hr_workerpid = 0;
+			child_cleanup(res);
 		} else if (res->hr_remotein != NULL) {
 			char oaddr[256];
 
-			proto_remote_address(conn, oaddr, sizeof(oaddr));
+			proto_remote_address(res->hr_remotein, oaddr,
+			    sizeof(oaddr));
 			pjdlog_debug(1,
 			    "Canceling half-open connection from %s on connection from %s.",
 			    oaddr, raddr);
@@ -631,46 +602,65 @@ static void
 main_loop(void)
 {
 	struct hast_resource *res;
-	struct timeval timeout;
-	int fd, maxfd, ret;
+	struct timeval seltimeout;
+	struct timespec sigtimeout;
+	int fd, maxfd, ret, signo;
+	sigset_t mask;
 	fd_set rfds;
 
-	timeout.tv_sec = REPORT_INTERVAL;
-	timeout.tv_usec = 0;
+	seltimeout.tv_sec = REPORT_INTERVAL;
+	seltimeout.tv_usec = 0;
+	sigtimeout.tv_sec = 0;
+	sigtimeout.tv_nsec = 0;
+
+	PJDLOG_VERIFY(sigemptyset(&mask) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGHUP) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGINT) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGTERM) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGCHLD) == 0);
 
 	for (;;) {
-		if (sigexit_received) {
-			sigexit_received = false;
-			terminate_workers();
-			exit(EX_OK);
-		}
-		if (sigchld_received) {
-			sigchld_received = false;
-			child_exit();
-		}
-		if (sighup_received) {
-			sighup_received = false;
-			hastd_reload();
+		while ((signo = sigtimedwait(&mask, NULL, &sigtimeout)) != -1) {
+			switch (signo) {
+			case SIGINT:
+			case SIGTERM:
+				sigexit_received = true;
+				terminate_workers();
+				exit(EX_OK);
+				break;
+			case SIGCHLD:
+				child_exit();
+				break;
+			case SIGHUP:
+				hastd_reload();
+				break;
+			default:
+				assert(!"invalid condition");
+			}
 		}
 
 		/* Setup descriptors for select(2). */
 		FD_ZERO(&rfds);
 		maxfd = fd = proto_descriptor(cfg->hc_controlconn);
+		assert(fd >= 0);
 		FD_SET(fd, &rfds);
 		fd = proto_descriptor(cfg->hc_listenconn);
+		assert(fd >= 0);
 		FD_SET(fd, &rfds);
 		maxfd = fd > maxfd ? fd : maxfd;
 		TAILQ_FOREACH(res, &cfg->hc_resources, hr_next) {
 			if (res->hr_event == NULL)
 				continue;
 			fd = proto_descriptor(res->hr_event);
+			assert(fd >= 0);
 			FD_SET(fd, &rfds);
 			maxfd = fd > maxfd ? fd : maxfd;
 		}
 
-		ret = select(maxfd + 1, &rfds, NULL, NULL, &timeout);
+		assert(maxfd + 1 <= (int)FD_SETSIZE);
+		ret = select(maxfd + 1, &rfds, NULL, NULL, &seltimeout);
 		if (ret == 0)
-			hook_check(false);
+			hook_check();
 		else if (ret == -1) {
 			if (errno == EINTR)
 				continue;
@@ -696,6 +686,12 @@ main_loop(void)
 	}
 }
 
+static void
+dummy_sighandler(int sig __unused)
+{
+	/* Nothing to do. */
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -703,6 +699,7 @@ main(int argc, char *argv[])
 	pid_t otherpid;
 	bool foreground;
 	int debuglevel;
+	sigset_t mask;
 
 	g_gate_load();
 
@@ -753,10 +750,17 @@ main(int argc, char *argv[])
 	cfg = yy_config_parse(cfgpath, true);
 	assert(cfg != NULL);
 
-	signal(SIGINT, sighandler);
-	signal(SIGTERM, sighandler);
-	signal(SIGHUP, sighandler);
-	signal(SIGCHLD, sighandler);
+	/*
+	 * Because SIGCHLD is ignored by default, setup dummy handler for it,
+	 * so we can mask it.
+	 */
+	PJDLOG_VERIFY(signal(SIGCHLD, dummy_sighandler) != SIG_ERR);
+	PJDLOG_VERIFY(sigemptyset(&mask) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGHUP) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGINT) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGTERM) == 0);
+	PJDLOG_VERIFY(sigaddset(&mask, SIGCHLD) == 0);
+	PJDLOG_VERIFY(sigprocmask(SIG_SETMASK, &mask, NULL) == 0);
 
 	/* Listen on control address. */
 	if (proto_server(cfg->hc_controladdr, &cfg->hc_controlconn) < 0) {

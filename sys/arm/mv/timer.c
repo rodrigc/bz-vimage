@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/mv/timer.c,v 1.4 2010/07/20 15:48:29 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/mv/timer.c,v 1.5 2010/09/18 13:44:39 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -178,13 +178,13 @@ mv_hardclock(void *arg)
 	struct	mv_timer_softc *sc;
 	uint32_t irq_cause;
 
-	sc = (struct mv_timer_softc *)arg;
-	if (sc->et.et_active)
-		sc->et.et_event_cb(&sc->et, sc->et.et_arg);
-
 	irq_cause = read_cpu_ctrl(BRIDGE_IRQ_CAUSE);
 	irq_cause &= ~(IRQ_TIMER0);
 	write_cpu_ctrl(BRIDGE_IRQ_CAUSE, irq_cause);
+
+	sc = (struct mv_timer_softc *)arg;
+	if (sc->et.et_active)
+		sc->et.et_event_cb(&sc->et, sc->et.et_arg);
 
 	return (FILTER_HANDLED);
 }
@@ -394,6 +394,8 @@ mv_timer_start(struct eventtimer *et,
 	val |= CPU_TIMER0_EN;
 	if (period != NULL)
 		val |= CPU_TIMER0_AUTO;
+	else
+		val &= ~CPU_TIMER0_AUTO;
 	mv_set_timer_control(val);
 	return (0);
 }

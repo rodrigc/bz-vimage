@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fb/vesa.c,v 1.48 2010/09/02 17:22:12 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fb/vesa.c,v 1.49 2010/09/13 19:58:46 jkim Exp $");
 
 #include "opt_vga.h"
 #include "opt_vesa.h"
@@ -804,18 +804,16 @@ vesa_bios_init(void)
 		vbios = x86bios_get_orm(vesa_bios_offs);
 		if (vbios != NULL) {
 			vesa_bios_size = vbios[2] * 512;
-			offs = BIOS_SADDRTOLADDR(vesa_bios_int10);
-			if (offs > vesa_bios_offs &&
-			    offs < vesa_bios_offs + vesa_bios_size) {
+			if (((VESA_BIOS_OFFSET << 12) & 0xffff0000) ==
+			    (vesa_bios_int10 & 0xffff0000) &&
+			    vesa_bios_size > (vesa_bios_int10 & 0xffff)) {
 				vesa_bios = x86bios_alloc(&vesa_bios_offs,
 				    vesa_bios_size, M_WAITOK);
 				memcpy(vesa_bios, vbios, vesa_bios_size);
-				offs = offs - VESA_BIOS_OFFSET + vesa_bios_offs;
-				offs = (X86BIOS_PHYSTOSEG(offs) << 16) +
-				    X86BIOS_PHYSTOOFF(offs);
+				offs = ((vesa_bios_offs << 12) & 0xffff0000) +
+				    (vesa_bios_int10 & 0xffff);
 				x86bios_set_intr(0x10, offs);
-			} else
-				offs = vesa_bios_int10;
+			}
 		}
 		if (vesa_bios == NULL)
 			printf("VESA: failed to shadow video ROM\n");

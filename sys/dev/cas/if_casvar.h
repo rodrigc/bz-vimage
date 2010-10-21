@@ -27,7 +27,7 @@
  *	from: NetBSD: gemvar.h,v 1.8 2002/05/15 02:36:12 matt Exp
  *	from: FreeBSD: if_gemvar.h 177560 2008-03-24 17:23:53Z marius
  *
- * $FreeBSD: src/sys/dev/cas/if_casvar.h,v 1.2 2009/06/24 20:56:06 marius Exp $
+ * $FreeBSD: src/sys/dev/cas/if_casvar.h,v 1.3 2010/10/15 14:52:11 marius Exp $
  */
 
 #ifndef	_IF_CASVAR_H
@@ -153,8 +153,6 @@ struct cas_softc {
 	bus_dma_tag_t	sc_tdmatag;	/* TX bus DMA tag */
 	bus_dma_tag_t	sc_cdmatag;	/* control data bus DMA tag */
 	bus_dmamap_t	sc_dmamap;	/* bus DMA handle */
-
-	u_int		sc_phyad;	/* PHY to use or -1 for any */
 
 	u_int		sc_variant;
 #define	CAS_UNKNOWN	0		/* don't know */

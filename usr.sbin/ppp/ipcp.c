@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/ppp/ipcp.c,v 1.125 2009/04/20 14:38:48 bz Exp $
+ * $FreeBSD: src/usr.sbin/ppp/ipcp.c,v 1.126 2010/10/18 07:28:53 glebius Exp $
  */
 
 #include <sys/param.h>
@@ -319,8 +319,11 @@ ipcp_WriteDNS(struct ipcp *ipcp)
                  strerror(errno));
       return 0;
     }
-  } else
+  } else {
     umask(mask);
+    log_Printf(LogERROR,"fopen(\"%s\", \"w\") failed: %s\n", _PATH_RESCONF,
+                 strerror(errno));
+  }
 
   return 1;
 }

@@ -62,7 +62,7 @@
  * THIS SOFTWARE, EVEN IF WHISTLE COMMUNICATIONS IS ADVISED OF THE POSSIBILITY
  * OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_gif_demux.c,v 1.11 2008/10/23 15:53:51 des Exp $
+ * $FreeBSD: src/sys/netgraph/ng_gif_demux.c,v 1.12 2010/10/13 17:21:21 rpaulo Exp $
  */
 
 /*
@@ -391,7 +391,7 @@ ng_gif_demux_disconnect(hook_p hook)
 	else {
 		iffam = get_iffam_from_hook(priv, hook);
 		if (iffam == NULL)
-			panic(__func__);
+			panic("%s", __func__);
 		*get_hook_from_iffam(priv, iffam) = NULL;
 	}
 

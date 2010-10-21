@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/busdma_machdep.c,v 1.51 2010/06/11 03:00:32 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/busdma_machdep.c,v 1.52 2010/09/29 21:53:11 neel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -455,7 +455,7 @@ bus_dmamem_alloc(bus_dma_tag_t dmat, void** vaddr, int flags,
 	}
 	if (*vaddr == NULL)
 		return (ENOMEM);
-	else if ((uintptr_t)*vaddr & (dmat->alignment - 1))
+	else if (vtophys(*vaddr) & (dmat->alignment - 1))
 		printf("bus_dmamem_alloc failed to align memory properly.\n");
 	return (0);
 }

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/xen_machdep.c,v 1.22 2010/02/21 01:13:34 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/xen_machdep.c,v 1.23 2010/10/19 20:53:30 gibbs Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -722,7 +722,9 @@ char *bootmem_start, *bootmem_current, *bootmem_end;
 pteinfo_t *pteinfo_list;
 void initvalues(start_info_t *startinfo);
 
-struct ringbuf_head *xen_store; /* XXX move me */
+struct xenstore_domain_interface;
+extern struct xenstore_domain_interface *xen_store;
+
 char *console_page;
 
 void *
@@ -1082,7 +1084,7 @@ initvalues(start_info_t *startinfo)
 	HYPERVISOR_shared_info = (shared_info_t *)cur_space;
 	cur_space += PAGE_SIZE;
 
-	xen_store = (struct ringbuf_head *)cur_space;
+	xen_store = (struct xenstore_domain_interface *)cur_space;
 	cur_space += PAGE_SIZE;
 
 	console_page = (char *)cur_space;

@@ -10,7 +10,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/create/main.c,v 1.48 2010/04/23 11:07:43 flz Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/create/main.c,v 1.49 2010/10/12 10:04:44 flz Exp $");
 
 #include <getopt.h>
 #include <err.h>
@@ -48,7 +48,7 @@ enum zipper	Zipper  = BZIP2;
 
 static void usage(void);
 
-static char opts[] = "EGYNnORhjvxyzf:p:P:C:c:d:i:I:k:K:r:t:X:D:m:s:S:o:b:";
+static char opts[] = "EGYNnORhjJvxyzf:p:P:C:c:d:i:I:k:K:r:t:X:D:m:s:S:o:b:";
 static struct option longopts[] = {
 	{ "backup",	required_argument,	NULL,		'b' },
 	{ "extended",	no_argument,		NULL,		'E' },
@@ -188,6 +188,10 @@ main(int argc, char **argv)
 
 	case 'z':
 	    Zipper = GZIP;
+	    break;
+
+	case 'J':
+	    Zipper = XZ;
 	    break;
 
 	case 'b':

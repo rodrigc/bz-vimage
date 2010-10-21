@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-nvidia.c,v 1.13 2010/07/10 15:36:27 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-nvidia.c,v 1.14 2010/10/18 11:30:13 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -281,7 +281,7 @@ ata_nvidia_status(device_t dev)
 
     /* do we have any PHY events ? */
     if (istatus & (0x0c << shift))
-	ata_sata_phy_check_events(dev);
+	ata_sata_phy_check_events(dev, -1);
 
     /* clear interrupt(s) */
     if (ctlr->chip->cfg1 & NVQ)

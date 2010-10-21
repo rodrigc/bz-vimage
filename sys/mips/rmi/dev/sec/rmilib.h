@@ -25,7 +25,8 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- *
+ * 
+ * $FreeBSD: src/sys/mips/rmi/dev/sec/rmilib.h,v 1.3 2010/09/16 20:23:22 jchandra Exp $
  * RMI_BSD
  */
 
@@ -33,12 +34,10 @@
 #define _RMILIB_H_
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/sec/rmilib.h,v 1.2 2010/01/11 04:49:44 imp Exp $");
-
 #include <mips/rmi/dev/sec/desc.h>
-#include <mips/xlr/iomap.h>
+#include <mips/rmi/iomap.h>
 
-/*#define XLR_SEC_CMD_DEBUG*/
+/* #define XLR_SEC_CMD_DEBUG */
 
 #ifdef XLR_SEC_CMD_DEBUG
 #define DPRINT  printf

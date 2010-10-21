@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/dev/acpica/acpi_if.m,v 1.10 2010/01/21 21:14:28 jkim Exp $
+# $FreeBSD: src/sys/dev/acpica/acpi_if.m,v 1.11 2010/10/19 19:53:06 jkim Exp $
 #
 
 #include <sys/bus.h>
@@ -123,8 +123,7 @@ METHOD ACPI_STATUS evaluate_object {
 #
 # int *dstate:  if successful, contains the highest valid sleep state
 #
-# Returns:  0 on success, ESRCH if device has no special state, or
-#   some other error value.
+# Returns:  0 on success or some other error value.
 #
 METHOD int pwr_for_sleep {
 	device_t	bus;

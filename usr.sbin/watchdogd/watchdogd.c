@@ -29,8 +29,9 @@
  */
 
 #include <sys/types.h>
-__FBSDID("$FreeBSD: src/usr.sbin/watchdogd/watchdogd.c,v 1.18 2010/07/20 17:42:13 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/watchdogd/watchdogd.c,v 1.19 2010/09/26 01:45:33 emaste Exp $");
 
+#include <sys/mman.h>
 #include <sys/param.h>
 #include <sys/rtprio.h>
 #include <sys/stat.h>
@@ -115,6 +116,8 @@ main(int argc, char *argv[])
 		signal(SIGTERM, sighandler);
 
 		pidfile_write(pfh);
+		if (madvise(0, 0, MADV_PROTECT) != 0)
+			warn("madvise failed");
 
 		watchdog_loop();
 

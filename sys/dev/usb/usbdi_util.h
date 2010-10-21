@@ -21,7 +21,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/usbdi_util.h,v 1.24 2010/09/02 04:39:45 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/usbdi_util.h,v 1.25 2010/10/04 23:18:05 hselasky Exp $
  */
 #ifndef _USB_USBDI_UTIL_H_
 #define _USB_USBDI_UTIL_H_
@@ -51,6 +51,9 @@ struct usb_interface_descriptor *usb_idesc_foreach(
 struct usb_endpoint_descriptor *usb_edesc_foreach(
 	    struct usb_config_descriptor *cd,
 	    struct usb_endpoint_descriptor *ped);
+struct usb_endpoint_ss_comp_descriptor *usb_ed_comp_foreach(
+	    struct usb_config_descriptor *cd,
+	    struct usb_endpoint_ss_comp_descriptor *ped);
 uint8_t usbd_get_no_descriptors(struct usb_config_descriptor *cd,
 	    uint8_t type);
 uint8_t usbd_get_no_alts(struct usb_config_descriptor *cd,

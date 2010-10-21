@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 12/13/93
-# $FreeBSD: src/share/man/man3/Makefile,v 1.52 2010/05/09 14:21:34 jilles Exp $
+# $FreeBSD: src/share/man/man3/Makefile,v 1.53 2010/09/11 09:26:36 davidxu Exp $
 
 .include <bsd.own.mk>
 
@@ -277,6 +277,7 @@ PTHREAD_MLINKS+=pthread_spin_init.3 pthread_spin_destroy.3 \
 PTHREAD_MLINKS+=pthread_switch_add_np.3 pthread_switch_delete_np.3
 PTHREAD_MLINKS+=pthread_testcancel.3 pthread_setcancelstate.3 \
 		pthread_testcancel.3 pthread_setcanceltype.3
+PTHREAD_MLINKS+=pthread_join.3 pthread_timedjoin_np.3
 .endif
 
 .include <bsd.prog.mk>

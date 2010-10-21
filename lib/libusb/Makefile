@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/lib/libusb/Makefile,v 1.8 2010/01/02 09:58:07 ed Exp $
+# $FreeBSD: src/lib/libusb/Makefile,v 1.9 2010/10/14 20:38:18 hselasky Exp $
 #
 # Makefile for the FreeBSD specific LibUSB 2.0
 #
@@ -29,6 +29,10 @@ INCS+=		libusb.h
 SRCS+=		libusb10.c
 SRCS+=		libusb10_desc.c
 SRCS+=		libusb10_io.c
+
+.if defined(COMPAT_32BIT)
+CFLAGS+=	-DCOMPAT_32BIT
+.endif
 
 .include <bsd.lib.mk>
 

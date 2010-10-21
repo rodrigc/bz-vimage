@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.16 2010/06/16 14:10:39 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/nexus.c,v 1.17 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -74,7 +74,7 @@ static struct rman mem_rman;
 static	int nexus_probe(device_t);
 static	int nexus_attach(device_t);
 static	int nexus_print_child(device_t, device_t);
-static	device_t nexus_add_child(device_t, int, const char *, int);
+static	device_t nexus_add_child(device_t, u_int, const char *, int);
 static	struct resource *nexus_alloc_resource(device_t, device_t, int, int *,
     u_long, u_long, u_long, u_int);
 static	int nexus_activate_resource(device_t, device_t, int, int,
@@ -166,7 +166,7 @@ nexus_print_child(device_t bus, device_t child)
 }
 
 static device_t
-nexus_add_child(device_t bus, int order, const char *name, int unit)
+nexus_add_child(device_t bus, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct nexus_device *ndev;

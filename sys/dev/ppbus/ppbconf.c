@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ppbus/ppbconf.c,v 1.33 2009/01/26 14:12:12 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ppbus/ppbconf.c,v 1.34 2010/09/10 11:19:03 avg Exp $");
 #include "opt_ppb_1284.h"
 
 #include <sys/param.h>
@@ -90,7 +90,7 @@ ppbus_probe(device_t dev)
  * Add a ppbus device, allocate/initialize the ivars
  */
 static device_t
-ppbus_add_child(device_t dev, int order, const char *name, int unit)
+ppbus_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	struct ppb_device *ppbdev;
 	device_t child;

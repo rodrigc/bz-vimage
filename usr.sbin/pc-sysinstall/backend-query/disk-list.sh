@@ -23,10 +23,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-list.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-list.sh,v 1.5 2010/09/08 20:10:24 imp Exp $
 
 ARGS=$1
 FLAGS_MD=""
+FLAGS_CD=""
 FLAGS_VERBOSE=""
 
 shift
@@ -38,6 +39,9 @@ do
       ;;
     -v)
       FLAGS_VERBOSE=1
+      ;;
+    -c)
+      FLAGS_CD=1
       ;;
   esac
   shift
@@ -62,9 +66,12 @@ do
   DEV="${i}"
 
   # Make sure we don't find any cd devices
-  case "${DEV}" in
-    acd[0-9]*|cd[0-9]*|scd[0-9]*) continue ;;
-  esac
+  if [ -z "${FLAGS_CD}" ]
+  then
+    case "${DEV}" in
+      acd[0-9]*|cd[0-9]*|scd[0-9]*) continue ;;
+    esac
+  fi
 
   # Check the dmesg output for some more info about this device
   NEWLINE=$(dmesg | sed -n "s/^$DEV: .*<\(.*\)>.*$/ <\1>/p" | head -n 1)

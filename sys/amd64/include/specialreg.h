@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)specialreg.h	7.1 (Berkeley) 5/9/91
- * $FreeBSD: src/sys/amd64/include/specialreg.h,v 1.65 2010/07/29 19:08:22 delphij Exp $
+ * $FreeBSD: src/sys/amd64/include/specialreg.h,v 1.66 2010/10/05 15:31:56 kib Exp $
  */
 
 #ifndef _MACHINE_SPECIALREG_H_
@@ -126,6 +126,7 @@
 #define	CPUID2_CX16	0x00002000
 #define	CPUID2_XTPR	0x00004000
 #define	CPUID2_PDCM	0x00008000
+#define	CPUID2_PCID	0x00020000
 #define	CPUID2_DCA	0x00040000
 #define	CPUID2_SSE41	0x00080000
 #define	CPUID2_SSE42	0x00100000

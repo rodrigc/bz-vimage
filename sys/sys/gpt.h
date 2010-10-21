@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/gpt.h,v 1.14 2009/12/14 20:04:28 rpaulo Exp $
+ * $FreeBSD: src/sys/sys/gpt.h,v 1.15 2010/09/24 19:31:08 pjd Exp $
  */
 
 #ifndef _SYS_GPT_H_
@@ -65,6 +65,9 @@ struct gpt_ent {
 	uint64_t	ent_lba_end;
 	uint64_t	ent_attr;
 #define	GPT_ENT_ATTR_PLATFORM		(1ULL << 0)
+#define	GPT_ENT_ATTR_BOOTME		(1ULL << 59)
+#define	GPT_ENT_ATTR_BOOTONCE		(1ULL << 58)
+#define	GPT_ENT_ATTR_BOOTFAILED		(1ULL << 57)
 	uint16_t	ent_name[36];		/* UTF-16. */
 };
 

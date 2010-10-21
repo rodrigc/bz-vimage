@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)sysctl.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/sys/sys/sysctl.h,v 1.179 2010/07/10 14:34:37 nwhitehorn Exp $
+ * $FreeBSD: src/sys/sys/sysctl.h,v 1.182 2010/09/16 16:13:12 mdf Exp $
  */
 
 #ifndef _SYS_SYSCTL_H_
@@ -710,6 +710,9 @@ void	sysctl_lock(void);
 void	sysctl_unlock(void);
 int	sysctl_wire_old_buffer(struct sysctl_req *req, size_t len);
 
+struct sbuf;
+struct sbuf	*sbuf_new_for_sysctl(struct sbuf *, char *, int,
+		    struct sysctl_req *);
 #else	/* !_KERNEL */
 #include <sys/cdefs.h>
 

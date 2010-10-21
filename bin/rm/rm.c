@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)rm.c	8.5 (Berkeley) 4/18/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/rm/rm.c,v 1.60 2009/05/30 10:42:37 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/rm/rm.c,v 1.61 2010/10/08 15:20:20 uqs Exp $");
 
 #include <sys/stat.h>
 #include <sys/param.h>
@@ -402,8 +402,8 @@ rm_file(char **argv)
  * This is a cheap way to *really* delete files.  Note that only regular
  * files are deleted, directories (and therefore names) will remain.
  * Also, this assumes a fixed-block file system (like FFS, or a V7 or a
- * System V file system).  In a logging file system, you'll have to have
- * kernel support.
+ * System V file system).  In a logging or COW file system, you'll have to
+ * have kernel support.
  */
 int
 rm_overwrite(char *file, struct stat *sbp)

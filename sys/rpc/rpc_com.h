@@ -28,7 +28,7 @@
  * 2550 Garcia Avenue
  * Mountain View, California  94043
  *
- * $FreeBSD: src/sys/rpc/rpc_com.h,v 1.2 2008/11/03 10:38:00 dfr Exp $
+ * $FreeBSD: src/sys/rpc/rpc_com.h,v 1.3 2010/09/24 15:01:45 attilio Exp $
  */
 /*
  * Copyright (c) 1986 - 1991 by Sun Microsystems, Inc.
@@ -111,10 +111,6 @@ extern struct netbuf *__rpc_uaddr2taddr_af(int, const char *);
 extern int __rpc_seman2socktype(int);
 extern int __rpc_socktype2seman(int);
 extern int __rpc_sockisbound(struct socket*);
-extern const char *__rpc_inet_ntop(int af, const void * __restrict src,
-    char * __restrict dst, socklen_t size);
-extern int __rpc_inet_pton(int af, const char * __restrict src,
-    void * __restrict dst);
 extern int bindresvport(struct socket *so, struct sockaddr *sa);
 
 struct xucred;

@@ -54,7 +54,7 @@
 #define _MFIREG_H
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mfi/mfireg.h,v 1.13 2009/08/13 23:18:45 scottl Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mfi/mfireg.h,v 1.14 2010/10/21 10:38:52 pluknet Exp $");
 
 /*
  * MegaRAID SAS MFI firmware definitions
@@ -975,7 +975,9 @@ enum mfi_pd_state {
 	MFI_PD_STATE_OFFLINE = 0x10,
 	MFI_PD_STATE_FAILED = 0x11,
 	MFI_PD_STATE_REBUILD = 0x14,
-	MFI_PD_STATE_ONLINE = 0x18
+	MFI_PD_STATE_ONLINE = 0x18,
+	MFI_PD_STATE_COPYBACK = 0x20,
+	MFI_PD_STATE_SYSTEM = 0x40
 };
 
 union mfi_ld_ref {

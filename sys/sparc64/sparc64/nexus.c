@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/nexus.c,v 1.29 2010/04/26 18:44:30 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/nexus.c,v 1.30 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -258,7 +258,7 @@ nexus_attach(device_t dev)
 }
 
 static device_t
-nexus_add_child(device_t dev, int order, const char *name, int unit)
+nexus_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t cdev;
 	struct nexus_devinfo *ndi;

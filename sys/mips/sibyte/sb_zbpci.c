@@ -53,7 +53,7 @@
 #include "sb_bus_space.h"
 #include "sb_scd.h"
 
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbpci.c,v 1.6 2010/08/06 07:03:22 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbpci.c,v 1.7 2010/09/22 02:26:07 neel Exp $");
 
 static struct {
 	vm_offset_t vaddr;
@@ -349,7 +349,7 @@ zbpci_config_space_va(int bus, int slot, int func, int reg, int bytes)
 		pa_page = pa & ~(PAGE_SIZE - 1);
 		if (zbpci_config_space[cpu].paddr != pa_page) {
 			pmap_kremove(va_page);
-			pmap_kenter(va_page, pa_page);
+			pmap_kenter_attr(va_page, pa_page, PTE_C_UNCACHED);
 			zbpci_config_space[cpu].paddr = pa_page;
 		}
 		return (va_page + (pa - pa_page));

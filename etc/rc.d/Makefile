@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/rc.d/Makefile,v 1.105 2010/04/16 16:49:42 rpaulo Exp $
+# $FreeBSD: src/etc/rc.d/Makefile,v 1.106 2010/09/24 19:53:55 pjd Exp $
 
 .include <bsd.own.mk>
 
@@ -11,7 +11,7 @@ FILES=	DAEMON FILESYSTEMS LOGIN NETWORKING SERVERS \
 	dmesg dumpon \
 	encswap \
 	faith fsck ftp-proxy ftpd \
-	gbde geli geli2 gssd \
+	gbde geli geli2 gptboot gssd \
 	hastd hcsecd \
 	hostapd hostid hostid_save hostname \
 	inetd initrandom \

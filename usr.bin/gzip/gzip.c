@@ -31,7 +31,7 @@
 #ifndef lint
 __COPYRIGHT("@(#) Copyright (c) 1997, 1998, 2003, 2004, 2006\
  Matthew R. Green.  All rights reserved.");
-__RCSID("$FreeBSD: src/usr.bin/gzip/gzip.c,v 1.19 2010/06/10 20:59:28 delphij Exp $");
+__RCSID("$FreeBSD: src/usr.bin/gzip/gzip.c,v 1.21 2010/10/16 15:24:04 bcr Exp $");
 #endif /* not lint */
 
 /*
@@ -916,6 +916,8 @@ gz_uncompress(int in, int out, char *pre, size_t prelen, off_t *gsizep,
 			switch (error) {
 			/* Z_BUF_ERROR goes with Z_FINISH... */
 			case Z_BUF_ERROR:
+				if (z.avail_out > 0 && !done_reading)
+					continue;
 			case Z_STREAM_END:
 			case Z_OK:
 				break;
@@ -1160,7 +1162,7 @@ unlink_input(const char *file, const struct stat *sb)
 	if (kflag)
 		return;
 	if (stat(file, &nsb) != 0)
-		/* Must be gone alrady */
+		/* Must be gone already */
 		return;
 	if (nsb.st_dev != sb->st_dev || nsb.st_ino != sb->st_ino)
 		/* Definitely a different file */

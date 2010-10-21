@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.34 2010/09/02 03:28:03 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.36 2010/10/14 22:14:55 hselasky Exp $	*/
 
 /*-
  * Copyright (c) 2005-2007 Damien Bergamini <damien.bergamini@free.fr>
@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.34 2010/09/02 03:28:03 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_rum.c,v 1.36 2010/10/14 22:14:55 hselasky Exp $");
 
 /*-
  * Ralink Technology RT2501USB/RT2601USB chipset driver
@@ -118,6 +118,8 @@ static const struct usb_device_id rum_devs[] = {
     RUM_DEV(HUAWEI3COM, WUB320G),
     RUM_DEV(MELCO, G54HP),
     RUM_DEV(MELCO, SG54HP),
+    RUM_DEV(MELCO, WLRUCG),
+    RUM_DEV(MELCO, WLRUCGAOSS),
     RUM_DEV(MSI, RT2573_1),
     RUM_DEV(MSI, RT2573_2),
     RUM_DEV(MSI, RT2573_3),
@@ -1819,8 +1821,12 @@ rum_update_promisc(struct ifnet *ifp)
 static void
 rum_update_mcast(struct ifnet *ifp)
 {
+	static int warning_printed;
 
-	/* XXX do nothing? */
+	if (warning_printed == 0) {
+		if_printf(ifp, "need to implement %s\n", __func__);
+		warning_printed = 1;
+	}
 }
 
 static const char *

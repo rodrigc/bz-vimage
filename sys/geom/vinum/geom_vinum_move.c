@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_move.c,v 1.6 2009/10/05 08:44:31 lulf Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/vinum/geom_vinum_move.c,v 1.7 2010/10/01 06:12:13 lulf Exp $");
 
 #include <sys/libkern.h>
 #include <sys/malloc.h>
@@ -115,13 +115,13 @@ gv_move_sd(struct gv_softc *sc, struct gv_sd *cursd,
 
 	if ((gv_consumer_is_open(d->consumer) ||
 	    gv_consumer_is_open(destination->consumer)) &&
-	    !(flags && GV_FLAG_F)) {
+	    !(flags & GV_FLAG_F)) {
 		G_VINUM_DEBUG(0, "consumers on current and destination drive "
 		    " still open");
 		return (GV_ERR_ISBUSY);
 	}
 
-	if (!(flags && GV_FLAG_F)) {
+	if (!(flags & GV_FLAG_F)) {
 		G_VINUM_DEBUG(1, "-f flag not passed; move would be "
 		    "destructive");
 		return (GV_ERR_INVFLAG);

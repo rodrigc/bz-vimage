@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/ar/ar.h,v 1.5 2010/05/17 09:37:59 kaiw Exp $
+ * $FreeBSD: src/usr.bin/ar/ar.h,v 1.6 2010/10/09 05:31:08 kientzle Exp $
  */
 
 #define	BSDAR_VERSION	"1.1.0"
@@ -43,6 +43,7 @@
 #define AR_U	0x0200		/* only extract or update newer members.*/
 #define AR_V	0x0400		/* verbose mode */
 #define AR_Z	0x0800		/* gzip compression */
+#define AR_D	0x1000		/* insert dummy mode, mtime, uid and gid */
 
 #define DEF_BLKSZ 10240		/* default block size */
 

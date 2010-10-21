@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/bwi.4,v 1.3 2010/08/16 12:37:17 joel Exp $
+.\" $FreeBSD: src/share/man/man4/bwi.4,v 1.5 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd June 30, 2010
 .Dt BWI 4
@@ -90,9 +90,22 @@ driver supports Broadcom BCM43xx based wireless devices, including:
 .It "TRENDnet TEW-401PCplus	BCM4306	CardBus	b/g"
 .It "US Robotics 5411	BCM4318	CardBus	b/g"
 .El
+.Pp
+The 
+.Nm 
+driver uses the older v3 version of Broadcom's firmware.
+While this older firmware does support most BCM43xx parts, the
+.Xr bwn 4 
+driver works better for the newer chips it supports.
+You must use the 
+.Nm 
+driver if you are using older Broadcom chipsets (BCM4301, BCM4303 and
+BCM4306 rev 2).
+The v4 version of the firmware that 
+.Xr bwn 4 
+uses does not support these chips.
 .Sh EXAMPLES
 Join an existing BSS network (i.e., connect to an access point):
-.Pp
 .Bd -literal -offset indent
 ifconfig wlan create wlandev bwi0 inet 192.168.0.20 \e
     netmask 0xffffff00

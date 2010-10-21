@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_ratectl.c,v 1.1 2010/04/07 15:29:13 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_ratectl.c,v 1.2 2010/10/19 18:49:26 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -38,6 +38,14 @@ __FBSDID("$FreeBSD: src/sys/net80211/ieee80211_ratectl.c,v 1.1 2010/04/07 15:29:
 #include <net80211/ieee80211_ratectl.h>
 
 static const struct ieee80211_ratectl *ratectls[IEEE80211_RATECTL_MAX];
+
+static const char *ratectl_modnames[IEEE80211_RATECTL_MAX] = {
+	[IEEE80211_RATECTL_AMRR]	= "wlan_amrr",
+	[IEEE80211_RATECTL_RSSADAPT]	= "wlan_rssadapt",
+	[IEEE80211_RATECTL_ONOE]	= "wlan_onoe",
+	[IEEE80211_RATECTL_SAMPLE]	= "wlan_sample",
+	[IEEE80211_RATECTL_NONE]	= "wlan_none",
+};
 
 MALLOC_DEFINE(M_80211_RATECTL, "80211ratectl", "802.11 rate control");
 
@@ -62,5 +70,15 @@ ieee80211_ratectl_set(struct ieee80211vap *vap, int type)
 {
 	if (type >= IEEE80211_RATECTL_MAX)
 		return;
+	if (ratectls[type] == NULL) {
+		ieee80211_load_module(ratectl_modnames[type]);
+		if (ratectls[type] == NULL) {
+			IEEE80211_DPRINTF(vap, IEEE80211_MSG_RATECTL,
+			    "%s: unable to load algo %u, module %s\n",
+			    __func__, type, ratectl_modnames[type]);
+			vap->iv_rate = ratectls[IEEE80211_RATECTL_NONE];
+			return;
+		}
+	}
 	vap->iv_rate = ratectls[type];
 }

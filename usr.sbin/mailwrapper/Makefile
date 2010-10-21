@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/mailwrapper/Makefile,v 1.16 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/mailwrapper/Makefile,v 1.17 2010/10/12 21:01:26 markm Exp $
 
 .include <bsd.own.mk>
 
@@ -20,6 +20,10 @@ SYMLINKS= 	${BINDIR}/mailwrapper /usr/sbin/sendmail  \
 .if ${MK_MAILWRAPPER} == "no" && ${MK_SENDMAIL} != "no"
 SYMLINKS+=	/usr/libexec/sendmail/sendmail ${BINDIR}/mailwrapper
 .endif
+.endif
+
+.if ${MK_MAILWRAPPER} != "no" && ${MK_SENDMAIL} == "no"
+SYMLINKS+=	${BINDIR}/mailwrapper /bin/rmail
 .endif
 
 .if ${MK_MAILWRAPPER} != "no"

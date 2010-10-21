@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.9 2010/08/24 13:02:22 kib Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/sys/stack_protector.c,v 1.10 2010/10/13 16:57:06 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -92,7 +92,7 @@ __fail(const char *msg)
 	(void)sigprocmask(SIG_BLOCK, &mask, NULL);
 
 	/* This may fail on a chroot jail... */
-	syslog(LOG_CRIT, msg);
+	syslog(LOG_CRIT, "%s", msg);
 
 	(void)memset(&sa, 0, sizeof(sa));
 	(void)sigemptyset(&sa.sa_mask);

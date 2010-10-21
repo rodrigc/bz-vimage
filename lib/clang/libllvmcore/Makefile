@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvmcore/Makefile,v 1.4 2010/07/22 19:09:34 rpaulo Exp $
+# $FreeBSD: src/lib/clang/libllvmcore/Makefile,v 1.5 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmcore
 
@@ -27,6 +27,7 @@ SRCS=	AsmWriter.cpp \
 	Module.cpp \
 	Pass.cpp \
 	PassManager.cpp \
+	PassRegistry.cpp \
 	PrintModulePass.cpp \
 	Type.cpp \
 	TypeSymbolTable.cpp \

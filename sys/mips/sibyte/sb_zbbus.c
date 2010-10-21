@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbbus.c,v 1.4 2010/02/09 06:24:43 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_zbbus.c,v 1.5 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -402,7 +402,7 @@ zbbus_setup_intr(device_t dev, device_t child, struct resource *irq, int flags,
 }
 
 static device_t
-zbbus_add_child(device_t bus, int order, const char *name, int unit)
+zbbus_add_child(device_t bus, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct zbbus_devinfo *dinfo;

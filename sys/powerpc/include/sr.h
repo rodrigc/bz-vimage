@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/sr.h,v 1.7 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/sr.h,v 1.8 2010/09/16 03:46:17 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_SR_H_
@@ -42,7 +42,11 @@
 #define	SR_VSID_MASK	0x00ffffff	/* Virtual Segment ID mask */
 
 /* Kernel segment register usage */
+#ifdef __powerpc64__
+#define	USER_SR		63
+#else
 #define	USER_SR		12
+#endif
 #define	KERNEL_SR	13
 #define	KERNEL2_SR	14
 #define	KERNEL3_SR	15

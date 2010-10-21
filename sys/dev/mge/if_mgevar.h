@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/mge/if_mgevar.h,v 1.3 2010/06/13 13:28:53 raj Exp $
+ * $FreeBSD: src/sys/dev/mge/if_mgevar.h,v 1.4 2010/10/15 14:52:11 marius Exp $
  */
 
 #ifndef __IF_MGE_H__
@@ -103,8 +103,6 @@ struct mge_softc {
 	uint32_t	mge_tx_tok_cnt;
 	uint16_t	mge_mtu;
 	int		mge_ver;
-
-	int		phyaddr;
 };
 
 

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)in.h	8.3 (Berkeley) 1/3/94
- * $FreeBSD: src/sys/netinet/in.h,v 1.116 2010/08/19 11:31:03 anchie Exp $
+ * $FreeBSD: src/sys/netinet/in.h,v 1.117 2010/09/24 15:01:45 attilio Exp $
  */
 
 #ifndef _NETINET_IN_H_
@@ -726,6 +726,8 @@ int	 in_localip(struct in_addr);
 int	 inet_aton(const char *, struct in_addr *); /* in libkern */
 char	*inet_ntoa(struct in_addr); /* in libkern */
 char	*inet_ntoa_r(struct in_addr ina, char *buf); /* in libkern */
+char	*inet_ntop(int, const void *, char *, socklen_t); /* in libkern */
+int	 inet_pton(int af, const char *, void *); /* in libkern */
 void	 in_ifdetach(struct ifnet *, int);
 struct in_ifaddr *in_ifawithifp(struct ifnet *, struct in_addr *);
 

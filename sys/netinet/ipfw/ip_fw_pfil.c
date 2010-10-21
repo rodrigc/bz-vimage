@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.17 2010/04/19 16:17:30 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.18 2010/09/28 23:23:23 luigi Exp $");
 
 #if !defined(KLD_MODULE)
 #include "opt_ipfw.h"
@@ -231,6 +231,11 @@ again:
 		break;
 
 	case IP_FW_NAT:
+		/* honor one-pass in case of successful nat */
+		if (V_fw_one_pass)
+			break; /* ret is already 0 */
+		goto again;
+
 	case IP_FW_REASS:
 		goto again;		/* continue with packet */
 	

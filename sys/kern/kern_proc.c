@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.302 2010/08/22 11:18:57 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.303 2010/10/08 00:44:53 emaste Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -842,6 +842,7 @@ fill_kinfo_thread(struct thread *td, struct kinfo_proc *kp, int preferthread)
 	struct proc *p;
 
 	p = td->td_proc;
+	kp->ki_tdaddr = td;
 	PROC_LOCK_ASSERT(p, MA_OWNED);
 
 	thread_lock(td);

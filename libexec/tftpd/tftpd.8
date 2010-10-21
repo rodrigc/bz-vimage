@@ -30,7 +30,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	@(#)tftpd.8	8.1 (Berkeley) 6/4/93
-.\" $FreeBSD: src/libexec/tftpd/tftpd.8,v 1.25 2010/05/04 06:19:19 imp Exp $
+.\" $FreeBSD: src/libexec/tftpd/tftpd.8,v 1.26 2010/10/06 18:20:39 delphij Exp $
 .\"
 .Dd September 14, 2000
 .Dt TFTPD 8
@@ -245,14 +245,14 @@ and the
 and
 .Fl W
 options were introduced in
-.Fx 7 .
+.Fx 7.4 .
 .Pp
 Support for Timeout Interval and Transfer Size Options (RFC2349)
 was introduced in
 .Fx 5.0 ,
 support for the TFTP Blocksize Option (RFC2348) and the blksize2 option
 was introduced in
-.Fx 7 .
+.Fx 7.4 .
 .Sh BUGS
 Files larger than 33488896 octets (65535 blocks) cannot be transferred
 without client and server supporting blocksize negotiation (RFC2348).

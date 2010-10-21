@@ -26,11 +26,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_exit.c,v 1.34 2010/09/01 02:18:33 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_exit.c,v 1.43 2010/09/30 12:59:56 davidxu Exp $
  */
 
 #include "namespace.h"
 #include <errno.h>
+#ifdef _PTHREAD_FORCED_UNWIND
+#include <dlfcn.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -43,7 +46,129 @@
 
 void	_pthread_exit(void *status);
 
+static void	exit_thread(void) __dead2;
+
 __weak_reference(_pthread_exit, pthread_exit);
+
+#ifdef _PTHREAD_FORCED_UNWIND
+static int message_printed;
+
+static void thread_unwind(void) __dead2;
+#ifdef PIC
+static void thread_uw_init(void);
+static _Unwind_Reason_Code thread_unwind_stop(int version,
+	_Unwind_Action actions,
+	int64_t exc_class,
+	struct _Unwind_Exception *exc_obj,
+	struct _Unwind_Context *context, void *stop_parameter);
+/* unwind library pointers */
+static _Unwind_Reason_Code (*uwl_forcedunwind)(struct _Unwind_Exception *,
+	_Unwind_Stop_Fn, void *);
+static unsigned long (*uwl_getcfa)(struct _Unwind_Context *);
+
+static void
+thread_uw_init(void)
+{
+	static int inited = 0;
+	Dl_info dlinfo;
+	void *handle;
+	void *forcedunwind, *getcfa;
+
+	if (inited)
+	    return;
+	handle = RTLD_DEFAULT;
+	if ((forcedunwind = dlsym(handle, "_Unwind_ForcedUnwind")) != NULL) {
+	    if (dladdr(forcedunwind, &dlinfo)) {
+		/*
+		 * Make sure the address is always valid by holding the library,
+		 * also assume functions are in same library.
+		 */
+		if ((handle = dlopen(dlinfo.dli_fname, RTLD_LAZY)) != NULL) {
+		    forcedunwind = dlsym(handle, "_Unwind_ForcedUnwind");
+		    getcfa = dlsym(handle, "_Unwind_GetCFA");
+		    if (forcedunwind != NULL && getcfa != NULL) {
+			uwl_getcfa = getcfa;
+			atomic_store_rel_ptr((volatile void *)&uwl_forcedunwind,
+				(uintptr_t)forcedunwind);
+		    } else {
+			dlclose(handle);
+		    }
+		}
+	    }
+	}
+	inited = 1;
+}
+
+_Unwind_Reason_Code
+_Unwind_ForcedUnwind(struct _Unwind_Exception *ex, _Unwind_Stop_Fn stop_func,
+	void *stop_arg)
+{
+	return (*uwl_forcedunwind)(ex, stop_func, stop_arg);
+}
+
+unsigned long
+_Unwind_GetCFA(struct _Unwind_Context *context)
+{
+	return (*uwl_getcfa)(context);
+}
+#else
+#pragma weak _Unwind_GetCFA
+#pragma weak _Unwind_ForcedUnwind
+#endif /* PIC */
+
+static void
+thread_unwind_cleanup(_Unwind_Reason_Code code, struct _Unwind_Exception *e)
+{
+	/*
+	 * Specification said that _Unwind_Resume should not be used here,
+	 * instead, user should rethrow the exception. For C++ user, they
+	 * should put "throw" sentence in catch(...) block.
+	 */
+	PANIC("exception should be rethrown");
+}
+
+static _Unwind_Reason_Code
+thread_unwind_stop(int version, _Unwind_Action actions,
+	int64_t exc_class,
+	struct _Unwind_Exception *exc_obj,
+	struct _Unwind_Context *context, void *stop_parameter)
+{
+	struct pthread *curthread = _get_curthread();
+	struct pthread_cleanup *cur;
+	uintptr_t cfa;
+	int done = 0;
+
+	/* XXX assume stack grows down to lower address */
+
+	cfa = _Unwind_GetCFA(context);
+	if (actions & _UA_END_OF_STACK ||
+	    cfa >= (uintptr_t)curthread->unwind_stackend) {
+		done = 1;
+	}
+
+	while ((cur = curthread->cleanup) != NULL &&
+	       (done || (uintptr_t)cur <= cfa)) {
+		__pthread_cleanup_pop_imp(1);
+	}
+
+	if (done)
+		exit_thread(); /* Never return! */
+
+	return (_URC_NO_REASON);
+}
+
+static void
+thread_unwind(void)
+{
+	struct pthread  *curthread = _get_curthread();
+
+	curthread->ex.exception_class = 0;
+	curthread->ex.exception_cleanup = thread_unwind_cleanup;
+	_Unwind_ForcedUnwind(&curthread->ex, thread_unwind_stop, NULL);
+	PANIC("_Unwind_ForcedUnwind returned");
+}
+
+#endif
 
 void
 _thread_exit(const char *fname, int lineno, const char *msg)
@@ -79,7 +204,7 @@ _pthread_exit_mask(void *status, sigset_t *mask)
 
 	/* Flag this thread as exiting. */
 	curthread->cancelling = 1;
-	curthread->cancel_enable = 0;
+	curthread->no_cancel = 1;
 	curthread->cancel_async = 0;
 	curthread->cancel_point = 0;
 	if (mask != NULL)
@@ -95,9 +220,48 @@ _pthread_exit_mask(void *status, sigset_t *mask)
 	
 	/* Save the return value: */
 	curthread->ret = status;
-	while (curthread->cleanup != NULL) {
-		_pthread_cleanup_pop(1);
+#ifdef _PTHREAD_FORCED_UNWIND
+
+#ifdef PIC
+	thread_uw_init();
+#endif /* PIC */
+
+#ifdef PIC
+	if (uwl_forcedunwind != NULL) {
+#else
+	if (_Unwind_ForcedUnwind != NULL) {
+#endif
+		if (curthread->unwind_disabled) {
+			if (message_printed == 0) {
+				message_printed = 1;
+				_thread_printf(2, "Warning: old _pthread_cleanup_push was called, "
+				  	"stack unwinding is disabled.\n");
+			}
+			goto cleanup;
+		}
+		thread_unwind();
+
+	} else {
+cleanup:
+		while (curthread->cleanup != NULL) {
+			__pthread_cleanup_pop_imp(1);
+		}
+		exit_thread();
 	}
+
+#else
+	while (curthread->cleanup != NULL) {
+		__pthread_cleanup_pop_imp(1);
+	}
+
+	exit_thread();
+#endif /* _PTHREAD_FORCED_UNWIND */
+}
+
+static void
+exit_thread(void)
+{
+	struct pthread *curthread = _get_curthread();
 
 	/* Check if there is thread specific data: */
 	if (curthread->specific != NULL) {
@@ -108,37 +272,33 @@ _pthread_exit_mask(void *status, sigset_t *mask)
 	if (!_thr_isthreaded())
 		exit(0);
 
-	THREAD_LIST_LOCK(curthread);
-	_thread_active_threads--;
-	if (_thread_active_threads == 0) {
-		THREAD_LIST_UNLOCK(curthread);
+	if (atomic_fetchadd_int(&_thread_active_threads, -1) == 1) {
 		exit(0);
 		/* Never reach! */
 	}
-	THREAD_LIST_UNLOCK(curthread);
 
 	/* Tell malloc that the thread is exiting. */
 	_malloc_thread_cleanup();
 
-	THREAD_LIST_LOCK(curthread);
 	THR_LOCK(curthread);
 	curthread->state = PS_DEAD;
 	if (curthread->flags & THR_FLAGS_NEED_SUSPEND) {
 		curthread->cycle++;
 		_thr_umtx_wake(&curthread->cycle, INT_MAX, 0);
 	}
-	THR_UNLOCK(curthread);
+	if (!curthread->force_exit && SHOULD_REPORT_EVENT(curthread, TD_DEATH))
+		_thr_report_death(curthread);
 	/*
 	 * Thread was created with initial refcount 1, we drop the
 	 * reference count to allow it to be garbage collected.
 	 */
 	curthread->refcount--;
-	if (curthread->tlflags & TLFLAGS_DETACHED)
-		THR_GCLIST_ADD(curthread);
-	THREAD_LIST_UNLOCK(curthread);
-	if (!curthread->force_exit && SHOULD_REPORT_EVENT(curthread, TD_DEATH))
-		_thr_report_death(curthread);
+	_thr_try_gc(curthread, curthread); /* thread lock released */
 
+#if defined(_PTHREADS_INVARIANTS)
+	if (THR_IN_CRITICAL(curthread))
+		PANIC("thread exits with resources held!");
+#endif
 	/*
 	 * Kernel will do wakeup at the address, so joiner thread
 	 * will be resumed if it is sleeping at the address.

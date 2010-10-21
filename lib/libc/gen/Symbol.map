@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/libc/gen/Symbol.map,v 1.35 2010/08/23 15:38:02 kib Exp $
+ * $FreeBSD: src/lib/libc/gen/Symbol.map,v 1.36 2010/09/25 01:57:47 davidxu Exp $
  */
 
 FBSD_1.0 {
@@ -403,6 +403,8 @@ FBSDprivate_1.0 {
 	_pthread_attr_setstackaddr;
 	_pthread_attr_setstacksize;
 	_pthread_cancel;
+	_pthread_cancel_enter;
+	_pthread_cancel_leave;
 	_pthread_cleanup_pop;
 	_pthread_cleanup_push;
 	_pthread_cond_broadcast;

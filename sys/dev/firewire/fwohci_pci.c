@@ -31,7 +31,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  * 
- * $FreeBSD: src/sys/dev/firewire/fwohci_pci.c,v 1.62 2009/03/09 13:23:54 imp Exp $
+ * $FreeBSD: src/sys/dev/firewire/fwohci_pci.c,v 1.63 2010/09/10 11:19:03 avg Exp $
  */
 
 #define BOUNCE_BUFFER_TEST	0
@@ -487,7 +487,7 @@ fwohci_pci_shutdown(device_t dev)
 }
 
 static device_t
-fwohci_pci_add_child(device_t dev, int order, const char *name, int unit)
+fwohci_pci_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	struct fwohci_softc *sc;
 	device_t child;

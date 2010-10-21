@@ -33,10 +33,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnode.c,v 1.8 2010/08/20 19:46:50 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnode.c,v 1.9 2010/10/19 00:20:00 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
+#include <sys/fcntl.h>
 #include <sys/lock.h>
 #include <sys/malloc.h>
 #include <sys/mount.h>
@@ -53,12 +54,13 @@ __FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clnode.c,v 1.8 2010/08/20 19:46:50 
 #include <fs/nfsclient/nfsmount.h>
 #include <fs/nfsclient/nfs.h>
 
+#include <nfs/nfs_lock.h>
+
 extern struct vop_vector newnfs_vnodeops;
 extern struct buf_ops buf_ops_newnfs;
 MALLOC_DECLARE(M_NEWNFSREQ);
 
 uma_zone_t newnfsnode_zone;
-vop_reclaim_t	*ncl_reclaim_p = NULL;
 
 void
 ncl_nhinit(void)
@@ -238,8 +240,8 @@ ncl_reclaim(struct vop_reclaim_args *ap)
 	 * If the NLM is running, give it a chance to abort pending
 	 * locks.
 	 */
-	if (ncl_reclaim_p)
-		ncl_reclaim_p(ap);
+	if (nfs_reclaim_p != NULL)
+		nfs_reclaim_p(ap);
 
 	/*
 	 * Destroy the vm object and flush associated pages.

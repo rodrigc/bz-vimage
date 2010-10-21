@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.23 2010/06/15 00:25:04 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.24 2010/09/19 01:05:19 rmacklem Exp $");
 
 /*
  * Functions that perform the vfs operations required by the routines in
@@ -2825,7 +2825,7 @@ nfsvno_advlock(struct vnode *vp, int ftype, u_int64_t first,
 	struct flock fl;
 	u_int64_t tlen;
 
-	if (!nfsrv_dolocallocks)
+	if (nfsrv_dolocallocks == 0)
 		return (0);
 	fl.l_whence = SEEK_SET;
 	fl.l_type = ftype;
@@ -2850,8 +2850,12 @@ nfsvno_advlock(struct vnode *vp, int ftype, u_int64_t first,
 	fl.l_sysid = (int)nfsv4_sysid;
 
 	NFSVOPUNLOCK(vp, 0, td);
-	error = VOP_ADVLOCK(vp, (caddr_t)td->td_proc, F_SETLK, &fl,
-	    (F_POSIX | F_REMOTE));
+	if (ftype == F_UNLCK)
+		error = VOP_ADVLOCK(vp, (caddr_t)td->td_proc, F_UNLCK, &fl,
+		    (F_POSIX | F_REMOTE));
+	else
+		error = VOP_ADVLOCK(vp, (caddr_t)td->td_proc, F_SETLK, &fl,
+		    (F_POSIX | F_REMOTE));
 	NFSVOPLOCK(vp, LK_EXCLUSIVE | LK_RETRY, td);
 	return (error);
 }

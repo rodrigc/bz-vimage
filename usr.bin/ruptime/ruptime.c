@@ -42,7 +42,7 @@ static const char sccsid[] = "@(#)ruptime.c	8.2 (Berkeley) 4/5/94";
 #endif /* not lint */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ruptime/ruptime.c,v 1.21 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ruptime/ruptime.c,v 1.22 2010/09/16 22:38:27 obrien Exp $");
 
 #include <sys/param.h>
 
@@ -244,12 +244,12 @@ ruptime(const char *host, int aflg, int (*cmp)(const void *, const void *))
 	for (i = 0; i < (int)nhosts; i++) {
 		hsp = &hs[i];
 		if (ISDOWN(hsp)) {
-			(void)printf("%-12.12s%s\n", hsp->hs_wd->wd_hostname,
+			(void)printf("%-25.25s%s\n", hsp->hs_wd->wd_hostname,
 			    interval(now - hsp->hs_wd->wd_recvtime, "down"));
 			continue;
 		}
 		(void)printf(
-		    "%-12.12s%s,  %4d user%s  load %*.2f, %*.2f, %*.2f\n",
+		    "%-25.25s%s,  %4d user%s  load %*.2f, %*.2f, %*.2f\n",
 		    hsp->hs_wd->wd_hostname,
 		    interval((time_t)hsp->hs_wd->wd_sendtime -
 			(time_t)hsp->hs_wd->wd_boottime, "  up"),

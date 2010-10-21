@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/atmegadci.c,v 1.31 2009/11/26 00:43:17 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/atmegadci.c,v 1.32 2010/10/13 20:37:19 hselasky Exp $");
 
 /*-
  * Copyright (c) 2009 Hans Petter Selasky. All rights reserved.
@@ -1511,23 +1511,12 @@ static const struct usb_device_descriptor atmegadci_devd = {
 	.bcdUSB = {0x00, 0x02},
 	.bDeviceClass = UDCLASS_HUB,
 	.bDeviceSubClass = UDSUBCLASS_HUB,
-	.bDeviceProtocol = UDPROTO_HSHUBSTT,
+	.bDeviceProtocol = UDPROTO_FSHUB,
 	.bMaxPacketSize = 64,
 	.bcdDevice = {0x00, 0x01},
 	.iManufacturer = 1,
 	.iProduct = 2,
 	.bNumConfigurations = 1,
-};
-
-static const struct usb_device_qualifier atmegadci_odevd = {
-	.bLength = sizeof(struct usb_device_qualifier),
-	.bDescriptorType = UDESC_DEVICE_QUALIFIER,
-	.bcdUSB = {0x00, 0x02},
-	.bDeviceClass = UDCLASS_HUB,
-	.bDeviceSubClass = UDSUBCLASS_HUB,
-	.bDeviceProtocol = UDPROTO_FSHUB,
-	.bMaxPacketSize0 = 0,
-	.bNumConfigurations = 0,
 };
 
 static const struct atmegadci_config_desc atmegadci_confd = {
@@ -1547,7 +1536,7 @@ static const struct atmegadci_config_desc atmegadci_confd = {
 		.bNumEndpoints = 1,
 		.bInterfaceClass = UICLASS_HUB,
 		.bInterfaceSubClass = UISUBCLASS_HUB,
-		.bInterfaceProtocol = UIPROTO_HSHUBSTT,
+		.bInterfaceProtocol = 0,
 	},
 	.endpd = {
 		.bLength = sizeof(struct usb_endpoint_descriptor),

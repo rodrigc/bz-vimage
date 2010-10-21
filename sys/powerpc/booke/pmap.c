@@ -49,7 +49,7 @@
   */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.35 2010/07/11 21:08:29 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.36 2010/09/15 00:17:52 grehan Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -384,12 +384,7 @@ static mmu_method_t mmu_booke_methods[] = {
 	{ 0, 0 }
 };
 
-static mmu_def_t booke_mmu = {
-	MMU_TYPE_BOOKE,
-	mmu_booke_methods,
-	0
-};
-MMU_DEF(booke_mmu);
+MMU_DEF(booke_mmu, MMU_TYPE_BOOKE, mmu_booke_methods, 0);
 
 static inline void
 tlb_miss_lock(void)

@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-rgmii.c,v 1.1 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-rgmii.c,v 1.2 2010/09/25 01:18:01 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -136,27 +136,8 @@ static void cvm_oct_rgmii_poll(struct ifnet *ifp)
 
 	link_info = cvmx_helper_link_autoconf(priv->port);
 	priv->link_info = link_info.u64;
+	priv->need_link_update = 1;
 	mtx_unlock_spin(&global_register_lock);
-
-	/* Tell Linux */
-	if (link_info.s.link_up) {
-
-		if_link_state_change(ifp, LINK_STATE_UP);
-		if (priv->queue != -1)
-			DEBUGPRINT("%s: %u Mbps %s duplex, port %2d, queue %2d\n",
-				   if_name(ifp), link_info.s.speed,
-				   (link_info.s.full_duplex) ? "Full" : "Half",
-				   priv->port, priv->queue);
-		else
-			DEBUGPRINT("%s: %u Mbps %s duplex, port %2d, POW\n",
-				   if_name(ifp), link_info.s.speed,
-				   (link_info.s.full_duplex) ? "Full" : "Half",
-				   priv->port);
-	} else {
-
-		if_link_state_change(ifp, LINK_STATE_DOWN);
-		DEBUGPRINT("%s: Link down\n", if_name(ifp));
-	}
 }
 
 

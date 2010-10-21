@@ -1,7 +1,7 @@
 #
 # AR71XX -- Kernel configuration file for FreeBSD/mips for Atheros 71xx systems
 #
-# $FreeBSD: src/sys/mips/conf/AR71XX,v 1.7 2010/05/01 16:39:46 imp Exp $
+# $FreeBSD: src/sys/mips/conf/AR71XX,v 1.8 2010/09/28 03:34:51 gonzo Exp $
 #
 
 ident		AR71XX
@@ -73,6 +73,9 @@ options		USB_EHCI_BIG_ENDIAN_DESC        # handle big-endian byte order
 # options		USB_DEBUG
 device		ohci
 device		ehci
+
+device		gpio
+device		gpioled
 
 device		spibus
 device		ar71xx_spi

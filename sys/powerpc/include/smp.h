@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.9 2010/08/06 15:36:59 jhb Exp $
+ * $FreeBSD: src/sys/powerpc/include/smp.h,v 1.12 2010/09/13 07:25:35 mav Exp $
  */
 
 #ifndef _MACHINE_SMP_H_
@@ -36,6 +36,7 @@
 #define	IPI_RENDEZVOUS		2
 #define	IPI_STOP		3
 #define	IPI_STOP_HARD		3
+#define	IPI_HARDCLOCK		4
 
 #ifndef LOCORE
 

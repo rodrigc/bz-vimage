@@ -25,8 +25,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	from BSDI $Id$
- * $FreeBSD: src/sys/sys/lock.h,v 1.81 2010/05/11 18:24:22 attilio Exp $
+ *	from BSDI Id: mutex.h,v 2.7.2.35 2000/04/27 03:10:26 cp
+ * $FreeBSD: src/sys/sys/lock.h,v 1.82 2010/09/10 06:26:28 obrien Exp $
  */
 
 #ifndef _SYS_LOCK_H_

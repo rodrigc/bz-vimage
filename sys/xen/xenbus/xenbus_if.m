@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/xen/xenbus/xenbus_if.m,v 1.1 2008/12/04 07:59:05 kmacy Exp $
+# $FreeBSD: src/sys/xen/xenbus/xenbus_if.m,v 1.2 2010/10/19 20:53:30 gibbs Exp $
 #
 
 #include <sys/bus.h>
@@ -31,7 +31,15 @@
 
 INTERFACE xenbus;
 
-METHOD int backend_changed {
-	device_t dev;
-	enum xenbus_state newstate;
+/**
+ * \brief Callback triggered when the state of the otherend
+ *        of a split device changes.
+ *
+ * \param _dev       NewBus device_t for this XenBus device whose otherend's
+ *                   state has changed..
+ * \param _newstate  The new state of the otherend device.
+ */
+METHOD int otherend_changed {
+	device_t _dev;
+	enum xenbus_state _newstate;
 };

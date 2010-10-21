@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_init.c,v 1.54 2010/09/01 03:11:21 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_init.c,v 1.58 2010/09/28 04:57:56 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -92,6 +92,12 @@ struct pthread_mutex_attr _pthread_mutexattr_default = {
 	.m_ceiling = 0
 };
 
+struct pthread_mutex_attr _pthread_mutexattr_adaptive_default = {
+	.m_type = PTHREAD_MUTEX_ADAPTIVE_NP,
+	.m_protocol = PTHREAD_PRIO_NONE,
+	.m_ceiling = 0
+};
+
 /* Default condition variable attributes: */
 struct pthread_cond_attr _pthread_condattr_default = {
 	.c_pshared = PTHREAD_PROCESS_PRIVATE,
@@ -111,7 +117,7 @@ struct umutex	_mutex_static_lock = DEFAULT_UMUTEX;
 struct umutex	_cond_static_lock = DEFAULT_UMUTEX;
 struct umutex	_rwlock_static_lock = DEFAULT_UMUTEX;
 struct umutex	_keytable_lock = DEFAULT_UMUTEX;
-struct umutex	_thr_list_lock = DEFAULT_UMUTEX;
+struct urwlock	_thr_list_lock = DEFAULT_URWLOCK;
 struct umutex	_thr_event_lock = DEFAULT_UMUTEX;
 
 int	__pthread_cond_wait(pthread_cond_t *, pthread_mutex_t *);
@@ -248,7 +254,9 @@ static pthread_func_t jmp_table[][2] = {
 	{DUAL_ENTRY(_pthread_sigmask)},		/* PJT_SIGMASK */
 	{DUAL_ENTRY(_pthread_testcancel)},	/* PJT_TESTCANCEL */
 	{DUAL_ENTRY(__pthread_cleanup_pop_imp)},/* PJT_CLEANUP_POP_IMP */
-	{DUAL_ENTRY(__pthread_cleanup_push_imp)}/* PJT_CLEANUP_PUSH_IMP */
+	{DUAL_ENTRY(__pthread_cleanup_push_imp)},/* PJT_CLEANUP_PUSH_IMP */
+	{DUAL_ENTRY(_pthread_cancel_enter)},	/* PJT_CANCEL_ENTER */
+	{DUAL_ENTRY(_pthread_cancel_leave)}		/* PJT_CANCEL_LEAVE */
 };
 
 static int init_once = 0;
@@ -412,6 +420,10 @@ init_main_thread(struct pthread *thread)
 	_thr_getscheduler(thread->tid, &thread->attr.sched_policy,
 		 &sched_param);
 	thread->attr.prio = sched_param.sched_priority;
+
+#ifdef _PTHREAD_FORCED_UNWIND
+	thread->unwind_stackend = _usrstack;
+#endif
 
 	/* Others cleared to zero by thr_alloc() */
 }

@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.319 2010/08/22 11:30:49 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.320 2010/09/28 01:36:01 emaste Exp $");
 
 #include "opt_ktrace.h"
 #include "opt_kdtrace.h"
@@ -122,9 +122,8 @@ userret(struct thread *td, struct trapframe *frame)
 	/*
 	 * Charge system time if profiling.
 	 */
-	if (p->p_flag & P_PROFIL) {
+	if (p->p_flag & P_PROFIL)
 		addupc_task(td, TRAPF_PC(frame), td->td_pticks * psratio);
-	}
 	/*
 	 * Let the scheduler adjust our priority etc.
 	 */

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mvs/mvs_soc.c,v 1.3 2010/05/22 08:30:47 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mvs/mvs_soc.c,v 1.4 2010/10/20 07:22:34 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -295,7 +295,6 @@ mvs_intr(void *data)
 	u_int32_t ic, aic;
 
 	ic = ATA_INL(ctlr->r_mem, CHIP_SOC_MIC);
-//device_printf(ctlr->dev, "irq MIC:%08x\n", ic);
 	if ((ic & IC_HC0) == 0)
 		return;
 	/* Acknowledge interrupts of this HC. */

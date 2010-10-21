@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/ip6_output.c,v 1.143 2010/05/12 03:29:11 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/ip6_output.c,v 1.144 2010/09/24 14:38:54 attilio Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1823,6 +1823,7 @@ do { \
 			case IPV6_PORTRANGE:
 			case IPV6_RECVTCLASS:
 			case IPV6_AUTOFLOWLABEL:
+			case IPV6_BINDANY:
 				switch (optname) {
 
 				case IPV6_RECVHOPOPTS:

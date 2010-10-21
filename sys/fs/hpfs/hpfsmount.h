@@ -23,13 +23,13 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/hpfs/hpfsmount.h,v 1.1 1999/12/09 19:10:00 semenu Exp $
+ * $FreeBSD: src/sys/fs/hpfs/hpfsmount.h,v 1.2 2010/10/10 07:05:47 kib Exp $
  */
 
 #define HPFSMNT_TABLES		0x0001
 struct hpfs_args {
 	char	*fspec;			/* block special device to mount */
-	struct	export_args export;	/* network export information */
+	struct	oexport_args export;	/* network export information */
 	uid_t	uid;			/* uid that owns hpfs files */
 	gid_t	gid;			/* gid that owns hpfs files */
 	mode_t	mode;			/* mask to be applied for hpfs perms */

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/memdev.h,v 1.3 2008/06/25 07:52:10 ed Exp $
+ * $FreeBSD: src/sys/powerpc/include/memdev.h,v 1.4 2010/10/03 16:02:53 nwhitehorn Exp $
  */
 
 #define	CDEV_MINOR_MEM	0
@@ -31,7 +31,7 @@
 
 d_open_t	memopen;
 d_read_t	memrw;
-#define	memioctl	(d_ioctl_t *)NULL
+d_ioctl_t	memioctl;
 d_mmap_t	memmmap;
 
 void		dev_mem_md_init(void);

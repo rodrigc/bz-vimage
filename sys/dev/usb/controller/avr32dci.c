@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/avr32dci.c,v 1.10 2009/11/26 00:43:17 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/avr32dci.c,v 1.11 2010/10/13 20:37:19 hselasky Exp $");
 
 /*-
  * Copyright (c) 2009 Hans Petter Selasky. All rights reserved.
@@ -1480,7 +1480,7 @@ static const struct avr32dci_config_desc avr32dci_confd = {
 		.bNumEndpoints = 1,
 		.bInterfaceClass = UICLASS_HUB,
 		.bInterfaceSubClass = UISUBCLASS_HUB,
-		.bInterfaceProtocol = UIPROTO_HSHUBSTT,
+		.bInterfaceProtocol = 0,
 	},
 	.endpd = {
 		.bLength = sizeof(struct usb_endpoint_descriptor),

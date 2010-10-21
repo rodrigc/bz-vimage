@@ -39,7 +39,7 @@
  *	JNPR: trap.c,v 1.13.2.2 2007/08/29 10:03:49 girish
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/trap.c,v 1.21 2010/08/12 10:09:28 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/trap.c,v 1.22 2010/09/15 05:10:50 neel Exp $");
 
 #include "opt_ddb.h"
 #include "opt_global.h"
@@ -304,7 +304,7 @@ trap(struct trapframe *trapframe)
 	 * return to userland.
 	 */
 	if (trapframe->sr & MIPS_SR_INT_IE) {
-		set_intr_mask(~(trapframe->sr & MIPS_SR_INT_MASK));
+		set_intr_mask(trapframe->sr & MIPS_SR_INT_MASK);
 		intr_enable();
 	} else {
 		intr_disable();

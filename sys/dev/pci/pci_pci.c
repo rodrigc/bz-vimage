@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pci/pci_pci.c,v 1.62 2010/08/17 15:44:52 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pci/pci_pci.c,v 1.64 2010/10/20 16:47:09 jkim Exp $");
 
 /*
  * PCI:PCI bridge support.
@@ -447,7 +447,7 @@ pcib_suspend(device_t dev)
 
 	pcib_cfg_save(device_get_softc(dev));
 	error = bus_generic_suspend(dev);
-	if (error == 0 && pci_do_power_resume) {
+	if (error == 0 && pci_do_power_suspend) {
 		dstate = PCI_POWERSTATE_D3;
 		pcib = device_get_parent(device_get_parent(dev));
 		if (PCIB_POWER_FOR_SLEEP(pcib, dev, &dstate) == 0)

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.388 2010/08/13 18:17:32 zec Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.389 2010/09/10 16:42:16 mdf Exp $
  */
 
 #include "opt_compat.h"
@@ -2795,7 +2795,7 @@ again:
 				max_len += sa->sa_len;
 			}
 
-			if (!sbuf_overflowed(sb))
+			if (sbuf_error(sb) == 0)
 				valid_len = sbuf_len(sb);
 		}
 		IF_ADDR_UNLOCK(ifp);
@@ -2804,7 +2804,7 @@ again:
 			sbuf_bcat(sb, &ifr, sizeof(ifr));
 			max_len += sizeof(ifr);
 
-			if (!sbuf_overflowed(sb))
+			if (sbuf_error(sb) == 0)
 				valid_len = sbuf_len(sb);
 		}
 	}

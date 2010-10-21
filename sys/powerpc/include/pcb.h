@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: pcb.h,v 1.4 2000/06/04 11:57:17 tsubai Exp $
- * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.13 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.15 2010/10/05 18:08:07 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_PCB_H_
@@ -59,13 +59,14 @@ struct pcb {
 		uint32_t vr[32][4];
 		register_t vrsave;
 		register_t spare[2];
-		register_t vscr;
+		register_t vscr;	/* aligned at vector element 3 */
 	} pcb_vec __aligned(16);	/* Vector processor */
 	unsigned int	pcb_veccpu;		/* which CPU had our vector
 							stuff. */
 
 	union {
 		struct {
+			vm_offset_t	usr_segm;	/* Base address */
 			register_t	usr_esid;	/* USER_SR segment */
 			register_t	usr_vsid;	/* USER_SR segment */
 		} aim;

@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/cpuctl.4,v 1.8 2010/05/13 12:07:55 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/cpuctl.4,v 1.9 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd June 30, 2009
 .Dt CPUCTL 4
@@ -74,7 +74,6 @@ The
 structure is defined in
 .In sys/cpuctl.h
 as:
-.Pp
 .Bd -literal
 typedef struct {
 	int		msr;	/* MSR to read */
@@ -90,7 +89,6 @@ field.
 Retrieve CPUID information.
 Arguments are supplied in
 the following struct:
-.Pp
 .Bd -literal
 typedef struct {
 	int		level;	/* CPUID level */
@@ -108,7 +106,6 @@ Update CPU firmware (microcode).
 The structure is defined in
 .In sys/cpuctl.h
 as:
-.Pp
 .Bd -literal
 typedef struct {
 	void	*data;

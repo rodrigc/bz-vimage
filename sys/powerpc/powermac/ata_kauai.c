@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.19 2010/05/16 20:31:31 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.20 2010/09/11 22:09:16 nwhitehorn Exp $");
 
 /*
  * Mac 'Kauai' PCI ATA controller
@@ -217,8 +217,10 @@ ata_kauai_probe(device_t dev)
 	ch = &sc->sc_ch.sc_ch;
 
 	compatstring = ofw_bus_get_compat(dev);
-	if (compatstring != NULL && strcmp(compatstring,"shasta-ata") == 0)
+	if (compatstring != NULL && strcmp(compatstring,"shasta-ata") == 0) {
+		ch->flags |= ATA_NO_ATAPI_DMA;
 		sc->shasta = 1;
+	}
 
 	/* Pre-K2 controllers apparently need this hack */
 	if (!sc->shasta &&

@@ -1,5 +1,5 @@
 #	from: @(#)bsd.lib.mk	5.26 (Berkeley) 5/2/91
-# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.193 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.194 2010/09/10 16:21:09 rpaulo Exp $
 #
 
 .include <bsd.init.mk>
@@ -198,7 +198,11 @@ SOBJS+=		${OBJS:.o=.So}
 .if defined(SHLIB_NAME)
 _LIBS+=		${SHLIB_NAME}
 
+.if target(beforelinking)
+${SHLIB_NAME}: ${SOBJS} beforelinking
+.else
 ${SHLIB_NAME}: ${SOBJS}
+.endif
 	@${ECHO} building shared library ${SHLIB_NAME}
 	@rm -f ${.TARGET} ${SHLIB_LINK}
 .if defined(SHLIB_LINK)

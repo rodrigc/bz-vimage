@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/mfiutil/mfiutil.c,v 1.1 2009/08/13 23:18:45 scottl Exp $
+ * $FreeBSD: src/usr.sbin/mfiutil/mfiutil.c,v 1.2 2010/10/10 20:37:38 randi Exp $
  */
 
 #include <sys/errno.h>
@@ -125,10 +125,12 @@ main(int ac, char **av)
 
 	SET_FOREACH(cmd, MFI_DATASET(top)) {
 		if (strcmp((*cmd)->name, av[0]) == 0) {
-			(*cmd)->handler(ac, av);
-			return (0);
+			if ((*cmd)->handler(ac, av))
+				return (1);
+			else
+				return (0);
 		}
 	}
 	warnx("Unknown command %s.", av[0]);
-	return (0);
+	return (1);
 }

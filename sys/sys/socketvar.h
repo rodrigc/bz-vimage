@@ -28,7 +28,7 @@
  *
  *	@(#)socketvar.h	8.3 (Berkeley) 2/19/95
  *
- * $FreeBSD: src/sys/sys/socketvar.h,v 1.173 2010/07/18 20:57:53 trasz Exp $
+ * $FreeBSD: src/sys/sys/socketvar.h,v 1.174 2010/09/18 11:18:42 rwatson Exp $
  */
 
 #ifndef _SYS_SOCKETVAR_H_
@@ -233,17 +233,6 @@ struct xsocket {
 		ACCEPT_UNLOCK();					\
 	}								\
 } while (0)
-
-#define	sotryfree(so) do {						\
-	ACCEPT_LOCK_ASSERT();						\
-	SOCK_LOCK_ASSERT(so);						\
-	if ((so)->so_count == 0)					\
-		sofree(so);						\
-	else {								\
-		SOCK_UNLOCK(so);					\
-		ACCEPT_UNLOCK();					\
-	}								\
-} while(0)
 
 /*
  * In sorwakeup() and sowwakeup(), acquire the socket buffer lock to

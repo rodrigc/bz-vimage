@@ -38,7 +38,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)vmparam.h	5.9 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.61 2010/07/27 20:33:50 jhb Exp $
+ * $FreeBSD: src/sys/amd64/include/vmparam.h,v 1.62 2010/09/17 07:36:32 avg Exp $
  */
 
 
@@ -205,7 +205,7 @@
  * is the total KVA space allocated for kmem_map.
  */
 #ifndef VM_KMEM_SIZE_SCALE
-#define	VM_KMEM_SIZE_SCALE	(3)
+#define	VM_KMEM_SIZE_SCALE	(1)
 #endif
 
 /*

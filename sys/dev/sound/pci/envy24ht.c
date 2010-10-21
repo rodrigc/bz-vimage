@@ -51,7 +51,7 @@
 
 #include "mixer_if.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/envy24ht.c,v 1.20 2010/03/29 20:27:17 joel Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/envy24ht.c,v 1.21 2010/10/13 14:39:54 rpaulo Exp $");
 
 MALLOC_DEFINE(M_ENVY24HT, "envy24ht", "envy24ht audio");
 
@@ -2236,7 +2236,8 @@ envy24ht_putcfg(struct sc_info *sc)
 	else
 		printf("not implemented\n");
         switch (sc->adcn) {
-        case 0x01 || 0x02:
+        case 0x01:
+	case 0x02:
                 printf("  ADC #: ");
                 printf("%d\n", sc->adcn);
                 break;

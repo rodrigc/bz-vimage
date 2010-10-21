@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/link_elf_obj.c,v 1.113 2010/07/23 17:07:51 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/link_elf_obj.c,v 1.114 2010/10/02 16:04:50 kib Exp $");
 
 #include "opt_ddb.h"
 
@@ -919,13 +919,13 @@ no_v_subsys:
 	*result = lf;
 
 out:
+	VOP_UNLOCK(nd.ni_vp, 0);
+	vn_close(nd.ni_vp, FREAD, td->td_ucred, td);
+	VFS_UNLOCK_GIANT(vfslocked);
 	if (error && lf)
 		linker_file_unload(lf, LINKER_UNLOAD_FORCE);
 	if (hdr)
 		free(hdr, M_LINKER);
-	VOP_UNLOCK(nd.ni_vp, 0);
-	vn_close(nd.ni_vp, FREAD, td->td_ucred, td);
-	VFS_UNLOCK_GIANT(vfslocked);
 
 	return error;
 }

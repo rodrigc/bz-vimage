@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/x86bios/x86bios.c,v 1.32 2010/08/25 21:03:50 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/x86bios/x86bios.c,v 1.33 2010/10/05 18:38:23 jkim Exp $");
 
 #include "opt_x86bios.h"
 
@@ -679,7 +679,7 @@ x86bios_unmap_mem(void)
 	free(x86bios_map, M_DEVBUF);
 	if (x86bios_ivt != NULL)
 #ifdef X86BIOS_NATIVE_ARCH
-		pmap_unmapdev((vm_offset_t)x86bios_ivt, X86BIOS_IVT_SIZE);
+		pmap_unmapbios((vm_offset_t)x86bios_ivt, X86BIOS_IVT_SIZE);
 #else
 		free(x86bios_ivt, M_DEVBUF);
 #endif

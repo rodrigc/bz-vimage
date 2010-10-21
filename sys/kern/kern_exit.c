@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.335 2010/08/22 11:18:57 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_exit.c,v 1.336 2010/10/09 02:50:23 davidxu Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -402,6 +402,8 @@ exit1(struct thread *td, int rv)
 	p->p_limit = NULL;
 	PROC_UNLOCK(p);
 	lim_free(plim);
+
+	tidhash_remove(td);
 
 	/*
 	 * Remove proc from allproc queue and pidhash chain.

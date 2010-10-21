@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/liblzma/Makefile,v 1.3 2010/05/14 20:40:37 delphij Exp $
+# $FreeBSD: src/lib/liblzma/Makefile,v 1.4 2010/10/11 21:16:50 mm Exp $
 
 LIB=		lzma
 LZMADIR=	${.CURDIR}/../../contrib/xz/src/liblzma
@@ -23,7 +23,6 @@ LZMAINCS+=	base.h \
 		index_hash.h \
 		lzma.h \
 		stream_flags.h \
-		subblock.h \
 		version.h \
 		vli.h
 
@@ -129,7 +128,6 @@ CFLAGS+=	-DHAVE_CONFIG_H \
 		-I${LZMADIR}/lz \
 		-I${LZMADIR}/rangecoder \
 		-I${LZMADIR}/lzma \
-		-I${LZMADIR}/subblock \
 		-I${LZMADIR}/delta \
 		-I${LZMADIR}/simple \
 		-I${LZMADIR}/../common

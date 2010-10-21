@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)alias.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/alias.c,v 1.26 2009/12/24 18:41:14 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/alias.c,v 1.28 2010/10/13 22:18:03 obrien Exp $");
 
 #include <stdlib.h>
 #include "shell.h"
@@ -49,14 +49,14 @@ __FBSDID("$FreeBSD: src/bin/sh/alias.c,v 1.26 2009/12/24 18:41:14 jilles Exp $")
 
 #define ATABSIZE 39
 
-STATIC struct alias *atab[ATABSIZE];
-STATIC int aliases;
+static struct alias *atab[ATABSIZE];
+static int aliases;
 
-STATIC void setalias(const char *, const char *);
-STATIC int unalias(const char *);
-STATIC struct alias **hashalias(const char *);
+static void setalias(const char *, const char *);
+static int unalias(const char *);
+static struct alias **hashalias(const char *);
 
-STATIC
+static
 void
 setalias(const char *name, const char *val)
 {
@@ -111,7 +111,7 @@ setalias(const char *name, const char *val)
 	INTON;
 }
 
-STATIC int
+static int
 unalias(const char *name)
 {
 	struct alias *ap, **app;
@@ -276,7 +276,7 @@ unaliascmd(int argc __unused, char **argv __unused)
 	return (i);
 }
 
-STATIC struct alias **
+static struct alias **
 hashalias(const char *p)
 {
 	unsigned int hashval;

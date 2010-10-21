@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/kiic.c,v 1.4 2010/06/18 14:28:57 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/kiic.c,v 1.5 2010/09/15 19:08:41 andreast Exp $
  *	NetBSD: ki2c.c,v 1.11 2007/12/06 17:00:33 ad Exp
  *	Id: ki2c.c,v 1.7 2002/10/05 09:56:05 tsubai Exp
  */
@@ -250,7 +250,7 @@ static void
 kiic_writereg(struct kiic_softc *sc, u_int reg, u_int val)
 {
 	bus_write_4(sc->sc_reg, sc->sc_regstep * reg, val);
-	DELAY(10); /* register access delay */
+	DELAY(100); /* register access delay */
 }
 
 static u_int

@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/add/main.c,v 1.86 2010/08/30 21:58:52 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/add/main.c,v 1.87 2010/10/12 10:04:44 flz Exp $");
 
 #include <sys/param.h>
 #include <sys/sysctl.h>
@@ -227,9 +227,9 @@ main(int argc, char **argv)
 		    >= sizeof(temppackageroot))
 		    errx(1, "package name too long");
 		remotepkg = temppackageroot;
-		if (!((ptr = strrchr(remotepkg, '.')) && ptr[1] == 't' && 
-			(ptr[2] == 'b' || ptr[2] == 'g') && ptr[3] == 'z' &&
-			!ptr[4]))
+		if (!((ptr = strrchr(remotepkg, '.')) && ptr[1] == 't' &&
+			(ptr[2] == 'b' || ptr[2] == 'g' || ptr[2] == 'x') &&
+			ptr[3] == 'z' && !ptr[4]))
 		    if (strlcat(remotepkg, ".tbz",
 			sizeof(temppackageroot)) >= sizeof(temppackageroot))
 			errx(1, "package name too long");

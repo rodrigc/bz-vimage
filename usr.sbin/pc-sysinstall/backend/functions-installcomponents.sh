@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-installcomponents.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-installcomponents.sh,v 1.4 2010/09/08 20:10:24 imp Exp $
 
 # Functions which check and load any optional modules specified in the config
 
@@ -60,7 +60,7 @@ copy_component()
 	    RESULT="$?"
         ;;
 
-      ftp|sftp)
+      ftp)
         get_value_from_cfg ftpPath
         if [ -z "$VAL" ]
         then
@@ -71,6 +71,8 @@ copy_component()
         fetch_file "${FTPPATH}/${COMPFILEDIR}/${SUBDIR}/${CFILE}" "${FSMNT}/${COMPTMPDIR}/${CFILE}" "0"
         RESULT="$?"
        ;;
+
+      sftp) ;;
     esac
 
     if [ "${RESULT}" != "0" ]

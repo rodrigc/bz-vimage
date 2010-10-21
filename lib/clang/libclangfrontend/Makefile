@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libclangfrontend/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangfrontend/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangfrontend
 
@@ -17,17 +17,9 @@ SRCS=	ASTConsumers.cpp \
 	FrontendAction.cpp \
 	FrontendActions.cpp \
 	FrontendOptions.cpp \
-	GeneratePCH.cpp \
 	InitHeaderSearch.cpp \
 	InitPreprocessor.cpp \
 	LangStandards.cpp \
-	PCHReader.cpp \
-	PCHReaderDecl.cpp \
-	PCHReaderStmt.cpp \
-	PCHWriter.cpp \
-	PCHWriterDecl.cpp \
-	PCHWriterStmt.cpp \
-	PrintParserCallbacks.cpp \
 	PrintPreprocessedOutput.cpp \
 	StmtXML.cpp \
 	TextDiagnosticBuffer.cpp \

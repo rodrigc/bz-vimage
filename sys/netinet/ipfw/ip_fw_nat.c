@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_nat.c,v 1.12 2010/01/04 19:01:22 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_nat.c,v 1.13 2010/09/06 13:17:01 glebius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -294,12 +294,9 @@ ipfw_nat(struct ip_fw_args *args, struct cfg_nat *t, struct mbuf *m)
 		struct udphdr 	*uh;
 		u_short cksum;
 
-		/* XXX check if ip_len can stay in net format */
-		cksum = in_pseudo(
-		    ip->ip_src.s_addr,
-		    ip->ip_dst.s_addr,
-		    htons(ip->ip_p + ntohs(ip->ip_len) - (ip->ip_hl << 2))
-		);
+		ip->ip_len = ntohs(ip->ip_len);
+		cksum = in_pseudo(ip->ip_src.s_addr, ip->ip_dst.s_addr,
+		    htons(ip->ip_p + ip->ip_len - (ip->ip_hl << 2)));
 
 		switch (ip->ip_p) {
 		case IPPROTO_TCP:
@@ -325,6 +322,7 @@ ipfw_nat(struct ip_fw_args *args, struct cfg_nat *t, struct mbuf *m)
 			in_delayed_cksum(mcl);
 			mcl->m_pkthdr.csum_flags &= ~CSUM_DELAY_DATA;
 		}
+		ip->ip_len = htons(ip->ip_len);
 	}
 	args->m = mcl;
 	return (IP_FW_NAT);

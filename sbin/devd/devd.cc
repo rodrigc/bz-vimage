@@ -63,7 +63,7 @@
 //	  - devd.conf needs more details on the supported statements.
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/devd/devd.cc,v 1.37 2010/07/29 16:06:40 lulf Exp $");
+__FBSDID("$FreeBSD: src/sbin/devd/devd.cc,v 1.38 2010/10/09 07:29:13 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -749,9 +749,13 @@ process_event(char *buffer)
 		if (sp == NULL)
 			return;	/* Can't happen? */
 		*sp++ = '\0';
+		while (isspace(*sp))
+			sp++;
 		if (strncmp(sp, "at ", 3) == 0)
 			sp += 3;
 		sp = cfg.set_vars(sp);
+		while (isspace(*sp))
+			sp++;
 		if (strncmp(sp, "on ", 3) == 0)
 			cfg.set_variable("bus", sp + 3);
 		break;
@@ -762,9 +766,13 @@ process_event(char *buffer)
 			return;	/* Can't happen? */
 		*sp++ = '\0';
 		cfg.set_variable("device-name", buffer);
+		while (isspace(*sp))
+			sp++;
 		if (strncmp(sp, "at ", 3) == 0)
 			sp += 3;
 		sp = cfg.set_vars(sp);
+		while (isspace(*sp))
+			sp++;
 		if (strncmp(sp, "on ", 3) == 0)
 			cfg.set_variable("bus", sp + 3);
 		break;

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.14 2010/08/06 05:24:41 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.15 2010/09/15 05:10:50 neel Exp $");
 
 #include <sys/param.h>
 
@@ -370,7 +370,7 @@ platform_init_ap(int cpuid)
 	 */
 	clock_int_mask = hard_int_mask(5);
 	ipi_int_mask = hard_int_mask(platform_ipi_intrnum());
-	set_intr_mask(MIPS_SR_INT_MASK & ~(ipi_int_mask | clock_int_mask));
+	set_intr_mask(ipi_int_mask | clock_int_mask);
 }
 
 int

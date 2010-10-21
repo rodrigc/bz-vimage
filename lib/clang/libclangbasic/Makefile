@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libclangbasic/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangbasic/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangbasic
 
@@ -15,10 +15,8 @@ SRCS=	Builtins.cpp \
 	TokenKinds.cpp \
 	Version.cpp
 
-TGHDRS=	AttrList \
-	Attrs \
+TGHDRS=	DiagnosticAnalysisKinds \
 	DiagnosticASTKinds \
-	DiagnosticAnalysisKinds \
 	DiagnosticCommonKinds \
 	DiagnosticDriverKinds \
 	DiagnosticFrontendKinds \

@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  *
  *	from BSDI $Id$
- * $FreeBSD: src/sys/sys/mutex.h,v 1.105 2009/06/21 09:01:12 rdivacky Exp $
+ * $FreeBSD: src/sys/sys/mutex.h,v 1.106 2010/09/29 13:24:56 jhb Exp $
  */
 
 #ifndef _SYS_MUTEX_H_
@@ -251,8 +251,11 @@ void	_thread_lock_flags(struct thread *, int, const char *, int);
 #define _rel_spin_lock(mp) do {						\
 	if (mtx_recursed((mp)))						\
 		(mp)->mtx_recurse--;					\
-	else								\
+	else {								\
+		LOCKSTAT_PROFILE_RELEASE_LOCK(LS_MTX_SPIN_UNLOCK_RELEASE, \
+			mp);						\
 		(mp)->mtx_lock = MTX_UNOWNED;				\
+	}                                                               \
 	spinlock_exit();						\
 } while (0)
 #endif /* SMP */

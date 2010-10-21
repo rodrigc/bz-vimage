@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.17 2007/12/10 16:03:37 obrien Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.18 2010/10/13 10:45:22 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/mbuf.h>
@@ -78,7 +78,7 @@ __FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.17 2007/12/10 16:03:37 obri
  */
 
 #define ADDCARRY(x)  (x > 65535 ? x -= 65535 : x)
-#define REDUCE {l_util.l = sum; sum = l_util.s[0] + l_util.s[1]; ADDCARRY(sum);}
+#define REDUCE {l_util.l = sum; sum = l_util.s[0] + l_util.s[1]; (void)ADDCARRY(sum);}
 
 /*
  * m MUST contain a continuous IP6 header.

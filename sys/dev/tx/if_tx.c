@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/tx/if_tx.c,v 1.101 2009/06/26 11:45:06 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/tx/if_tx.c,v 1.102 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * EtherPower II 10/100 Fast Ethernet (SMC 9432 serie)
@@ -379,10 +379,10 @@ epic_attach(device_t dev)
 		device_printf(dev, "unknown card vendor %04xh\n", sc->cardvend);
 
 	/* Do ifmedia setup. */
-	if (mii_phy_probe(dev, &sc->miibus,
-	    epic_ifmedia_upd, epic_ifmedia_sts)) {
-		device_printf(dev, "ERROR! MII without any PHY!?\n");
-		error = ENXIO;
+	error = mii_attach(dev, &sc->miibus, ifp, epic_ifmedia_upd,
+	    epic_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
+	if (error != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 

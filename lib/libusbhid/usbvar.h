@@ -25,9 +25,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libusbhid/usbvar.h,v 1.5 2010/03/27 08:00:16 kaiw Exp $
+ * $FreeBSD: src/lib/libusbhid/usbvar.h,v 1.6 2010/10/16 11:20:53 hselasky Exp $
  *
  */
+
+#ifndef _USBVAR_H_
+#define	_USBVAR_H_
 
 struct report_desc {
 	uint32_t size;
@@ -41,3 +44,11 @@ int	hid_set_immed_compat7(int fd, int enable);
 int	hid_get_report_id_compat7(int fd);
 report_desc_t	hid_get_report_desc_compat7(int fd);
 #endif
+
+#ifdef COMPAT_32BIT
+#define	hid_pass_ptr(ptr)	((uint64_t)(uintptr_t)(ptr))
+#else
+#define	hid_pass_ptr(ptr)	(ptr)
+#endif
+
+#endif		/* _USBVAR_H_ */

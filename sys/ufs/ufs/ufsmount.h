@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ufsmount.h	8.6 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/ufs/ufs/ufsmount.h,v 1.41 2010/05/07 00:41:12 mckusick Exp $
+ * $FreeBSD: src/sys/ufs/ufs/ufsmount.h,v 1.42 2010/10/10 07:05:47 kib Exp $
  */
 
 #ifndef _UFS_UFS_UFSMOUNT_H_
@@ -40,7 +40,7 @@
  */
 struct ufs_args {
 	char	*fspec;			/* block special device to mount */
-	struct	export_args export;	/* network export information */
+	struct	oexport_args export;	/* network export information */
 };
 
 #ifdef _KERNEL

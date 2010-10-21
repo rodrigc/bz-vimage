@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/28/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.40 2010/08/15 21:06:53 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.41 2010/10/13 22:18:03 obrien Exp $");
 
 #include <stdio.h>
 #include <signal.h>
@@ -77,8 +77,8 @@ int rootpid;
 int rootshell;
 struct jmploc main_handler;
 
-STATIC void read_profile(const char *);
-STATIC char *find_dot_file(char *);
+static void read_profile(const char *);
+static char *find_dot_file(char *);
 
 /*
  * Main routine.  We initialize things, parse the arguments, execute
@@ -247,7 +247,7 @@ cmdloop(int top)
  * Read /etc/profile or .profile.  Return on error.
  */
 
-STATIC void
+static void
 read_profile(const char *name)
 {
 	int fd;
@@ -291,7 +291,7 @@ readcmdfile(const char *name)
  */
 
 
-STATIC char *
+static char *
 find_dot_file(char *basename)
 {
 	static char localname[FILENAME_MAX+1];

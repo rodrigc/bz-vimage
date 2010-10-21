@@ -31,7 +31,7 @@
 /* $KAME: sctp_asconf.h,v 1.8 2005/03/06 16:04:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.h,v 1.13 2008/12/06 13:19:54 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.h,v 1.14 2010/09/15 23:10:45 tuexen Exp $");
 
 #ifndef _NETINET_SCTP_ASCONF_H_
 #define _NETINET_SCTP_ASCONF_H_
@@ -79,8 +79,6 @@ extern void
 sctp_check_address_list(struct sctp_tcb *, struct mbuf *, int, int,
     struct sockaddr *, uint16_t, uint16_t, uint16_t, uint16_t);
 
-extern void
-     sctp_move_chunks_from_deleted_prim(struct sctp_tcb *, struct sctp_nets *);
 extern void
      sctp_assoc_immediate_retrans(struct sctp_tcb *, struct sctp_nets *);
 extern void

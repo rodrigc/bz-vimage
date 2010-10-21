@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/vm.h,v 1.3 2009/07/12 23:31:20 alc Exp $
+ * $FreeBSD: src/sys/powerpc/include/vm.h,v 1.4 2010/09/30 18:14:12 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_VM_H_
@@ -32,11 +32,13 @@
 #include <machine/pte.h>
 
 /* Memory attributes. */
-#define	VM_MEMATTR_CACHING_INHIBIT	((vm_memattr_t)PTE_I)
-#define	VM_MEMATTR_GUARD		((vm_memattr_t)PTE_G)
-#define	VM_MEMATTR_MEMORY_COHERENCE	((vm_memattr_t)PTE_M)
-#define	VM_MEMATTR_WRITE_THROUGH	((vm_memattr_t)PTE_W)
-
 #define	VM_MEMATTR_DEFAULT		0
+#define	VM_MEMATTR_UNCACHEABLE		0x01
+#define	VM_MEMATTR_UNCACHED		VM_MEMATTR_UNCACHEABLE
+#define	VM_MEMATTR_CACHEABLE		0x02
+#define	VM_MEMATTR_WRITE_COMBINING	0x04
+#define	VM_MEMATTR_WRITE_BACK		0x08
+#define	VM_MEMATTR_WRITE_THROUGH	0x10
+#define	VM_MEMATTR_PREFETCHABLE		0x20
 
 #endif /* !_MACHINE_VM_H_ */

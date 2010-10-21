@@ -4,7 +4,7 @@
 # Author: Jordan K Hubbard
 # Date:   22 June 2001
 #
-# $FreeBSD: src/release/powerpc/mkisoimages.sh,v 1.1 2004/08/18 11:08:19 grehan Exp $
+# $FreeBSD: src/release/powerpc/mkisoimages.sh,v 1.2 2010/10/03 13:13:10 hrs Exp $
 #
 # This script is used by release/Makefile to build the (optional) ISO images
 # for a FreeBSD release.  It is considered architecture dependent since each
@@ -54,4 +54,4 @@ fi
 LABEL=$1; shift
 NAME=$1; shift
 
-mkisofs $bootable -r -hfs -part -no-desktop -hfs-volid $LABEL -l -J -L -o $NAME $*
+mkisofs $bootable -r -hfs -part -no-desktop -hfs-volid $LABEL -l -J -allow-leading-dots -o $NAME $*

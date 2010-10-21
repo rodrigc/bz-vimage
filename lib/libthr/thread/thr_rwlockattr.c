@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_rwlockattr.c,v 1.2 2006/04/04 02:57:49 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_rwlockattr.c,v 1.6 2010/10/20 02:34:02 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -97,4 +97,3 @@ _pthread_rwlockattr_setpshared(pthread_rwlockattr_t *rwlockattr, int pshared)
 
 	return(0);
 }
-

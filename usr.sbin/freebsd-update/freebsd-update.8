@@ -23,7 +23,7 @@
 .\" IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/usr.sbin/freebsd-update/freebsd-update.8,v 1.9 2010/08/16 15:18:30 joel Exp $
+.\" $FreeBSD: src/usr.sbin/freebsd-update/freebsd-update.8,v 1.11 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd July 14, 2010
 .Dt FREEBSD-UPDATE 8
@@ -103,7 +103,6 @@ command, if any, to
 The
 .Cm command
 can be any one of the following:
-.Pp
 .Bl -tag -width "-f conffile"
 .It Cm fetch
 Based on the currently installed world and the configuration
@@ -128,6 +127,11 @@ Fetch files necessary for upgrading to a new release.
 Before using this command, make sure that you read the
 announcement and release notes for the new release in
 case there are any special steps needed for upgrading.
+Note that this command may require up to 500 MB of space in
+.Ar workdir
+depending on which components of the
+.Fx
+base system are installed.
 .It Cm install
 Install the most recently fetched updates or upgrade.
 .It Cm rollback

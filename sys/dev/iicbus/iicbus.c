@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iicbus/iicbus.c,v 1.30 2010/07/08 14:19:52 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iicbus/iicbus.c,v 1.31 2010/09/10 11:19:03 avg Exp $");
 
 /*
  * Autoconfiguration and support routines for the Philips serial I2C bus
@@ -188,7 +188,7 @@ iicbus_read_ivar(device_t bus, device_t child, int which, uintptr_t *result)
 }
 
 static device_t
-iicbus_add_child(device_t dev, int order, const char *name, int unit)
+iicbus_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct iicbus_ivar *devi;

@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/DB_COMMAND.9,v 1.1 2008/09/15 23:13:29 sam Exp $
+.\" $FreeBSD: src/share/man/man9/DB_COMMAND.9,v 1.2 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd August 27, 2008
 .Dt DB_COMMAND 9
@@ -88,7 +88,6 @@ command will display words in decimal form if it is passed the modifier "d".
 .El
 .Sh EXAMPLE
 In your module, the command is declared as:
-.Pp
 .Bd -literal
 DB_COMMAND(mycmd, my_cmd_func)
 {
@@ -98,7 +97,6 @@ DB_COMMAND(mycmd, my_cmd_func)
 .Ed
 .Pp
 Then, when in ddb:
-.Pp
 .Bd -literal
 .Bf Sy
 db> mycmd 0x1000

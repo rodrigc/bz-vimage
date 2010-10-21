@@ -1,12 +1,17 @@
-# $FreeBSD: src/sys/modules/gem/Makefile,v 1.2 2009/06/23 20:36:59 marius Exp $
+# $FreeBSD: src/sys/modules/gem/Makefile,v 1.3 2010/09/16 09:29:48 marius Exp $
 
 .PATH: ${.CURDIR}/../../dev/gem
 
 KMOD=	if_gem
-SRCS=	bus_if.h device_if.h if_gem.c if_gem_pci.c miibus_if.h pci_if.h
+SRCS=	bus_if.h device_if.h if_gem.c if_gem_pci.c ${if_gem_sbus} miibus_if.h
+SRCS+=	${ofw_bus_if} pci_if.h
 
 .if ${MACHINE} == "sparc64"
-SRCS+=	if_gem_sbus.c ofw_bus_if.h
+if_gem_sbus=	if_gem_sbus.c
+.endif
+
+.if ${MACHINE_CPUARCH} == "powerpc" || ${MACHINE_CPUARCH} == "sparc64"
+ofw_bus_if=	ofw_bus_if.h
 .endif
 
 .include <bsd.kmod.mk>

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/opencrypto/cryptodev.c,v 1.43 2010/08/11 16:53:45 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/opencrypto/cryptodev.c,v 1.44 2010/09/23 11:52:32 pjd Exp $");
 
 #include "opt_compat.h"
 
@@ -418,6 +418,9 @@ cryptof_ioctl(
 			break;
 		case CRYPTO_AES_CBC:
 			txform = &enc_xform_rijndael128;
+			break;
+		case CRYPTO_AES_XTS:
+			txform = &enc_xform_aes_xts;
 			break;
 		case CRYPTO_NULL_CBC:
 			txform = &enc_xform_null;

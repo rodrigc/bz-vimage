@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libusb/usb.h,v 1.3 2010/02/13 09:45:50 wkoszek Exp $ */
+/* $FreeBSD: src/lib/libusb/usb.h,v 1.4 2010/10/14 20:04:36 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -291,6 +291,7 @@ int	usb_set_altinterface(usb_dev_handle * dev, int alternate);
 int	usb_resetep(usb_dev_handle * dev, unsigned int ep);
 int	usb_clear_halt(usb_dev_handle * dev, unsigned int ep);
 int	usb_reset(usb_dev_handle * dev);
+int	usb_check_connected(usb_dev_handle * dev);
 const char *usb_strerror(void);
 void	usb_init(void);
 void	usb_set_debug(int level);

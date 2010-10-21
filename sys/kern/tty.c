@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.338 2010/08/06 09:42:15 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.340 2010/09/19 16:35:42 ed Exp $");
 
 #include "opt_compat.h"
 
@@ -263,12 +263,14 @@ ttydev_open(struct cdev *dev, int oflags, int devtype, struct thread *td)
 
 	if (!tty_opened(tp)) {
 		/* Set proper termios flags. */
-		if (TTY_CALLOUT(tp, dev)) {
+		if (TTY_CALLOUT(tp, dev))
 			tp->t_termios = tp->t_termios_init_out;
-		} else {
+		else
 			tp->t_termios = tp->t_termios_init_in;
-		}
 		ttydevsw_param(tp, &tp->t_termios);
+		/* Prevent modem control on callout devices and /dev/console. */
+		if (TTY_CALLOUT(tp, dev) || dev == dev_console)
+			tp->t_termios.c_cflag |= CLOCAL;
 
 		ttydevsw_modem(tp, SER_DTR|SER_RTS, 0);
 
@@ -281,7 +283,7 @@ ttydev_open(struct cdev *dev, int oflags, int devtype, struct thread *td)
 	}
 
 	/* Wait for Carrier Detect. */
-	if (!TTY_CALLOUT(tp, dev) && (oflags & O_NONBLOCK) == 0 &&
+	if ((oflags & O_NONBLOCK) == 0 &&
 	    (tp->t_termios.c_cflag & CLOCAL) == 0) {
 		while ((ttydevsw_modem(tp, 0, 0) & SER_DCD) == 0) {
 			error = tty_wait(tp, &tp->t_dcdwait);

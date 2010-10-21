@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/iodi.c,v 1.12 2010/09/01 17:35:31 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/iodi.c,v 1.15 2010/09/16 20:23:22 jchandra Exp $");
 
 #define __RMAN_RESOURCE_VISIBLE
 #include <sys/param.h>
@@ -104,7 +104,7 @@ iodi_setup_intr(device_t dev, device_t child,
 		/* FIXME uart 1? */
 		cpu_establish_hardintr("uart", filt, intr, arg,
 		    PIC_UART_0_IRQ, flags, cookiep);
-		pic_setup_intr(PIC_IRT_UART_0_INDEX, PIC_UART_0_IRQ, 0x1, 0);
+		pic_setup_intr(PIC_IRT_UART_0_INDEX, PIC_UART_0_IRQ, 0x1, 1);
 	} else if (strcmp(name, "rge") == 0 || strcmp(name, "nlge") == 0) {
 		int irq;
 
@@ -112,15 +112,15 @@ iodi_setup_intr(device_t dev, device_t child,
 		irq = (intptr_t)ires->__r_i;
 		cpu_establish_hardintr("rge", filt, intr, arg, irq, flags,
 		    cookiep);
-		pic_setup_intr(irq - PIC_IRQ_BASE, irq, 0x1, 0);
+		pic_setup_intr(irq - PIC_IRQ_BASE, irq, 0x1, 1);
 	} else if (strcmp(name, "ehci") == 0) {
 		cpu_establish_hardintr("ehci", filt, intr, arg, PIC_USB_IRQ, flags,
 		    cookiep);
-		pic_setup_intr(PIC_USB_IRQ - PIC_IRQ_BASE, PIC_USB_IRQ, 0x1, 0);
+		pic_setup_intr(PIC_USB_IRQ - PIC_IRQ_BASE, PIC_USB_IRQ, 0x1, 1);
 	} else if (strcmp(name, "ata") == 0) {
 		xlr_establish_intr("ata", filt, intr, arg, PIC_PCMCIA_IRQ, flags,
 		    cookiep, bridge_pcmcia_ack);
-		pic_setup_intr(PIC_PCMCIA_IRQ - PIC_IRQ_BASE, PIC_PCMCIA_IRQ, 0x1, 0);
+		pic_setup_intr(PIC_PCMCIA_IRQ - PIC_IRQ_BASE, PIC_PCMCIA_IRQ, 0x1, 1);
 	}
 	return (0);
 }
@@ -213,6 +213,7 @@ iodi_attach(device_t dev)
 	device_add_child(dev, "uart", 0);
 	device_add_child(dev, "xlr_i2c", 0);
 	device_add_child(dev, "pcib", 0);
+	device_add_child(dev, "rmisec", -1);
 
 	if (xlr_board_info.usb)
 		device_add_child(dev, "ehci", 0);
@@ -305,6 +306,7 @@ static device_method_t iodi_methods[] = {
 	DEVMETHOD(device_identify, iodi_identify),
 	DEVMETHOD(bus_alloc_resource, iodi_alloc_resource),
 	DEVMETHOD(bus_activate_resource, iodi_activate_resource),
+	DEVMETHOD(bus_add_child, bus_generic_add_child),
 	DEVMETHOD(bus_setup_intr, iodi_setup_intr),
 	{0, 0},
 };

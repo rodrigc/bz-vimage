@@ -1,15 +1,12 @@
-# $FreeBSD: src/lib/clang/libllvmsystem/Makefile,v 1.4 2010/07/22 19:09:34 rpaulo Exp $
+# $FreeBSD: src/lib/clang/libllvmsystem/Makefile,v 1.5 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmsystem
 
 SRCDIR=	lib/System
-SRCS=	Alarm.cpp \
-	Atomic.cpp \
-	Disassembler.cpp \
+SRCS=	Atomic.cpp \
 	DynamicLibrary.cpp \
 	Errno.cpp \
 	Host.cpp \
-	IncludeFile.cpp \
 	Memory.cpp \
 	Mutex.cpp \
 	Path.cpp \

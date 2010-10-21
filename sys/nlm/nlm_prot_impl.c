@@ -28,7 +28,7 @@
 #include "opt_inet6.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nlm/nlm_prot_impl.c,v 1.22 2009/10/07 19:50:14 zml Exp $");
+__FBSDID("$FreeBSD: src/sys/nlm/nlm_prot_impl.c,v 1.24 2010/10/19 00:20:00 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/fail.h>
@@ -55,8 +55,7 @@ __FBSDID("$FreeBSD: src/sys/nlm/nlm_prot_impl.c,v 1.22 2009/10/07 19:50:14 zml E
 #include <sys/vnode.h>
 
 #include <nfs/nfsproto.h>
-#include <nfsclient/nfs.h>
-#include <nfsclient/nfsnode.h>
+#include <nfs/nfs_lock.h>
 
 #include <nlm/nlm_prot.h>
 #include <nlm/sm_inter.h>
@@ -1055,13 +1054,13 @@ nlm_find_host_by_addr(const struct sockaddr *addr, int vers)
 
 	switch (addr->sa_family) {
 	case AF_INET:
-		__rpc_inet_ntop(AF_INET,
+		inet_ntop(AF_INET,
 		    &((const struct sockaddr_in *) addr)->sin_addr,
 		    tmp, sizeof tmp);
 		break;
 #ifdef INET6
 	case AF_INET6:
-		__rpc_inet_ntop(AF_INET6,
+		inet_ntop(AF_INET6,
 		    &((const struct sockaddr_in6 *) addr)->sin6_addr,
 		    tmp, sizeof tmp);
 		break;
@@ -2432,4 +2431,5 @@ DECLARE_MODULE(nfslockd, nfslockd_mod, SI_SUB_VFS, SI_ORDER_ANY);
 /* So that loader and kldload(2) can find us, wherever we are.. */
 MODULE_DEPEND(nfslockd, krpc, 1, 1, 1);
 MODULE_DEPEND(nfslockd, nfs, 1, 1, 1);
+MODULE_DEPEND(nfslockd, nfslock, 1, 1, 1);
 MODULE_VERSION(nfslockd, 1);

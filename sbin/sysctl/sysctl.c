@@ -38,7 +38,7 @@ static const char copyright[] =
 static char sccsid[] = "@(#)from: sysctl.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/sysctl/sysctl.c,v 1.96 2010/03/13 11:08:57 brucec Exp $";
+  "$FreeBSD: src/sbin/sysctl/sysctl.c,v 1.97 2010/09/16 10:53:01 zec Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -406,9 +406,9 @@ S_vmtotal(int l2, void *p)
 	    "%hd Sleep: %hd)\n",
 	    v->t_rq, v->t_dw, v->t_pw, v->t_sl);
 	printf(
-	    "Virtual Memory:\t\t(Total: %dK, Active %dK)\n",
+	    "Virtual Memory:\t\t(Total: %dK Active: %dK)\n",
 	    v->t_vm * pageKilo, v->t_avm * pageKilo);
-	printf("Real Memory:\t\t(Total: %dK Active %dK)\n",
+	printf("Real Memory:\t\t(Total: %dK Active: %dK)\n",
 	    v->t_rm * pageKilo, v->t_arm * pageKilo);
 	printf("Shared Virtual Memory:\t(Total: %dK Active: %dK)\n",
 	    v->t_vmshr * pageKilo, v->t_avmshr * pageKilo);

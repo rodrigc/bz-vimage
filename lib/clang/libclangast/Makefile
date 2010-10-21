@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libclangast/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangast/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangast
 
@@ -25,6 +25,8 @@ SRCS=	APValue.cpp \
 	ExprConstant.cpp \
 	FullExpr.cpp \
 	InheritViz.cpp \
+	ItaniumCXXABI.cpp \
+	MicrosoftCXXABI.cpp \
 	NestedNameSpecifier.cpp \
 	ParentMap.cpp \
 	RecordLayout.cpp \
@@ -41,7 +43,8 @@ SRCS=	APValue.cpp \
 	TypeLoc.cpp \
 	TypePrinter.cpp
 
-TGHDRS=	AttrList \
+TGHDRS=	AttrImpl \
+	AttrList \
 	Attrs \
 	DeclNodes \
 	DiagnosticASTKinds \

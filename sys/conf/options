@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options,v 1.706 2010/07/28 15:36:12 mdf Exp $
+# $FreeBSD: src/sys/conf/options,v 1.707 2010/10/06 18:36:50 ambrisko Exp $
 #
 #        On the handling of kernel options
 #
@@ -696,6 +696,7 @@ ED_SIC			opt_ed.h
 
 # bce driver
 BCE_DEBUG		opt_bce.h
+BCE_NVRAM_WRITE_SUPPORT	opt_bce.h
 
 SOCKBUF_DEBUG		opt_global.h
 

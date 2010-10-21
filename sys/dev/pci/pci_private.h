@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/pci/pci_private.h,v 1.30 2010/08/17 15:44:52 jhb Exp $
+ * $FreeBSD: src/sys/dev/pci/pci_private.h,v 1.31 2010/10/20 16:47:09 jkim Exp $
  *
  */
 
@@ -39,6 +39,7 @@
 DECLARE_CLASS(pci_driver);
 
 extern int 	pci_do_power_resume;
+extern int 	pci_do_power_suspend;
 
 void		pci_add_children(device_t dev, int domain, int busno,
 		    size_t dinfo_size);

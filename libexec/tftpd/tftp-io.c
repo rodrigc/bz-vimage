@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/libexec/tftpd/tftp-io.c,v 1.1 2010/05/04 13:07:40 imp Exp $");
+__FBSDID("$FreeBSD: src/libexec/tftpd/tftp-io.c,v 1.2 2010/09/15 15:38:47 imp Exp $");
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -398,8 +398,6 @@ receive_packet(int peer, char *data, int size, struct sockaddr_storage *from,
 	int n;
 	static int waiting;
 
-	pfrom = (from == NULL) ? &from_local : from;
-
 	if (debug&DEBUG_PACKETS)
 		tftp_log(LOG_DEBUG,
 		    "Waiting %d seconds for packet", timeoutpacket);
@@ -423,6 +421,7 @@ receive_packet(int peer, char *data, int size, struct sockaddr_storage *from,
 	}
 
 	waiting++;
+	pfrom = (from == NULL) ? &from_local : from;
 	fromlen = sizeof(*pfrom);
 	n = recvfrom(peer, data, size, 0, (struct sockaddr *)pfrom, &fromlen);
 

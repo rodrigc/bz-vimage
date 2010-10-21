@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/krpc/Makefile,v 1.2 2008/11/06 10:53:35 des Exp $
+# $FreeBSD: src/sys/modules/krpc/Makefile,v 1.3 2010/09/24 15:01:45 attilio Exp $
 
 .PATH: ${.CURDIR}/../../rpc ${.CURDIR}/../../xdr
 KMOD=	krpc
@@ -9,8 +9,6 @@ SRCS=	auth_none.c \
 	clnt_rc.c \
 	clnt_vc.c \
 	getnetconfig.c \
-	inet_ntop.c \
-	inet_pton.c \
 	rpc_callmsg.c \
 	rpc_generic.c \
 	rpc_prot.c \

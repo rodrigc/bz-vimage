@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.6 2010/07/08 14:29:23 nwhitehorn Exp $
+# $FreeBSD: src/sys/dev/ofw/ofw_if.m,v 1.7 2010/09/11 18:55:00 marius Exp $
 #
 
 #include <dev/ofw/openfirm.h>
@@ -244,7 +244,7 @@ METHOD int interpret {
 	ofw_t		_ofw;
 	const char	*_cmd;
 	int		_nreturns;
-	unsigned long	*_returns;
+	cell_t		*_returns;
 };
 
 # Device I/O Functions (optional)

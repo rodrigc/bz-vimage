@@ -1,4 +1,4 @@
-# $FreeBSD: src/tools/regression/bin/sh/builtins/var-assign2.0,v 1.2 2010/05/09 17:15:26 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/builtins/var-assign2.0,v 1.3 2010/10/12 18:20:38 obrien Exp $
 IFS=,
 
 SPECIAL="break,\
@@ -45,11 +45,11 @@ set -e
 set -- ${SPECIAL}
 for cmd in "$@"
 do
-	sh -c "VAR=0; VAR=1 command ${cmd}; exit \${VAR}" >/dev/null 2>&1
+	${SH} -c "VAR=0; VAR=1 command ${cmd}; exit \${VAR}" >/dev/null 2>&1
 done
 
 set -- ${UTILS}
 for cmd in "$@"
 do
-	sh -c "VAR=0; VAR=1 command ${cmd}; exit \${VAR}" >/dev/null 2>&1
+	${SH} -c "VAR=0; VAR=1 command ${cmd}; exit \${VAR}" >/dev/null 2>&1
 done

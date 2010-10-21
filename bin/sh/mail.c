@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)mail.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/mail.c,v 1.15 2009/12/24 18:41:14 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/mail.c,v 1.16 2010/10/13 04:01:01 obrien Exp $");
 
 /*
  * Routines to check for mail.  (Perhaps make part of main.c?)
@@ -57,8 +57,8 @@ __FBSDID("$FreeBSD: src/bin/sh/mail.c,v 1.15 2009/12/24 18:41:14 jilles Exp $");
 #define MAXMBOXES 10
 
 
-STATIC int nmboxes;			/* number of mailboxes */
-STATIC time_t mailtime[MAXMBOXES];	/* times of mailboxes */
+static int nmboxes;			/* number of mailboxes */
+static time_t mailtime[MAXMBOXES];	/* times of mailboxes */
 
 
 

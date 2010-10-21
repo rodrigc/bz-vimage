@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/lge/if_lge.c,v 1.56 2009/11/19 22:14:23 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/lge/if_lge.c,v 1.57 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * Level 1 LXT1001 gigabit ethernet driver for FreeBSD. Public
@@ -557,10 +557,10 @@ lge_attach(dev)
 	/*
 	 * Do MII setup.
 	 */
-	if (mii_phy_probe(dev, &sc->lge_miibus,
-	    lge_ifmedia_upd, lge_ifmedia_sts)) {
-		device_printf(dev, "MII without any PHY!\n");
-		error = ENXIO;
+	error = mii_attach(dev, &sc->lge_miibus, ifp, lge_ifmedia_upd,
+	    lge_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
+	if (error != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 

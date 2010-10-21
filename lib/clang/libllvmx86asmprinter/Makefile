@@ -1,19 +1,15 @@
-# $FreeBSD: src/lib/clang/libllvmx86asmprinter/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmx86asmprinter/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmx86asmprinter
 
 SRCDIR=	lib/Target/X86/AsmPrinter
 INCDIR=	lib/Target/X86
 SRCS=	X86ATTInstPrinter.cpp \
-	X86AsmPrinter.cpp \
-	X86IntelInstPrinter.cpp \
-	X86MCInstLower.cpp
+	X86InstComments.cpp \
+	X86IntelInstPrinter.cpp
 
-TGHDRS=	X86GenAsmWriter1 \
-	X86GenAsmWriter \
-	X86GenInstrInfo \
-	X86GenInstrNames \
-	X86GenRegisterInfo.h \
-	X86GenRegisterNames
+TGHDRS=	X86GenAsmWriter \
+	X86GenAsmWriter1 \
+	X86GenInstrNames
 
 .include "../clang.lib.mk"

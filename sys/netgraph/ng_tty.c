@@ -39,7 +39,7 @@
  *
  * Updated by Andrew Thompson <thompsa@FreeBSD.org> for MPSAFE TTY.
  *
- * $FreeBSD: src/sys/netgraph/ng_tty.c,v 1.44 2010/05/03 07:32:50 sobomax Exp $
+ * $FreeBSD: src/sys/netgraph/ng_tty.c,v 1.45 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_tty.c,v 1.21 1999/11/01 09:24:52 julian Exp $
  */
 
@@ -211,7 +211,7 @@ ngt_disconnect(hook_p hook)
 	const sc_p sc = NG_NODE_PRIVATE(NG_HOOK_NODE(hook));
 
 	if (hook != sc->hook)
-		panic(__func__);
+		panic("%s", __func__);
 
 	NGTLOCK(sc);
 	sc->hook = NULL;
@@ -317,7 +317,7 @@ ngt_rcvdata(hook_p hook, item_p item)
 	struct mbuf *m;
 
 	if (hook != sc->hook)
-		panic(__func__);
+		panic("%s", __func__);
 
 	NGI_GET_M(item, m);
 	NG_FREE_ITEM(item);

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/apb.c,v 1.1 2010/01/09 18:02:31 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/apb.c,v 1.2 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -52,7 +52,7 @@ __FBSDID("$FreeBSD: src/sys/mips/atheros/apb.c,v 1.1 2010/01/09 18:02:31 imp Exp
 
 static int	apb_activate_resource(device_t, device_t, int, int,
 		    struct resource *);
-static device_t	apb_add_child(device_t, int, const char *, int);
+static device_t	apb_add_child(device_t, u_int, const char *, int);
 static struct resource *
 		apb_alloc_resource(device_t, device_t, int, int *, u_long,
 		    u_long, u_long, u_int);
@@ -397,7 +397,7 @@ apb_hinted_child(device_t bus, const char *dname, int dunit)
 }
 
 static device_t
-apb_add_child(device_t bus, int order, const char *name, int unit)
+apb_add_child(device_t bus, u_int order, const char *name, int unit)
 {
 	device_t		child;
 	struct apb_ivar	*ivar;

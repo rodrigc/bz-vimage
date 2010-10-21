@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_kthread.c,v 1.55 2010/05/21 17:14:36 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_kthread.c,v 1.56 2010/10/09 02:50:23 davidxu Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -295,6 +295,7 @@ kthread_add(void (*func)(void *), void *arg, struct proc *p,
 	thread_unlock(oldtd);
 	PROC_UNLOCK(p);
 
+	tidhash_add(newtd);
 
 	/* Delay putting it on the run queue until now. */
 	if (!(flags & RFSTOPPED)) {
@@ -313,6 +314,8 @@ kthread_exit(void)
 	struct proc *p;
 
 	p = curthread->td_proc;
+
+	tidhash_remove(curthread);
 
 	/* A module may be waiting for us to exit. */
 	wakeup(curthread);

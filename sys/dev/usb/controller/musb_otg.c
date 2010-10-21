@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/musb_otg.c,v 1.26 2010/01/07 21:01:37 mbr Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/musb_otg.c,v 1.27 2010/10/13 20:37:19 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -2181,7 +2181,7 @@ static const struct musbotg_config_desc musbotg_confd = {
 		.bNumEndpoints = 1,
 		.bInterfaceClass = UICLASS_HUB,
 		.bInterfaceSubClass = UISUBCLASS_HUB,
-		.bInterfaceProtocol = UIPROTO_HSHUBSTT,
+		.bInterfaceProtocol = 0,
 	},
 	.endpd = {
 		.bLength = sizeof(struct usb_endpoint_descriptor),

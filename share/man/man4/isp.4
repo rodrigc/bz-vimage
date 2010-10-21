@@ -27,7 +27,7 @@
 .\"
 .\" Additional Copyright (c) 2006 by Marcus Alves Grando
 .\"
-.\" $FreeBSD: src/share/man/man4/isp.4,v 1.28 2010/07/30 11:58:18 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/isp.4,v 1.29 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd February 28, 2007
 .Dt ISP 4
@@ -94,7 +94,6 @@ as it is the most likely to have been tested with this driver.
 Cards supported by the
 .Nm
 driver include:
-.Pp
 .Bl -tag -width xxxxxx -offset indent
 .It ISP1000
 SBus Fast Wide, Ultra Fast Wide cards, Single Ended or Differential
@@ -201,7 +200,6 @@ A hint value for a driver debug level (see the file
 for the values.
 .El
 .Sh SYSCTL OPTIONS
-.Pp
 .Bl -tag -width indent
 .It Va dev.isp.N.loop_down_limit
 This value says how long to wait in seconds after loop has gone down before

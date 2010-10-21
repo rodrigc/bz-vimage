@@ -1,14 +1,14 @@
-# $FreeBSD: src/lib/clang/libclangsema/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libclangsema/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	clangsema
 
 SRCDIR=	tools/clang/lib/Sema
 SRCS=	AnalysisBasedWarnings.cpp \
+	AttributeList.cpp \
 	CodeCompleteConsumer.cpp \
-	IdentifierResolver.cpp \
+	DeclSpec.cpp \
 	IdentifierResolver.cpp \
 	JumpDiagnostics.cpp \
-	ParseAST.cpp \
 	Sema.cpp \
 	SemaAccess.cpp \
 	SemaAttr.cpp \
@@ -31,7 +31,6 @@ SRCS=	AnalysisBasedWarnings.cpp \
 	SemaStmt.cpp \
 	SemaTemplate.cpp \
 	SemaTemplateDeduction.cpp \
-	SemaTemplateInstantiate.cpp \
 	SemaTemplateInstantiate.cpp \
 	SemaTemplateInstantiateDecl.cpp \
 	SemaType.cpp \

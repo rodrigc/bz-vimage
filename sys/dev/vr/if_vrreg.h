@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/vr/if_vrreg.h,v 1.38 2008/07/16 08:35:29 yongari Exp $
+ * $FreeBSD: src/sys/dev/vr/if_vrreg.h,v 1.39 2010/10/15 14:52:11 marius Exp $
  */
 
 /*
@@ -722,7 +722,6 @@ struct vr_softc {
 	uint8_t			vr_revid;	/* Rhine chip revision */
 	uint8_t			vr_flags;	/* See VR_F_* below */
 #define	VR_F_RESTART		0x01		/* Restart unit on next tick */
-	int			vr_phyaddr;
 	int			vr_if_flags;
 	struct task		vr_link_task;
 	struct vr_chain_data	vr_cdata;

@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmcannotate/pmcannotate.c,v 1.2 2009/12/29 22:53:27 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmcannotate/pmcannotate.c,v 1.4 2010/10/16 17:30:27 bcr Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -356,7 +356,7 @@ fqueue_insertent(struct entry *entry)
 		}
 
 	/*
-	 * If the firt-level aggregation object alredy exist,
+	 * If the first-level aggregation object already exists,
 	 * just aggregate the samples and, if needed, resort
 	 * it.
 	 */

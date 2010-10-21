@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_iicbus.c,v 1.4 2009/06/14 00:05:38 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_iicbus.c,v 1.5 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -46,8 +46,8 @@ __FBSDID("$FreeBSD: src/sys/dev/ofw/ofw_iicbus.c,v 1.4 2009/06/14 00:05:38 mariu
 /* Methods */
 static device_probe_t ofw_iicbus_probe;
 static device_attach_t ofw_iicbus_attach;
-static device_t ofw_iicbus_add_child(device_t dev, int order, const char *name,
-    int unit);
+static device_t ofw_iicbus_add_child(device_t dev, u_int order,
+    const char *name, int unit);
 static const struct ofw_bus_devinfo *ofw_iicbus_get_devinfo(device_t bus,
     device_t dev);
 
@@ -147,7 +147,7 @@ ofw_iicbus_attach(device_t dev)
 }
 
 static device_t
-ofw_iicbus_add_child(device_t dev, int order, const char *name, int unit)
+ofw_iicbus_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct ofw_iicbus_devinfo *devi;

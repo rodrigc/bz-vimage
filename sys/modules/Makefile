@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.663 2010/08/23 06:13:29 imp Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.664 2010/09/10 15:03:56 ken Exp $
 
 .include <bsd.own.mk>
 
@@ -185,6 +185,7 @@ SUBDIR=	${_3dfx} \
 	${_mly} \
 	mmc \
 	mmcsd \
+	mps \
 	mpt \
 	mqueue \
 	msdosfs \

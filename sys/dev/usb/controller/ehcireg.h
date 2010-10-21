@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/ehcireg.h,v 1.2 2010/03/03 10:18:03 joel Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/ehcireg.h,v 1.3 2010/10/14 21:41:08 hselasky Exp $ */
 /*-
  * Copyright (c) 2001 The NetBSD Foundation, Inc.
  * All rights reserved.
@@ -55,7 +55,7 @@
 
 /* EHCI capability registers */
 #define	EHCI_CAPLENGTH		0x00	/* RO Capability register length field */
-/* reserved			0x01 */
+#define	EHCI_RESERVED		0x01	/* Reserved register */
 #define	EHCI_HCIVERSION		0x02	/* RO Interface version number */
 #define	EHCI_HCSPARAMS		0x04	/* RO Structural parameters */
 #define	EHCI_HCS_DEBUGPORT(x)	(((x) >> 20) & 0xf)

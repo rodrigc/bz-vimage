@@ -4,7 +4,7 @@
 # This file contains machine dependent kernel configuration notes.  For
 # machine independent notes, look in /sys/conf/NOTES.
 #
-# $FreeBSD: src/sys/i386/conf/NOTES,v 1.1294 2010/07/25 17:55:57 rpaulo Exp $
+# $FreeBSD: src/sys/i386/conf/NOTES,v 1.1295 2010/09/19 14:40:37 nork Exp $
 #
 
 #
@@ -751,6 +751,7 @@ device		glxsb		# AMD Geode LX Security Block
 # spic: Sony Programmable I/O controller (VAIO notebooks)
 # asmc: Apple System Management Controller
 # si: Specialix International SI/XIO or SX intelligent serial card driver
+# tpm: Trusted Platform Module
 
 # Notes on APM
 #  The flags takes the following meaning for apm0:
@@ -789,6 +790,7 @@ hint.spic.0.at="isa"
 hint.spic.0.port="0x10a0"
 device		asmc
 #device		si
+device		tpm
 
 #
 # Laptop/Notebook options:

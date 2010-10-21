@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/acl.h,v 1.35 2009/12/22 09:03:59 trasz Exp $
+ * $FreeBSD: src/sys/sys/acl.h,v 1.36 2010/09/20 17:10:06 trasz Exp $
  */
 /* 
  * Developed by the TrustedBSD Project.
@@ -285,6 +285,8 @@ mode_t			acl_posix1e_newfilemode(mode_t cmode,
 struct acl		*acl_alloc(int flags);
 void			acl_free(struct acl *aclp);
 
+void			acl_nfs4_trivial_from_mode(struct acl *aclp,
+			    mode_t mode);
 void			acl_nfs4_sync_acl_from_mode(struct acl *aclp,
 			    mode_t mode, int file_owner_id);
 void			acl_nfs4_sync_mode_from_acl(mode_t *mode,

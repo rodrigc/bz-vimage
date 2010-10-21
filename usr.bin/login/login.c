@@ -45,7 +45,7 @@ static char sccsid[] = "@(#)login.c	8.4 (Berkeley) 4/2/94";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/login/login.c,v 1.110 2010/01/02 10:09:20 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/login/login.c,v 1.112 2010/10/20 19:53:29 ed Exp $");
 
 /*
  * login [ name ]
@@ -53,7 +53,6 @@ __FBSDID("$FreeBSD: src/usr.bin/login/login.c,v 1.110 2010/01/02 10:09:20 ed Exp
  * login -f name	(for pre-authenticated login: datakit, xterm, etc.)
  */
 
-#include <sys/copyright.h>
 #include <sys/param.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -234,8 +233,7 @@ main(int argc, char *argv[])
 
 	setproctitle("-%s", getprogname());
 
-	for (cnt = getdtablesize(); cnt > 2; cnt--)
-		(void)close(cnt);
+	closefrom(3);
 
 	/*
 	 * Get current TTY
@@ -589,12 +587,6 @@ main(int argc, char *argv[])
 
 	if (!quietlog) {
 		const char *cw;
-
-		cw = login_getcapstr(lc, "copyright", NULL, NULL);
-		if (cw == NULL || motd(cw) == -1)
-			(void)printf("%s", copyright);
-
-		(void)printf("\n");
 
 		cw = login_getcapstr(lc, "welcome", NULL, NULL);
 		if (cw != NULL && access(cw, F_OK) == 0)

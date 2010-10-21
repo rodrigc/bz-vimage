@@ -40,7 +40,7 @@
  *
  * $Id$
  *
- * $FreeBSD: src/sys/dev/aic7xxx/aicasm/aicasm_macro_scan.l,v 1.8 2009/12/30 16:56:50 ed Exp $
+ * $FreeBSD: src/sys/dev/aic7xxx/aicasm/aicasm_macro_scan.l,v 1.10 2010/10/14 19:19:19 rpaulo Exp $
  */
 
 #include <sys/types.h>

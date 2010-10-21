@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/vnex.c,v 1.7 2008/05/02 17:44:17 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/vnex.c,v 1.8 2010/09/10 11:19:03 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -204,7 +204,7 @@ vnex_attach(device_t dev)
 }
 
 static device_t
-vnex_add_child(device_t dev, int order, const char *name, int unit)
+vnex_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t cdev;
 	struct vnex_devinfo *vndi;

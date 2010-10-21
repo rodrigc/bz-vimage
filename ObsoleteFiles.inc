@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/ObsoleteFiles.inc,v 1.242 2010/08/15 21:25:52 brueffer Exp $
+# $FreeBSD: src/ObsoleteFiles.inc,v 1.248 2010/10/20 06:29:11 avg Exp $
 #
 # This file lists old files (OLD_FILES), libraries (OLD_LIBS) and
 # directories (OLD_DIRS) which should get removed at an update. Recently
@@ -14,6 +14,15 @@
 # The file is partitioned: OLD_FILES first, then OLD_LIBS and OLD_DIRS last.
 #
 
+# 20101020: catch up with vm_page_sleep_if_busy rename
+OLD_FILES+=usr/share/man/man9/vm_page_sleep_busy.9.gz
+# 20101011: removed subblock.h from liblzma
+OLD_FILES+=usr/include/lzma/subblock.h
+# 20101002: removed manpath.config
+OLD_FILES+=etc/manpath.config
+OLD_FILES+=usr/share/examples/etc/manpath.config
+# 20100910: renamed sbuf_overflowed to sbuf_error
+OLD_FILES+=usr/share/man/man9/sbuf_overflowed.9.gz
 # 20100815: retired last traces of chooseproc(9)
 OLD_FILES+=usr/share/man/man9/chooseproc.9.gz
 # 20100806: removal of unused libcompat routines
@@ -21,8 +30,13 @@ OLD_FILES+=usr/share/man/man3/ascftime.3.gz
 OLD_FILES+=usr/share/man/man3/cfree.3.gz
 OLD_FILES+=usr/share/man/man3/cftime.3.gz
 OLD_FILES+=usr/share/man/man3/getpw.3.gz
+# 20100801: tzdata2010k import
+OLD_FILES+=usr/share/zoneinfo/Pacific/Ponape
+OLD_FILES+=usr/share/zoneinfo/Pacific/Truk
 # 20100725: acpi_aiboost(4) removal.
 OLD_FILES+=usr/share/man/man4/acpi_aiboost.4.gz
+# 20100724: nfsclient/nfs_lock.h moved to nfs/nfs_lock.h
+OLD_FILES+=usr/include/nfsclient/nfs_lock.h
 # 20100720: new clang import which bumps version from 2.0 to 2.8
 OLD_FILES+=usr/include/clang/2.0/emmintrin.h
 OLD_FILES+=usr/include/clang/2.0/mm_malloc.h
@@ -4959,7 +4973,7 @@ OLD_FILES+=usr/share/man/man5/usbd.conf.5.gz
 .if ${TARGET_ARCH} != "i386" && ${TARGET_ARCH} != "amd64"
 OLD_FILES+=usr/share/man/man8/boot_i386.8.gz
 .endif
-.if ${TARGET_ARCH} != "powerpc" && ${TARGET_ARCH} != "sparc64"
+.if ${TARGET_ARCH} != "powerpc" && ${TARGET_ARCH} != "powerpc64" && ${TARGET_ARCH} != "sparc64"
 OLD_FILES+=usr/share/man/man8/ofwdump.8.gz
 .endif
 OLD_FILES+=usr/share/man/man8/mount_reiserfs.8.gz

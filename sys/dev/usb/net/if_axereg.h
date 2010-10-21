@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/net/if_axereg.h,v 1.4 2010/09/02 03:47:07 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/net/if_axereg.h,v 1.5 2010/10/11 19:20:53 yongari Exp $
  */
 
 /*
@@ -191,7 +191,6 @@ struct axe_sframe_hdr {
 enum {
 	AXE_BULK_DT_WR,
 	AXE_BULK_DT_RD,
-	AXE_INTR_DT_RD,
 	AXE_N_TRANSFER,
 };
 

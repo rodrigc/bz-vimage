@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_pci.c,v 1.20 2010/03/28 20:02:50 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_pci.c,v 1.21 2010/10/14 21:41:08 hselasky Exp $");
 
 /*
  * USB Enhanced Host Controller Driver, a.k.a. USB 2.0 controller.
@@ -92,8 +92,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_pci.c,v 1.20 2010/03/28 20:0
 #define	PCI_EHCI_VENDORID_NVIDIA	0x12D2
 #define	PCI_EHCI_VENDORID_NVIDIA2	0x10DE
 #define	PCI_EHCI_VENDORID_VIA		0x1106
-
-#define	PCI_EHCI_BASE_REG	0x10
 
 static void ehci_pci_takecontroller(device_t self);
 

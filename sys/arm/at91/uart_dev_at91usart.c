@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/at91/uart_dev_at91usart.c,v 1.20 2009/08/15 15:15:20 stas Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/at91/uart_dev_at91usart.c,v 1.21 2010/10/06 22:25:21 cognet Exp $");
 
 #include "opt_comconsole.h"
 
@@ -190,9 +190,10 @@ at91_usart_param(struct uart_bas *bas, int baudrate, int databits,
 	WR4(bas, USART_MR, mr);
 
 	/*
-	 * Set the baud rate
+	 * Set the baud rate (only if we know our master clock rate)
 	 */
-	WR4(bas, USART_BRGR, BAUD2DIVISOR(baudrate));
+	if (DEFAULT_RCLK != 0)
+		WR4(bas, USART_BRGR, BAUD2DIVISOR(baudrate));
 
 	/* XXX Need to take possible synchronous mode into account */
 	return (0);
@@ -674,7 +675,10 @@ at91_usart_bus_ioctl(struct uart_softc *sc, int request, intptr_t data)
 	case UART_IOCTL_OFLOW:
 		break;
 	case UART_IOCTL_BAUD:
-		WR4(&sc->sc_bas, USART_BRGR, BAUD2DIVISOR(*(int *)data));
+		/* only if we know our master clock rate */
+		if (DEFAULT_RCLK != 0)
+			WR4(&sc->sc_bas, USART_BRGR,
+				BAUD2DIVISOR(*(int *)data));
 		return (0);
 	}
 	return (EINVAL);

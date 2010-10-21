@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.15 2010/08/06 15:36:59 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/mp_machdep.c,v 1.17 2010/09/14 01:48:01 neel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -164,11 +164,7 @@ mips_ipi_handler(void *arg)
 			break;
 		case IPI_HARDCLOCK:
 			CTR1(KTR_SMP, "%s: IPI_HARDCLOCK", __func__);
-			hardclockintr(arg);;
-			break;
-		case IPI_STATCLOCK:
-			CTR1(KTR_SMP, "%s: IPI_STATCLOCK", __func__);
-			statclockintr(arg);;
+			hardclockintr();;
 			break;
 		default:
 			panic("Unknown IPI 0x%0x on cpu %d", ipi, curcpu);
@@ -313,8 +309,6 @@ smp_init_secondary(u_int32_t cpuid)
 
 	while (smp_started == 0)
 		; /* nothing */
-
-	intr_enable();
 
 	/* Start per-CPU event timers. */
 	cpu_initclocks_ap();

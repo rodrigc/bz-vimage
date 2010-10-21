@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/sys/dev/ciss/ciss.c,v 1.106 2010/04/28 18:49:45 jhb Exp $
+ *	$FreeBSD: src/sys/dev/ciss/ciss.c,v 1.107 2010/10/02 08:18:19 kib Exp $
  */
 
 /*
@@ -4394,7 +4394,7 @@ ciss_name_ldrive_org(int org)
     case CISS_LDRIVE_RAID0:
 	return("RAID 0");
     case CISS_LDRIVE_RAID1:
-	return("RAID 1");
+	return("RAID 1(1+0)");
     case CISS_LDRIVE_RAID4:
 	return("RAID 4");
     case CISS_LDRIVE_RAID5:

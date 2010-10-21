@@ -68,7 +68,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/net/nsdispatch.c,v 1.18 2009/05/27 17:01:59 zml Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/net/nsdispatch.c,v 1.19 2010/10/04 15:28:01 ume Exp $");
 
 #include "namespace.h"
 #include <sys/param.h>
@@ -707,11 +707,13 @@ _nsdispatch(void *retval, const ns_dtab disp_tab[], const char *database,
 				va_end(ap);
 			} else {
 				cache_flag = 0;
+				errno = 0;
 				va_start(ap, defaults);
 				result = method(retval, mdata, ap);
 				va_end(ap);
 			}
 #else /* NS_CACHING */
+			errno = 0;
 			va_start(ap, defaults);
 			result = method(retval, mdata, ap);
 			va_end(ap);

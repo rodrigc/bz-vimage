@@ -23,10 +23,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.3 2010/07/20 19:25:11 jmallett Exp $
+ * $FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.4 2010/09/15 05:10:50 neel Exp $
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.3 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.4 2010/09/15 05:10:50 neel Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -96,7 +96,7 @@ platform_init_ap(int cpuid)
 	 */
 	clock_int_mask = hard_int_mask(5);
 	ipi_int_mask = hard_int_mask(platform_ipi_intrnum());
-	set_intr_mask(MIPS_SR_INT_MASK & ~(ipi_int_mask | clock_int_mask));
+	set_intr_mask(ipi_int_mask | clock_int_mask);
 
 	mips_wbflush();
 }

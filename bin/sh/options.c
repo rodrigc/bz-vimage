@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)options.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.30 2010/04/05 14:15:51 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.31 2010/10/13 22:18:03 obrien Exp $");
 
 #include <signal.h>
 #include <unistd.h>
@@ -69,10 +69,10 @@ char *nextopt_optptr;		/* used by nextopt */
 char *minusc;			/* argument to -c option */
 
 
-STATIC void options(int);
-STATIC void minus_o(char *, int);
-STATIC void setoption(int, int);
-STATIC int getopts(char *, char *, char **, char ***, char **);
+static void options(int);
+static void minus_o(char *, int);
+static void setoption(int, int);
+static int getopts(char *, char *, char **, char ***, char **);
 
 
 /*
@@ -138,7 +138,7 @@ optschanged(void)
  * to the argument list; we advance it past the options.
  */
 
-STATIC void
+static void
 options(int cmdline)
 {
 	char *kp, *p;
@@ -247,7 +247,7 @@ end_options2:
 	}
 }
 
-STATIC void
+static void
 minus_o(char *name, int val)
 {
 	int i;
@@ -284,7 +284,7 @@ minus_o(char *name, int val)
 }
 
 
-STATIC void
+static void
 setoption(int flag, int val)
 {
 	int i;
@@ -451,7 +451,7 @@ getoptscmd(int argc, char **argv)
 		       &shellparam.optptr);
 }
 
-STATIC int
+static int
 getopts(char *optstr, char *optvar, char **optfirst, char ***optnext,
     char **optptr)
 {

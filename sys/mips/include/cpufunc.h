@@ -53,7 +53,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	JNPR: cpufunc.h,v 1.5 2007/08/09 11:23:32 katta
- * $FreeBSD: src/sys/mips/include/cpufunc.h,v 1.7 2010/07/20 19:25:11 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/cpufunc.h,v 1.9 2010/09/15 05:10:50 neel Exp $
  */
 
 #ifndef _MACHINE_CPUFUNC_H_
@@ -264,6 +264,24 @@ intr_restore(register_t ie)
 	if (ie == MIPS_SR_INT_IE) {
 		intr_enable();
 	}
+}
+
+static __inline uint32_t
+set_intr_mask(uint32_t mask)
+{
+	uint32_t ostatus;
+
+	ostatus = mips_rd_status();
+	mask = (ostatus & ~MIPS_SR_INT_MASK) | (mask & MIPS_SR_INT_MASK);
+	mips_wr_status(mask);
+	return (ostatus);
+}
+
+static __inline uint32_t
+get_intr_mask(void)
+{
+
+	return (mips_rd_status() & MIPS_SR_INT_MASK);
 }
 
 static __inline void

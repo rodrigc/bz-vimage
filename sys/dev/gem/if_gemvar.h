@@ -25,7 +25,7 @@
  *
  *	from: NetBSD: gemvar.h,v 1.8 2002/05/15 02:36:12 matt Exp
  *
- * $FreeBSD: src/sys/dev/gem/if_gemvar.h,v 1.19 2009/06/24 19:04:08 marius Exp $
+ * $FreeBSD: src/sys/dev/gem/if_gemvar.h,v 1.20 2010/10/15 14:52:11 marius Exp $
  */
 
 #ifndef	_IF_GEMVAR_H
@@ -125,8 +125,6 @@ struct gem_softc {
 	bus_dma_tag_t	sc_tdmatag;	/* TX bus DMA tag */
 	bus_dma_tag_t	sc_cdmatag;	/* control data bus DMA tag */
 	bus_dmamap_t	sc_dmamap;	/* bus DMA handle */
-
-	int		sc_phyad;	/* PHY to use or -1 for any */
 
 	u_int		sc_variant;
 #define	GEM_UNKNOWN		0	/* don't know */

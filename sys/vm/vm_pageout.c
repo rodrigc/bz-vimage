@@ -73,7 +73,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.329 2010/07/02 20:56:22 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_pageout.c,v 1.330 2010/09/09 13:32:58 nwhitehorn Exp $");
 
 #include "opt_vm.h"
 #include <sys/param.h>
@@ -701,8 +701,11 @@ vm_pageout_map_deactivate_pages(map, desired)
 	 * table pages.
 	 */
 	if (desired == 0 && nothingwired) {
-		pmap_remove(vm_map_pmap(map), vm_map_min(map),
-		    vm_map_max(map));
+		tmpe = map->header.next;
+		while (tmpe != &map->header) {
+			pmap_remove(vm_map_pmap(map), tmpe->start, tmpe->end);
+			tmpe = tmpe->next;
+		}
 	}
 	vm_map_unlock(map);
 }

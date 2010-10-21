@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libthr/Makefile,v 1.43 2010/08/24 20:50:08 nwhitehorn Exp $
+# $FreeBSD: src/lib/libthr/Makefile,v 1.48 2010/10/08 01:53:33 davidxu Exp $
 #
 # All library objects contain FreeBSD revision strings by default; they may be
 # excluded as a space-saving measure.  To produce a library that does
@@ -22,9 +22,15 @@ CFLAGS+=-I${.CURDIR}/../libc/include -I${.CURDIR}/thread \
 CFLAGS+=-I${.CURDIR}/arch/${MACHINE_CPUARCH}/include
 CFLAGS+=-I${.CURDIR}/sys
 CFLAGS+=-I${.CURDIR}/../../libexec/rtld-elf
-CFLAGS+=-I${.CURDIR}/../../libexec/rtld-elf/${MACHINE_ARCH}
+CFLAGS+=-I${.CURDIR}/../../libexec/rtld-elf/${MACHINE_CPUARCH}
 CFLAGS+=-I${.CURDIR}/../libthread_db
 CFLAGS+=-Winline
+
+.ifndef NO_THREAD_UNWIND_STACK
+CFLAGS+=-fexceptions
+CFLAGS+=-D_PTHREAD_FORCED_UNWIND
+.endif
+
 LDFLAGS+=-Wl,-znodelete
 
 VERSION_DEF=${.CURDIR}/../libc/Versions.def
@@ -37,6 +43,8 @@ CFLAGS+=-D_PTHREADS_INVARIANTS
 #CFLAGS+=-g
 
 PRECIOUSLIB=
+
+.PATH: ${.CURDIR}/arch/${MACHINE_CPUARCH}/${MACHINE_CPUARCH}
 
 .include "${.CURDIR}/arch/${MACHINE_CPUARCH}/Makefile.inc"
 .include "${.CURDIR}/sys/Makefile.inc"

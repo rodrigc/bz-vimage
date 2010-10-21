@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  * from: NetBSD: zopen.c,v 1.8 2003/08/07 11:13:29 agc Exp
- * $FreeBSD: src/usr.bin/gzip/zuncompress.c,v 1.2 2009/06/24 21:51:02 delphij Exp $
+ * $FreeBSD: src/usr.bin/gzip/zuncompress.c,v 1.3 2010/10/16 15:24:04 bcr Exp $
  */
 
 /* This file is #included by gzip.c */
@@ -115,7 +115,7 @@ struct s_zstate {
 			code_int zs_ent;
 			code_int zs_hsize_reg;
 			int zs_hshift;
-		} w;			/* Write paramenters */
+		} w;			/* Write parameters */
 		struct {
 			char_type *zs_stackp;
 			int zs_finchar;

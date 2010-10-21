@@ -1,0 +1,3 @@
+# $FreeBSD: src/usr.bin/Makefile.arm,v 1.1 2010/09/13 02:23:03 imp Exp $
+
+SUBDIR:=	${SUBDIR:Ntruss}

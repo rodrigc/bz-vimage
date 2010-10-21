@@ -40,7 +40,6 @@
 #include <zone.h>
 #include <sys/zfs_ioctl.h>
 #include <sys/zio.h>
-#include <strings.h>
 #include <umem.h>
 
 #include "zfs_namecheck.h"
@@ -1720,6 +1719,12 @@ zpool_vdev_fault(zpool_handle_t *zhp, uint64_t guid)
 		 * There are no other replicas of this device.
 		 */
 		return (zfs_error(hdl, EZFS_NOREPLICAS, msg));
+
+	case EEXIST:
+		/*
+		 * The log device has unplayed logs
+		 */
+		return (zfs_error(hdl, EZFS_UNPLAYED_LOGS, msg));
 
 	default:
 		return (zpool_standard_error(hdl, errno, msg));

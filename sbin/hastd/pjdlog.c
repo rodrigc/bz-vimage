@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/pjdlog.c,v 1.7 2010/08/31 12:05:13 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/pjdlog.c,v 1.8 2010/10/16 22:50:12 pjd Exp $");
 
 #include <assert.h>
 #include <errno.h>
@@ -214,8 +214,7 @@ pjdlogv_common(int loglevel, int debuglevel, int error, const char *fmt,
 		/* Attach debuglevel if this is debug log. */
 		if (loglevel == LOG_DEBUG)
 			fprintf(out, "[%d]", debuglevel);
-		fprintf(out, " ");
-		fprintf(out, "%s", pjdlog_prefix);
+		fprintf(out, " %s", pjdlog_prefix);
 		vfprintf(out, fmt, ap);
 		if (error != -1)
 			fprintf(out, ": %s.", strerror(error));

@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.37 2010/08/14 20:12:10 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.38 2010/09/29 11:52:44 jhb Exp $	*/
 
 /*-
  * Copyright (c) 2005, 2006
@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.37 2010/08/14 20:12:10 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ral/rt2560.c,v 1.38 2010/09/29 11:52:44 jhb Exp $");
 
 /*-
  * Ralink Technology RT2560 chipset driver
@@ -2667,8 +2667,7 @@ rt2560_init_locked(struct rt2560_softc *sc)
 	RAL_WRITE(sc, RT2560_CSR1, RT2560_HOST_READY);
 
 	if (rt2560_bbp_init(sc) != 0) {
-		rt2560_stop(sc);
-		RAL_UNLOCK(sc);
+		rt2560_stop_locked(sc);
 		return;
 	}
 

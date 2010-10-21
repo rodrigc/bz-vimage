@@ -23,11 +23,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/altivec.h,v 1.1 2009/02/20 17:48:40 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/altivec.h,v 1.2 2010/10/05 18:08:07 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_ALTIVEC_H_
 #define	_MACHINE_ALTIVEC_H_
+
+#define ALTIVEC_VSCR_NJ		0x00010000	/* Enable non-Java mode */
+#define ALTIVEC_VSCR_SAT	0x00000001	/* Saturation status bit */
 
 void    enable_vec(struct thread *);
 void    save_vec(struct thread *);

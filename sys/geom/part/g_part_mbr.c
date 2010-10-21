@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.15 2010/06/26 13:20:40 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.17 2010/10/13 11:35:59 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -204,8 +204,8 @@ g_part_mbr_add(struct g_part_table *basetable, struct g_part_entry *baseentry,
 	if (baseentry->gpe_deleted)
 		bzero(&entry->ent, sizeof(entry->ent));
 
-	KASSERT(baseentry->gpe_start <= start, (__func__));
-	KASSERT(baseentry->gpe_end >= start + size - 1, (__func__));
+	KASSERT(baseentry->gpe_start <= start, ("%s", __func__));
+	KASSERT(baseentry->gpe_end >= start + size - 1, ("%s", __func__));
 	baseentry->gpe_start = start;
 	baseentry->gpe_end = start + size - 1;
 	entry->ent.dp_start = start;
@@ -465,6 +465,7 @@ g_part_mbr_read(struct g_part_table *basetable, struct g_consumer *cp)
 	basetable->gpt_first = basetable->gpt_sectors;
 	basetable->gpt_last = msize - (msize % basetable->gpt_sectors) - 1;
 
+	g_free(buf);
 	return (0);
 }
 

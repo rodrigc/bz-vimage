@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/obio.c,v 1.5 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/obio.c,v 1.6 2010/09/19 09:18:27 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -191,6 +191,8 @@ static device_method_t obio_methods[] = {
 	DEVMETHOD(bus_activate_resource,obio_activate_resource),
 	DEVMETHOD(bus_setup_intr,	bus_generic_setup_intr),
 	DEVMETHOD(bus_teardown_intr,	bus_generic_teardown_intr),
+
+	DEVMETHOD(bus_add_child,	bus_generic_add_child),
 
 	{0, 0},
 };

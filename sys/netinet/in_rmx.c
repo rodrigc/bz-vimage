@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_rmx.c,v 1.81 2010/07/31 15:31:23 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in_rmx.c,v 1.82 2010/09/27 19:26:56 delphij Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -121,12 +121,13 @@ in_matroute(void *v_arg, struct radix_node_head *head)
 	struct radix_node *rn = rn_match(v_arg, head);
 	struct rtentry *rt = (struct rtentry *)rn;
 
-	/*XXX locking? */
-	if (rt && rt->rt_refcnt == 0) {		/* this is first reference */
+	if (rt) {
+		RT_LOCK(rt);
 		if (rt->rt_flags & RTPRF_OURS) {
 			rt->rt_flags &= ~RTPRF_OURS;
 			rt->rt_rmx.rmx_expire = 0;
 		}
+		RT_UNLOCK(rt);
 	}
 	return rn;
 }

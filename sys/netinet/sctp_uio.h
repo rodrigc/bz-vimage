@@ -30,7 +30,7 @@
 
 /* $KAME: sctp_uio.h,v 1.11 2005/03/06 16:04:18 itojun Exp $	 */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_uio.h,v 1.47 2010/03/24 20:02:40 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_uio.h,v 1.48 2010/09/05 20:13:07 tuexen Exp $");
 
 #ifndef __sctp_uio_h__
 #define __sctp_uio_h__
@@ -982,6 +982,23 @@ union sctp_sockstore {
 	struct sockaddr sa;
 };
 
+
+/***********************************/
+/* And something for us old timers */
+/***********************************/
+
+#ifndef ntohll
+#include <sys/endian.h>
+#define ntohll(x) be64toh(x)
+#endif
+
+#ifndef htonll
+#include <sys/endian.h>
+#define htonll(x) htobe64(x)
+#endif
+/***********************************/
+
+
 struct xsctp_inpcb {
 	uint32_t last;
 	uint32_t flags;
@@ -1079,7 +1096,6 @@ sctp_lower_sosend(struct socket *so,
     struct mbuf *i_pak,
     struct mbuf *control,
     int flags,
-    int use_rcvinfo,
     struct sctp_sndrcvinfo *srcv
     ,struct thread *p
 );

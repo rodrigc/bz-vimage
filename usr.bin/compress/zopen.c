@@ -40,7 +40,7 @@ static char sccsid[] = "@(#)zopen.c	8.1 (Berkeley) 6/27/93";
 #endif /* LIBC_SCCS and not lint */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/compress/zopen.c,v 1.14 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/compress/zopen.c,v 1.15 2010/10/16 15:24:04 bcr Exp $");
 
 /*-
  * fcompress.c - File compression ala IEEE Computer, June 1984.
@@ -131,7 +131,7 @@ struct s_zstate {
 			code_int zs_ent;
 			code_int zs_hsize_reg;
 			int zs_hshift;
-		} w;			/* Write paramenters */
+		} w;			/* Write parameters */
 		struct {
 			char_type *zs_stackp;
 			int zs_finchar;

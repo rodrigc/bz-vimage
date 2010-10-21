@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci.c,v 1.27 2010/09/02 04:01:18 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci.c,v 1.28 2010/10/13 20:37:19 hselasky Exp $");
 
 /*
  * USB Open Host Controller driver.
@@ -2105,7 +2105,7 @@ struct ohci_config_desc ohci_confd =
 		.bNumEndpoints = 1,
 		.bInterfaceClass = UICLASS_HUB,
 		.bInterfaceSubClass = UISUBCLASS_HUB,
-		.bInterfaceProtocol = UIPROTO_FSHUB,
+		.bInterfaceProtocol = 0,
 	},
 	.endpd = {
 		.bLength = sizeof(struct usb_endpoint_descriptor),

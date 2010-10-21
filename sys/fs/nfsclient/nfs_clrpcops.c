@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.12 2010/07/13 23:14:39 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsclient/nfs_clrpcops.c,v 1.13 2010/09/07 14:29:45 jhb Exp $");
 
 /*
  * Rpc op calls, generally called from the vnode op calls or through the
@@ -3293,8 +3293,7 @@ nfsrpc_readdirplus(vnode_t vp, struct uio *uiop, nfsuint64 *cookiep,
 				    ndp->ni_vp = newvp;
 				    NFSCNHASH(cnp, HASHINIT);
 				    if (cnp->cn_namelen <= NCHNAMLEN) {
-					np->n_ctime =
-					  np->n_vattr.na_ctime.tv_sec;
+					np->n_ctime = np->n_vattr.na_ctime;
 					cache_enter(ndp->ni_dvp,ndp->ni_vp,cnp);
 				    }
 				    if (unlocknewvp)

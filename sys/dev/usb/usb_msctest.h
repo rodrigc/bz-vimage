@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_msctest.h,v 1.7 2010/02/14 20:05:12 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_msctest.h,v 1.8 2010/10/06 14:29:00 glebius Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -33,6 +33,7 @@ enum {
 	MSC_EJECT_ZTESTOR,
 	MSC_EJECT_CMOTECH,
 	MSC_EJECT_HUAWEI,
+	MSC_EJECT_TCT,
 };
 
 int usb_iface_is_cdrom(struct usb_device *udev,

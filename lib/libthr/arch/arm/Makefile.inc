@@ -1,5 +1,3 @@
-# $FreeBSD: src/lib/libthr/arch/arm/Makefile.inc,v 1.3 2008/02/13 05:25:42 obrien Exp $
-
-.PATH: ${.CURDIR}/arch/${MACHINE_ARCH}/${MACHINE_ARCH}
+# $FreeBSD: src/lib/libthr/arch/arm/Makefile.inc,v 1.4 2010/09/13 01:43:10 imp Exp $
 
 SRCS+=	pthread_md.c

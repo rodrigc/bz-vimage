@@ -37,7 +37,7 @@
  *
  * Author: Julian Elischer <julian@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_rfc1490.c,v 1.25 2008/10/23 15:53:51 des Exp $
+ * $FreeBSD: src/sys/netgraph/ng_rfc1490.c,v 1.26 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_rfc1490.c,v 1.22 1999/11/01 09:24:52 julian Exp $
  */
 
@@ -440,7 +440,7 @@ switch_on_etype:		etype = ntohs(*((const u_int16_t *)ptr));
 		mtod(m, u_char *)[7] = 0x07;
 		NG_FWD_NEW_DATA(error, item, priv->downlink, m);
 	} else
-		panic(__func__);
+		panic("%s", __func__);
 
 done:
 	if (item)
@@ -485,7 +485,7 @@ ng_rfc1490_disconnect(hook_p hook)
 	else if (hook == priv->ethernet)
 		priv->ethernet = NULL;
 	else
-		panic(__func__);
+		panic("%s", __func__);
 	return (0);
 }
 

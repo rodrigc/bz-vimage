@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvmmipscodegen/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmmipscodegen/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
 
 LIB=	llvmmipscodegen
 
@@ -15,13 +15,12 @@ SRCS=	MipsDelaySlotFiller.cpp \
 	MipsTargetObjectFile.cpp
 
 TGHDRS=	Intrinsics \
-	MipsGenAsmWriter \
 	MipsGenCallingConv \
 	MipsGenDAGISel \
 	MipsGenInstrInfo \
 	MipsGenInstrNames \
-	MipsGenRegisterInfo.h \
 	MipsGenRegisterInfo \
+	MipsGenRegisterInfo.h \
 	MipsGenRegisterNames \
 	MipsGenSubtarget
 

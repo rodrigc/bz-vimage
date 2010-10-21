@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libulog/ulog_login.3,v 1.4 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/lib/libulog/ulog_login.3,v 1.5 2010/10/11 20:30:57 ed Exp $
 .\"
-.Dd December 5, 2009
+.Dd October 11, 2010
 .Dt ULOG_LOGIN 3
 .Os
 .Sh NAME
@@ -90,8 +90,8 @@ and
 .Fn ulog_logout_pseudo
 functions spawn a privileged process to perform the actual logging.
 .Sh SEE ALSO
+.Xr getuid 2 ,
 .Xr posix_openpt 2 ,
-.Xr getuid 3 ,
 .Xr ptsname 3 ,
 .Xr pututxline 3
 .Sh HISTORY

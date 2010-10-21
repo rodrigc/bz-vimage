@@ -20,7 +20,7 @@
  *
  * Portions Copyright 2010 The FreeBSD Foundation
  *
- * $FreeBSD: src/sys/cddl/contrib/opensolaris/uts/intel/dtrace/fasttrap_isa.c,v 1.3 2010/08/28 08:39:37 rpaulo Exp $
+ * $FreeBSD: src/sys/cddl/contrib/opensolaris/uts/intel/dtrace/fasttrap_isa.c,v 1.4 2010/09/12 14:12:16 rpaulo Exp $
  */
 
 /*
@@ -74,15 +74,12 @@ proc_ops(int op, proc_t *p, void *kaddr, off_t uaddr, size_t len)
 	uio.uio_segflg = UIO_SYSSPACE;
 	uio.uio_td = curthread;
 	uio.uio_rw = op;
-	_PHOLD(p);
-	PROC_UNLOCK(p);
+	PHOLD(p);
 	if (proc_rwmem(p, &uio) < 0) {
-		PROC_LOCK(p);
-		_PRELE(p);
+		PRELE(p);
 		return (-1);
 	}
-	PROC_LOCK(p);
-	_PRELE(p);
+	PRELE(p);
 
 	return (0);
 }

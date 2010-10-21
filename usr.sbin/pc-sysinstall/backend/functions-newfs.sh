@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-newfs.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-newfs.sh,v 1.6 2010/10/09 08:52:09 imp Exp $
 
 # Functions related to disk operations using newfs
 
@@ -100,6 +100,7 @@ setup_filesystems()
     PARTLABEL="`cat ${PARTDIR}/${PART} | cut -d ':' -f 4`"
     PARTGEOM="`cat ${PARTDIR}/${PART} | cut -d ':' -f 5`"
     PARTXTRAOPTS="`cat ${PARTDIR}/${PART} | cut -d ':' -f 6`"
+    PARTIMAGE="`cat ${PARTDIR}/${PART} | cut -d ':' -f 7`"
 
     # Make sure journaling isn't enabled on this device
     if [ -e "/dev/${PART}.journal" ]
@@ -154,6 +155,25 @@ setup_filesystems()
         sleep 2
         ;;
 
+      UFS+SUJ)
+        echo_log "NEWFS: /dev/${PART} - ${PARTFS}"
+        sleep 2
+        rc_halt "newfs -U /dev/${PART}${EXT}"
+        sleep 2
+        rc_halt "sync"
+        rc_halt "tunefs -j enable /dev/${PART}${EXT}"
+        sleep 2
+        rc_halt "sync"
+        rc_halt "glabel label ${PARTLABEL} /dev/${PART}${EXT}"
+        rc_halt "sync"
+	    # Set flag that we've found a boot partition
+	    if [ "$PARTMNT" = "/boot" -o "${PARTMNT}" = "/" ] ; then
+          HAVEBOOT="YES"
+        fi
+        sleep 2
+        ;;
+
+
       UFS+J)
         echo_log "NEWFS: /dev/${PART} - ${PARTFS}"
         sleep 2
@@ -184,6 +204,11 @@ setup_filesystems()
         rc_halt "sync"
         sleep 2
         ;;
+
+      IMAGE)
+        write_image "${PARTIMAGE}" "${PART}"
+        sleep 2
+        ;; 
 
       *) exit_err "ERROR: Got unknown file-system type $PARTFS" ;;
     esac

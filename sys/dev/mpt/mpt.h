@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/mpt/mpt.h,v 1.52 2010/07/12 22:57:57 marius Exp $ */
+/* $FreeBSD: src/sys/dev/mpt/mpt.h,v 1.53 2010/09/24 23:54:03 marius Exp $ */
 /*-
  * Generic defines for LSI '909 FC  adapters.
  * FreeBSD Version.
@@ -1157,18 +1157,12 @@ mpt_tag_2_req(struct mpt_softc *mpt, uint32_t tag)
 	KASSERT(mpt->tgt_cmd_ptrs[rtg], ("no cmd backpointer"));
 	return (mpt->tgt_cmd_ptrs[rtg]);
 }
-
+#endif
 
 static __inline int
 mpt_req_on_free_list(struct mpt_softc *, request_t *);
 static __inline int
 mpt_req_on_pending_list(struct mpt_softc *, request_t *);
-
-static __inline void
-mpt_req_spcl(struct mpt_softc *, request_t *, const char *, int);
-static __inline void
-mpt_req_not_spcl(struct mpt_softc *, request_t *, const char *, int);
-
 
 /*
  * Is request on freelist?
@@ -1201,6 +1195,12 @@ mpt_req_on_pending_list(struct mpt_softc *mpt, request_t *req)
 	}
 	return (0);
 }
+
+#ifdef	INVARIANTS
+static __inline void
+mpt_req_spcl(struct mpt_softc *, request_t *, const char *, int);
+static __inline void
+mpt_req_not_spcl(struct mpt_softc *, request_t *, const char *, int);
 
 /*
  * Make sure that req *is* part of one of the special lists

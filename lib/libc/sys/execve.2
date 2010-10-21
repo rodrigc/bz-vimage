@@ -26,9 +26,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)execve.2	8.5 (Berkeley) 6/1/94
-.\" $FreeBSD: src/lib/libc/sys/execve.2,v 1.45 2010/05/13 12:07:55 uqs Exp $
+.\" $FreeBSD: src/lib/libc/sys/execve.2,v 1.46 2010/09/21 16:24:51 alc Exp $
 .\"
-.Dd April 10, 2008
+.Dd September 21, 2010
 .Dt EXECVE 2
 .Os
 .Sh NAME
@@ -256,9 +256,11 @@ A component of the path prefix is not a directory.
 .It Bq Er ENAMETOOLONG
 A component of a pathname exceeded 255 characters,
 or an entire path name exceeded 1023 characters.
-.It Bq Er ENAMETOOLONG
-When invoking an interpreted script, the interpreter name
-exceeds
+.It Bq Er ENOEXEC
+When invoking an interpreted script, the length of the first line,
+inclusive of the
+.Sy \&#!
+prefix and terminating newline, exceeds
 .Dv MAXSHELLCMDLEN
 characters.
 .It Bq Er ENOENT

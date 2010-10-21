@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_linker.c,v 1.179 2009/11/17 21:56:12 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_linker.c,v 1.180 2010/09/22 06:45:07 avg Exp $");
 
 #include "opt_ddb.h"
 #include "opt_hwpmc_hooks.h"
@@ -951,7 +951,6 @@ linker_debug_search_symbol_name(caddr_t value, char *buf, u_int buflen,
 	return (0);
 }
 
-#ifdef DDB
 /*
  * DDB Helpers.  DDB has to look across multiple files with their own symbol
  * tables and string tables.
@@ -960,12 +959,14 @@ linker_debug_search_symbol_name(caddr_t value, char *buf, u_int buflen,
  * DDB to hang because somebody's got the lock held.  We'll take the chance
  * that the files list is inconsistant instead.
  */
+#ifdef DDB
 int
 linker_ddb_lookup(const char *symstr, c_linker_sym_t *sym)
 {
 
 	return (linker_debug_lookup(symstr, sym));
 }
+#endif
 
 int
 linker_ddb_list_symbols(linker_symbol_nameval_callback_t callback_func,
@@ -996,7 +997,6 @@ linker_ddb_search_symbol_name(caddr_t value, char *buf, u_int buflen,
 
 	return (linker_debug_search_symbol_name(value, buf, buflen, offset));
 }
-#endif
 
 /*
  * stack(9) helper for non-debugging environemnts.  Unlike DDB helpers, we do

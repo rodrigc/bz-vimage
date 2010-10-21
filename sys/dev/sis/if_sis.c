@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/sis/if_sis.c,v 1.26 2010/09/03 18:00:17 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/sis/if_sis.c,v 1.28 2010/10/20 00:19:25 yongari Exp $");
 
 /*
  * SiS 900/SiS 7016 fast ethernet PCI NIC driver. Datasheets are
@@ -1164,10 +1164,10 @@ sis_attach(device_t dev)
 	/*
 	 * Do MII setup.
 	 */
-	if (mii_phy_probe(dev, &sc->sis_miibus,
-	    sis_ifmedia_upd, sis_ifmedia_sts)) {
-		device_printf(dev, "MII without any PHY!\n");
-		error = ENXIO;
+	error = mii_attach(dev, &sc->sis_miibus, ifp, sis_ifmedia_upd,
+	    sis_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
+	if (error != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}
 
@@ -1795,12 +1795,15 @@ sis_intr(void *arg)
 	if ((status & SIS_INTRS) == 0) {
 		/* Not ours. */
 		SIS_UNLOCK(sc);
+		return;
 	}
 
 	/* Disable interrupts. */
 	CSR_WRITE_4(sc, SIS_IER, 0);
 
 	for (;(status & SIS_INTRS) != 0;) {
+		if ((ifp->if_drv_flags & IFF_DRV_RUNNING) == 0)
+			break;
 		if (status &
 		    (SIS_ISR_TX_DESC_OK | SIS_ISR_TX_ERR |
 		    SIS_ISR_TX_OK | SIS_ISR_TX_IDLE) )
@@ -1825,11 +1828,13 @@ sis_intr(void *arg)
 		status = CSR_READ_4(sc, SIS_ISR);
 	}
 
-	/* Re-enable interrupts. */
-	CSR_WRITE_4(sc, SIS_IER, 1);
+	if (ifp->if_drv_flags & IFF_DRV_RUNNING) {
+		/* Re-enable interrupts. */
+		CSR_WRITE_4(sc, SIS_IER, 1);
 
-	if (!IFQ_DRV_IS_EMPTY(&ifp->if_snd))
-		sis_startl(ifp);
+		if (!IFQ_DRV_IS_EMPTY(&ifp->if_snd))
+			sis_startl(ifp);
+	}
 
 	SIS_UNLOCK(sc);
 }

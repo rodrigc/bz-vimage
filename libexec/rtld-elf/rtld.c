@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.156 2010/08/24 13:01:14 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.c,v 1.157 2010/09/12 17:04:51 nwhitehorn Exp $
  */
 
 /*
@@ -183,7 +183,7 @@ static Objlist list_main =	/* Objects loaded at program startup */
 static Objlist list_fini =	/* Objects needing fini() calls */
   STAILQ_HEAD_INITIALIZER(list_fini);
 
-static Elf_Sym sym_zero;	/* For resolving undefined weak refs. */
+Elf_Sym sym_zero;		/* For resolving undefined weak refs. */
 
 #define GDB_STATE(s,m)	r_debug.r_state = s; r_debug_state(&r_debug,m);
 

@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_auth.c,v 1.26 2010/06/05 21:33:16 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_auth.c,v 1.27 2010/09/19 11:42:16 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp.h>
@@ -614,7 +614,7 @@ sctp_auth_key_release(struct sctp_tcb *stcb, uint16_t key_id)
 		if ((skey->refcount <= 1) && (skey->deactivated)) {
 			/* notify ULP that key is no longer used */
 			sctp_ulp_notify(SCTP_NOTIFY_AUTH_FREE_KEY, stcb,
-			    key_id, 0, SCTP_SO_NOT_LOCKED);
+			    key_id, 0, SCTP_SO_LOCKED);
 			SCTPDBG(SCTP_DEBUG_AUTH2,
 			    "%s: stcb %p key %u no longer used, %d\n",
 			    __FUNCTION__, stcb, key_id, skey->refcount);

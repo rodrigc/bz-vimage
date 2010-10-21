@@ -1,4 +1,4 @@
-/* $FreeBSD: src/gnu/lib/libstdc++/config.h,v 1.16 2008/05/03 21:24:28 gonzo Exp $ */
+/* $FreeBSD: src/gnu/lib/libstdc++/config.h,v 1.17 2010/09/07 08:33:17 tijl Exp $ */
 #ifndef __ISO_C_VISIBLE
 #include <sys/cdefs.h>
 #endif
@@ -671,7 +671,7 @@
 /* #undef VERSION */
 
 /* Define if builtin atomic operations are supported on this host. */
-#if defined(__amd64__)
+#if defined(__amd64__) || defined(__i386__)
 #define _GLIBCXX_ATOMIC_BUILTINS 1
 #endif
 

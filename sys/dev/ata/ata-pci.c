@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-pci.c,v 1.153 2010/07/16 17:27:43 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-pci.c,v 1.154 2010/10/18 11:30:13 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -615,6 +615,7 @@ ata_pcichannel_attach(device_t dev)
 	return (0);
     ch->attached = 1;
 
+    ch->dev = dev;
     ch->unit = (intptr_t)device_get_ivars(dev);
 
     resource_int_value(device_get_name(dev),

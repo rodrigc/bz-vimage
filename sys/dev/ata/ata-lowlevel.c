@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-lowlevel.c,v 1.88 2010/09/02 11:18:43 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-lowlevel.c,v 1.89 2010/09/09 13:17:30 nwhitehorn Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -516,10 +516,13 @@ ata_generic_reset(device_t dev)
 	if ((mask & 0x01) && (stat0 & ATA_S_BUSY)) {
 	    ATA_IDX_OUTB(ch, ATA_DRIVE, ATA_D_IBM | ATA_DEV(ATA_MASTER));
 	    DELAY(10);
+	    if (ch->flags & ATA_STATUS_IS_LONG)
+		    stat0 = ATA_IDX_INL(ch, ATA_STATUS) & 0xff;
+	    else
+		    stat0 = ATA_IDX_INB(ch, ATA_STATUS);
 	    err = ATA_IDX_INB(ch, ATA_ERROR);
 	    lsb = ATA_IDX_INB(ch, ATA_CYL_LSB);
 	    msb = ATA_IDX_INB(ch, ATA_CYL_MSB);
-	    stat0 = ATA_IDX_INB(ch, ATA_STATUS);
 	    if (bootverbose)
 		device_printf(dev,
 			      "stat0=0x%02x err=0x%02x lsb=0x%02x msb=0x%02x\n",
@@ -546,10 +549,13 @@ ata_generic_reset(device_t dev)
 	    !((mask & 0x01) && (stat0 & ATA_S_BUSY))) {
 	    ATA_IDX_OUTB(ch, ATA_DRIVE, ATA_D_IBM | ATA_DEV(ATA_SLAVE));
 	    DELAY(10);
+	    if (ch->flags & ATA_STATUS_IS_LONG)
+		    stat1 = ATA_IDX_INL(ch, ATA_STATUS) & 0xff;
+	    else
+		    stat1 = ATA_IDX_INB(ch, ATA_STATUS);
 	    err = ATA_IDX_INB(ch, ATA_ERROR);
 	    lsb = ATA_IDX_INB(ch, ATA_CYL_LSB);
 	    msb = ATA_IDX_INB(ch, ATA_CYL_MSB);
-	    stat1 = ATA_IDX_INB(ch, ATA_STATUS);
 	    if (bootverbose)
 		device_printf(dev,
 			      "stat1=0x%02x err=0x%02x lsb=0x%02x msb=0x%02x\n",

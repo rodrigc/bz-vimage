@@ -33,7 +33,7 @@ static char sccsid[] = "@(#)keyword.c	8.5 (Berkeley) 4/2/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/ps/keyword.c,v 1.83 2010/07/24 15:37:36 trasz Exp $");
+__FBSDID("$FreeBSD: src/bin/ps/keyword.c,v 1.84 2010/10/08 00:44:53 emaste Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -187,6 +187,8 @@ static VAR var[] = {
 		UINT, UIDFMT, 0},
 	{"svuid", "SVUID", NULL, 0, kvar, NULL, UIDLEN, KOFF(ki_svuid),
 		UINT, UIDFMT, 0},
+	{"tdaddr", "TDADDR", NULL, 0, kvar, NULL, sizeof(void *) * 2,
+		KOFF(ki_tdaddr), KPTR, "lx", 0},
 	{"tdev", "TDEV", NULL, 0, tdev, NULL, 5, 0, CHAR, NULL, 0},
 	{"tdnam", "TDNAM", NULL, LJUST, tdnam, NULL, COMMLEN, 0, CHAR, NULL, 0},
 	{"time", "TIME", NULL, USER, cputime, NULL, 9, 0, CHAR, NULL, 0},

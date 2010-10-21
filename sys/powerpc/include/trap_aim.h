@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * $NetBSD: trap.h,v 1.7 2002/02/22 13:51:40 kleink Exp $
- * $FreeBSD: src/sys/powerpc/include/trap_aim.h,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/trap_aim.h,v 1.4 2010/10/05 18:08:07 nwhitehorn Exp $
  */
 
 #ifndef	_POWERPC_TRAP_H_
@@ -54,9 +54,12 @@
 /* The following is only available on the 601: */
 #define	EXC_RUNMODETRC	0x2000		/* Run Mode/Trace Exception */
 
+/* The following are only available on 970(G5): */
+#define	EXC_VECAST_G5	0x1700		/* AltiVec Assist */
+
 /* The following are only available on 7400(G4): */
 #define	EXC_VEC		0x0f20		/* AltiVec Unavailable */
-#define	EXC_VECAST	0x1600		/* AltiVec Assist */
+#define	EXC_VECAST_G4	0x1600		/* AltiVec Assist */
 
 /* The following are only available on 604/750/7400: */
 #define	EXC_PERF	0x0f00		/* Performance Monitoring */

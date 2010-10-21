@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/Makefile.inc1,v 1.668 2010/08/28 15:03:11 nwhitehorn Exp $
+# $FreeBSD: src/Makefile.inc1,v 1.669 2010/09/08 19:53:16 nwhitehorn Exp $
 #
 # Make command line options:
 #	-DNO_CLEANDIR run ${MAKE} clean, instead of ${MAKE} cleandir
@@ -161,7 +161,7 @@ BUILD_ARCH!=	uname -p
 .error To cross-build, set TARGET_ARCH.
 .endif
 .endif
-.if ${MACHINE} == ${TARGET} && !defined(CROSS_BUILD_TESTING)
+.if ${MACHINE} == ${TARGET} && ${MACHINE_ARCH} == ${TARGET_ARCH} && !defined(CROSS_BUILD_TESTING)
 OBJTREE=	${MAKEOBJDIRPREFIX}
 .else
 OBJTREE=	${MAKEOBJDIRPREFIX}/${TARGET}.${TARGET_ARCH}

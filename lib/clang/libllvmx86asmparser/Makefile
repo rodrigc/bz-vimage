@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/libllvmx86asmparser/Makefile,v 1.2 2010/07/20 17:16:57 ed Exp $
+# $FreeBSD: src/lib/clang/libllvmx86asmparser/Makefile,v 1.3 2010/09/19 10:54:58 dim Exp $
 
 LIB=	llvmx86asmparser
 
@@ -7,7 +7,7 @@ INCDIR=	lib/Target/X86
 SRCS=	X86AsmLexer.cpp \
 	X86AsmParser.cpp
 
-TGHDRS= X86GenAsmMatcher \
+TGHDRS=	X86GenAsmMatcher \
 	X86GenInstrNames \
 	X86GenRegisterNames
 

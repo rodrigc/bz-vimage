@@ -31,7 +31,7 @@
 /* $KAME: sctp_input.c,v 1.27 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_input.c,v 1.97 2010/09/05 13:41:45 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_input.c,v 1.98 2010/09/15 23:10:45 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
@@ -232,7 +232,10 @@ sctp_is_there_unsent_data(struct sctp_tcb *stcb)
 				}
 				atomic_subtract_int(&stcb->asoc.stream_queue_cnt, 1);
 				TAILQ_REMOVE(&strq->outqueue, sp, next);
-				sctp_free_remote_addr(sp->net);
+				if (sp->net) {
+					sctp_free_remote_addr(sp->net);
+					sp->net = NULL;
+				}
 				if (sp->data) {
 					sctp_m_freem(sp->data);
 					sp->data = NULL;
@@ -263,7 +266,7 @@ sctp_process_init(struct sctp_init_chunk *cp, struct sctp_tcb *stcb,
 	/* save off parameters */
 	asoc->peer_vtag = ntohl(init->initiate_tag);
 	asoc->peers_rwnd = ntohl(init->a_rwnd);
-	if (TAILQ_FIRST(&asoc->nets)) {
+	if (!TAILQ_EMPTY(&asoc->nets)) {
 		/* update any ssthresh's that may have a default */
 		TAILQ_FOREACH(lnet, &asoc->nets, sctp_next) {
 			lnet->ssthresh = asoc->peers_rwnd;
@@ -318,8 +321,10 @@ sctp_process_init(struct sctp_init_chunk *cp, struct sctp_tcb *stcb,
 						sctp_m_freem(sp->data);
 						sp->data = NULL;
 					}
-					sctp_free_remote_addr(sp->net);
-					sp->net = NULL;
+					if (sp->net) {
+						sctp_free_remote_addr(sp->net);
+						sp->net = NULL;
+					}
 					/* Free the chunk */
 					sctp_free_a_strmoq(stcb, sp);
 					/* sa_ignore FREED_MEMORY */
@@ -650,8 +655,8 @@ sctp_handle_heartbeat_ack(struct sctp_heartbeat_chunk *cp,
 			}
 			if (sctp_is_mobility_feature_on(stcb->sctp_ep,
 			    SCTP_MOBILITY_BASE)) {
-				sctp_move_chunks_from_deleted_prim(stcb,
-				    stcb->asoc.primary_destination);
+				sctp_move_chunks_from_net(stcb,
+				    stcb->asoc.deleted_primary);
 			}
 			sctp_delete_prim_timer(stcb->sctp_ep, stcb,
 			    stcb->asoc.deleted_primary);

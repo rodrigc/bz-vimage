@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/vnode.h,v 1.15 2010/07/12 23:49:04 mm Exp $
+ * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/vnode.h,v 1.17 2010/09/15 19:55:26 mm Exp $
  */
 
 #ifndef _OPENSOLARIS_SYS_VNODE_H_
@@ -69,11 +69,14 @@ vn_is_readonly(vnode_t *vp)
 #define	vn_vfsunlock(vp)	do { } while (0)
 #define	vn_ismntpt(vp)		((vp)->v_type == VDIR && (vp)->v_mountedhere != NULL)
 #define	vn_mountedvfs(vp)	((vp)->v_mountedhere)
-#define	vn_has_cached_data(vp)	((vp)->v_object != NULL && (vp)->v_object->resident_page_count > 0)
+#define	vn_has_cached_data(vp)	\
+	((vp)->v_object != NULL && ((vp)->v_object->resident_page_count > 0 \
+				    || (vp)->v_object->cache != NULL))
 #define	vn_exists(vp)		do { } while (0)
 #define	vn_invalid(vp)		do { } while (0)
 #define	vn_renamepath(tdvp, svp, tnm, lentnm)	do { } while (0)
 #define	vn_free(vp)		do { } while (0)
+#define	vn_matchops(vp, vops)	((vp)->v_op == &(vops))
 
 #define	VN_HOLD(v)	vref(v)
 #define	VN_RELE(v)	vrele(v)

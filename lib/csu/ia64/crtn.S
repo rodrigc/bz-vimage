@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/csu/ia64/crtn.S,v 1.2 2001/10/29 10:18:58 peter Exp $
+ * $FreeBSD: src/lib/csu/ia64/crtn.S,v 1.3 2010/10/15 21:40:20 dim Exp $
  */
 
 	.file	"crtn.S"
@@ -33,11 +33,9 @@
 	mov	b0=loc0			/* Recover return addr */
 	mov	ar.pfs=loc1
 	br.ret.sptk.many b0
-	.endp	_init#
 
 	.section .fini,"ax",@progbits
 	.regstk 0,2,0,0
 	mov	b0=loc0			/* Recover return addr */
 	mov	ar.pfs=loc1
 	br.ret.sptk.many b0
-	.endp	_fini#

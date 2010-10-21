@@ -35,7 +35,7 @@ static char sccsid[] = "@(#)sctp.c	0.1 (Berkeley) 4/18/2007";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/netstat/sctp.c,v 1.12 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/netstat/sctp.c,v 1.13 2010/10/08 20:40:05 dim Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -355,7 +355,7 @@ sctp_process_inpcb(struct xsctp_inpcb *xinpcb, const char *name,
 		first = 0;
 	}
 	if (Lflag && xinpcb->maxqlen == 0) {
-		(int)sctp_skip_xinpcb_ifneed(buf, buflen, offset);
+		sctp_skip_xinpcb_ifneed(buf, buflen, offset);
 		return;
 	}
 	if (Aflag)

@@ -24,11 +24,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/x86/isa/atrtc.c,v 1.11 2010/07/20 15:48:29 mav Exp $
+ * $FreeBSD: src/sys/x86/isa/atrtc.c,v 1.12 2010/10/16 10:45:36 avg Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/isa/atrtc.c,v 1.11 2010/07/20 15:48:29 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/isa/atrtc.c,v 1.12 2010/10/16 10:45:36 avg Exp $");
 
 #include "opt_isa.h"
 
@@ -242,15 +242,12 @@ atrtc_attach(device_t dev)
 {
 	struct atrtc_softc *sc;
 	u_long s;
-	int i, diag;
+	int i;
 
 	sc = device_get_softc(dev);
 	if (!(sc->port_res = bus_alloc_resource(dev, SYS_RES_IOPORT,
 	    &sc->port_rid, IO_RTC, IO_RTC + 1, 2, RF_ACTIVE)))
 		device_printf(dev,"Warning: Couldn't map I/O.\n");
-	diag = rtcin(RTC_DIAG);
-	if (diag != 0)
-		printf("RTC BIOS diagnostic error %b\n", diag, RTCDG_BITS);
 	atrtc_start();
 	clock_register(dev, 1000000);
 	bzero(&sc->et, sizeof(struct eventtimer));

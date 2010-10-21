@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/gnu/usr.bin/gdb/kgdb/main.c,v 1.16 2008/04/29 20:32:45 jhb Exp $");
+__FBSDID("$FreeBSD: src/gnu/usr.bin/gdb/kgdb/main.c,v 1.17 2010/09/22 19:41:01 emaste Exp $");
 
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -222,11 +222,13 @@ kgdb_dmesg(void)
 		return;
 	bufp = kgdb_parse("msgbufp->msg_ptr");
 	size = (int)kgdb_parse("msgbufp->msg_size");
+	if (bufp == 0 || size == 0)
+		return;
 	rseq = (int)kgdb_parse("msgbufp->msg_rseq");
 	wseq = (int)kgdb_parse("msgbufp->msg_wseq");
 	rseq = MSGBUF_SEQ_TO_POS(size, rseq);
 	wseq = MSGBUF_SEQ_TO_POS(size, wseq);
-	if (bufp == 0 || size == 0 || rseq == wseq)
+	if (rseq == wseq)
 		return;
 
 	printf("\nUnread portion of the kernel message buffer:\n");

@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libc/sys/kqueue.2,v 1.51 2010/08/06 14:33:42 joel Exp $
+.\" $FreeBSD: src/lib/libc/sys/kqueue.2,v 1.52 2010/10/08 12:40:16 uqs Exp $
 .\"
 .Dd September 15, 2009
 .Dt KQUEUE 2
@@ -251,7 +251,6 @@ Takes a descriptor as the identifier, and returns whenever
 there is data available to read.
 The behavior of the filter is slightly different depending
 on the descriptor type.
-.Pp
 .Bl -tag -width 2n
 .It Sockets
 Sockets which have previously been passed to

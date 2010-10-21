@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nwfs/nwfs_vfsops.c,v 1.49 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/fs/nwfs/nwfs_vfsops.c,v 1.50 2010/10/02 17:58:57 alc Exp $
  */
 
 #include <sys/param.h>
@@ -186,8 +186,7 @@ static int nwfs_mount(struct mount *mp)
 	ncp_conn_unlock(conn, td);	/* we keep the ref */
 	mp->mnt_stat.f_iosize = conn->buffer_size;
         /* We must malloc our own mount info */
-        nmp = malloc(sizeof(struct nwmount),M_NWFSDATA,
-	    M_WAITOK | M_USE_RESERVE | M_ZERO);
+        nmp = malloc(sizeof(struct nwmount), M_NWFSDATA, M_WAITOK | M_ZERO);
         if (nmp == NULL) {
                 nwfs_printf("could not alloc nwmount\n");
                 error = ENOMEM;

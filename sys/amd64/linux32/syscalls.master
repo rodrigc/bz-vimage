@@ -1,4 +1,4 @@
- $FreeBSD: src/sys/amd64/linux32/syscalls.master,v 1.37 2010/07/23 21:30:33 kib Exp $
+ $FreeBSD: src/sys/amd64/linux32/syscalls.master,v 1.38 2010/10/08 07:18:44 kib Exp $
 
 ;	@(#)syscalls.master	8.1 (Berkeley) 7/19/93
 ; System call name/number master file (or rather, slave, from LINUX).
@@ -416,7 +416,7 @@
 245	AUE_NULL	UNIMPL	linux_io_setup
 246	AUE_NULL	UNIMPL	linux_io_destroy
 247	AUE_NULL	UNIMPL	linux_io_getevents
-248	AUE_NULL	UNIMPL	inux_io_submit
+248	AUE_NULL	UNIMPL	linux_io_submit
 249	AUE_NULL	UNIMPL	linux_io_cancel
 250	AUE_NULL	STD	{ int linux_fadvise64(void); }
 251	AUE_NULL	UNIMPL

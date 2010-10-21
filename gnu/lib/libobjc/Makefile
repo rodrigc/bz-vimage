@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.37 2010/08/31 17:33:29 dim Exp $
+# $FreeBSD: src/gnu/lib/libobjc/Makefile,v 1.38 2010/09/21 21:41:45 dim Exp $
 
 .include <bsd.own.mk>
 
@@ -16,9 +16,7 @@ SRCS=	archive.c class.c encoding.c gc.c hash.c init.c linking.m misc.c \
 	selector.c sendmsg.c thr.c thr-objc.c exception.c
 
 # XXX: clang cannot compile libobjc yet
-.if ${CC:T:Mclang} == "clang"
-CC=gcc
-.endif
+CC:=${CC:C/^(.*\/)?clang$/gcc/1}
 
 INCS=	encoding.h hash.h objc-api.h objc-decls.h objc-list.h objc.h runtime.h \
 	sarray.h thr.h typedstream.h NXConstStr.h Object.h Protocol.h

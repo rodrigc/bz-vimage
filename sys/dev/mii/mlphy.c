@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/mlphy.c,v 1.25 2008/08/23 15:50:18 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/mlphy.c,v 1.28 2010/10/15 14:52:11 marius Exp $");
 
 /*
  * driver for Micro Linear 6692 PHYs
@@ -143,31 +143,23 @@ mlphy_attach(dev)
 	sc = &msc->ml_mii;
 	ma = device_get_ivars(dev);
 	sc->mii_dev = device_get_parent(dev);
-	mii = device_get_softc(sc->mii_dev);
+	mii = ma->mii_data;
 	LIST_INSERT_HEAD(&mii->mii_phys, sc, mii_list);
 
-	sc->mii_inst = mii->mii_instance;
+	sc->mii_flags = miibus_get_flags(dev);
+	sc->mii_inst = mii->mii_instance++;
 	sc->mii_phy = ma->mii_phyno;
 	sc->mii_service = mlphy_service;
 	sc->mii_pdata = mii;
 
-	mii->mii_instance++;
-
 #define	ADD(m, c)	ifmedia_add(&mii->mii_media, (m), (c), NULL)
 
-#if 0 /* See above. */
-	ADD(IFM_MAKEWORD(IFM_ETHER, IFM_NONE, 0, sc->mii_inst),
-	    BMCR_ISO);
-#endif
 	ADD(IFM_MAKEWORD(IFM_ETHER, IFM_100_TX, IFM_LOOP, sc->mii_inst),
 	    BMCR_LOOP|BMCR_S100);
 
-	sc->mii_flags &= ~MIIF_NOISOLATE;
 	mii_phy_reset(sc);
-	sc->mii_flags |= MIIF_NOISOLATE;
 
-	sc->mii_capabilities =
-	    PHY_READ(sc, MII_BMSR) & ma->mii_capmask;
+	sc->mii_capabilities = PHY_READ(sc, MII_BMSR) & ma->mii_capmask;
 	ma->mii_capmask = ~sc->mii_capabilities;
 	device_printf(dev, " ");
 	mii_add_media(sc);
@@ -216,24 +208,9 @@ mlphy_service(xsc, mii, cmd)
 
 	switch (cmd) {
 	case MII_POLLSTAT:
-		/*
-		 * If we're not polling our PHY instance, just return.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->mii_inst)
-			return (0);
 		break;
 
 	case MII_MEDIACHG:
-		/*
-		 * If the media indicates a different PHY instance,
-		 * isolate ourselves.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->mii_inst) {
-			reg = PHY_READ(sc, MII_BMCR);
-			PHY_WRITE(sc, MII_BMCR, reg | BMCR_ISO);
-			return (0);
-		}
-
 		/*
 		 * If the interface is not up, don't do anything.
 		 */
@@ -302,12 +279,6 @@ mlphy_service(xsc, mii, cmd)
 
 	case MII_TICK:
 		/*
-		 * If we're not currently selected, just return.
-		 */
-		if (IFM_INST(ife->ifm_media) != sc->mii_inst)
-			return (0);
-
-		/*
 		 * Is the interface even up?
 		 */
 		if ((mii->mii_ifp->if_flags & IFF_UP) == 0)
@@ -368,7 +339,8 @@ mlphy_service(xsc, mii, cmd)
 	if (msc->ml_state == ML_STATE_AUTO_OTHER) {
 		other_inst = other->mii_inst;
 		other->mii_inst = sc->mii_inst;
-		(void) (*other->mii_service)(other, mii, MII_POLLSTAT);
+		if (IFM_INST(ife->ifm_media) == other->mii_inst)
+			(void)(*other->mii_service)(other, mii, MII_POLLSTAT);
 		other->mii_inst = other_inst;
 		sc->mii_media_active = other->mii_media_active;
 		sc->mii_media_status = other->mii_media_status;

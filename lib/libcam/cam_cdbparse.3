@@ -25,7 +25,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/lib/libcam/cam_cdbparse.3,v 1.22 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/lib/libcam/cam_cdbparse.3,v 1.23 2010/10/08 12:40:16 uqs Exp $
 .\"
 .\" This man page borrows heavily from the old scsi(3) man page, which had
 .\" the following copyright:
@@ -258,7 +258,6 @@ typedef enum {
 Multiple flags should be ORed together.
 Any of the CCB flags may be used,
 although it is worth noting several important ones here:
-.Pp
 .Bl -tag -width CAM_PASS_ERR_RECOVER
 .It Dv CAM_DIR_IN
 This indicates that the operation in question is a read operation.

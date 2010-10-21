@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.5 2010/08/30 22:45:32 edwin Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.6 2010/09/14 01:33:21 emaste Exp $");
 
 #include <ctype.h>
 #include <math.h>
@@ -971,7 +971,7 @@ floattoday(int year, double f)
 	int *cumdays = cumdaytab[isleap(year)];
 
 	for (i = 0; 1 + cumdays[i] < f; i++)
-		;;
+		;
 	m = --i;
 	d = floor(f - 1 - cumdays[i]);
 	f -= floor(f);

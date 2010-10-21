@@ -1,10 +1,10 @@
-# $FreeBSD: src/tools/regression/bin/sh/parameters/mail1.0,v 1.1 2010/02/06 22:57:24 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/parameters/mail1.0,v 1.2 2010/10/12 18:20:38 obrien Exp $
 # Test that a non-interactive shell does not access $MAIL.
 
 goodfile=/var/empty/sh-test-goodfile
 mailfile=/var/empty/sh-test-mailfile
 T=$(mktemp sh-test.XXXXXX) || exit
-MAIL=$mailfile ktrace -i -f "$T" sh -c "[ -s $goodfile ]" 2>/dev/null
+MAIL=$mailfile ktrace -i -f "$T" ${SH} -c "[ -s $goodfile ]" 2>/dev/null
 if ! grep -q $goodfile "$T"; then
 	# ktrace problem
 	rc=0

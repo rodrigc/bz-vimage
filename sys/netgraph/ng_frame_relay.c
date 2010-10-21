@@ -37,7 +37,7 @@
  *
  * Author: Julian Elischer <julian@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_frame_relay.c,v 1.26 2008/10/23 15:53:51 des Exp $
+ * $FreeBSD: src/sys/netgraph/ng_frame_relay.c,v 1.27 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_frame_relay.c,v 1.20 1999/11/01 09:24:51 julian Exp $
  */
 
@@ -396,7 +396,7 @@ ngfrm_rcvdata(hook_p hook, item_p item)
 		data[3] |= BYTEX_EA;
 		break;
 	default:
-		panic(__func__);
+		panic("%s", __func__);
 	}
 
 	/* Send it */

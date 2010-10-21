@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.163 2010/09/04 16:06:01 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.164 2010/10/16 19:53:22 bz Exp $");
 
 #include "opt_mpath.h"
 
@@ -604,8 +604,17 @@ in_control(struct socket *so, u_long cmd, caddr_t data, struct ifnet *ifp,
 		if (ifa == &ia->ia_ifa)
 			break;
 	}
-	if (ifa != NULL)
-		TAILQ_REMOVE(&ifp->if_addrhead, &ia->ia_ifa, ifa_link);
+	if (ifa == NULL) {
+		/*
+		 * If we lost the race with another thread, there is no need to
+		 * try it again for the next loop as there is no other exit
+		 * path between here and out.
+		 */
+		IF_ADDR_UNLOCK(ifp);
+		error = EADDRNOTAVAIL;
+		goto out;
+	}
+	TAILQ_REMOVE(&ifp->if_addrhead, &ia->ia_ifa, ifa_link);
 	IF_ADDR_UNLOCK(ifp);
 	ifa_free(&ia->ia_ifa);				/* if_addrhead */
 

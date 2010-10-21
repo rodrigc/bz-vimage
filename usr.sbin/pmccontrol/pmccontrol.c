@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pmccontrol/pmccontrol.c,v 1.8 2008/11/16 04:26:38 jkoshy Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pmccontrol/pmccontrol.c,v 1.9 2010/10/11 14:31:24 gnn Exp $");
 
 #include <sys/types.h>
 #include <sys/queue.h>
@@ -242,6 +242,10 @@ pmcc_do_list_state(void)
 
 	if (pmc_cpuinfo(&pc) != 0)
 		err(EX_OSERR, "Unable to determine CPU information");
+
+	printf("%d %s CPUs present, with %d PMCs per CPU\n", pc->pm_ncpu, 
+	       pmc_name_of_cputype(pc->pm_cputype),
+		pc->pm_npmc);
 
 	dummy = sizeof(logical_cpus_mask);
 	if (sysctlbyname("machdep.logical_cpus_mask", &logical_cpus_mask,

@@ -23,7 +23,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/powermac_nvram/powermac_nvramvar.h,v 1.1 2006/08/01 22:19:00 sobomax Exp $
+ * $FreeBSD: src/sys/dev/powermac_nvram/powermac_nvramvar.h,v 1.2 2010/09/05 20:04:02 mav Exp $
  */
 
 #ifndef	_POWERPC_POWERMAC_POWERMAC_NVRAMVAR_H_
@@ -32,6 +32,16 @@
 #define	NVRAM_SIZE		0x2000
 
 #define	CORE99_SIGNATURE	0x5a
+
+#define SM_FLASH_CMD_ERASE_CONFIRM	0xd0
+#define SM_FLASH_CMD_ERASE_SETUP	0x20
+#define SM_FLASH_CMD_RESET		0xff
+#define SM_FLASH_CMD_WRITE_SETUP	0x40
+#define SM_FLASH_CMD_CLEAR_STATUS	0x50
+#define SM_FLASH_CMD_READ_STATUS	0x70
+
+#define SM_FLASH_STATUS_DONE	0x80
+#define SM_FLASH_STATUS_ERR	0x38
 
 #ifdef _KERNEL
 
@@ -44,6 +54,9 @@ struct powermac_nvram_softc {
 	uint8_t			sc_data[NVRAM_SIZE];
 
 	struct cdev *		sc_cdev;
+	int			sc_type;
+#define FLASH_TYPE_SM	0
+#define FLASH_TYPE_AMD	1
 	int			sc_isopen;
 	int			sc_rpos;
 	int			sc_wpos;

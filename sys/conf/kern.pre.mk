@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.117 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.118 2010/09/13 02:02:20 imp Exp $
 
 # Part of a unified Makefile for building kernels.  This part contains all
 # of the definitions that need to be before %BEFORE_DEPEND.
@@ -42,7 +42,7 @@ COPTFLAGS+= -fno-strict-aliasing
 . endif
 .endif
 .if !defined(NO_CPU_COPTFLAGS)
-. if ${CC} == "icc"
+. if ${CC:T:Micc} == "icc"
 COPTFLAGS+= ${_ICC_CPUCFLAGS:C/(-x[^M^K^W]+)[MKW]+|-x[MKW]+/\1/}
 . else
 COPTFLAGS+= ${_CPUCFLAGS}

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.106 2009/07/14 22:48:30 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/link_elf.c,v 1.107 2010/10/02 16:04:50 kib Exp $");
 
 #include "opt_ddb.h"
 #include "opt_gdb.h"
@@ -1031,15 +1031,15 @@ nosyms:
     *result = lf;
 
 out:
+    VOP_UNLOCK(nd.ni_vp, 0);
+    vn_close(nd.ni_vp, FREAD, td->td_ucred, td);
+    VFS_UNLOCK_GIANT(vfslocked);
     if (error && lf)
 	linker_file_unload(lf, LINKER_UNLOAD_FORCE);
     if (shdr)
 	free(shdr, M_LINKER);
     if (firstpage)
 	free(firstpage, M_LINKER);
-    VOP_UNLOCK(nd.ni_vp, 0);
-    vn_close(nd.ni_vp, FREAD, td->td_ucred, td);
-    VFS_UNLOCK_GIANT(vfslocked);
 
     return error;
 }

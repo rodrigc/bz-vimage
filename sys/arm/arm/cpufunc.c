@@ -45,7 +45,7 @@
  * Created      : 30/01/97
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/cpufunc.c,v 1.32 2010/05/04 10:14:05 kevlo Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/cpufunc.c,v 1.33 2010/09/18 16:57:05 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -397,7 +397,7 @@ struct cpu_functions sheeva_cpufuncs = {
 	cpufunc_nullop,			/* flush_brnchtgt_C	*/
 	(void *)cpufunc_nullop,		/* flush_brnchtgt_E	*/
 
-	(void *)cpufunc_nullop,		/* sleep		*/
+	sheeva_cpu_sleep,		/* sleep		*/
 
 	/* Soft functions */
 
@@ -1076,6 +1076,9 @@ set_cpufuncs()
 				    FC_DCACHE_STREAM_EN | FC_WR_ALLOC_EN |
 				    FC_BRANCH_TARG_BUF_DIS | FC_L2CACHE_EN);
 			}
+
+			/* Use powersave on this CPU. */
+			cpu_do_powersave = 1;
 		} else
 			cpufuncs = armv5_ec_cpufuncs;
 

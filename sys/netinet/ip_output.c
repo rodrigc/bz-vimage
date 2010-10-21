@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.326 2010/05/25 20:42:35 qingli Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.327 2010/09/24 14:38:54 attilio Exp $");
 
 #include "opt_ipfw.h"
 #include "opt_ipsec.h"
@@ -1124,6 +1124,7 @@ ip_ctloutput(struct socket *so, struct sockopt *sopt)
 		case IP_FAITH:
 		case IP_ONESBCAST:
 		case IP_DONTFRAG:
+		case IP_BINDANY:
 			switch (sopt->sopt_name) {
 
 			case IP_TOS:
@@ -1178,6 +1179,9 @@ ip_ctloutput(struct socket *so, struct sockopt *sopt)
 				break;
 			case IP_DONTFRAG:
 				optval = OPTBIT(INP_DONTFRAG);
+				break;
+			case IP_BINDANY:
+				optval = OPTBIT(INP_BINDANY);
 				break;
 			}
 			error = sooptcopyout(sopt, &optval, sizeof optval);

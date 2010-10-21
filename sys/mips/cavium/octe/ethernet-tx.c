@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-tx.c,v 1.1 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-tx.c,v 1.2 2010/09/25 04:39:12 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -38,6 +38,7 @@ __FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-tx.c,v 1.1 2010/07/20 19:2
 #include <sys/mbuf.h>
 #include <sys/socket.h>
 
+#include <net/bpf.h>
 #include <net/ethernet.h>
 #include <net/if.h>
 
@@ -239,6 +240,9 @@ int cvm_oct_xmit(struct mbuf *m, struct ifnet *ifp)
 	} else {
 		/* Put this packet on the queue to be freed later */
 		_IF_ENQUEUE(&priv->tx_free_queue[qos], m);
+
+		/* Pass it to any BPF listeners.  */
+		ETHER_BPF_MTAP(ifp, m);
 	}
 	if (work != NULL)
 		cvmx_fpa_free(work, CVMX_FPA_WQE_POOL, DONT_WRITEBACK(1));

@@ -1,10 +1,11 @@
-# $FreeBSD: src/sys/boot/zfs/Makefile,v 1.4 2010/08/23 01:50:34 imp Exp $
+# $FreeBSD: src/sys/boot/zfs/Makefile,v 1.5 2010/09/24 19:49:12 pjd Exp $
 
 LIB=		zfsboot
 INTERNALLIB=
 
 SRCS+=		zfs.c
 
+CFLAGS+=	-DBOOTPROG=\"zfsloader\"
 CFLAGS+=	-I${.CURDIR}/../common -I${.CURDIR}/../.. -I.
 CFLAGS+=	-I${.CURDIR}/../../../lib/libstand
 CFLAGS+=	-I${.CURDIR}/../../cddl/boot/zfs

@@ -1,4 +1,4 @@
-/*-    
+/*-
  * Copyright (c) 2010 Riccardo Panicucci, Universita` di Pisa
  * All rights reserved
  *
@@ -25,7 +25,7 @@
  */
 
 /*
- * $FreeBSD: src/sys/netinet/ipfw/ip_dn_glue.c,v 1.3 2010/04/09 16:06:53 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ipfw/ip_dn_glue.c,v 1.4 2010/09/29 09:40:20 luigi Exp $
  *
  * Binary compatibility support for /sbin/ipfw RELENG_7 and RELENG_8
  */

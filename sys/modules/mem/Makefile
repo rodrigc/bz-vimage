@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/mem/Makefile,v 1.8 2010/08/23 06:13:29 imp Exp $
+# $FreeBSD: src/sys/modules/mem/Makefile,v 1.10 2010/10/03 20:04:11 antoine Exp $
 
 .PATH: ${.CURDIR}/../../dev/mem
 .PATH: ${.CURDIR}/../../${MACHINE}/${MACHINE}
@@ -6,7 +6,7 @@
 
 KMOD=	mem
 SRCS=	memdev.c mem.c
-.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386"
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "powerpc"
 SRCS+=	memutil.c
 .endif
 .if ${MACHINE_CPUARCH} == "i386"

@@ -34,7 +34,7 @@
  * tmpfs vnode interface.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.41 2010/08/22 05:36:06 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.44 2010/10/12 17:16:51 avg Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -538,6 +538,8 @@ lookupvpg:
 		VM_OBJECT_UNLOCK(vobj);
 		return	(error);
 	} else if (m != NULL && uio->uio_segflg == UIO_NOCOPY) {
+		KASSERT(offset == 0,
+		    ("unexpected offset in tmpfs_mappedread for sendfile"));
 		if ((m->oflags & VPO_BUSY) != 0) {
 			/*
 			 * Reference the page before unlocking and sleeping so
@@ -553,15 +555,18 @@ lookupvpg:
 		sched_pin();
 		sf = sf_buf_alloc(m, SFB_CPUPRIVATE);
 		ma = (char *)sf_buf_kva(sf);
-		error = tmpfs_nocacheread_buf(tobj, idx, offset, tlen,
-		    ma + offset);
+		error = tmpfs_nocacheread_buf(tobj, idx, 0, tlen, ma);
 		if (error == 0) {
+			if (tlen != PAGE_SIZE)
+				bzero(ma + tlen, PAGE_SIZE - tlen);
 			uio->uio_offset += tlen;
 			uio->uio_resid -= tlen;
 		}
 		sf_buf_free(sf);
 		sched_unpin();
 		VM_OBJECT_LOCK(vobj);
+		if (error == 0)
+			m->valid = VM_PAGE_BITS_ALL;
 		vm_page_wakeup(m);
 		VM_OBJECT_UNLOCK(vobj);
 		return	(error);
@@ -981,10 +986,14 @@ tmpfs_rename(struct vop_rename_args *v)
 	fnode = VP_TO_TMPFS_NODE(fvp);
 	de = tmpfs_dir_lookup(fdnode, fnode, fcnp);
 
-	/* Avoid manipulating '.' and '..' entries. */
+	/* Entry can disappear before we lock fdvp,
+	 * also avoid manipulating '.' and '..' entries. */
 	if (de == NULL) {
-		MPASS(fvp->v_type == VDIR);
-		error = EINVAL;
+		if ((fcnp->cn_flags & ISDOTDOT) != 0 ||
+		    (fcnp->cn_namelen == 1 && fcnp->cn_nameptr[0] == '.'))
+			error = EINVAL;
+		else
+			error = ENOENT;
 		goto out_locked;
 	}
 	MPASS(de->td_node == fnode);

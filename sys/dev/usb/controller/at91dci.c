@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/at91dci.c,v 1.23 2009/11/22 21:19:01 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/at91dci.c,v 1.24 2010/10/13 20:37:19 hselasky Exp $");
 
 /*-
  * Copyright (c) 2007-2008 Hans Petter Selasky. All rights reserved.
@@ -1689,23 +1689,12 @@ static const struct usb_device_descriptor at91dci_devd = {
 	.bcdUSB = {0x00, 0x02},
 	.bDeviceClass = UDCLASS_HUB,
 	.bDeviceSubClass = UDSUBCLASS_HUB,
-	.bDeviceProtocol = UDPROTO_HSHUBSTT,
+	.bDeviceProtocol = UDPROTO_FSHUB,
 	.bMaxPacketSize = 64,
 	.bcdDevice = {0x00, 0x01},
 	.iManufacturer = 1,
 	.iProduct = 2,
 	.bNumConfigurations = 1,
-};
-
-static const struct usb_device_qualifier at91dci_odevd = {
-	.bLength = sizeof(struct usb_device_qualifier),
-	.bDescriptorType = UDESC_DEVICE_QUALIFIER,
-	.bcdUSB = {0x00, 0x02},
-	.bDeviceClass = UDCLASS_HUB,
-	.bDeviceSubClass = UDSUBCLASS_HUB,
-	.bDeviceProtocol = UDPROTO_FSHUB,
-	.bMaxPacketSize0 = 0,
-	.bNumConfigurations = 0,
 };
 
 static const struct at91dci_config_desc at91dci_confd = {
@@ -1725,7 +1714,7 @@ static const struct at91dci_config_desc at91dci_confd = {
 		.bNumEndpoints = 1,
 		.bInterfaceClass = UICLASS_HUB,
 		.bInterfaceSubClass = UISUBCLASS_HUB,
-		.bInterfaceProtocol = UIPROTO_HSHUBSTT,
+		.bInterfaceProtocol = 0,
 	},
 	.endpd = {
 		.bLength = sizeof(struct usb_endpoint_descriptor),

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_wmi.c,v 1.4 2010/01/21 21:14:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_wmi.c,v 1.6 2010/09/16 20:11:40 jkim Exp $");
 
 /*
  * Driver for acpi-wmi mapping, provides an interface for vendor specific
@@ -173,6 +173,10 @@ static device_method_t acpi_wmi_methods[] = {
 	DEVMETHOD(device_attach, acpi_wmi_attach),
 	DEVMETHOD(device_detach, acpi_wmi_detach),
 
+	/* bus interface */
+	DEVMETHOD(bus_add_child,	bus_generic_add_child),
+	DEVMETHOD(bus_print_child,	bus_generic_print_child),
+
 	/* acpi_wmi interface */
 	DEVMETHOD(acpi_wmi_provides_guid_string,
 		    acpi_wmi_provides_guid_string_method),
@@ -198,7 +202,7 @@ static devclass_t acpi_wmi_devclass;
 DRIVER_MODULE(acpi_wmi, acpi, acpi_wmi_driver, acpi_wmi_devclass, 0, 0);
 MODULE_VERSION(acpi_wmi, 1);
 MODULE_DEPEND(acpi_wmi, acpi, 1, 1, 1);
-static char *wmi_ids[] = {"PNP0C14", "PNP0c14", NULL};
+static char *wmi_ids[] = {"PNP0C14", NULL};
 
 /*
  * Probe for the PNP0C14 ACPI node
@@ -268,6 +272,11 @@ acpi_wmi_attach(device_t dev)
 		ret = 0;
 	}
 	ACPI_SERIAL_END(acpi_wmi);
+
+	if (ret == 0) {
+		bus_generic_probe(dev);
+		ret = bus_generic_attach(dev);
+	}
 
 	return (ret);
 }

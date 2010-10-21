@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__RCSID("$FreeBSD: src/usr.sbin/mptutil/mptutil.c,v 1.1 2009/08/14 13:13:12 scottl Exp $");
+__RCSID("$FreeBSD: src/usr.sbin/mptutil/mptutil.c,v 1.2 2010/10/10 20:37:38 randi Exp $");
 
 #include <sys/param.h>
 #include <sys/errno.h>
@@ -114,10 +114,12 @@ main(int ac, char **av)
 
 	SET_FOREACH(cmd, MPT_DATASET(top)) {
 		if (strcmp((*cmd)->name, av[0]) == 0) {
-			(*cmd)->handler(ac, av);
-			return (0);
+			if ((*cmd)->handler(ac, av))
+				return (1);
+			else
+				return (0);
 		}
 	}
 	warnx("Unknown command %s.", av[0]);
-	return (0);
+	return (1);
 }

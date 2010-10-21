@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)inet.c	8.5 (Berkeley) 5/24/95";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/netstat/inet.c,v 1.93 2009/09/23 05:32:33 silby Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/netstat/inet.c,v 1.94 2010/10/05 05:15:27 ru Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -689,6 +689,9 @@ tcp_stats(u_long off, const char *name, int af1 __unused, int proto __unused)
 	p(tcps_sc_zonefail, "\t\t%lu zone failure%s\n");
 	p(tcps_sc_sendcookie, "\t%lu cookie%s sent\n");
 	p(tcps_sc_recvcookie, "\t%lu cookie%s received\n");
+
+	p(tcps_hc_added, "\t%lu hostcache entrie%s added\n");
+	p1a(tcps_hc_bucketoverflow, "\t\t%lu bucket overflow\n");
 
 	p(tcps_sack_recovery_episode, "\t%lu SACK recovery episode%s\n");
 	p(tcps_sack_rexmits,

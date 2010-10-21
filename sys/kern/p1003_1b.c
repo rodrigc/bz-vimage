@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/p1003_1b.c,v 1.38 2008/03/12 10:11:59 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/p1003_1b.c,v 1.39 2010/09/29 07:31:05 davidxu Exp $");
 
 #include "opt_posix.h"
 
@@ -219,10 +219,8 @@ sched_getscheduler(struct thread *td, struct sched_getscheduler_args *uap)
 		PROC_LOCK(targetp);
 	} else {
 		targetp = pfind(uap->pid);
-		if (targetp == NULL) {
-			e = ESRCH;
-			goto done2;
-		}
+		if (targetp == NULL)
+			return (ESRCH);
 		targettd = FIRST_THREAD_IN_PROC(targetp);
 	}
 
@@ -233,7 +231,6 @@ sched_getscheduler(struct thread *td, struct sched_getscheduler_args *uap)
 	}
 	PROC_UNLOCK(targetp);
 
-done2:
 	return (e);
 }
 
@@ -293,13 +290,10 @@ kern_sched_rr_get_interval(struct thread *td, pid_t pid,
 		targetp = td->td_proc;
 		PROC_LOCK(targetp);
 	} else {
-		targetp = td->td_proc;
-		PROC_LOCK(targetp);
-		targettd = thread_find(targetp, pid);
-		if (targettd == NULL) {
-			PROC_UNLOCK(targetp);
+		targetp = pfind(pid);
+		if (targetp == NULL)
 			return (ESRCH);
-		}
+		targettd = FIRST_THREAD_IN_PROC(targetp);
 	}
 
 	e = p_cansee(td, targetp);

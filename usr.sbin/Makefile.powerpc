@@ -1,0 +1,5 @@
+# $FreeBSD: src/usr.sbin/Makefile.powerpc,v 1.1 2010/09/13 02:21:07 imp Exp $
+
+SUBDIR+=	mount_smbfs
+SUBDIR+=	nvram
+SUBDIR+=	ofwdump

@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/dist.c,v 1.262 2010/06/23 14:19:19 brucec Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/dist.c,v 1.263 2010/10/03 17:50:43 nwhitehorn Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -87,7 +87,7 @@ static Distribution DistTable[] = {
     DTE_TARBALL("proflibs", &Dists, PROFLIBS, "/"),
     DTE_TARBALL("dict",	    &Dists, DICT,     "/"),
     DTE_TARBALL("info",	    &Dists, INFO,     "/"),
-#ifdef __amd64__
+#if defined(__amd64__) || defined(__powerpc64__)
     DTE_TARBALL("lib32",    &Dists, LIB32,    "/"),
 #endif
     DTE_SUBDIST("src",	    &Dists, SRC,      SrcDistTable),
@@ -98,7 +98,7 @@ static Distribution DistTable[] = {
 
 /* The kernel distributions */
 static Distribution KernelDistTable[] = {
-    DTE_TARBALL("GENERIC",  &KernelDists, KERNEL_GENERIC, "/boot"),
+    DTE_TARBALL(GENERIC_KERNEL_NAME,  &KernelDists, KERNEL_GENERIC, "/boot"),
     DTE_END,
 };
 

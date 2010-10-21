@@ -97,7 +97,7 @@
  *	from: @(#)sbus.c	8.1 (Berkeley) 6/11/93
  *	from: NetBSD: iommu.c,v 1.42 2001/08/06 22:02:58 eeh Exp
  *
- * $FreeBSD: src/sys/sun4v/sun4v/hviommu.c,v 1.5 2007/05/20 13:06:45 marius Exp $
+ * $FreeBSD: src/sys/sun4v/sun4v/hviommu.c,v 1.6 2010/09/14 20:31:09 marius Exp $
  */
 
 #include <sys/param.h>
@@ -513,9 +513,6 @@ hviommu_dvmamap_create(bus_dma_tag_t dt, int flags, bus_dmamap_t *mapp)
 	 */
 	maxpre = imin(dt->dt_nsegments, IOMMU_MAX_PRE_SEG);
 	presz = dt->dt_maxsize / maxpre;
-	KASSERT(presz != 0, ("hviommu_dvmamap_create: bogus preallocation size "
-	    ", nsegments = %d, maxpre = %d, maxsize = %lu", dt->dt_nsegments,
-	    maxpre, dt->dt_maxsize));
 	for (i = 1; i < maxpre && totsz < IOMMU_MAX_PRE; i++) {
 		currsz = round_io_page(ulmin(presz, IOMMU_MAX_PRE - totsz));
 		error = hviommu_dvma_valloc(dt, him, *mapp, currsz);

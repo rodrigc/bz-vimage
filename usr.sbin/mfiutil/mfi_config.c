@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/mfiutil/mfi_config.c,v 1.1 2009/08/13 23:18:45 scottl Exp $
+ * $FreeBSD: src/usr.sbin/mfiutil/mfi_config.c,v 1.2 2010/10/10 20:54:01 randi Exp $
  */
 
 #include <sys/types.h>
@@ -1024,7 +1024,7 @@ dump_config(int fd, struct mfi_config_data *config)
 		    ar->num_drives);
 		printf("      size = %ju\n", (uintmax_t)ar->size);
 		for (j = 0; j < ar->num_drives; j++) {
-			device_id = ar->pd[j].ref.device_id;
+			device_id = ar->pd[j].ref.v.device_id;
 			if (device_id == 0xffff)
 				printf("        drive MISSING\n");
 			else {
@@ -1080,7 +1080,7 @@ dump_config(int fd, struct mfi_config_data *config)
 		sp = (struct mfi_spare *)p;
 		printf("    %s spare %u ",
 		    sp->spare_type & MFI_SPARE_DEDICATED ? "dedicated" :
-		    "global", sp->ref.device_id);
+		    "global", sp->ref.v.device_id);
 		printf("%s", mfi_pdstate(MFI_PD_STATE_HOT_SPARE));
 		printf(" backs:\n");
 		for (j = 0; j < sp->array_count; j++)

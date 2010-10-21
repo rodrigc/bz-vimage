@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/security/audit/audit_bsm_klib.c,v 1.22 2009/07/28 21:39:58 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/security/audit/audit_bsm_klib.c,v 1.23 2010/09/10 16:42:16 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -548,7 +548,7 @@ audit_canon_path(struct thread *td, char *path, char *cpath)
 	 * the supplied buffer being overflowed.  Check to see if this is the
 	 * case.
 	 */
-	if (sbuf_overflowed(&sbf) != 0) {
+	if (sbuf_error(&sbf) != 0) {
 		cpath[0] = '\0';
 		return;
 	}

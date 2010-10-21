@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/mii_physubr.c,v 1.30 2010/03/03 17:55:51 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/mii_physubr.c,v 1.31 2010/09/27 20:31:03 marius Exp $");
 
 /*
  * Subroutines common to all PHYs.
@@ -326,10 +326,9 @@ mii_anar(int media)
 void
 mii_add_media(struct mii_softc *sc)
 {
+	struct mii_data *mii = sc->mii_pdata;
 	const char *sep = "";
-	struct mii_data *mii;
 
-	mii = device_get_softc(sc->mii_dev);
 	if ((sc->mii_capabilities & BMSR_MEDIAMASK) == 0) {
 		printf("no media present");
 		return;

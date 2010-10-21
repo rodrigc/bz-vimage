@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)var.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.47 2010/06/02 19:16:58 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.50 2010/10/13 22:18:03 obrien Exp $");
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -91,9 +91,9 @@ struct var vps1;
 struct var vps2;
 struct var vps4;
 struct var vvers;
-STATIC struct var voptind;
+static struct var voptind;
 
-STATIC const struct varinit varinit[] = {
+static const struct varinit varinit[] = {
 #ifndef NO_HISTORY
 	{ &vhistsize,	VUNSET,				"HISTSIZE=",
 	  sethistsize },
@@ -125,19 +125,19 @@ STATIC const struct varinit varinit[] = {
 	  NULL }
 };
 
-STATIC struct var *vartab[VTABSIZE];
+static struct var *vartab[VTABSIZE];
 
-STATIC const char *const locale_names[7] = {
+static const char *const locale_names[7] = {
 	"LC_COLLATE", "LC_CTYPE", "LC_MONETARY",
 	"LC_NUMERIC", "LC_TIME", "LC_MESSAGES", NULL
 };
-STATIC const int locale_categories[7] = {
+static const int locale_categories[7] = {
 	LC_COLLATE, LC_CTYPE, LC_MONETARY, LC_NUMERIC, LC_TIME, LC_MESSAGES, 0
 };
 
-STATIC struct var **hashvar(const char *);
-STATIC int varequal(const char *, const char *);
-STATIC int localevar(const char *);
+static struct var **hashvar(const char *);
+static int varequal(const char *, const char *);
+static int localevar(const char *);
 
 /*
  * Initialize the variable symbol tables and import the environment.
@@ -268,7 +268,7 @@ setvar(const char *name, const char *val, int flags)
 	setvareq(nameeq, flags);
 }
 
-STATIC int
+static int
 localevar(const char *s)
 {
 	const char *const *ss;
@@ -431,11 +431,15 @@ bltinlookup(const char *name, int doall)
 {
 	struct strlist *sp;
 	struct var *v;
+	char *result;
 
+	result = NULL;
 	for (sp = cmdenviron ; sp ; sp = sp->next) {
 		if (varequal(sp->text, name))
-			return strchr(sp->text, '=') + 1;
+			result = strchr(sp->text, '=') + 1;
 	}
+	if (result != NULL)
+		return result;
 	for (v = *hashvar(name) ; v ; v = v->next) {
 		if (varequal(v->text, name)) {
 			if ((v->flags & VUNSET)
@@ -905,7 +909,7 @@ unsetvar(const char *s)
  * Find the appropriate entry in the hash table from the name.
  */
 
-STATIC struct var **
+static struct var **
 hashvar(const char *p)
 {
 	unsigned int hashval;
@@ -924,7 +928,7 @@ hashvar(const char *p)
  * either '=' or '\0'.
  */
 
-STATIC int
+static int
 varequal(const char *p, const char *q)
 {
 	while (*p == *q++) {

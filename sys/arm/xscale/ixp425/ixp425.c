@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/ixp425.c,v 1.30 2009/06/23 19:05:02 sam Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/ixp425.c,v 1.31 2010/09/10 11:19:03 avg Exp $");
 
 #include "opt_ddb.h"
 
@@ -369,7 +369,7 @@ ixp425_hinted_child(device_t bus, const char *dname, int dunit)
 }
 
 static device_t
-ixp425_add_child(device_t dev, int order, const char *name, int unit)
+ixp425_add_child(device_t dev, u_int order, const char *name, int unit)
 {
 	device_t child;
 	struct ixp425_ivar *ivar;

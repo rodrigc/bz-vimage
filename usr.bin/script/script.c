@@ -33,7 +33,7 @@
 
 #include <sys/cdefs.h>
 
-__FBSDID("$FreeBSD: src/usr.bin/script/script.c,v 1.29 2010/08/16 12:19:36 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/script/script.c,v 1.30 2010/09/16 22:31:03 obrien Exp $");
 
 #ifndef lint
 static const char copyright[] =
@@ -235,14 +235,21 @@ static void
 doshell(char **av)
 {
 	const char *shell;
+	int k;
 
 	shell = getenv("SHELL");
 	if (shell == NULL)
 		shell = _PATH_BSHELL;
 
+	if (av[0])
+		for (k = 0 ; av[k] ; ++k)
+			fprintf(fscript, "%s%s", k ? " " : "", av[k]);
+		fprintf(fscript, "\r\n");
+
 	(void)close(master);
 	(void)fclose(fscript);
 	login_tty(slave);
+	setenv("SCRIPT", fname, 1);
 	if (av[0]) {
 		execvp(av[0], av);
 		warn("%s", av[0]);

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/class/multipath/geom_multipath.c,v 1.7 2010/08/13 15:17:19 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/class/multipath/geom_multipath.c,v 1.8 2010/09/13 13:48:18 pjd Exp $");
 #include <sys/param.h>
 #include <errno.h>
 #include <paths.h>
@@ -53,27 +53,27 @@ static void mp_add(struct gctl_req *);
 struct g_command class_commands[] = {
 	{
 		"label", G_FLAG_VERBOSE | G_FLAG_LOADKLD, mp_main, G_NULL_OPTS,
-		NULL, "[-v] name prov ..."
+		"[-v] name prov ..."
 	},
 	{
 		"add", G_FLAG_VERBOSE | G_FLAG_LOADKLD, mp_main, G_NULL_OPTS,
-		NULL, "[-v] name prov ..."
+		"[-v] name prov ..."
 	},
 	{
 		"destroy", G_FLAG_VERBOSE, NULL, G_NULL_OPTS,
-		NULL, "[-v] prov ..."
+		"[-v] prov ..."
 	},
 	{
 		"clear", G_FLAG_VERBOSE, mp_main, G_NULL_OPTS,
-		NULL, "[-v] prov ..."
+		"[-v] prov ..."
 	},
 	{
 		"rotate", G_FLAG_VERBOSE, NULL, G_NULL_OPTS,
-		NULL, "[-v] prov ..."
+		"[-v] prov ..."
 	},
 	{
 		"getactive", G_FLAG_VERBOSE, NULL, G_NULL_OPTS,
-		NULL, "[-v] prov ..."
+		"[-v] prov ..."
 	},
 	G_CMD_SENTINEL
 };

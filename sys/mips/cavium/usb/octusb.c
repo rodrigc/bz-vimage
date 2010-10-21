@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/usb/octusb.c,v 1.1 2010/07/20 19:32:25 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/usb/octusb.c,v 1.2 2010/09/18 00:58:44 jmallett Exp $");
 
 /*-
  * Copyright (c) 2010 Hans Petter Selasky. All rights reserved.
@@ -1885,7 +1885,7 @@ octusb_xfer_unsetup(struct usb_xfer *xfer)
 }
 
 static void
-octusb_get_dma_delay(struct usb_bus *bus, uint32_t *pus)
+octusb_get_dma_delay(struct usb_device *udev, uint32_t *pus)
 {
 	/* DMA delay - wait until any use of memory is finished */
 	*pus = (2125);			/* microseconds */

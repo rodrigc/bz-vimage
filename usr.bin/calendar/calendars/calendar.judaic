@@ -1,7 +1,7 @@
 /*
  * Judaic Calendar. Maintained by Josef Grosch <jgrosch@mooseriver.com>.
  *
- * $FreeBSD: src/usr.bin/calendar/calendars/calendar.judaic,v 1.14 2010/08/30 22:45:32 edwin Exp $
+ * $FreeBSD: src/usr.bin/calendar/calendars/calendar.judaic,v 1.15 2010/10/14 21:53:25 edwin Exp $
  *
  */
 
@@ -13,9 +13,8 @@
 #define _calendar_judaic_
 
 /*
- * The calendar below has gotten from the port deskutils/hebcal for
- * the year of 2010 and for the city of New York.
- * This should be updated every year!
+ * The calendar below has been obtained from the port deskutils/hebcal
+ * for the year of 2010 to 2015 and for the city of New York.
  */
 
 2010/Jan/16*	Rosh Chodesh Sh'vat

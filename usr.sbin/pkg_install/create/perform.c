@@ -19,7 +19,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/create/perform.c,v 1.85 2010/04/23 11:07:43 flz Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/pkg_install/create/perform.c,v 1.86 2010/10/12 10:04:44 flz Exp $");
 
 #include <pkg.h>
 #include "create.h"
@@ -67,6 +67,10 @@ pkg_perform(char **pkgs)
 	    Zipper = GZIP;
 	    pkg[len - 4] = '\0';
 	}
+	else if (!strcmp(&pkg[len - 4], ".txz")) {
+	    Zipper = XZ;
+	    pkg[len - 4] = '\0';
+	}
 	else if (!strcmp(&pkg[len - 4], ".tar")) {
 	    Zipper = NONE;
 	    pkg[len - 4] = '\0';
@@ -78,6 +82,8 @@ pkg_perform(char **pkgs)
     } else if (Zipper == GZIP) {
 	suf = "tgz";
 	setenv("GZIP", "-9", 0);
+    } else if (Zipper == XZ) {
+	suf = "txz";
     } else
 	suf = "tar";
 
@@ -374,6 +380,10 @@ make_dist(const char *homedir, const char *pkg, const char *suff, Package *plist
 	if (Zipper == BZIP2) {
 	    args[nargs++] = "-j";
 	    cname = "bzip'd ";
+	}
+	else if (Zipper == XZ) {
+	    args[nargs++] = "-J";
+	    cname = "xz'd ";
 	}
 	else {
 	    args[nargs++] = "-z";

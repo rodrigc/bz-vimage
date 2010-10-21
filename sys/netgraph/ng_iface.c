@@ -37,7 +37,7 @@
  *
  * Author: Archie Cobbs <archie@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_iface.c,v 1.68 2010/05/03 07:32:50 sobomax Exp $
+ * $FreeBSD: src/sys/netgraph/ng_iface.c,v 1.69 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_iface.c,v 1.33 1999/11/01 09:24:51 julian Exp $
  */
 
@@ -821,7 +821,7 @@ ng_iface_disconnect(hook_p hook)
 	const iffam_p iffam = get_iffam_from_hook(priv, hook);
 
 	if (iffam == NULL)
-		panic(__func__);
+		panic("%s", __func__);
 	*get_hook_from_iffam(priv, iffam) = NULL;
 	return (0);
 }

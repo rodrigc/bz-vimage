@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.300 2010/06/29 20:44:19 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.301 2010/09/05 20:13:07 tuexen Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2368,7 +2368,6 @@ sctp_generic_sendmsg (td, uap)
 	struct sctp_sndrcvinfo sinfo, *u_sinfo = NULL;
 	struct socket *so;
 	struct file *fp = NULL;
-	int use_rcvinfo = 1;
 	int error = 0, len;
 	struct sockaddr *to = NULL;
 #ifdef KTRACE
@@ -2421,7 +2420,7 @@ sctp_generic_sendmsg (td, uap)
 	CURVNET_SET(so->so_vnet);
 	error = sctp_lower_sosend(so, to, &auio,
 		    (struct mbuf *)NULL, (struct mbuf *)NULL,
-		    uap->flags, use_rcvinfo, u_sinfo, td);
+		    uap->flags, u_sinfo, td);
 	CURVNET_RESTORE();
 	if (error) {
 		if (auio.uio_resid != len && (error == ERESTART ||
@@ -2472,7 +2471,6 @@ sctp_generic_sendmsg_iov(td, uap)
 	struct sctp_sndrcvinfo sinfo, *u_sinfo = NULL;
 	struct socket *so;
 	struct file *fp = NULL;
-	int use_rcvinfo = 1;
 	int error=0, len, i;
 	struct sockaddr *to = NULL;
 #ifdef KTRACE
@@ -2539,7 +2537,7 @@ sctp_generic_sendmsg_iov(td, uap)
 	CURVNET_SET(so->so_vnet);
 	error = sctp_lower_sosend(so, to, &auio,
 		    (struct mbuf *)NULL, (struct mbuf *)NULL,
-		    uap->flags, use_rcvinfo, u_sinfo, td);
+		    uap->flags, u_sinfo, td);
 	CURVNET_RESTORE();
 	if (error) {
 		if (auio.uio_resid != len && (error == ERESTART ||

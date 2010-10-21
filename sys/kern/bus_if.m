@@ -23,9 +23,11 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/sys/kern/bus_if.m,v 1.39 2010/06/14 07:10:37 mav Exp $
+# $FreeBSD: src/sys/kern/bus_if.m,v 1.41 2010/09/13 08:34:20 avg Exp $
 #
 
+#include <sys/types.h>
+#include <sys/systm.h>
 #include <sys/bus.h>
 
 /**
@@ -55,6 +57,14 @@ CODE {
 		if (dev != NULL)
 			return (BUS_REMAP_INTR(dev, NULL, irq));
 		return (ENXIO);
+	}
+
+	static device_t
+	null_add_child(device_t bus, int order, const char *name,
+	    int unit)
+	{
+
+		panic("bus_add_child is not implemented");
 	}
 };
 
@@ -200,10 +210,10 @@ METHOD void driver_added {
  */
 METHOD device_t add_child {
 	device_t _dev;
-	int _order;
+	u_int _order;
 	const char *_name;
 	int _unit;
-};
+} DEFAULT null_add_child;
 
 /**
  * @brief Allocate a system resource

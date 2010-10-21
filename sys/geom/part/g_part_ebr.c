@@ -27,7 +27,7 @@
 #include "opt_geom.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_ebr.c,v 1.13 2009/09/28 23:52:47 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_ebr.c,v 1.14 2010/10/13 11:35:59 rpaulo Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -221,8 +221,8 @@ g_part_ebr_add(struct g_part_table *basetable, struct g_part_entry *baseentry,
 	if (baseentry->gpe_deleted)
 		bzero(&entry->ent, sizeof(entry->ent));
 
-	KASSERT(baseentry->gpe_start <= start, (__func__));
-	KASSERT(baseentry->gpe_end >= start + size - 1, (__func__));
+	KASSERT(baseentry->gpe_start <= start, ("%s", __func__));
+	KASSERT(baseentry->gpe_end >= start + size - 1, ("%s", __func__));
 	baseentry->gpe_index = (start / sectors) + 1;
 	baseentry->gpe_offset = (off_t)(start + sectors) * pp->sectorsize;
 	baseentry->gpe_start = start;

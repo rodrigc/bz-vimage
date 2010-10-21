@@ -31,7 +31,7 @@
 /* $KAME: sctp_output.h,v 1.14 2005/03/06 16:04:18 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.h,v 1.20 2010/04/03 15:40:14 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.h,v 1.21 2010/09/15 23:10:45 tuexen Exp $");
 
 #ifndef __sctp_output_h__
 #define __sctp_output_h__
@@ -128,6 +128,8 @@ void sctp_toss_old_cookies(struct sctp_tcb *, struct sctp_association *);
 void sctp_toss_old_asconf(struct sctp_tcb *);
 
 void sctp_fix_ecn_echo(struct sctp_association *);
+
+void sctp_move_chunks_from_net(struct sctp_tcb *stcb, struct sctp_nets *net);
 
 int
 sctp_output(struct sctp_inpcb *, struct mbuf *, struct sockaddr *,

@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_scan_sta.c,v 1.31 2010/06/01 14:17:08 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_scan_sta.c,v 1.32 2010/10/01 09:18:30 adrian Exp $");
 
 /*
  * IEEE 802.11 station scanning support.
@@ -1361,7 +1361,7 @@ sta_age(struct ieee80211_scan_state *ss)
 	KASSERT(vap->iv_opmode == IEEE80211_M_STA,
 		("wrong mode %u", vap->iv_opmode));
 	if (vap->iv_roaming == IEEE80211_ROAMING_AUTO &&
-	    (vap->iv_ic->ic_flags & IEEE80211_F_BGSCAN) &&
+	    (vap->iv_flags & IEEE80211_F_BGSCAN) &&
 	    vap->iv_state >= IEEE80211_S_RUN)
 		/* XXX vap is implicit */
 		sta_roam_check(ss, vap);

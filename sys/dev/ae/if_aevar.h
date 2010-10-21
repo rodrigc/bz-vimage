@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ae/if_aevar.h,v 1.1 2008/10/03 10:31:31 stas Exp $
+ * $FreeBSD: src/sys/dev/ae/if_aevar.h,v 1.2 2010/10/15 14:52:11 marius Exp $
  */
 
 #ifndef IF_AEVAR_H
@@ -111,7 +111,6 @@ typedef struct ae_softc	{
 
 	struct mtx		mtx;
 
-	int			phyaddr;
 	uint8_t			eaddr[ETHER_ADDR_LEN];
 	uint8_t			flags;
 	int			if_flags;

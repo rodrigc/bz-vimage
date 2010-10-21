@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/_pthread_stubs.c,v 1.17 2010/01/05 02:37:59 davidxu Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/_pthread_stubs.c,v 1.18 2010/09/25 01:57:47 davidxu Exp $");
 
 #include <signal.h>
 #include <pthread.h>
@@ -121,6 +121,8 @@ pthread_func_entry_t __thr_jtable[PJT_MAX] = {
 	{PJT_DUAL_ENTRY(stub_zero)},    /* PJT_TESTCANCEL */
 	{PJT_DUAL_ENTRY(stub_zero)},    /* PJT_CLEANUP_POP_IMP */
 	{PJT_DUAL_ENTRY(stub_zero)},    /* PJT_CLEANUP_PUSH_IMP */
+	{PJT_DUAL_ENTRY(stub_zero)},	/* PJT_CANCEL_ENTER */
+	{PJT_DUAL_ENTRY(stub_zero)},	/* PJT_CANCEL_LEAVE */
 };
 
 /*
@@ -269,6 +271,8 @@ STUB_FUNC2(pthread_setcanceltype, PJT_SETCANCELTYPE, int, int, void *)
 STUB_FUNC(pthread_testcancel, PJT_TESTCANCEL, void)
 STUB_FUNC1(__pthread_cleanup_pop_imp, PJT_CLEANUP_POP_IMP, int, int)
 STUB_FUNC2(__pthread_cleanup_push_imp, PJT_CLEANUP_PUSH_IMP, void, void*, void *);
+STUB_FUNC1(_pthread_cancel_enter, PJT_CANCEL_ENTER, int, int)
+STUB_FUNC1(_pthread_cancel_leave, PJT_CANCEL_LEAVE, int, int)
 
 static int
 stub_zero(void)

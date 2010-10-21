@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  *
  *      from nfs_lock.h,v 2.2 1998/04/28 19:38:41 don Exp
- * $FreeBSD: src/sys/nfs/nfs_lock.h,v 1.3 2010/07/24 22:11:11 rmacklem Exp $
+ * $FreeBSD: src/sys/nfs/nfs_lock.h,v 1.4 2010/10/19 00:20:00 rmacklem Exp $
  */
 
 /*
@@ -87,4 +87,6 @@ struct lockd_ans {
 
 #ifdef _KERNEL
 int	nfs_dolock(struct vop_advlock_args *ap);
+extern	vop_advlock_t *nfs_advlock_p;
+extern	vop_reclaim_t *nfs_reclaim_p;
 #endif

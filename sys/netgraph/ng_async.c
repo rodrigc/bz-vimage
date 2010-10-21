@@ -37,7 +37,7 @@
  *
  * Author: Archie Cobbs <archie@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_async.c,v 1.24 2008/10/23 20:26:15 des Exp $
+ * $FreeBSD: src/sys/netgraph/ng_async.c,v 1.25 2010/10/13 17:21:21 rpaulo Exp $
  * $Whistle: ng_async.c,v 1.17 1999/11/01 09:24:51 julian Exp $
  */
 
@@ -256,7 +256,7 @@ nga_rcvdata(hook_p hook, item_p item)
 		return (nga_rcv_sync(sc, item));
 	if (hook == sc->async)
 		return (nga_rcv_async(sc, item));
-	panic(__func__);
+	panic("%s", __func__);
 }
 
 /*
@@ -372,7 +372,7 @@ nga_disconnect(hook_p hook)
 	else if (hook == sc->sync)
 		hookp = &sc->sync;
 	else
-		panic(__func__);
+		panic("%s", __func__);
 	if (!*hookp)
 		panic("%s 2", __func__);
 	*hookp = NULL;

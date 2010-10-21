@@ -27,7 +27,7 @@
 /*
  * The API to write a packet scheduling algorithm for dummynet.
  *
- * $FreeBSD: src/sys/netinet/ipfw/dn_sched.h,v 1.3 2010/04/19 16:17:30 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ipfw/dn_sched.h,v 1.4 2010/09/29 09:40:20 luigi Exp $
  */
 
 #ifndef _DN_SCHED_H
@@ -166,6 +166,8 @@ dn_dequeue(struct dn_queue *q)
 	if (m == NULL)
 		return NULL;
 	q->mq.head = m->m_nextpkt;
+
+	/* Update stats for the queue */
 	q->ni.length--;
 	q->ni.len_bytes -= m->m_pkthdr.len;
 	if (q->_si) {

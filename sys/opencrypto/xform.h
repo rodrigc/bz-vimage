@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/opencrypto/xform.h,v 1.4 2007/05/09 19:37:02 gnn Exp $	*/
+/*	$FreeBSD: src/sys/opencrypto/xform.h,v 1.5 2010/09/23 11:52:32 pjd Exp $	*/
 /*	$OpenBSD: xform.h,v 1.8 2001/08/28 12:20:43 ben Exp $	*/
 
 /*-
@@ -54,6 +54,7 @@ struct enc_xform {
 	void (*decrypt) (caddr_t, u_int8_t *);
 	int (*setkey) (u_int8_t **, u_int8_t *, int len);
 	void (*zerokey) (u_int8_t **);
+	void (*reinit) (caddr_t, u_int8_t *);
 };
 
 struct comp_algo {
@@ -80,6 +81,7 @@ extern struct enc_xform enc_xform_blf;
 extern struct enc_xform enc_xform_cast5;
 extern struct enc_xform enc_xform_skipjack;
 extern struct enc_xform enc_xform_rijndael128;
+extern struct enc_xform enc_xform_aes_xts;
 extern struct enc_xform enc_xform_arc4;
 extern struct enc_xform enc_xform_camellia;
 

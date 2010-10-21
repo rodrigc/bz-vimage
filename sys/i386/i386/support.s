@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/i386/support.s,v 1.122 2010/06/23 10:40:28 kib Exp $
+ * $FreeBSD: src/sys/i386/i386/support.s,v 1.123 2010/09/29 02:36:58 davidxu Exp $
  */
 
 #include "opt_npx.h"
@@ -423,7 +423,6 @@ ENTRY(casuword)
 	 */
 
 	movl	PCPU(CURPCB),%ecx
-	movl	$fusufault,PCB_ONFAULT(%ecx)
 	movl	$0,PCB_ONFAULT(%ecx)
 	ret
 END(casuword32)

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/econa/if_ece.c,v 1.1 2010/01/04 03:35:45 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/econa/if_ece.c,v 1.2 2010/10/15 14:52:11 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -353,10 +353,11 @@ ece_attach(device_t dev)
 	}
 	ece_set_mac(sc, eaddr);
 	sc->ifp = ifp = if_alloc(IFT_ETHER);
-	if (mii_phy_probe(dev, &sc->miibus, ece_ifmedia_upd,
-		    ece_ifmedia_sts)) {
-		device_printf(dev, "Cannot find my PHY.\n");
-		err = ENXIO;
+	/* Only one PHY at address 0 in this device. */
+	err = mii_attach(dev, &sc->miibus, ifp, ece_ifmedia_upd,
+	    ece_ifmedia_sts, BMSR_DEFCAPMASK, 0, MII_OFFSET_ANY, 0);
+	if (err != 0) {
+		device_printf(dev, "attaching PHYs failed\n");
 		goto out;
 	}
 	ifp->if_softc = sc;
@@ -1904,9 +1905,6 @@ static int
 ece_miibus_readreg(device_t dev, int phy, int reg)
 {
 	struct ece_softc *sc;
-	/* Only one phy in this device. */
-	if (phy>0)
-		return (0);
 	sc = device_get_softc(dev);
 	return (phy_read(sc, phy, reg));
 }

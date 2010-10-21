@@ -69,7 +69,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)config.y	8.1 (Berkeley) 6/6/93
- * $FreeBSD: src/usr.sbin/config/config.y,v 1.83 2010/07/15 22:28:19 imp Exp $
+ * $FreeBSD: src/usr.sbin/config/config.y,v 1.84 2010/09/13 18:26:34 emaste Exp $
  */
 
 #include <assert.h>
@@ -261,6 +261,7 @@ Mkopt_list:
 
 Mkoption:
 	Save_id { newopt(&mkopt, $1, ns(""), 0); } |
+	Save_id EQUALS { newopt(&mkopt, $1, ns(""), 0); } |
 	Save_id EQUALS Opt_value { newopt(&mkopt, $1, $3, 0); } |
 	Save_id PLUSEQUALS Opt_value { newopt(&mkopt, $1, $3, 1); } ;
 

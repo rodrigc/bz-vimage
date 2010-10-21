@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_clock.c,v 1.15 2008/04/22 19:38:28 phk Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_clock.c,v 1.16 2010/10/17 17:31:49 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -163,10 +163,6 @@ clock_ct_to_ts(struct clocktime *ct, struct timespec *ts)
 	for (i = 1; i < ct->mon; i++)
 	  	days += days_in_month(year, i);
 	days += (ct->day - 1);
-
-	/* XXX Dow sanity check. Dow is not used, so should we check it? */
-	if (ct->dow != -1 && ct->dow != day_of_week(days))
-		return (EINVAL);
 
 	/* Add hours, minutes, seconds. */
 	secs = ((days * 24 + ct->hour) * 60 + ct->min) * 60 + ct->sec;

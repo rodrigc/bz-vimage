@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/hptrr/hptrr_osm_bsd.c,v 1.7 2010/01/28 08:41:30 mav Exp $
+ * $FreeBSD: src/sys/dev/hptrr/hptrr_osm_bsd.c,v 1.8 2010/10/13 14:41:52 rpaulo Exp $
  */
 #include <dev/hptrr/hptrr_config.h>
 /* $Id$
@@ -1178,7 +1178,7 @@ static void hpt_final_init(void *dummy)
 	}	
 
 	make_dev(&hpt_cdevsw, DRIVER_MINOR, UID_ROOT, GID_OPERATOR,
-	    S_IRUSR | S_IWUSR, driver_name);
+	    S_IRUSR | S_IWUSR, "%s", driver_name);
 }
 
 #if defined(KLD_MODULE) && (__FreeBSD_version >= 503000)

@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-common.c,v 1.1 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-common.c,v 1.2 2010/10/02 05:43:17 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -265,6 +265,20 @@ int cvm_oct_common_init(struct ifnet *ifp)
 	   bootloader */
 	memset(ifp->get_stats(ifp), 0, sizeof(struct ifnet_stats));
 #endif
+
+	/*
+	 * Do any last-minute board-specific initialization.
+	 */
+	switch (cvmx_sysinfo_get()->board_type) {
+#if defined(OCTEON_VENDOR_LANNER)
+	case CVMX_BOARD_TYPE_CUST_LANNER_MR320:
+		if (priv->phy_id == 16)
+			cvm_oct_mv88e61xx_setup_device(ifp);
+		break;
+#endif
+	default:
+		break;
+	}
 
 	device_attach(priv->dev);
 

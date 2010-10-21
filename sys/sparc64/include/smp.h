@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/include/smp.h,v 1.33 2010/08/11 23:22:53 jhb Exp $
+ * $FreeBSD: src/sys/sparc64/include/smp.h,v 1.34 2010/09/13 07:25:35 mav Exp $
  */
 
 #ifndef	_MACHINE_SMP_H_
@@ -59,7 +59,6 @@
 #define	IPI_RENDEZVOUS	PIL_RENDEZVOUS
 #define	IPI_PREEMPT	PIL_PREEMPT
 #define	IPI_HARDCLOCK	PIL_HARDCLOCK
-#define	IPI_STATCLOCK	PIL_STATCLOCK
 #define	IPI_STOP	PIL_STOP
 #define	IPI_STOP_HARD	PIL_STOP
 

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_stack.c,v 1.7 2006/04/04 02:57:49 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_stack.c,v 1.8 2010/09/13 07:03:01 davidxu Exp $
  */
 
 #include <sys/types.h>
@@ -154,7 +154,7 @@ _thr_stack_alloc(struct pthread_attr *attr)
 	 * Use the garbage collector lock for synchronization of the
 	 * spare stack lists and allocations from usrstack.
 	 */
-	THREAD_LIST_LOCK(curthread);
+	THREAD_LIST_WRLOCK(curthread);
 	/*
 	 * If the stack and guard sizes are default, try to allocate a stack
 	 * from the default-size stack cache:

@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.4 (Berkeley) 5/5/95
-# $FreeBSD: src/bin/sh/Makefile,v 1.47 2007/11/18 01:53:07 jb Exp $
+# $FreeBSD: src/bin/sh/Makefile,v 1.53 2010/10/13 23:31:17 obrien Exp $
 
 PROG=	sh
 INSTALLFLAGS= -S
@@ -21,12 +21,12 @@ LDADD= -ll -ledit -ltermcap
 LFLAGS= -8	# 8-bit lex scanner for arithmetic
 CFLAGS+=-DSHELL -I. -I${.CURDIR}
 # for debug:
-# CFLAGS+= -g -DDEBUG=2
+# DEBUG_FLAGS+= -g -DDEBUG=2 -fno-inline
 WARNS?=	2
 WFORMAT=0
 
 .PATH:	${.CURDIR}/bltin \
-	${.CURDIR}/../../bin/test
+	${.CURDIR}/../test
 
 CLEANFILES+= mkinit mkinit.o mknodes mknodes.o \
 	mksyntax mksyntax.o
@@ -61,5 +61,8 @@ syntax.c syntax.h: mksyntax
 
 token.h: mktokens
 	sh ${.CURDIR}/mktokens
+
+regress:
+	cd ${.CURDIR}/../../tools/regression/bin/sh && ${MAKE} SH=${.OBJDIR}/sh
 
 .include <bsd.prog.mk>

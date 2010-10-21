@@ -1,7 +1,7 @@
 # This file tells config what files go into building a kernel,
 # files marked standard are always included.
 #
-# $FreeBSD: src/sys/conf/files.powerpc,v 1.116 2010/08/31 15:27:46 nwhitehorn Exp $
+# $FreeBSD: src/sys/conf/files.powerpc,v 1.119 2010/10/15 20:08:16 andreast Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -26,7 +26,10 @@ dev/cfi/cfi_bus_fdt.c		optional	cfi fdt
 dev/fb/fb.c			optional	sc
 dev/fdt/fdt_powerpc.c		optional	fdt
 dev/hwpmc/hwpmc_powerpc.c	optional	hwpmc
+dev/iicbus/ds1775.c		optional	ds1775 powermac
+dev/iicbus/max6690.c		optional	max6690 powermac
 dev/kbd/kbd.c			optional	sc
+dev/mem/memutil.c		optional	mem
 dev/ofw/openfirm.c		optional	aim | fdt
 dev/ofw/openfirmio.c		optional	aim | fdt
 dev/ofw/ofw_bus_if.m		optional	aim | fdt
@@ -52,6 +55,7 @@ dev/syscons/scvtb.c		optional	sc
 dev/tsec/if_tsec.c		optional	tsec
 dev/tsec/if_tsec_fdt.c		optional	tsec fdt
 dev/uart/uart_cpu_powerpc.c	optional	uart aim
+kern/kern_clocksource.c		standard
 kern/syscalls.c			optional	ktr
 libkern/ashldi3.c		optional	powerpc
 libkern/ashrdi3.c		optional	powerpc
@@ -136,6 +140,7 @@ powerpc/powermac/ata_dbdma.c	optional	powermac ata | powermac atamacio
 powerpc/powermac/cuda.c		optional	powermac cuda
 powerpc/powermac/cpcht.c	optional	powermac pci
 powerpc/powermac/dbdma.c	optional	powermac pci
+powerpc/powermac/fcu.c		optional	powermac fcu
 powerpc/powermac/grackle.c	optional	powermac pci
 powerpc/powermac/hrowpic.c	optional	powermac pci
 powerpc/powermac/kiic.c		optional	powermac kiic

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_denode.c,v 1.107 2010/02/28 17:11:31 kib Exp $ */
+/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_denode.c,v 1.108 2010/10/13 11:37:39 rpaulo Exp $ */
 /*	$NetBSD: msdosfs_denode.c,v 1.28 1998/02/10 14:10:00 mrg Exp $	*/
 
 /*-
@@ -240,7 +240,7 @@ deget(pmp, dirclust, diroffset, depp)
 			*depp = NULL;
 			return (error);
 		}
-		DE_INTERNALIZE(ldep, direntptr);
+		(void)DE_INTERNALIZE(ldep, direntptr);
 		brelse(bp);
 	}
 

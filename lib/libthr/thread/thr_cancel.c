@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_cancel.c,v 1.18 2010/09/01 02:18:33 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_cancel.c,v 1.23 2010/09/25 01:57:47 davidxu Exp $
  *
  */
 
@@ -60,18 +60,16 @@ _pthread_cancel(pthread_t pthread)
 
 	/*
 	 * POSIX says _pthread_cancel should be async cancellation safe.
-	 * _thr_ref_add and _thr_ref_delete will enter and leave critical
+	 * _thr_find_thread and THR_THREAD_UNLOCK will enter and leave critical
 	 * region automatically.
 	 */
-	if ((ret = _thr_ref_add(curthread, pthread, 0)) == 0) {
-		THR_THREAD_LOCK(curthread, pthread);
+	if ((ret = _thr_find_thread(curthread, pthread, 0)) == 0) {
 		if (!pthread->cancel_pending) {
 			pthread->cancel_pending = 1;
-			if (pthread->cancel_enable)
+			if (pthread->state != PS_DEAD)
 				_thr_send_sig(pthread, SIGCANCEL);
 		}
 		THR_THREAD_UNLOCK(curthread, pthread);
-		_thr_ref_delete(curthread, pthread);
 	}
 	return (ret);
 }
@@ -133,9 +131,7 @@ _pthread_testcancel(void)
 {
 	struct pthread *curthread = _get_curthread();
 
-	curthread->cancel_point = 1;
 	testcancel(curthread);
-	curthread->cancel_point = 0;
 }
 
 void
@@ -161,7 +157,20 @@ _thr_cancel_enter2(struct pthread *curthread, int maycancel)
 void
 _thr_cancel_leave(struct pthread *curthread, int maycancel)
 {
-	if (maycancel)
-		testcancel(curthread);
 	curthread->cancel_point = 0;
+	if (__predict_false(SHOULD_CANCEL(curthread) &&
+	    !THR_IN_CRITICAL(curthread) && maycancel))
+		_pthread_exit(PTHREAD_CANCELED);
+}
+
+void
+_pthread_cancel_enter(int maycancel)
+{
+	_thr_cancel_enter2(_get_curthread(), maycancel);
+}
+
+void
+_pthread_cancel_leave(int maycancel)
+{
+	_thr_cancel_leave(_get_curthread(), maycancel);
 }

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.25 2010/08/23 15:38:02 kib Exp $
+ * $FreeBSD: src/lib/libc/include/libc_private.h,v 1.26 2010/09/25 01:57:47 davidxu Exp $
  *
  * Private definitions for libc, libc_r and libpthread.
  *
@@ -129,6 +129,8 @@ typedef enum {
 	PJT_TESTCANCEL,
 	PJT_CLEANUP_POP_IMP,
 	PJT_CLEANUP_PUSH_IMP,
+	PJT_CANCEL_ENTER,
+	PJT_CANCEL_LEAVE,
 	PJT_MAX
 } pjt_index_t;
 
@@ -216,5 +218,8 @@ int _execvpe(const char *, char * const *, char * const *);
 int _elf_aux_info(int aux, void *buf, int buflen);
 struct dl_phdr_info;
 int __elf_phdr_match_addr(struct dl_phdr_info *, void *);
+
+void	_pthread_cancel_enter(int);
+void	_pthread_cancel_leave(int);
 
 #endif /* _LIBC_PRIVATE_H_ */

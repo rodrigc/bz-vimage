@@ -1,5 +1,5 @@
 #	from @(#)Makefile.inc	8.3 (Berkeley) 2/4/95
-# $FreeBSD: src/lib/libc/stdlib/Makefile.inc,v 1.59 2010/08/24 20:54:43 imp Exp $
+# $FreeBSD: src/lib/libc/stdlib/Makefile.inc,v 1.60 2010/09/10 01:47:37 davidxu Exp $
 
 # machine-independent stdlib sources
 .PATH: ${.CURDIR}/${LIBC_ARCH}/stdlib ${.CURDIR}/stdlib
@@ -9,7 +9,7 @@ MISRCS+=_Exit.c a64l.c abort.c abs.c atexit.c atof.c atoi.c atol.c atoll.c \
 	getsubopt.c hcreate.c heapsort.c imaxabs.c imaxdiv.c \
 	insque.c l64a.c labs.c ldiv.c llabs.c lldiv.c lsearch.c malloc.c \
 	merge.c ptsname.c qsort.c qsort_r.c radixsort.c rand.c random.c \
-	reallocf.c realpath.c remque.c strfmon.c strtoimax.c \
+	reallocf.c realpath.c remque.c sigwait.c strfmon.c strtoimax.c \
 	strtol.c strtoll.c strtoq.c strtoul.c strtonum.c strtoull.c \
         strtoumax.c strtouq.c system.c tdelete.c tfind.c tsearch.c twalk.c
 

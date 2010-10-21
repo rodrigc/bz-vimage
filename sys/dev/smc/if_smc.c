@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/smc/if_smc.c,v 1.9 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/smc/if_smc.c,v 1.10 2010/10/15 15:00:30 marius Exp $");
 
 /*
  * Driver for SMSC LAN91C111, may work for older variants.
@@ -324,8 +324,9 @@ smc_attach(device_t dev)
 	callout_init_mtx(&sc->smc_mii_tick_ch, &sc->smc_mtx,
 	    CALLOUT_RETURNUNLOCKED);
 	if (sc->smc_chip >= REV_CHIP_91110FD) {
-		mii_phy_probe(dev, &sc->smc_miibus, smc_mii_ifmedia_upd,
-		    smc_mii_ifmedia_sts);
+		(void)mii_attach(dev, &sc->smc_miibus, ifp,
+		    smc_mii_ifmedia_upd, smc_mii_ifmedia_sts, BMSR_DEFCAPMASK,
+		    MII_PHY_ANY, MII_OFFSET_ANY, 0);
 		if (sc->smc_miibus != NULL) {
 			sc->smc_mii_tick = smc_mii_tick;
 			sc->smc_mii_mediachg = smc_mii_mediachg;

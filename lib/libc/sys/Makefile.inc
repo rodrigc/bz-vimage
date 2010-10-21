@@ -1,5 +1,5 @@
 #	@(#)Makefile.inc	8.3 (Berkeley) 10/24/94
-# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.146 2010/08/24 20:54:43 imp Exp $
+# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.147 2010/09/10 01:47:37 davidxu Exp $
 
 # sys sources
 .PATH: ${.CURDIR}/${LIBC_ARCH}/sys ${.CURDIR}/sys
@@ -21,6 +21,9 @@ SRCS+=	stack_protector.c stack_protector_compat.c __error.c
 SRCS+=	fcntl.c ftruncate.c lseek.c mmap.c pread.c pwrite.c truncate.c
 PSEUDO+= _fcntl.o
 .endif
+SRCS+= sigwait.c
+NOASM+= sigwait.o
+PSEUDO+= _sigwait.o
 
 # Add machine dependent asm sources:
 SRCS+=${MDASM}

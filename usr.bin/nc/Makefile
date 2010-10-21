@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.bin/nc/Makefile,v 1.4 2010/01/02 10:27:05 ed Exp $
+# $FreeBSD: src/usr.bin/nc/Makefile,v 1.5 2010/10/19 00:01:53 delphij Exp $
 
 .PATH: ${.CURDIR}/../../contrib/netcat
 
@@ -9,6 +9,6 @@ CFLAGS+=-DIPSEC
 LDADD=	-lipsec
 DPADD=	${LIBIPSEC}
 
-WARNS?=	1
+WARNS?=	2
 
 .include <bsd.prog.mk>

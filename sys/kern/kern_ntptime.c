@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_ntptime.c,v 1.68 2010/04/29 09:18:36 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_ntptime.c,v 1.69 2010/09/30 17:05:23 avg Exp $");
 
 #include "opt_ntp.h"
 
@@ -1035,5 +1035,5 @@ start_periodic_resettodr(void *arg __unused)
 	    periodic_resettodr, NULL);
 }
 
-SYSINIT(periodic_resettodr, SI_SUB_RUN_SCHEDULER, SI_ORDER_ANY - 1,
+SYSINIT(periodic_resettodr, SI_SUB_RUN_SCHEDULER, SI_ORDER_MIDDLE,
 	start_periodic_resettodr, NULL);

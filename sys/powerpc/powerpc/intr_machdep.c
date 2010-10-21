@@ -57,7 +57,7 @@
  *	from: @(#)isa.c	7.2 (Berkeley) 5/13/91
  *	form: src/sys/i386/isa/intr_machdep.c,v 1.57 2001/07/20
  *
- * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.32 2010/07/11 21:08:29 raj Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.33 2010/09/11 04:45:51 mav Exp $
  */
 
 #include <sys/param.h>
@@ -95,6 +95,7 @@ struct powerpc_intr {
 	device_t pic;
 	u_int	intline;
 	u_int	vector;
+	u_int	cntindex;
 	cpumask_t cpu;
 	enum intr_trigger trig;
 	enum intr_polarity pol;
@@ -106,6 +107,7 @@ struct pic {
 	int ipi_irq;
 };
 
+static u_int intrcnt_index = 0;
 static struct mtx intr_table_lock;
 static struct powerpc_intr *powerpc_intrs[INTR_VECTORS];
 static struct pic piclist[MAX_PICS];
@@ -150,6 +152,16 @@ intrcnt_setname(const char *name, int index)
 
 	snprintf(intrnames + (MAXCOMLEN + 1) * index, MAXCOMLEN + 1, "%-*s",
 	    MAXCOMLEN, name);
+}
+
+void
+intrcnt_add(const char *name, u_long **countp)
+{
+	int idx;
+
+	idx = atomic_fetchadd_int(&intrcnt_index, 1);
+	*countp = &intrcnt[idx];
+	intrcnt_setname(name, idx);
 }
 
 static struct powerpc_intr *
@@ -200,8 +212,10 @@ intr_lookup(u_int irq)
 
 	if (iscan == NULL && i->vector != -1) {
 		powerpc_intrs[i->vector] = i;
+		i->cntindex = atomic_fetchadd_int(&intrcnt_index, 1);
+		i->cntp = &intrcnt[i->cntindex];
 		sprintf(intrname, "irq%u:", i->irq);
-		intrcnt_setname(intrname, i->vector);
+		intrcnt_setname(intrname, i->cntindex);
 		nvectors++;
 	}
 	mtx_unlock(&intr_table_lock);
@@ -384,8 +398,6 @@ powerpc_setup_intr(const char *name, u_int irq, driver_filter_t filter,
 		if (error)
 			return (error);
 
-		i->cntp = &intrcnt[i->vector];
-
 		enable = 1;
 	}
 
@@ -393,7 +405,7 @@ powerpc_setup_intr(const char *name, u_int irq, driver_filter_t filter,
 	    intr_priority(flags), flags, cookiep);
 
 	mtx_lock(&intr_table_lock);
-	intrcnt_setname(i->event->ie_fullname, i->vector);
+	intrcnt_setname(i->event->ie_fullname, i->cntindex);
 	mtx_unlock(&intr_table_lock);
 
 	if (!cold) {

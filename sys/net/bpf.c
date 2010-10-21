@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/bpf.c,v 1.225 2010/06/15 19:28:44 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/net/bpf.c,v 1.226 2010/09/16 18:37:33 jkim Exp $");
 
 #include "opt_bpf.h"
 #include "opt_compat.h"
@@ -1392,7 +1392,7 @@ bpfioctl(struct cdev *dev, u_long cmd, caddr_t addr, int flags,
 		break;
 
 	/*
-	 * Set packet timestamp format and resolution.
+	 * Get packet timestamp format and resolution.
 	 */
 	case BIOCGTSTAMP:
 		*(u_int *)addr = d->bd_tstamp;

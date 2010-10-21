@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_llatbl.h,v 1.7 2010/03/12 05:03:26 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_llatbl.h,v 1.8 2010/10/16 18:42:09 bz Exp $");
 
 #ifndef	_NET_IF_LLATBL_H_
 #define	_NET_IF_LLATBL_H_
@@ -186,7 +186,9 @@ struct lltable *lltable_init(struct ifnet *, int);
 void		lltable_free(struct lltable *);
 void		lltable_prefix_free(int, struct sockaddr *, 
                        struct sockaddr *);
+#if 0
 void		lltable_drain(int);
+#endif
 int		lltable_sysctl_dumparp(int, struct sysctl_req *);
 
 void		llentry_free(struct llentry *);

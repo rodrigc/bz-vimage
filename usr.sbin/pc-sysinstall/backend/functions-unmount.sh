@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-unmount.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-unmount.sh,v 1.4 2010/10/09 07:45:24 imp Exp $
 
 # Functions which unmount all mounted disk filesystems
 
@@ -99,6 +99,7 @@ unmount_all_filesystems()
         case ${PARTFS} in
           UFS) glabel label ${PARTLABEL} /dev/${PART}${EXT} ;;
           UFS+S) glabel label ${PARTLABEL} /dev/${PART}${EXT} ;;
+          UFS+SUJ) glabel label ${PARTLABEL} /dev/${PART}${EXT} ;;
           UFS+J) glabel label ${PARTLABEL} /dev/${PART}${EXT}.journal ;;
           *) ;;
         esac 
@@ -113,6 +114,7 @@ unmount_all_filesystems()
         case ${PARTFS} in
           UFS) ROOTRELABEL="glabel label ${PARTLABEL} /dev/${PART}${EXT}" ;;
           UFS+S) ROOTRELABEL="glabel label ${PARTLABEL} /dev/${PART}${EXT}" ;;
+          UFS+SUJ) ROOTRELABEL="glabel label ${PARTLABEL} /dev/${PART}${EXT}" ;;
           UFS+J) ROOTRELABEL="glabel label ${PARTLABEL} /dev/${PART}${EXT}.journal" ;;
           *) ;;
         esac 

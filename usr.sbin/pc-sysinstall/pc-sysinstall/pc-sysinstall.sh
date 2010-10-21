@@ -30,7 +30,7 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.10 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/pc-sysinstall/pc-sysinstall.sh,v 1.11 2010/09/08 20:10:24 imp Exp $
 #####################################################################
 
 # User-editable configuration variables
@@ -114,6 +114,10 @@ case $1 in
     else
       display_command_help ${2}
     fi
+  ;;
+
+  # Install an image file to a device
+  install-image) ${BACKEND}/installimage.sh "${2}" "${3}"
   ;;
 
   # Parse an auto-install directive, and begin the installation

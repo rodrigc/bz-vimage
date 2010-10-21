@@ -12,7 +12,7 @@
 *     are bound using the provided bind/unbind functions.
 *
 *
-* $FreeBSD: src/sys/xen/xen_intr.h,v 1.2 2009/03/11 15:30:12 dfr Exp $
+* $FreeBSD: src/sys/xen/xen_intr.h,v 1.3 2010/10/19 20:53:30 gibbs Exp $
 */
 
 #define PIRQ_BASE   0
@@ -76,7 +76,7 @@ extern int bind_ipi_to_irqhandler(unsigned int ipi, unsigned int cpu,
  */
 extern int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
 	unsigned int remote_port, const char *devname,
-	driver_filter_t filter, driver_intr_t handler,
+	driver_intr_t handler, void *arg,
 	unsigned long irqflags, unsigned int *irqp);
 
 /*

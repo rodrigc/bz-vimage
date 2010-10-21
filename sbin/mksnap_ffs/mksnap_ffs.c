@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/mksnap_ffs/mksnap_ffs.c,v 1.10 2009/06/02 18:30:09 pjd Exp $
+ * $FreeBSD: src/sbin/mksnap_ffs/mksnap_ffs.c,v 1.11 2010/10/10 09:24:19 jh Exp $
  */
 
 #include <sys/param.h>
@@ -121,8 +121,12 @@ main(int argc, char **argv)
 	build_iovec(&iov, &iovlen, "update", NULL, 0);
 	build_iovec(&iov, &iovlen, "snapshot", NULL, 0);
 
-	if (nmount(iov, iovlen, stfsbuf.f_flags) < 0)
-		err(1, "Cannot create snapshot %s: %s", snapname, errmsg);
+	*errmsg = '\0';
+	if (nmount(iov, iovlen, stfsbuf.f_flags) < 0) {
+		errmsg[sizeof(errmsg) - 1] = '\0';
+		err(1, "Cannot create snapshot %s%s%s", snapname,
+		    *errmsg != '\0' ? ": " : "", errmsg);
+	}
 	if ((fd = open(snapname, O_RDONLY)) < 0)
 		err(1, "Cannot open %s", snapname);
 	if (fstat(fd, &stbuf) != 0)

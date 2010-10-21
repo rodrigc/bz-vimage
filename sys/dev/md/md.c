@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/dev/md/md.c,v 1.189 2010/07/26 10:37:14 jh Exp $
+ * $FreeBSD: src/sys/dev/md/md.c,v 1.190 2010/10/18 04:26:32 marcel Exp $
  *
  */
 
@@ -909,18 +909,26 @@ mdcreate_vnode(struct md_s *sc, struct md_ioctl *mdio, struct thread *td)
 {
 	struct vattr vattr;
 	struct nameidata nd;
+	char *fname;
 	int error, flags, vfslocked;
 
-	error = copyinstr(mdio->md_file, sc->file, sizeof(sc->file), NULL);
-	if (error != 0)
-		return (error);
-	flags = FREAD|FWRITE;
 	/*
-	 * If the user specified that this is a read only device, unset the
-	 * FWRITE mask before trying to open the backing store.
+	 * Kernel-originated requests must have the filename appended
+	 * to the mdio structure to protect against malicious software.
 	 */
-	if ((mdio->md_options & MD_READONLY) != 0)
-		flags &= ~FWRITE;
+	fname = mdio->md_file;
+	if ((void *)fname != (void *)(mdio + 1)) {
+		error = copyinstr(fname, sc->file, sizeof(sc->file), NULL);
+		if (error != 0)
+			return (error);
+	} else
+		strlcpy(sc->file, fname, sizeof(sc->file));
+
+	/*
+	 * If the user specified that this is a read only device, don't
+	 * set the FWRITE mask before trying to open the backing store.
+	 */
+	flags = FREAD | ((mdio->md_options & MD_READONLY) ? 0 : FWRITE);
 	NDINIT(&nd, LOOKUP, FOLLOW | MPSAFE, UIO_SYSSPACE, sc->file, td);
 	error = vn_open(&nd, &flags, 0, NULL);
 	if (error != 0)

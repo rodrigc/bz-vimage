@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/intr_machdep.h,v 1.6 2010/07/29 12:08:46 mav Exp $
+ * $FreeBSD: src/sys/sun4v/include/intr_machdep.h,v 1.7 2010/09/13 07:25:35 mav Exp $
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
@@ -47,7 +47,6 @@
 #define	PIL_STOP	5	/* stop cpu ipi */
 #define	PIL_PREEMPT	6	/* preempt idle thread cpu ipi */
 #define	PIL_HARDCLOCK	7	/* hardclock broadcast */
-#define	PIL_STATCLOCK	8	/* statclock broadcast */
 #define	PIL_FAST	13	/* fast interrupts */
 #define	PIL_TICK	14
 

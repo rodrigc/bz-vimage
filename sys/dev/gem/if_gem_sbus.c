@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/gem/if_gem_sbus.c,v 1.1 2009/06/23 20:36:59 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/gem/if_gem_sbus.c,v 1.2 2010/09/16 09:29:48 marius Exp $");
 
 /*
  * SBus bindings for Sun GEM Ethernet controllers
@@ -131,6 +131,8 @@ gem_sbus_attach(device_t dev)
 	sc = device_get_softc(dev);
 	sc->sc_variant = GEM_SUN_GEM;
 	sc->sc_dev = dev;
+	/* All known SBus models use a SERDES. */
+	sc->sc_flags = GEM_SERDES;
 
 	if (bus_alloc_resources(dev, gem_sbus_res_spec, sc->sc_res)) {
 		device_printf(dev, "failed to allocate resources\n");

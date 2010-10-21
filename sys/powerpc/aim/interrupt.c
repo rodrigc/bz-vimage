@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/aim/interrupt.c,v 1.12 2010/06/18 14:06:27 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/interrupt.c,v 1.13 2010/09/11 04:45:51 mav Exp $
  */
 
 /*
@@ -72,6 +72,7 @@ void
 powerpc_interrupt(struct trapframe *framep)
 {
 	struct thread *td;
+	struct trapframe *oldframe;
 	register_t ee;
 
 	td = curthread;
@@ -88,8 +89,11 @@ powerpc_interrupt(struct trapframe *framep)
 	case EXC_DECR:
 		critical_enter();
 		atomic_add_int(&td->td_intr_nesting_level, 1);
+		oldframe = td->td_intr_frame;
+		td->td_intr_frame = framep;
 		decr_intr(framep);
-		atomic_subtract_int(&td->td_intr_nesting_level, 1);	
+		td->td_intr_frame = oldframe;
+		atomic_subtract_int(&td->td_intr_nesting_level, 1);
 		critical_exit();
 		break;
 

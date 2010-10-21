@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libstdc++/Makefile,v 1.66 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/gnu/lib/libstdc++/Makefile,v 1.67 2010/09/07 08:33:17 tijl Exp $
 
 GCCVER=	4.2
 GCCDIR=	${.CURDIR}/../../../contrib/gcc
@@ -83,7 +83,7 @@ ATOMICITY_H=	${SRCDIR}/config/cpu/${MARCHDIR}/atomicity.h
 ATOMICITY_H=	${SRCDIR}/config/cpu/generic/atomicity_mutex/atomicity.h
 .endif
 
-.if ${MACHINE_CPUARCH} == "amd64"
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386"
 .if exists(${SRCDIR}/config/cpu/generic/atomicity_builtins/atomicity.h)
 ATOMICITY_H=	${SRCDIR}/config/cpu/generic/atomicity_builtins/atomicity.h
 .endif

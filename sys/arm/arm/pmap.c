@@ -140,7 +140,7 @@
 #include "opt_vm.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.130 2010/06/15 22:16:02 cognet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/pmap.c,v 1.131 2010/09/12 20:46:32 cognet Exp $");
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kernel.h>
@@ -3158,8 +3158,6 @@ pmap_remove_all(vm_page_t m)
 			*ptep = 0;
 			PTE_SYNC_CURRENT(pv->pv_pmap, ptep);
 			pmap_free_l2_bucket(pv->pv_pmap, l2b, 1);
-			if (pv->pv_flags & PVF_WIRED)
-				pv->pv_pmap->pm_stats.wired_count--;
 			pv->pv_pmap->pm_stats.resident_count--;
 			flags |= pv->pv_flags;
 		}

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_pc98.c,v 1.13 2010/04/23 03:11:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_pc98.c,v 1.14 2010/09/25 18:27:29 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -458,6 +458,7 @@ g_part_pc98_read(struct g_part_table *basetable, struct g_consumer *cp)
 	basetable->gpt_first = cyl;
 	basetable->gpt_last = msize - (msize % cyl) - 1;
 
+	g_free(buf);
 	return (0);
 }
 

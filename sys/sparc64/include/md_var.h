@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	from: FreeBSD: src/sys/i386/include/md_var.h,v 1.40 2001/07/12
- * $FreeBSD: src/sys/sparc64/include/md_var.h,v 1.20 2010/05/20 12:46:19 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/md_var.h,v 1.21 2010/09/15 21:44:31 marius Exp $
  */
 
 #ifndef	_MACHINE_MD_VAR_H_
@@ -58,6 +58,8 @@ struct md_utrap *utrap_hold(struct md_utrap *ut);
 
 cpu_block_copy_t spitfire_block_copy;
 cpu_block_zero_t spitfire_block_zero;
+cpu_block_copy_t zeus_block_copy;
+cpu_block_zero_t zeus_block_zero;
 
 extern	cpu_block_copy_t *cpu_block_copy;
 extern	cpu_block_zero_t *cpu_block_zero;

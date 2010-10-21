@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.305 2010/05/14 17:39:28 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.307 2010/10/15 14:52:11 marius Exp $");
 
 /*
  * Intel EtherExpress Pro/100B PCI Fast Ethernet driver
@@ -804,10 +804,14 @@ fxp_attach(device_t dev)
 		ifmedia_add(&sc->sc_media, IFM_ETHER|IFM_MANUAL, 0, NULL);
 		ifmedia_set(&sc->sc_media, IFM_ETHER|IFM_MANUAL);
 	} else {
-		if (mii_phy_probe(dev, &sc->miibus, fxp_ifmedia_upd,
-		    fxp_ifmedia_sts)) {
-	                device_printf(dev, "MII without any PHY!\n");
-			error = ENXIO;
+		/*
+		 * i82557 wedge when isolating all of their PHYs.
+		 */
+		error = mii_attach(dev, &sc->miibus, ifp, fxp_ifmedia_upd,
+		    fxp_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY,
+		    MII_OFFSET_ANY, MIIF_NOISOLATE);
+		if (error != 0) {
+	                device_printf(dev, "attaching PHYs failed\n");
 			goto fail;
 		}
 	}
@@ -1454,6 +1458,8 @@ fxp_encap(struct fxp_softc *sc, struct mbuf **m_head)
 		 * Since 82550/82551 doesn't modify IP length and pseudo
 		 * checksum in the first frame driver should compute it.
 		 */
+		ip = (struct ip *)(mtod(m, char *) + ip_off);
+		tcp = (struct tcphdr *)(mtod(m, char *) + poff);
 		ip->ip_sum = 0;
 		ip->ip_len = htons(m->m_pkthdr.tso_segsz + (ip->ip_hl << 2) +
 		    (tcp->th_off << 2));

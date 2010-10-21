@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)extern.h	8.3 (Berkeley) 4/2/94
- * $FreeBSD: src/bin/ps/extern.h,v 1.40 2010/03/17 22:57:58 jmallett Exp $
+ * $FreeBSD: src/bin/ps/extern.h,v 1.41 2010/09/22 19:26:41 emaste Exp $
  */
 
 struct kinfo;
@@ -80,8 +80,8 @@ int	 s_uname(KINFO *);
 void	 showkey(void);
 void	 started(KINFO *, VARENT *);
 void	 state(KINFO *, VARENT *);
-void	 tdnam(KINFO *, VARENT *);
 void	 tdev(KINFO *, VARENT *);
+void	 tdnam(KINFO *, VARENT *);
 void	 tname(KINFO *, VARENT *);
 void	 ucomm(KINFO *, VARENT *);
 void	 uname(KINFO *, VARENT *);

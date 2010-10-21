@@ -101,7 +101,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.349 2010/08/07 17:57:58 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.350 2010/09/18 11:18:42 rwatson Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -579,9 +579,12 @@ solisten_proto(struct socket *so, int backlog)
 }
 
 /*
- * Attempt to free a socket.  This should really be sotryfree().
+ * Evaluate the reference count and named references on a socket; if no
+ * references remain, free it.  This should be called whenever a reference is
+ * released, such as in sorele(), but also when named reference flags are
+ * cleared in socket or protocol code.
  *
- * sofree() will succeed if:
+ * sofree() will free the socket if:
  *
  * - There are no outstanding file descriptor references or related consumers
  *   (so_count == 0).
@@ -594,9 +597,6 @@ solisten_proto(struct socket *so, int backlog)
  * - The socket is not in a completed connection queue, so a process has been
  *   notified that it is present.  If it is removed, the user process may
  *   block in accept() despite select() saying the socket was ready.
- *
- * Otherwise, it will quietly abort so that a future call to sofree(), when
- * conditions are right, can succeed.
  */
 void
 sofree(struct socket *so)

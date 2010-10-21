@@ -1,6 +1,8 @@
 #!/bin/sh
-# $FreeBSD: src/tools/regression/bin/sh/regress.t,v 1.1 2005/09/04 11:59:59 stefanf Exp $
+# $FreeBSD: src/tools/regression/bin/sh/regress.t,v 1.3 2010/10/15 20:01:35 jilles Exp $
+
+export SH="${SH:-sh}"
 
 cd `dirname $0`
 
-sh regress.sh
+${SH} regress.sh

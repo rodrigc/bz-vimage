@@ -1,5 +1,5 @@
 #	from: @(#)bsd.prog.mk	5.26 (Berkeley) 6/25/91
-# $FreeBSD: src/share/mk/bsd.prog.mk,v 1.156 2010/07/30 15:25:57 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.prog.mk,v 1.158 2010/09/10 17:00:48 rpaulo Exp $
 
 .include <bsd.init.mk>
 
@@ -60,7 +60,11 @@ LDADD+=	-lobjc -lpthread
 
 OBJS+=  ${SRCS:N*.h:R:S/$/.o/g}
 
+.if target(beforelinking)
+${PROG}: ${OBJS} beforelinking
+.else
 ${PROG}: ${OBJS}
+.endif
 .if defined(PROG_CXX)
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -o ${.TARGET} ${OBJS} ${LDADD}
 .else
@@ -86,7 +90,11 @@ SRCS=	${PROG}.c
 # - it's useful to keep objects around for crunching.
 OBJS=	${PROG}.o
 
+.if target(beforelinking)
+${PROG}: ${OBJS} beforelinking
+.else
 ${PROG}: ${OBJS}
+.endif
 .if defined(PROG_CXX)
 	${CXX} ${CXXFLAGS} ${LDFLAGS} -o ${.TARGET} ${OBJS} ${LDADD}
 .else

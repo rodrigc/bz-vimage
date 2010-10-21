@@ -31,7 +31,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/usr.bin/truss/amd64-fbsd32.c,v 1.35 2010/03/10 20:31:30 imp Exp $";
+  "$FreeBSD: src/usr.bin/truss/amd64-fbsd32.c,v 1.36 2010/10/13 20:08:02 bcr Exp $";
 #endif /* not lint */
 
 /*
@@ -260,7 +260,7 @@ amd64_fbsd32_syscall_entry(struct trussinfo *trussinfo, int nargs) {
  * And when the system call is done, we handle it here.
  * Currently, no attempt is made to ensure that the system calls
  * match -- this needs to be fixed (and is, in fact, why S_SCX includes
- * the sytem call number instead of, say, an error status).
+ * the system call number instead of, say, an error status).
  */
 
 long

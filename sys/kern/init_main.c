@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.314 2010/08/09 14:48:31 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.316 2010/10/17 11:01:52 davidxu Exp $");
 
 #include "opt_ddb.h"
 #include "opt_init_path.h"
@@ -461,6 +461,7 @@ proc0_init(void *dummy __unused)
 	STAILQ_INIT(&p->p_ktr);
 	p->p_nice = NZERO;
 	td->td_tid = PID_MAX + 1;
+	LIST_INSERT_HEAD(TIDHASH(td->td_tid), td, td_hash);
 	td->td_state = TDS_RUNNING;
 	td->td_pri_class = PRI_TIMESHARE;
 	td->td_user_pri = PUSER;

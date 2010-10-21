@@ -33,10 +33,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.95 2010/08/20 19:46:50 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.96 2010/10/19 00:20:00 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
+#include <sys/fcntl.h>
 #include <sys/fnv_hash.h>
 #include <sys/lock.h>
 #include <sys/malloc.h>
@@ -51,6 +52,7 @@ __FBSDID("$FreeBSD: src/sys/nfsclient/nfs_node.c,v 1.95 2010/08/20 19:46:50 jhb 
 #include <vm/uma.h>
 
 #include <nfs/nfsproto.h>
+#include <nfs/nfs_lock.h>
 #include <nfsclient/nfs.h>
 #include <nfsclient/nfsnode.h>
 #include <nfsclient/nfsmount.h>
