@@ -36,6 +36,8 @@
 __FBSDID("$FreeBSD: src/sys/nfsclient/nfs_diskless.c,v 1.31 2010/09/01 23:51:07 rmacklem Exp $");
 
 #include "opt_bootp.h"
+#include "opt_inet.h"
+#include "opt_inet6.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -52,12 +54,21 @@ __FBSDID("$FreeBSD: src/sys/nfsclient/nfs_diskless.c,v 1.31 2010/09/01 23:51:07 
 #include <net/ethernet.h>
 #include <net/vnet.h>
 
+#if defined(INET) || defined(INET6)
 #include <netinet/in.h>
+#endif
+
 #include <nfs/nfsproto.h>
 #include <nfsclient/nfs.h>
 #include <nfsclient/nfsdiskless.h>
 
-static int inaddr_to_sockaddr(char *ev, struct sockaddr_in *sa);
+#ifdef INET
+static int inaddr_to_sockaddr(char *ev, struct sockaddr_in *sin);
+#endif
+#ifdef INET6
+static int in6addr_to_sockaddr(char *ev, struct sockaddr_in6 *sin6,
+    struct sockaddr_in6 *in6mask);
+#endif
 static int hwaddr_to_sockaddr(char *ev, struct sockaddr_dl *sa);
 static int decode_nfshandle(char *ev, u_char *fh, int maxfh);
 
@@ -137,11 +148,14 @@ nfs_parse_options(const char *envopts, struct nfs_args *nd)
  * The loader is expected to export the following environment variables:
  *
  * boot.netif.name		name of boot interface
- * boot.netif.ip		IP address on boot interface
- * boot.netif.netmask		netmask on boot interface
- * boot.netif.gateway		default gateway (optional)
+ * boot.netif.ip6		IPv6 address on boot interface
+ * boot.netif.ip		IPv4 address on boot interface
+ * boot.netif.netmask		IPv4 netmask on boot interface
+ * boot.netif.gateway6		IPv6 default gateway (optional)
+ * boot.netif.gateway		IPv4 default gateway (optional)
  * boot.netif.hwaddr		hardware address of boot interface
- * boot.nfsroot.server		IP address of root filesystem server
+ * boot.nfsroot.server6		IPv6 address of root filesystem server
+ * boot.nfsroot.server		IPv4 address of root filesystem server
  * boot.nfsroot.path		path of the root filesystem on server
  * boot.nfsroot.nfshandle	NFS handle for root filesystem on server
  * boot.nfsroot.nfshandlelen	and length of this handle (for NFSv3 only)
@@ -155,13 +169,25 @@ nfs_setup_diskless(void)
 	struct ifnet *ifp;
 	struct ifaddr *ifa;
 	struct sockaddr_dl *sdl, ourdl;
-	struct sockaddr_in myaddr, netmask;
+#ifdef INET
+	struct sockaddr_in sin, netmask;
+	int ipv4;
+#endif
+#ifdef INET6
+	struct sockaddr_in6 sin6, in6mask;
+	int ipv6;
+#endif
 	char *cp;
-	int cnt, fhlen, is_nfsv3;
+	int cnt, fhlen, is_nfsv3, rc;
 	uint32_t len;
 
 	if (nfs_diskless_valid != 0)
 		return;
+
+#if !defined(INET) && !defined(INET6)
+	printf("%s: neither INET nor INET6 support.\n", __func__);
+	return;
+#endif
 
 	/* get handle size. If this succeeds, it's an NFSv3 setup. */
 	if ((cp = getenv("boot.nfsroot.nfshandlelen")) != NULL) {
@@ -175,27 +201,58 @@ nfs_setup_diskless(void)
 		is_nfsv3 = 1;
 	} else
 		is_nfsv3 = 0;
-	/* set up interface */
-	if (inaddr_to_sockaddr("boot.netif.ip", &myaddr))
-		return;
-	if (inaddr_to_sockaddr("boot.netif.netmask", &netmask)) {
-		printf("nfs_diskless: no netmask\n");
+	/*
+	 * Set up interface.
+	 * XXX-BZ for now assume that v4 and v6 addresses are stored
+	 * in different env. variables from loader.  Prefer v6. This
+	 * way we can later have both v4 and v6 addresses and use one
+	 * as a fallback but as long as PXE only supports v4 things
+	 * are just manual loader magic.
+	 */
+	rc = 0;
+#ifdef INET6
+	ipv6 = 1;
+	if (ipv6 && in6addr_to_sockaddr("boot.netif.ip6", &sin6, &in6mask)) {
+		printf("%s: no IPv6 prefix.\n", __func__);
+		ipv6 = 0;
+	}
+	rc += ipv6;
+#endif
+#ifdef INET
+	ipv4 = 1;
+	if (ipv4 && inaddr_to_sockaddr("boot.netif.ip", &sin)) {
+		printf("%s: no IPv4 address.\n", __func__);
+		ipv4 = 0;
+	}
+	if (ipv4 && inaddr_to_sockaddr("boot.netif.netmask", &netmask)) {
+		printf("%s: no netmask.\n", __func__);
+		ipv4 = 0;
+	}
+	rc += ipv4;
+#endif
+	if (rc == 0) {
+		printf("%s: neither IPv4 nor IPv6 configured.\n", __func__);
 		return;
 	}
+
 	if (is_nfsv3 != 0) {
-		bcopy(&myaddr, &nd3->myif.ifra_addr, sizeof(myaddr));
-		bcopy(&myaddr, &nd3->myif.ifra_broadaddr, sizeof(myaddr));
+#ifdef INET
+		bcopy(&sin, &nd3->myif.ifra_addr, sizeof(sin));
+		bcopy(&sin, &nd3->myif.ifra_broadaddr, sizeof(sin));
 		((struct sockaddr_in *) 
 		   &nd3->myif.ifra_broadaddr)->sin_addr.s_addr =
-		    myaddr.sin_addr.s_addr | ~ netmask.sin_addr.s_addr;
+		    sin.sin_addr.s_addr | ~ netmask.sin_addr.s_addr;
 		bcopy(&netmask, &nd3->myif.ifra_mask, sizeof(netmask));
+#endif
 	} else {
-		bcopy(&myaddr, &nd->myif.ifra_addr, sizeof(myaddr));
-		bcopy(&myaddr, &nd->myif.ifra_broadaddr, sizeof(myaddr));
+#ifdef INET
+		bcopy(&sin, &nd->myif.ifra_addr, sizeof(sin));
+		bcopy(&sin, &nd->myif.ifra_broadaddr, sizeof(sin));
 		((struct sockaddr_in *) 
 		   &nd->myif.ifra_broadaddr)->sin_addr.s_addr =
-		    myaddr.sin_addr.s_addr | ~ netmask.sin_addr.s_addr;
+		    sin.sin_addr.s_addr | ~ netmask.sin_addr.s_addr;
 		bcopy(&netmask, &nd->myif.ifra_mask, sizeof(netmask));
+#endif
 	}
 
 	if (hwaddr_to_sockaddr("boot.netif.hwaddr", &ourdl)) {
@@ -317,16 +374,15 @@ match_done:
 	}
 }
 
+#ifdef INET
 static int
-inaddr_to_sockaddr(char *ev, struct sockaddr_in *sa)
+inaddr_to_sockaddr(char *ev, struct sockaddr_in *sin)
 {
 	u_int32_t a[4];
 	char *cp;
 	int count;
 
-	bzero(sa, sizeof(*sa));
-	sa->sin_len = sizeof(*sa);
-	sa->sin_family = AF_INET;
+	bzero(sin, sizeof(*sin));
 
 	if ((cp = getenv(ev)) == NULL)
 		return (1);
@@ -334,10 +390,25 @@ inaddr_to_sockaddr(char *ev, struct sockaddr_in *sa)
 	freeenv(cp);
 	if (count != 4)
 		return (1);
-	sa->sin_addr.s_addr =
+
+	sin->sin_len = sizeof(*sin);
+	sin->sin_family = AF_INET;
+	sin->sin_addr.s_addr =
 	    htonl((a[0] << 24) | (a[1] << 16) | (a[2] << 8) | a[3]);
 	return (0);
 }
+#endif
+
+#ifdef INET6
+static int
+in6addr_to_sockaddr(char *ev, struct sockaddr_in6 *sin6,
+    struct sockaddr_in6 *in6mask)
+{
+
+	/* XXX-BZ TODO */
+	return (1);
+}
+#endif
 
 static int
 hwaddr_to_sockaddr(char *ev, struct sockaddr_dl *sa)
