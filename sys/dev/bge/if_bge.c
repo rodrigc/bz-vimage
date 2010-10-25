@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bge/if_bge.c,v 1.327 2010/10/19 23:04:23 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bge/if_bge.c,v 1.331 2010/10/24 20:54:46 yongari Exp $");
 
 /*
  * Broadcom BCM570x family gigabit ethernet driver for FreeBSD.
@@ -1693,6 +1693,14 @@ bge_blockinit(struct bge_softc *sc)
 		bge_writembx(sc, BGE_MBX_RX_MINI_PROD_LO, 0);
 	}
 
+	/* Choose de-pipeline mode for BCM5906 A0, A1 and A2. */
+	if (sc->bge_asicrev == BGE_ASICREV_BCM5906) {
+		if (sc->bge_chipid == BGE_CHIPID_BCM5906_A0 ||
+		    sc->bge_chipid == BGE_CHIPID_BCM5906_A1 ||
+		    sc->bge_chipid == BGE_CHIPID_BCM5906_A2)
+			CSR_WRITE_4(sc, BGE_ISO_PKT_TX,
+			    (CSR_READ_4(sc, BGE_ISO_PKT_TX) & ~3) | 2);
+	}
 	/*
 	 * The BD ring replenish thresholds control how often the
 	 * hardware fetches new BD's from the producer rings in host
@@ -4409,6 +4417,7 @@ bge_init_locked(struct bge_softc *sc)
 {
 	struct ifnet *ifp;
 	uint16_t *m;
+	uint32_t mode;
 
 	BGE_LOCK_ASSERT(sc);
 
@@ -4514,8 +4523,12 @@ bge_init_locked(struct bge_softc *sc)
 	/* Init TX ring. */
 	bge_init_tx_ring(sc);
 
+	/* Enable TX MAC state machine lockup fix. */
+	mode = CSR_READ_4(sc, BGE_TX_MODE);
+	if (BGE_IS_5755_PLUS(sc) || sc->bge_asicrev == BGE_ASICREV_BCM5906)
+		mode |= BGE_TXMODE_MBUF_LOCKUP_FIX;
 	/* Turn on transmitter. */
-	BGE_SETBIT(sc, BGE_TX_MODE, BGE_TXMODE_ENABLE);
+	CSR_WRITE_4(sc, BGE_TX_MODE, mode | BGE_TXMODE_ENABLE);
 
 	/* Turn on receiver. */
 	BGE_SETBIT(sc, BGE_RX_MODE, BGE_RXMODE_ENABLE);

@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_shutdown.c,v 1.207 2010/10/18 04:30:27 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_shutdown.c,v 1.208 2010/10/24 16:31:57 brucec Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kdb.h"
@@ -144,7 +144,7 @@ shutdown_conf(void *unused)
 {
 
 	EVENTHANDLER_REGISTER(shutdown_final, poweroff_wait, NULL,
-	    SHUTDOWN_PRI_FIRST + 100);
+	    SHUTDOWN_PRI_FIRST);
 	EVENTHANDLER_REGISTER(shutdown_final, shutdown_halt, NULL,
 	    SHUTDOWN_PRI_LAST + 100);
 	EVENTHANDLER_REGISTER(shutdown_final, shutdown_panic, NULL,

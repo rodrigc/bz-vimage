@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/fpu.c,v 1.173 2010/07/26 23:20:55 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/fpu.c,v 1.174 2010/10/25 15:31:13 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -113,14 +113,14 @@ static	struct savefpu		fpu_initialstate;
 void
 fpuinit(void)
 {
-	register_t savecrit;
+	register_t saveintr;
 	u_int mxcsr;
 	u_short control;
 
 	/*
 	 * It is too early for critical_enter() to work on AP.
 	 */
-	savecrit = intr_disable();
+	saveintr = intr_disable();
 	stop_emulating();
 	fninit();
 	control = __INITIAL_FPUCW__;
@@ -137,7 +137,7 @@ fpuinit(void)
 		bzero(fpu_initialstate.sv_xmm, sizeof(fpu_initialstate.sv_xmm));
 	}
 	start_emulating();
-	intr_restore(savecrit);
+	intr_restore(saveintr);
 }
 
 /*

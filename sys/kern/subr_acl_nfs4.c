@@ -32,7 +32,7 @@
 
 #ifdef _KERNEL
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_acl_nfs4.c,v 1.8 2010/09/20 17:10:06 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_acl_nfs4.c,v 1.9 2010/10/23 14:22:50 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -392,28 +392,6 @@ acl_nfs4_trivial_from_mode(struct acl *aclp, mode_t mode)
 	user_deny = ((group_allow | everyone_allow) & ~user_allow);
 	group_deny = everyone_allow & ~group_allow;
 	user_allow_first = group_deny & ~user_deny;
-
-#if 1
-	/*
-	 * This is a workaround for what looks like a bug in ZFS - trivial
-	 * ACL for mode 0077 should look like this:
-	 *
-	 *    owner@:rwxp----------:------:deny
-	 *    owner@:------aARWcCos:------:allow
-	 *    group@:rwxp--a-R-c--s:------:allow
-	 * everyone@:rwxp--a-R-c--s:------:allow
-	 *
-	 * Instead, ZFS makes it like this:
-	 *
-	 *    owner@:rwx-----------:------:deny
-	 *    owner@:------aARWcCos:------:allow
-	 *    group@:rwxp--a-R-c--s:------:allow
-	 * everyone@:rwxp--a-R-c--s:------:allow
-	 */
-	user_allow_first &= ~ACL_APPEND_DATA;
-	user_deny &= ~ACL_APPEND_DATA;
-	group_deny &= ~ACL_APPEND_DATA;
-#endif
 
 	if (user_allow_first != 0)
 		_acl_append(aclp, ACL_USER_OBJ, user_allow_first, ACL_ENTRY_TYPE_ALLOW);

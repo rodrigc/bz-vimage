@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.347 2010/06/28 08:05:30 pjd Exp $
+# $FreeBSD: src/etc/mtree/BSD.usr.dist,v 1.348 2010/10/24 23:19:11 julian Exp $
 #
 # Please see the file src/etc/mtree/README before making changes to this file.
 #
@@ -226,6 +226,8 @@
             ipfw
             ..
             iscsi
+            ..
+            jails
             ..
             kld
                 cdev

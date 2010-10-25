@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.2 2010/04/22 21:31:34 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.3 2010/10/22 20:13:45 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -33,6 +33,7 @@
 
 /* Default USB configuration */
 #define	USB_HAVE_UGEN 1
+#define	USB_HAVE_DEVCTL 1
 #define	USB_HAVE_BUSDMA 1
 #define	USB_HAVE_COMPAT_LINUX 1
 #define	USB_HAVE_USER_IO 1

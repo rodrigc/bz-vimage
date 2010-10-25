@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.23 2010/10/17 15:47:27 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.24 2010/10/24 15:38:58 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -701,8 +701,6 @@ main(int argc, char *argv[])
 	int debuglevel;
 	sigset_t mask;
 
-	g_gate_load();
-
 	foreground = false;
 	debuglevel = 0;
 	pidfile = HASTD_PIDFILE;
@@ -735,6 +733,8 @@ main(int argc, char *argv[])
 	argv += optind;
 
 	pjdlog_debug_set(debuglevel);
+
+	g_gate_load();
 
 	pfh = pidfile_open(pidfile, 0600, &otherpid);
 	if (pfh == NULL) {

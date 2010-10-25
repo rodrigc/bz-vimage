@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-extractimage.sh,v 1.7 2010/10/09 08:52:09 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-extractimage.sh,v 1.8 2010/10/21 23:08:42 imp Exp $
 
 # Functions which perform the extraction / installation of system to disk
 
@@ -70,7 +70,7 @@ start_extract_uzip_tar()
       if [ "$?" != "0" ]
       then
         cd /
-        echo "TAR failure occured:" >>${LOGOUT}
+        echo "TAR failure occurred:" >>${LOGOUT}
         cat ${FSMNT}/.tar-extract.log | grep "tar:" >>${LOGOUT}
         umount ${FSMNT}.uzip
         mdconfig -d -u ${MDDEVICE}
@@ -275,7 +275,7 @@ EOF
   INSFILE="${OUTFILE}" ; export INSFILE
 }
 
-# Function which does the rsync download from the server specifed in cfg
+# Function which does the rsync download from the server specified in cfg
 start_rsync_copy()
 {
   # Load our rsync config values

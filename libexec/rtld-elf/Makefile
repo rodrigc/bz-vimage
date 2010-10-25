@@ -1,4 +1,4 @@
-# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.50 2010/08/24 23:19:14 nwhitehorn Exp $
+# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.51 2010/10/22 04:43:04 marcel Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -34,7 +34,6 @@ LDFLAGS+=	-shared -Wl,-Bsymbolic
 DPADD=		${LIBC_PIC}
 LDADD=		-lc_pic -lssp_nonshared
 
-.if ${MACHINE_CPUARCH} != "ia64"
 .if ${MK_SYMVER} == "yes"
 LIBCDIR=	${.CURDIR}/../../lib/libc
 VERSION_DEF=	${LIBCDIR}/Versions.def
@@ -46,7 +45,6 @@ ${PROG}:	${VERSION_MAP}
 
 .if exists(${.CURDIR}/${RTLD_ARCH}/Symbol.map)
 SYMBOL_MAPS+=	${.CURDIR}/${RTLD_ARCH}/Symbol.map
-.endif
 .endif
 .endif
 

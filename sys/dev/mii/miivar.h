@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/mii/miivar.h,v 1.24 2010/10/15 15:46:58 marius Exp $
+ * $FreeBSD: src/sys/dev/mii/miivar.h,v 1.25 2010/10/24 12:59:43 marius Exp $
  */
 
 #ifndef _DEV_MII_MIIVAR_H_
@@ -227,12 +227,10 @@ int	miibus_detach(device_t);
 
 int	mii_attach(device_t, device_t *, struct ifnet *, ifm_change_cb_t,
 	    ifm_stat_cb_t, int, int, int, int);
-int	mii_anar(int);
 void	mii_down(struct mii_data *);
 int	mii_mediachg(struct mii_data *);
 void	mii_tick(struct mii_data *);
 void	mii_pollstat(struct mii_data *);
-void	mii_add_media(struct mii_softc *);
 void	mii_phy_add_media(struct mii_softc *);
 
 int	mii_phy_auto(struct mii_softc *);

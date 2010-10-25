@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.33 2010/09/16 12:39:50 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.34 2010/10/25 07:41:21 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -527,6 +527,7 @@ err1:
 err0:
 	bus_release_resource(dev, SYS_RES_MEMORY, ch->unit, ch->r_mem);
 	mtx_unlock(&ch->mtx);
+	mtx_destroy(&ch->mtx);
 	return (error);
 }
 

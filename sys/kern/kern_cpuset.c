@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_cpuset.c,v 1.20 2009/10/26 18:32:06 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_cpuset.c,v 1.21 2010/10/25 13:13:16 davidxu Exp $");
 
 #include "opt_ddb.h"
 
@@ -416,19 +416,10 @@ cpuset_which(cpuwhich_t which, id_t id, struct proc **pp, struct thread **tdp,
 			td = curthread;
 			break;
 		}
-		sx_slock(&allproc_lock);
-		FOREACH_PROC_IN_SYSTEM(p) {
-			PROC_LOCK(p);
-			FOREACH_THREAD_IN_PROC(p, td)
-				if (td->td_tid == id)
-					break;
-			if (td != NULL)
-				break;
-			PROC_UNLOCK(p);
-		}
-		sx_sunlock(&allproc_lock);
+		td = tdfind(id, -1);
 		if (td == NULL)
 			return (ESRCH);
+		p = td->td_proc;
 		break;
 	case CPU_WHICH_CPUSET:
 		if (id == -1) {

@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/synch.h,v 1.3 2010/08/29 21:37:21 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/synch.h,v 1.4 2010/10/24 15:41:23 pjd Exp $
  */
 
 #ifndef	_SYNCH_H_
@@ -139,6 +139,8 @@ cv_init(pthread_cond_t *cv)
 	error = pthread_condattr_setclock(&attr, CLOCK_MONOTONIC);
 	assert(error == 0);
 	error = pthread_cond_init(cv, &attr);
+	assert(error == 0);
+	error = pthread_condattr_destroy(&attr);
 	assert(error == 0);
 }
 static __inline void

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.74 2010/10/12 16:52:13 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.77 2010/10/23 11:26:22 bschmidt Exp $");
 
 /*-
  * Intel(R) PRO/Wireless 2200BG/2225BG/2915ABG driver
@@ -1368,7 +1368,7 @@ iwi_checkforqos(struct ieee80211vap *vap,
 
 	ni = vap->iv_bss;
 	ni->ni_capinfo = capinfo;
-	ni->ni_associd = associd;
+	ni->ni_associd = associd & 0x3fff;
 	if (wme != NULL)
 		ni->ni_flags |= IEEE80211_NODE_QOS;
 	else
@@ -1483,7 +1483,7 @@ iwi_notification_intr(struct iwi_softc *sc, struct iwi_notif *notif)
 			IWI_STATE_END(sc, IWI_FW_ASSOCIATING);
 			iwi_checkforqos(vap,
 			    (const struct ieee80211_frame *)(assoc+1),
-			    le16toh(notif->len) - sizeof(*assoc));
+			    le16toh(notif->len) - sizeof(*assoc) - 1);
 			ieee80211_new_state(vap, IEEE80211_S_RUN, -1);
 			break;
 		case IWI_ASSOC_INIT:

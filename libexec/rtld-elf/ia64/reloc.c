@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/ia64/reloc.c,v 1.21 2006/09/01 06:07:26 marcel Exp $
+ * $FreeBSD: src/libexec/rtld-elf/ia64/reloc.c,v 1.22 2010/10/22 04:43:04 marcel Exp $
  */
 
 /*
@@ -195,9 +195,22 @@ reloc_non_plt_obj(Obj_Entry *obj_rtld, Obj_Entry *obj, const Elf_Rela *rela,
 		int sym_index;
 
 		def = find_symdef(ELF_R_SYM(rela->r_info), obj, &defobj,
-				  false, cache);
-		if (def == NULL)
-			return -1;
+				  true, cache);
+		if (def == NULL) {
+			/*
+			 * XXX r_debug_state is problematic and find_symdef()
+			 * returns NULL for it. This probably has something to
+			 * do with symbol versioning (r_debug_state is in the
+			 * symbol map). If we return -1 in that case we abort
+			 * relocating rtld, which typically is fatal. So, for
+			 * now just skip the symbol when we're relocating
+			 * rtld. We don't care about r_debug_state unless we
+			 * are being debugged.
+			 */
+			if (obj != obj_rtld)
+				return -1;
+			break;
+		}
 
 		if (def->st_shndx != SHN_UNDEF) {
 			target = (Elf_Addr)(defobj->relocbase + def->st_value);

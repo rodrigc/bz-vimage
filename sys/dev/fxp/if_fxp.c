@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.307 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.308 2010/10/24 21:59:51 yongari Exp $");
 
 /*
  * Intel EtherExpress Pro/100B PCI Fast Ethernet driver
@@ -862,9 +862,9 @@ fxp_attach(device_t dev)
 	ifp->if_capenable |= IFCAP_VLAN_MTU; /* the hw bits already set */
 	if ((sc->flags & FXP_FLAG_EXT_RFA) != 0) {
 		ifp->if_capabilities |= IFCAP_VLAN_HWTAGGING |
-		    IFCAP_VLAN_HWCSUM;
+		    IFCAP_VLAN_HWCSUM | IFCAP_VLAN_HWTSO;
 		ifp->if_capenable |= IFCAP_VLAN_HWTAGGING |
-		    IFCAP_VLAN_HWCSUM;
+		    IFCAP_VLAN_HWCSUM | IFCAP_VLAN_HWTSO;
 	}
 
 	/*
@@ -2866,10 +2866,19 @@ fxp_ioctl(struct ifnet *ifp, u_long command, caddr_t data)
 			if (ifp->if_flags & IFF_UP)
 				reinit++;
 		}
+		if ((mask & IFCAP_VLAN_HWCSUM) != 0 &&
+		    (ifp->if_capabilities & IFCAP_VLAN_HWCSUM) != 0)
+			ifp->if_capenable ^= IFCAP_VLAN_HWCSUM;
+		if ((mask & IFCAP_VLAN_HWTSO) != 0 &&
+		    (ifp->if_capabilities & IFCAP_VLAN_HWTSO) != 0)
+			ifp->if_capenable ^= IFCAP_VLAN_HWTSO;
 		if ((mask & IFCAP_VLAN_HWTAGGING) != 0 &&
 		    (ifp->if_capabilities & IFCAP_VLAN_HWTAGGING) != 0) {
 			ifp->if_capenable ^= IFCAP_VLAN_HWTAGGING;
-				reinit++;
+			if ((ifp->if_capenable & IFCAP_VLAN_HWTAGGING) == 0)
+				ifp->if_capenable &=
+				    ~(IFCAP_VLAN_HWTSO | IFCAP_VLAN_HWCSUM);
+			reinit++;
 		}
 		if (reinit > 0 && ifp->if_flags & IFF_UP)
 			fxp_init_body(sc);

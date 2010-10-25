@@ -43,7 +43,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/security/mac/mac_vfs.c,v 1.131 2009/05/01 21:05:40 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/security/mac/mac_vfs.c,v 1.132 2010/10/23 16:59:39 rwatson Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_mac.h"
@@ -637,6 +637,8 @@ mac_vnode_check_open(struct ucred *cred, struct vnode *vp, accmode_t accmode)
 	ASSERT_VOP_LOCKED(vp, "mac_vnode_check_open");
 
 	MAC_POLICY_CHECK(vnode_check_open, cred, vp, vp->v_label, accmode);
+	MAC_CHECK_PROBE3(vnode_check_open, error, cred, vp, accmode);
+
 	return (error);
 }
 

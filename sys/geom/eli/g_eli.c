@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli.c,v 1.53 2010/10/20 20:50:55 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/eli/g_eli.c,v 1.58 2010/10/22 22:45:26 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -314,6 +314,69 @@ g_eli_start(struct bio *bp)
 	}
 }
 
+static int
+g_eli_newsession(struct g_eli_worker *wr)
+{
+	struct g_eli_softc *sc;
+	struct cryptoini crie, cria;
+	int error;
+
+	sc = wr->w_softc;
+
+	bzero(&crie, sizeof(crie));
+	crie.cri_alg = sc->sc_ealgo;
+	crie.cri_klen = sc->sc_ekeylen;
+	if (sc->sc_ealgo == CRYPTO_AES_XTS)
+		crie.cri_klen <<= 1;
+	crie.cri_key = sc->sc_ekeys[0];
+	if (sc->sc_flags & G_ELI_FLAG_AUTH) {
+		bzero(&cria, sizeof(cria));
+		cria.cri_alg = sc->sc_aalgo;
+		cria.cri_klen = sc->sc_akeylen;
+		cria.cri_key = sc->sc_akey;
+		crie.cri_next = &cria;
+	}
+
+	switch (sc->sc_crypto) {
+	case G_ELI_CRYPTO_SW:
+		error = crypto_newsession(&wr->w_sid, &crie,
+		    CRYPTOCAP_F_SOFTWARE);
+		break;
+	case G_ELI_CRYPTO_HW:
+		error = crypto_newsession(&wr->w_sid, &crie,
+		    CRYPTOCAP_F_HARDWARE);
+		break;
+	case G_ELI_CRYPTO_UNKNOWN:
+		error = crypto_newsession(&wr->w_sid, &crie,
+		    CRYPTOCAP_F_HARDWARE);
+		if (error == 0) {
+			mtx_lock(&sc->sc_queue_mtx);
+			if (sc->sc_crypto == G_ELI_CRYPTO_UNKNOWN)
+				sc->sc_crypto = G_ELI_CRYPTO_HW;
+			mtx_unlock(&sc->sc_queue_mtx);
+		} else {
+			error = crypto_newsession(&wr->w_sid, &crie,
+			    CRYPTOCAP_F_SOFTWARE);
+			mtx_lock(&sc->sc_queue_mtx);
+			if (sc->sc_crypto == G_ELI_CRYPTO_UNKNOWN)
+				sc->sc_crypto = G_ELI_CRYPTO_SW;
+			mtx_unlock(&sc->sc_queue_mtx);
+		}
+		break;
+	default:
+		panic("%s: invalid condition", __func__);
+	}
+
+	return (error);
+}
+
+static void
+g_eli_freesession(struct g_eli_worker *wr)
+{
+
+	crypto_freesession(wr->w_sid);
+}
+
 static void
 g_eli_cancel(struct g_eli_softc *sc)
 {
@@ -361,6 +424,7 @@ g_eli_worker(void *arg)
 	struct g_eli_softc *sc;
 	struct g_eli_worker *wr;
 	struct bio *bp;
+	int error;
 
 	wr = arg;
 	sc = wr->w_softc;
@@ -388,7 +452,7 @@ again:
 			if (sc->sc_flags & G_ELI_FLAG_DESTROY) {
 				g_eli_cancel(sc);
 				LIST_REMOVE(wr, w_next);
-				crypto_freesession(wr->w_sid);
+				g_eli_freesession(wr);
 				free(wr, M_ELI);
 				G_ELI_DEBUG(1, "Thread %s exiting.",
 				    curthread->td_proc->p_comm);
@@ -411,12 +475,21 @@ again:
 				 * Suspend requested, mark the worker as
 				 * suspended and go to sleep.
 				 */
-				wr->w_active = 0;
+				if (wr->w_active) {
+					g_eli_freesession(wr);
+					wr->w_active = FALSE;
+				}
 				wakeup(&sc->sc_workers);
 				msleep(sc, &sc->sc_queue_mtx, PRIBIO,
 				    "geli:suspend", 0);
-				if (!(sc->sc_flags & G_ELI_FLAG_SUSPEND))
-					wr->w_active = 1;
+				if (!wr->w_active &&
+				    !(sc->sc_flags & G_ELI_FLAG_SUSPEND)) {
+					error = g_eli_newsession(wr);
+					KASSERT(error == 0,
+					    ("g_eli_newsession() failed on resume (error=%d)",
+					    error));
+					wr->w_active = TRUE;
+				}
 				goto again;
 			}
 			msleep(sc, &sc->sc_queue_mtx, PDROP, "geli:w", 0);
@@ -630,7 +703,6 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 	struct g_geom *gp;
 	struct g_provider *pp;
 	struct g_consumer *cp;
-	struct cryptoini crie, cria;
 	u_int i, threads;
 	int error;
 
@@ -658,7 +730,7 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 		gp->access = g_std_access;
 
 	sc->sc_inflight = 0;
-	sc->sc_crypto = G_ELI_CRYPTO_SW;
+	sc->sc_crypto = G_ELI_CRYPTO_UNKNOWN;
 	sc->sc_flags = md->md_flags;
 	/* Backward compatibility. */
 	if (md->md_version < 4)
@@ -686,14 +758,6 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 		sc->sc_bytes_per_sector =
 		    (md->md_sectorsize - 1) / sc->sc_data_per_sector + 1;
 		sc->sc_bytes_per_sector *= bpp->sectorsize;
-		/*
-		 * Precalculate SHA256 for HMAC key generation.
-		 * This is expensive operation and we can do it only once now or
-		 * for every access to sector, so now will be much better.
-		 */
-		SHA256_Init(&sc->sc_akeyctx);
-		SHA256_Update(&sc->sc_akeyctx, sc->sc_akey,
-		    sizeof(sc->sc_akey));
 	}
 
 	gp->softc = sc;
@@ -754,36 +818,7 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 	g_eli_mkey_propagate(sc, mkey);
 	sc->sc_ekeylen = md->md_keylen;
 
-	/*
-	 * Precalculate SHA256 for IV generation.
-	 * This is expensive operation and we can do it only once now or for
-	 * every access to sector, so now will be much better.
-	 */
-	switch (sc->sc_ealgo) {
-	case CRYPTO_AES_XTS:
-		break;
-	default:
-		SHA256_Init(&sc->sc_ivctx);
-		SHA256_Update(&sc->sc_ivctx, sc->sc_ivkey,
-		    sizeof(sc->sc_ivkey));
-		break;
-	}
-
 	LIST_INIT(&sc->sc_workers);
-
-	bzero(&crie, sizeof(crie));
-	crie.cri_alg = sc->sc_ealgo;
-	crie.cri_klen = sc->sc_ekeylen;
-	if (sc->sc_ealgo == CRYPTO_AES_XTS)
-		crie.cri_klen <<= 1;
-	crie.cri_key = sc->sc_ekeys[0];
-	if (sc->sc_flags & G_ELI_FLAG_AUTH) {
-		bzero(&cria, sizeof(cria));
-		cria.cri_alg = sc->sc_aalgo;
-		cria.cri_klen = sc->sc_akeylen;
-		cria.cri_key = sc->sc_akey;
-		crie.cri_next = &cria;
-	}
 
 	threads = g_eli_threads;
 	if (threads == 0)
@@ -804,20 +839,7 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 		wr->w_number = i;
 		wr->w_active = TRUE;
 
-		/*
-		 * If this is the first pass, try to get hardware support.
-		 * Use software cryptography, if we cannot get it.
-		 */
-		if (LIST_EMPTY(&sc->sc_workers)) {
-			error = crypto_newsession(&wr->w_sid, &crie,
-			    CRYPTOCAP_F_HARDWARE);
-			if (error == 0)
-				sc->sc_crypto = G_ELI_CRYPTO_HW;
-		}
-		if (sc->sc_crypto == G_ELI_CRYPTO_SW) {
-			error = crypto_newsession(&wr->w_sid, &crie,
-			    CRYPTOCAP_F_SOFTWARE);
-		}
+		error = g_eli_newsession(wr);
 		if (error != 0) {
 			free(wr, M_ELI);
 			if (req != NULL) {
@@ -833,7 +855,7 @@ g_eli_create(struct gctl_req *req, struct g_class *mp, struct g_provider *bpp,
 		error = kproc_create(g_eli_worker, wr, &wr->w_proc, 0, 0,
 		    "g_eli[%u] %s", i, bpp->name);
 		if (error != 0) {
-			crypto_freesession(wr->w_sid);
+			g_eli_freesession(wr);
 			free(wr, M_ELI);
 			if (req != NULL) {
 				gctl_error(req, "Cannot create kernel thread "
@@ -930,9 +952,12 @@ g_eli_destroy(struct g_eli_softc *sc, boolean_t force)
 	}
 	mtx_destroy(&sc->sc_queue_mtx);
 	gp->softc = NULL;
-	bzero(sc->sc_ekeys,
-	    sc->sc_nekeys * (sizeof(uint8_t *) + G_ELI_DATAKEYLEN));
-	free(sc->sc_ekeys, M_ELI);
+	if (sc->sc_ekeys != NULL) {
+		/* The sc_ekeys field can be NULL is device is suspended. */
+		bzero(sc->sc_ekeys,
+		    sc->sc_nekeys * (sizeof(uint8_t *) + G_ELI_DATAKEYLEN));
+		free(sc->sc_ekeys, M_ELI);
+	}
 	bzero(sc, sizeof(*sc));
 	free(sc, M_ELI);
 
@@ -1222,6 +1247,8 @@ g_eli_dumpconf(struct sbuf *sb, const char *indent, struct g_geom *gp,
 	    sc->sc_ekeylen);
 	sbuf_printf(sb, "%s<EncryptionAlgorithm>%s</EncryptionAlgorithm>\n", indent,
 	    g_eli_algo2str(sc->sc_ealgo));
+	sbuf_printf(sb, "%s<State>%s</State>\n", indent,
+	    (sc->sc_flags & G_ELI_FLAG_SUSPEND) ? "SUSPENDED" : "ACTIVE");
 }
 
 static void

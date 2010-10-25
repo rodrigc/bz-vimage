@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-disk.sh,v 1.6 2010/10/09 08:52:09 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-disk.sh,v 1.7 2010/10/21 17:29:18 imp Exp $
 
 # Functions related to disk operations using gpart
 
@@ -506,17 +506,6 @@ setup_disk_slice()
           else 
 			DEST="${DISK}"
           fi 
-
-          if iscompressed "${IMAGE}"
-          then
-            local COMPRESSION
-  
-            get_compression_type "${IMAGE}"
-            COMPRESSION="${VAL}"
-  
-            decompress_file "${IMAGE}" "${COMPRESSION}"
-            IMAGE="${VAL}"
-          fi
 
           write_image "${IMAGE}" "${DEST}"
           check_disk_layout "${DEST}"

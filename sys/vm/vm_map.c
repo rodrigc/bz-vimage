@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.434 2010/10/04 16:49:40 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_map.c,v 1.435 2010/10/21 17:29:32 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -339,15 +339,11 @@ vmspace_dofree(struct vmspace *vm)
 void
 vmspace_free(struct vmspace *vm)
 {
-	int refcnt;
 
 	if (vm->vm_refcnt == 0)
 		panic("vmspace_free: attempt to free already freed vmspace");
 
-	do
-		refcnt = vm->vm_refcnt;
-	while (!atomic_cmpset_int(&vm->vm_refcnt, refcnt, refcnt - 1));
-	if (refcnt == 1)
+	if (atomic_fetchadd_int(&vm->vm_refcnt, -1) == 1)
 		vmspace_dofree(vm);
 }
 

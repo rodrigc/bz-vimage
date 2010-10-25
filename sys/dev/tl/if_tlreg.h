@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/tl/if_tlreg.h,v 1.3 2009/11/19 22:14:23 jhb Exp $
+ * $FreeBSD: src/sys/dev/tl/if_tlreg.h,v 1.4 2010/10/24 12:51:02 marius Exp $
  */
 
 
@@ -116,7 +116,6 @@ struct tl_softc {
 	struct resource		*tl_irq;
 	struct resource		*tl_res;
 	device_t		tl_miibus;
-	struct tl_type		*tl_dinfo;	/* ThunderLAN adapter info */
 	u_int8_t		tl_eeaddr;
 	struct tl_list_data	*tl_ldata;	/* TX/RX lists and mbufs */
 	struct tl_chain_data	tl_cdata;

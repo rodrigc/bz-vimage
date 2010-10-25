@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mksyntax.c	8.2 (Berkeley) 5/4/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.31 2010/09/03 22:13:54 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.32 2010/10/24 22:25:38 jilles Exp $");
 
 /*
  * This program creates syntax.h and syntax.c.
@@ -75,6 +75,7 @@ struct synclass synclass[] = {
 	{ "CEOF",	"end of file" },
 	{ "CCTL",	"like CWORD, except it must be escaped" },
 	{ "CSPCL",	"these terminate a word" },
+	{ "CIGN",       "character should be ignored" },
 	{ NULL,		NULL }
 };
 
@@ -232,7 +233,7 @@ main(int argc __unused, char **argv __unused)
 	add("\n", "CNL");
 	add("\\", "CBACK");
 	add("`", "CBQUOTE");
-	add("\"", "CDQUOTE");
+	add("\"", "CIGN");
 	add("$", "CVAR");
 	add("}", "CENDVAR");
 	add("(", "CLP");

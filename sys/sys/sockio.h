@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)sockio.h	8.1 (Berkeley) 3/28/94
- * $FreeBSD: src/sys/sys/sockio.h,v 1.38 2010/01/27 00:30:07 delphij Exp $
+ * $FreeBSD: src/sys/sys/sockio.h,v 1.39 2010/10/21 16:20:48 pluknet Exp $
  */
 
 #ifndef _SYS_SOCKIO_H_
@@ -62,9 +62,6 @@
 #define	SIOCSIFBRDADDR	 _IOW('i', 19, struct ifreq)	/* set broadcast addr */
 #define	OSIOCGIFCONF	_IOWR('i', 20, struct ifconf)	/* get ifnet list */
 #define	SIOCGIFCONF	_IOWR('i', 36, struct ifconf)	/* get ifnet list */
-#if  defined (__amd64__)
-#define	SIOCGIFCONF32	_IOWR('i', 36, struct ifconf32)	/* get ifnet list */
-#endif
 #define	OSIOCGIFNETMASK	_IOWR('i', 21, struct ifreq)	/* get net addr mask */
 #define	SIOCGIFNETMASK	_IOWR('i', 37, struct ifreq)	/* get net addr mask */
 #define	SIOCSIFNETMASK	 _IOW('i', 22, struct ifreq)	/* set net addr mask */

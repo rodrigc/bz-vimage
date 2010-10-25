@@ -14,7 +14,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/i386/boot2/boot2.c,v 1.89 2010/03/26 01:30:53 delphij Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/i386/boot2/boot2.c,v 1.90 2010/10/22 18:07:21 rdivacky Exp $");
 
 #include <sys/param.h>
 #include <sys/disklabel.h>
@@ -348,7 +348,7 @@ load(void)
 	    return;
 	p += hdr.ex.a_data + roundup2(hdr.ex.a_bss, PAGE_SIZE);
 	bootinfo.bi_symtab = VTOP(p);
-	memcpy(p, &hdr.ex.a_syms, sizeof(hdr.ex.a_syms));
+	*(uint32_t*)p = hdr.ex.a_syms;
 	p += sizeof(hdr.ex.a_syms);
 	if (hdr.ex.a_syms) {
 	    if (xfsread(ino, p, hdr.ex.a_syms))
@@ -385,7 +385,7 @@ load(void)
 	    if (xfsread(ino, &es, sizeof(es)))
 		return;
 	    for (i = 0; i < 2; i++) {
-		memcpy(p, &es[i].sh_size, sizeof(es[i].sh_size));
+		*(Elf32_Word *)p = es[i].sh_size;
 		p += sizeof(es[i].sh_size);
 		fs_off = es[i].sh_offset;
 		if (xfsread(ino, p, es[i].sh_size))

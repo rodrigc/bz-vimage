@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netipsec/ipsec_output.c,v 1.29 2010/10/14 15:15:22 bz Exp $
+ * $FreeBSD: src/sys/netipsec/ipsec_output.c,v 1.30 2010/10/23 20:35:40 bz Exp $
  */
 
 /*
@@ -829,7 +829,8 @@ ipsec6_output_tunnel(struct ipsec_output_state *state, struct secpolicy *sp, int
 		}
 		ip6 = mtod(m, struct ip6_hdr *);
 
-		state->ro = &isr->sav->sah->sa_route;
+		state->ro =
+		    (struct route *)&isr->sav->sah->route_cache.sin6_route;
 		state->dst = (struct sockaddr *)&state->ro->ro_dst;
 		dst6 = (struct sockaddr_in6 *)state->dst;
 		if (state->ro->ro_rt

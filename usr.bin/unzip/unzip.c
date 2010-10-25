@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/unzip/unzip.c,v 1.7 2010/06/09 18:59:07 delphij Exp $
+ * $FreeBSD: src/usr.bin/unzip/unzip.c,v 1.8 2010/10/21 17:05:15 glebius Exp $
  *
  * This file would be much shorter if we didn't care about command-line
  * compatibility with Info-ZIP's UnZip, which requires us to duplicate
@@ -859,7 +859,9 @@ unzip(const char *fn)
 	int fd, ret;
 	uintmax_t total_size, file_count, error_count;
 
-	if ((fd = open(fn, O_RDONLY)) < 0)
+	if (strcmp(fn, "-") == 0)
+		fd = STDIN_FILENO;
+	else if ((fd = open(fn, O_RDONLY)) < 0)
 		error("%s", fn);
 
 	if ((a = archive_read_new()) == NULL)
@@ -913,7 +915,7 @@ unzip(const char *fn)
 	ac(archive_read_close(a));
 	(void)archive_read_finish(a);
 
-	if (close(fd) != 0)
+	if (fd != STDIN_FILENO && close(fd) != 0)
 		error("%s", fn);
 
 	if (t_opt) {

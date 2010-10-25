@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfs_var.h,v 1.15 2010/08/28 21:41:18 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfs_var.h,v 1.17 2010/10/23 22:28:29 rmacklem Exp $
  */
 
 /*
@@ -576,6 +576,7 @@ void nfsvno_unlockvfs(mount_t);
 int nfsvno_lockvfs(mount_t);
 int nfsrv_v4rootexport(void *, struct ucred *, NFSPROC_T *);
 int nfsvno_testexp(struct nfsrv_descript *, struct nfsexstuff *);
+uint32_t nfsrv_hashfh(fhandle_t *);
 
 /* nfs_commonkrpc.c */
 int newnfs_nmcancelreqs(struct nfsmount *);

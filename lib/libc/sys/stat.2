@@ -26,7 +26,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)stat.2	8.4 (Berkeley) 5/1/95
-.\" $FreeBSD: src/lib/libc/sys/stat.2,v 1.50 2010/03/28 13:40:13 ed Exp $
+.\" $FreeBSD: src/lib/libc/sys/stat.2,v 1.51 2010/10/21 12:27:13 uqs Exp $
 .\"
 .Dd March 28, 2010
 .Dt STAT 2
@@ -345,10 +345,10 @@ represented correctly in the structure pointed to by
 .Fa sb .
 .El
 .Pp
-.Bl -tag -width Er
 The
 .Fn fstat
 system call will fail if:
+.Bl -tag -width Er
 .It Bq Er EBADF
 The
 .Fa fd

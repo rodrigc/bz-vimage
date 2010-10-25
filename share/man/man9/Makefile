@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.378 2010/10/20 06:29:11 avg Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.379 2010/10/24 15:56:21 jh Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -776,7 +776,8 @@ MLINKS+=make_dev.9 destroy_dev.9 \
 	make_dev.9 dev_depends.9 \
 	make_dev.9 make_dev_alias.9 \
 	make_dev.9 make_dev_cred.9 \
-	make_dev.9 make_dev_credf.9
+	make_dev.9 make_dev_credf.9 \
+	make_dev.9 make_dev_p.9
 MLINKS+=malloc.9 free.9 \
 	malloc.9 MALLOC_DECLARE.9 \
 	malloc.9 MALLOC_DEFINE.9 \

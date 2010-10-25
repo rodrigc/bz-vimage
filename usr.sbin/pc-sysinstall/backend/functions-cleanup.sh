@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.4 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.5 2010/10/21 17:14:44 imp Exp $
 
 # Functions which perform the final cleanup after an install
 
@@ -296,7 +296,7 @@ setup_geli_loading()
 
      # If we have a passphrase, set it up now
      if [ -e "${PARTDIR}-enc/${PART}-encpass" ] ; then
-       cat ${PARTDIR}-enc/${PART}-encpass | geli setkey -S -n 0 -p -k ${KEYFILE} -K ${KEYFILE} ${PART}
+       geli setkey -J ${PARTDIR}-enc/${PART}-encpass -n 0 -p -k ${KEYFILE} -K ${KEYFILE} ${PART}
        geli configure -b ${PART}
      fi
 

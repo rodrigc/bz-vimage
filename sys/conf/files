@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/files,v 1.1539 2010/10/19 20:53:30 gibbs Exp $
+# $FreeBSD: src/sys/conf/files,v 1.1541 2010/10/25 08:30:19 bz Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -2385,6 +2385,7 @@ net/if_atmsubr.c		optional atm
 net/if_bridge.c			optional bridge inet | if_bridge inet
 net/if_clone.c			standard
 net/if_dead.c			standard
+net/if_debug.c			optional ddb
 net/if_disc.c			optional disc
 net/if_edsc.c			optional edsc
 net/if_ef.c			optional ef
@@ -2560,6 +2561,7 @@ netinet/if_atm.c		optional atm
 netinet/if_ether.c		optional inet ether
 netinet/igmp.c			optional inet
 netinet/in.c			optional inet
+netinet/in_debug.c		optional inet ddb
 netinet/ip_carp.c		optional inet carp | inet6 carp
 netinet/in_gif.c		optional gif inet | netgraph_gif inet
 netinet/ip_gre.c		optional gre inet

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.24 2010/09/19 01:05:19 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.27 2010/10/23 22:28:29 rmacklem Exp $");
 
 /*
  * Functions that perform the vfs operations required by the routines in
@@ -41,6 +41,7 @@ __FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.24 2010/09/19 01:05:
  */
 
 #include <fs/nfs/nfsport.h>
+#include <sys/hash.h>
 #include <sys/sysctl.h>
 #include <nlm/nlm_prot.h>
 #include <nlm/nlm.h>
@@ -1933,7 +1934,15 @@ again:
 							vn_lock(vp,
 							    LK_EXCLUSIVE |
 							    LK_RETRY);
-						r = VOP_LOOKUP(vp, &nvp, &cn);
+						if ((vp->v_vflag & VV_ROOT) != 0
+						    && (cn.cn_flags & ISDOTDOT)
+						    != 0) {
+							vref(vp);
+							nvp = vp;
+							r = 0;
+						} else
+							r = VOP_LOOKUP(vp, &nvp,
+							    &cn);
 					}
 				}
 				if (!r) {
@@ -3077,6 +3086,18 @@ nfsvno_testexp(struct nfsrv_descript *nd, struct nfsexstuff *exp)
 			return (0);
 	}
 	return (1);
+}
+
+/*
+ * Calculate a hash value for the fid in a file handle.
+ */
+uint32_t
+nfsrv_hashfh(fhandle_t *fhp)
+{
+	uint32_t hashval;
+
+	hashval = hash32_buf(&fhp->fh_fid, sizeof(struct fid), 0);
+	return (hashval);
 }
 
 extern int (*nfsd_call_nfsd)(struct thread *, struct nfssvc_args *);

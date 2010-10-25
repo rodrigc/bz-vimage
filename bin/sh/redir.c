@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)redir.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.31 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.32 2010/10/24 20:09:49 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -217,8 +217,11 @@ movefd:
 		if (redir->ndup.dupfd >= 0) {	/* if not ">&-" */
 			if (memory[redir->ndup.dupfd])
 				memory[fd] = 1;
-			else
-				dup2(redir->ndup.dupfd, fd);
+			else {
+				if (dup2(redir->ndup.dupfd, fd) < 0)
+					error("%d: %s", redir->ndup.dupfd,
+							strerror(errno));
+			}
 		} else {
 			close(fd);
 		}

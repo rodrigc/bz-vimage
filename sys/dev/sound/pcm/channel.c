@@ -38,7 +38,7 @@
 
 #include "feeder_if.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/channel.c,v 1.125 2009/12/28 22:56:30 antoine Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/channel.c,v 1.126 2010/10/25 08:25:44 mav Exp $");
 
 int report_soft_formats = 1;
 SYSCTL_INT(_hw_snd, OID_AUTO, report_soft_formats, CTLFLAG_RW,
@@ -124,6 +124,7 @@ SYSCTL_INT(_hw_snd, OID_AUTO, vpc_autoreset, CTLFLAG_RW,
 	&chn_vpc_autoreset, 0, "automatically reset channels volume to 0db");
 
 static int chn_vol_0db_pcm = SND_VOL_0DB_PCM;
+TUNABLE_INT("hw.snd.vpc_0db", &chn_vol_0db_pcm);
 
 static void
 chn_vpc_proc(int reset, int db)

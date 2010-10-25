@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.211 2010/10/05 15:31:56 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/identcpu.c,v 1.212 2010/10/25 15:28:03 jhb Exp $");
 
 #include "opt_cpu.h"
 
@@ -1037,12 +1037,11 @@ identblue(void)
 static void
 identifycyrix(void)
 {
-	u_int	eflags;
+	register_t saveintr;
 	int	ccr2_test = 0, dir_test = 0;
 	u_char	ccr2, ccr3;
 
-	eflags = read_eflags();
-	disable_intr();
+	saveintr = intr_disable();
 
 	ccr2 = read_cyrix_reg(CCR2);
 	write_cyrix_reg(CCR2, ccr2 ^ CCR2_LOCK_NW);
@@ -1067,7 +1066,7 @@ identifycyrix(void)
 	else
 		cyrix_did = 0x00ff;		/* Old 486SLC/DLC and TI486SXLC/SXL */
 
-	write_eflags(eflags);
+	intr_restore(saveintr);
 }
 
 /* Update TSC freq with the value indicated by the caller. */

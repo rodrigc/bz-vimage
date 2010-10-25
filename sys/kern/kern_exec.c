@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_exec.c,v 1.358 2010/08/30 16:30:18 jh Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_exec.c,v 1.359 2010/10/21 19:17:40 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -655,16 +655,8 @@ interpret:
 		setsugid(p);
 
 #ifdef KTRACE
-		if (p->p_tracevp != NULL &&
-		    priv_check_cred(oldcred, PRIV_DEBUG_DIFFCRED, 0)) {
-			mtx_lock(&ktrace_mtx);
-			p->p_traceflag = 0;
-			tracevp = p->p_tracevp;
-			p->p_tracevp = NULL;
-			tracecred = p->p_tracecred;
-			p->p_tracecred = NULL;
-			mtx_unlock(&ktrace_mtx);
-		}
+		if (priv_check_cred(oldcred, PRIV_DEBUG_DIFFCRED, 0))
+			ktrprocexec(p, &tracecred, &tracevp);
 #endif
 		/*
 		 * Close any file descriptors 0..2 that reference procfs,

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/isa/npx.c,v 1.188 2010/07/26 23:20:55 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/isa/npx.c,v 1.189 2010/10/25 15:31:13 jhb Exp $");
 
 #include "opt_cpu.h"
 #include "opt_isa.h"
@@ -343,7 +343,7 @@ void
 npxinit(void)
 {
 	static union savefpu dummy;
-	register_t savecrit;
+	register_t saveintr;
 	u_short control;
 
 	if (!hw_float)
@@ -355,7 +355,7 @@ npxinit(void)
 	 *
 	 * It is too early for critical_enter() to work on AP.
 	 */
-	savecrit = intr_disable();
+	saveintr = intr_disable();
 	npxsave(&dummy);
 	stop_emulating();
 #ifdef CPU_ENABLE_SSE
@@ -366,7 +366,7 @@ npxinit(void)
 	control = __INITIAL_NPXCW__;
 	fldcw(control);
 	start_emulating();
-	intr_restore(savecrit);
+	intr_restore(saveintr);
 }
 
 /*

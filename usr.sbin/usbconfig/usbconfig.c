@@ -1,4 +1,4 @@
-/* $FreeBSD: src/usr.sbin/usbconfig/usbconfig.c,v 1.10 2010/01/10 19:21:23 thompsa Exp $ */
+/* $FreeBSD: src/usr.sbin/usbconfig/usbconfig.c,v 1.11 2010/10/24 13:48:11 hselasky Exp $ */
 /*-
  * Copyright (c) 2008-2009 Hans Petter Selasky. All rights reserved.
  *
@@ -640,7 +640,7 @@ main(int argc, char **argv)
 			opt->bus = unit;
 			opt->addr = addr;
 			opt->got_bus = 1;
-;			opt->got_addr = 1;
+			opt->got_addr = 1;
 			n++;
 			break;
 

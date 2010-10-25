@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.594 2010/08/12 08:36:23 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_bio.c,v 1.595 2010/10/25 14:05:25 ivoras Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -623,16 +623,16 @@ bufinit(void)
 	lobufspace = hibufspace - MAXBSIZE;
 
 	/*
-	 * Note: The 16 MB upper limit for hirunningspace was chosen
+	 * Note: The 16 MiB upper limit for hirunningspace was chosen
 	 * arbitrarily and may need further tuning. It corresponds to
 	 * 128 outstanding write IO requests (if IO size is 128 KiB),
 	 * which fits with many RAID controllers' tagged queuing limits.
-	 * The lower 1 MB limit is the historical upper limit for
+	 * The lower 1 MiB limit is the historical upper limit for
 	 * hirunningspace.
 	 */
 	hirunningspace = lmax(lmin(roundup(hibufspace / 64, MAXBSIZE),
 	    16 * 1024 * 1024), 1024 * 1024);
-	lorunningspace = roundup(hirunningspace / 2, MAXBSIZE);
+	lorunningspace = roundup((hirunningspace * 2) / 3, MAXBSIZE);
 
 /*
  * Limit the amount of malloc memory since it is wired permanently into

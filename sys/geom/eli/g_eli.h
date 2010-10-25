@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/eli/g_eli.h,v 1.21 2010/10/20 20:50:55 pjd Exp $
+ * $FreeBSD: src/sys/geom/eli/g_eli.h,v 1.22 2010/10/21 19:44:28 pjd Exp $
  */
 
 #ifndef	_G_ELI_H_
@@ -113,6 +113,7 @@ extern int g_eli_debug;
 extern u_int g_eli_overwrites;
 extern u_int g_eli_batch;
 
+#define	G_ELI_CRYPTO_UNKNOWN	0
 #define	G_ELI_CRYPTO_HW		1
 #define	G_ELI_CRYPTO_SW		2
 

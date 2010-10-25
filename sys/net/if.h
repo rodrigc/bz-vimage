@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/net/if.h,v 1.126 2010/03/16 17:59:12 qingli Exp $
+ * $FreeBSD: src/sys/net/if.h,v 1.127 2010/10/21 16:20:48 pluknet Exp $
  */
 
 #ifndef _NET_IF_H_
@@ -390,16 +390,6 @@ struct	ifconf {
 #define	ifc_buf	ifc_ifcu.ifcu_buf	/* buffer address */
 #define	ifc_req	ifc_ifcu.ifcu_req	/* array of structures returned */
 };
-
-#if defined (__amd64__)
-struct ifconf32 {
-	int	ifc_len;		/* size of associated buffer */
-	union {
-		u_int	ifcu_buf;
-		u_int	ifcu_req;
-	} ifc_ifcu;
-};
-#endif
 
 /*
  * interface groups

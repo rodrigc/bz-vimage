@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/mambo/mambo_console.c,v 1.1 2010/07/31 13:22:34 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/mambo/mambo_console.c,v 1.2 2010/10/25 15:41:12 nwhitehorn Exp $");
 
 #include "opt_comconsole.h"
 
@@ -86,7 +86,6 @@ cn_drvinit(void *unused)
 		tp = tty_alloc(&mambo_ttydevsw, NULL);
 		tty_init_console(tp, 0);
 		tty_makedev(tp, NULL, "%s", "mambocons");
-		tty_makealias(tp, "mambocons");
 
 		polltime = 1;
 

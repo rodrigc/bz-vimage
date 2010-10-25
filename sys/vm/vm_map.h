@@ -57,7 +57,7 @@
  * any improvements or extensions that they make and grant Carnegie the
  * rights to redistribute these changes.
  *
- * $FreeBSD: src/sys/vm/vm_map.h,v 1.136 2010/09/19 17:43:22 alc Exp $
+ * $FreeBSD: src/sys/vm/vm_map.h,v 1.137 2010/10/21 17:29:32 jhb Exp $
  */
 
 /*
@@ -236,7 +236,7 @@ struct vmspace {
 	caddr_t vm_taddr;	/* (c) user virtual address of text */
 	caddr_t vm_daddr;	/* (c) user virtual address of data */
 	caddr_t vm_maxsaddr;	/* user VA at max stack growth */
-	int	vm_refcnt;	/* number of references */
+	volatile int vm_refcnt;	/* number of references */
 	/*
 	 * Keep the PMAP last, so that CPU-specific variations of that
 	 * structure on a single architecture don't result in offset

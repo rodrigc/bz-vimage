@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/smcphy.c,v 1.4 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/smcphy.c,v 1.5 2010/10/24 11:37:01 marius Exp $");
 
 /*
  * Driver for the internal PHY on the SMSC LAN91C111.
@@ -76,20 +76,16 @@ static driver_t smcphy_driver = {
 
 DRIVER_MODULE(smcphy, miibus, smcphy_driver, smcphy_devclass, 0, 0);
 
+static const struct mii_phydesc smcphys[] = {
+	MII_PHY_DESC(SMSC, LAN83C183),
+	MII_PHY_END
+};
+
 static int
 smcphy_probe(device_t dev)
 {
-	struct	mii_attach_args *ma;
 
-	ma = device_get_ivars(dev);
-
-	if (MII_OUI(ma->mii_id1, ma->mii_id2) != MII_OUI_SMSC ||
-	    MII_MODEL(ma->mii_id2) != MII_MODEL_SMSC_LAN83C183)
-		return (ENXIO);
-
-	device_set_desc(dev, MII_STR_SMSC_LAN83C183);
-
-	return (0);
+	return (mii_phy_dev_probe(dev, smcphys, BUS_PROBE_DEFAULT));
 }
 
 static int
@@ -111,7 +107,7 @@ smcphy_attach(device_t dev)
 	sc->mii_service = smcphy_service;
 	sc->mii_pdata = mii;
 
-	sc->mii_flags |= MIIF_NOISOLATE;
+	sc->mii_flags |= MIIF_NOISOLATE | MIIF_NOLOOP;
 
 	if (smcphy_reset(sc) != 0) {
 		device_printf(dev, "reset failed\n");
@@ -122,7 +118,7 @@ smcphy_attach(device_t dev)
 
 	sc->mii_capabilities = PHY_READ(sc, MII_BMSR) & ma->mii_capmask;
 	device_printf(dev, " ");
-	mii_add_media(sc);
+	mii_phy_add_media(sc);
 	printf("\n");
 
 	MIIBUS_MEDIAINIT(sc->mii_dev);

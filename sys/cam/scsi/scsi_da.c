@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_da.c,v 1.252 2010/09/02 19:40:28 gibbs Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_da.c,v 1.253 2010/10/24 18:53:16 mav Exp $");
 
 #include <sys/param.h>
 
@@ -1667,7 +1667,10 @@ dadone(struct cam_periph *periph, union ccb *done_ccb)
 			 * give them an 'illegal' value we'll avoid that
 			 * here.
 			 */
-			if (block_size >= MAXPHYS || block_size == 0) {
+			if (block_size == 0 && maxsector == 0) {
+				snprintf(announce_buf, sizeof(announce_buf),
+				        "0MB (no media?)");
+			} else if (block_size >= MAXPHYS || block_size == 0) {
 				xpt_print(periph->path,
 				    "unsupportable block size %ju\n",
 				    (uintmax_t) block_size);

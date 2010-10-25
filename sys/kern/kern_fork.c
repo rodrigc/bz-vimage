@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.313 2010/10/09 02:50:23 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_fork.c,v 1.314 2010/10/21 19:17:40 jhb Exp $");
 
 #include "opt_kdtrace.h"
 #include "opt_ktrace.h"
@@ -645,21 +645,7 @@ again:
 	callout_init(&p2->p_itcallout, CALLOUT_MPSAFE);
 
 #ifdef KTRACE
-	/*
-	 * Copy traceflag and tracefile if enabled.
-	 */
-	mtx_lock(&ktrace_mtx);
-	KASSERT(p2->p_tracevp == NULL, ("new process has a ktrace vnode"));
-	if (p1->p_traceflag & KTRFAC_INHERIT) {
-		p2->p_traceflag = p1->p_traceflag;
-		if ((p2->p_tracevp = p1->p_tracevp) != NULL) {
-			VREF(p2->p_tracevp);
-			KASSERT(p1->p_tracecred != NULL,
-			    ("ktrace vnode with no cred"));
-			p2->p_tracecred = crhold(p1->p_tracecred);
-		}
-	}
-	mtx_unlock(&ktrace_mtx);
+	ktrprocfork(p1, p2);
 #endif
 
 	/*

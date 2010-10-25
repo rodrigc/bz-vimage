@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/keydb.h,v 1.8 2010/02/18 22:34:29 pjd Exp $	*/
+/*	$FreeBSD: src/sys/netipsec/keydb.h,v 1.9 2010/10/23 20:35:40 bz Exp $	*/
 /*	$KAME: keydb.h,v 1.14 2000/08/02 17:58:26 sakane Exp $	*/
 
 /*-
@@ -85,6 +85,12 @@ struct seclifetime {
 	u_int64_t usetime;
 };
 
+union sa_route_union {
+	struct route		sa_route;
+	struct route		sin_route;	/* Duplicate for consistency. */
+	struct route_in6	sin6_route;
+};
+
 /* Security Association Data Base */
 struct secashead {
 	LIST_ENTRY(secashead) chain;
@@ -100,7 +106,7 @@ struct secashead {
 					/* SA chain */
 					/* The first of this list is newer SA */
 
-	struct route sa_route;		/* route cache */
+	union sa_route_union route_cache;
 };
 
 struct xformsw;

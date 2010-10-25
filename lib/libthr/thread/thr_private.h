@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.117 2010/10/20 02:34:02 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.118 2010/10/25 09:16:04 davidxu Exp $
  */
 
 #ifndef _THR_PRIVATE_H
@@ -230,6 +230,7 @@ struct pthread_atfork {
 };
 
 struct pthread_attr {
+#define pthread_attr_start_copy	sched_policy
 	int	sched_policy;
 	int	sched_inherit;
 	int	prio;
@@ -239,6 +240,7 @@ struct pthread_attr {
 	void	*stackaddr_attr;
 	size_t	stacksize_attr;
 	size_t	guardsize_attr;
+#define pthread_attr_end_copy	cpuset
 	cpuset_t	*cpuset;
 	size_t	cpusetsize;
 };
