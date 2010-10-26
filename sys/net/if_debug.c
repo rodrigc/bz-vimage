@@ -76,26 +76,6 @@ if_show_ifaddr(struct ifaddr *ifa)
 	IFA_DB_RPINTF("%p", ifa_claim_addr);
 	IFA_DB_RPINTF_PTR("%p", ifa_mtx);
 
-#ifndef NO_BZ_DEBUG
-	int i;
-	db_printf("\t   arfunc=");
-	for (i=0; i<20; i++) {
-		db_printf(" %s:%d%s=", ifa->arfunc[i], ifa->arline[i],
-		    (i<19) ? "," : "");
-		if (i == (ifa->ifa_refcnt - 1))
-			db_printf("//");
-	}
-	db_printf("\n");
-	db_printf("\t   rrfunc=");
-	for (i=0; i<20; i++) {
-		db_printf(" %s:%d%s=", ifa->rrfunc[i], ifa->rrline[i],
-		    (i<19) ? "," : "");
-		if (i == (ifa->ifa_refcnt - 1))
-			db_printf("//");
-	}
-	db_printf("\n");
-#endif
-
 #undef IFA_DB_RPINTF_DPTR
 #undef IFA_DB_RPINTF_PTR
 #undef IFA_DB_RPINTF

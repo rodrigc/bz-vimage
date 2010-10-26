@@ -2491,7 +2491,7 @@ ifioctl(struct socket *so, u_long cmd, caddr_t data, struct thread *td)
 			ifc.ifc_len = ifc32->ifc_len;
 			ifc.ifc_buf = PTRIN(ifc32->ifc_buf);
 
-			error = ifconf(SIOCGIFCONF, (void *)&ifc));
+			error = ifconf(SIOCGIFCONF, (void *)&ifc);
 			CURVNET_RESTORE();
 			return (error);
 		}
