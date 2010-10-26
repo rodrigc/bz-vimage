@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)mbuf.h	8.5 (Berkeley) 2/19/95
- * $FreeBSD: src/sys/sys/mbuf.h,v 1.239 2010/08/19 11:31:03 anchie Exp $
+ * $FreeBSD$
  */
 
 #ifndef _SYS_MBUF_H_
@@ -657,6 +657,14 @@ m_last(struct mbuf *m)
 	while (m->m_next)
 		m = m->m_next;
 	return (m);
+}
+
+extern void (*m_addr_chg_pf_p)(struct mbuf *m);
+
+static __inline void 
+m_addr_changed(struct mbuf *m) {
+       if (m_addr_chg_pf_p)
+               m_addr_chg_pf_p(m);
 }
 
 /*

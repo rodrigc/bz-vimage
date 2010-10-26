@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_icmp.c,v 1.141 2010/08/14 21:04:27 andre Exp $");
+__FBSDID("$FreeBSD$");
 
 #include "opt_ipsec.h"
 
@@ -670,6 +670,8 @@ icmp_reflect(struct mbuf *m)
 		ICMPSTAT_INC(icps_badaddr);
 		goto done;	/* Ip_output() will check for broadcast */
 	}
+
+	m_addr_changed(m);
 
 	t = ip->ip_dst;
 	ip->ip_dst = ip->ip_src;

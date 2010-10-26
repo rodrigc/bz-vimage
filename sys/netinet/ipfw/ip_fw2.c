@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw2.c,v 1.45 2010/07/27 14:26:34 glebius Exp $");
+__FBSDID("$FreeBSD$");
 
 /*
  * The FreeBSD IP packet firewall, main file
@@ -1640,10 +1640,6 @@ do {								\
 					break;
 				}
 				at->qid = altq->qid;
-				if (is_ipv4)
-					at->af = AF_INET;
-				else
-					at->af = AF_LINK;
 				at->hdr = ip;
 				break;
 			}

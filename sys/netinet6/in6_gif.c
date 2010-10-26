@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_gif.c,v 1.42 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD$");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -261,6 +261,8 @@ in6_gif_output(struct ifnet *ifp,
 			- sizeof(struct ip6_hdr);
 #endif
 	}
+
+	m_addr_changed(m);
 
 #ifdef IPV6_MINMTU
 	/*

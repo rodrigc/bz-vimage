@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/xform_ipip.c,v 1.33 2009/08/23 20:40:19 rwatson Exp $	*/
+/*	$FreeBSD$	*/
 /*	$OpenBSD: ip_ipip.c,v 1.25 2002/06/10 18:04:55 itojun Exp $ */
 /*-
  * The authors of this code are John Ioannidis (ji@tla.org),
@@ -391,6 +391,8 @@ _ipip_input(struct mbuf *m, int iphlen, struct ifnet *gifp)
 	default:
 		panic("%s: bogus ip version %u", __func__, v>>4);
 	}
+
+	m_addr_changed(m);
 
 	if (netisr_queue(isr, m)) {	/* (0) on success. */
 		V_ipipstat.ipips_qfull++;

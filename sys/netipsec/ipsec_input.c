@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/ipsec_input.c,v 1.31 2010/05/24 16:27:47 bz Exp $	*/
+/*	$FreeBSD$	*/
 /*	$OpenBSD: ipsec_input.c,v 1.63 2003/02/20 18:35:43 deraadt Exp $	*/
 /*-
  * The authors of this code are John Ioannidis (ji@tla.org),
@@ -470,6 +470,8 @@ ipsec4_common_input_cb(struct mbuf *m, struct secasvar *sav,
 	}
 
 	key_sa_recordxfer(sav, m);		/* record data transfer */
+
+	m_addr_changed(m);
 
 #ifdef DEV_ENC
 	encif->if_ipackets++;

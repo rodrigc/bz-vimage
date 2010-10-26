@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netipsec/ipsec_output.c,v 1.30 2010/10/23 20:35:40 bz Exp $
+ * $FreeBSD$
  */
 
 /*
@@ -168,6 +168,8 @@ ipsec_process_done(struct mbuf *m, struct ipsecrequest *isr)
 		return ipsec4_process_packet(m, isr->next, 0, 0);
 	}
 	key_sa_recordxfer(sav, m);		/* record data transfer */
+
+	m_addr_changed(m);
 
 	/*
 	 * We're done with IPsec processing, transmit the packet using the

@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/icmp6.c,v 1.124 2010/08/19 23:16:44 anchie Exp $");
+__FBSDID("$FreeBSD$");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1178,6 +1178,8 @@ icmp6_notify_error(struct mbuf **mp, int off, int icmp6len, int code)
 		ip6cp.ip6c_finaldst = finaldst;
 		ip6cp.ip6c_src = &icmp6src;
 		ip6cp.ip6c_nxt = nxt;
+
+		m_addr_changed(m);
 
 		if (icmp6type == ICMP6_PACKET_TOO_BIG) {
 			notifymtu = ntohl(icmp6->icmp6_mtu);
@@ -2300,6 +2302,8 @@ icmp6_reflect(struct mbuf *m, size_t off)
 	 */
 
 	m->m_flags &= ~(M_BCAST|M_MCAST);
+
+	m_addr_changed(m);
 
 	ip6_output(m, NULL, NULL, 0, NULL, &outif, NULL);
 	if (outif)

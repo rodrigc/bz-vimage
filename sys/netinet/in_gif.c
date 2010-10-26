@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_gif.c,v 1.51 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD$");
 
 #include "opt_mrouting.h"
 #include "opt_inet.h"
@@ -255,6 +255,8 @@ in_gif_output(struct ifnet *ifp, int family, struct mbuf *m)
 			- sizeof(struct ip);
 #endif
 	}
+
+	m_addr_changed(m);
 
 	error = ip_output(m, NULL, &sc->gif_ro, 0, NULL, NULL);
 

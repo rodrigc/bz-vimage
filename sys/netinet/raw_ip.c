@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.231 2010/09/12 18:04:47 qingli Exp $");
+__FBSDID("$FreeBSD$");
 
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
@@ -92,6 +92,9 @@ int	(*ip_dn_io_ptr)(struct mbuf **, int, struct ip_fw_args *);
 void	(*ip_divert_ptr)(struct mbuf *, int);
 int	(*ng_ipfw_input_p)(struct mbuf **, int,
 			struct ip_fw_args *, int);
+
+/* Hook for telling pf that the destination address changed */
+void	(*m_addr_chg_pf_p)(struct mbuf *m);
 
 /*
  * Hooks for multicast routing. They all default to NULL, so leave them not
