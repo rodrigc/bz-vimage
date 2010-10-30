@@ -51,6 +51,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/rwlock.h>
 #include <sys/sdt.h>
 #include <sys/sx.h>
+#include <sys/sysctl.h>
 #include <sys/systm.h>
 #include <sys/unistd.h>
 #include <sys/vimage.h>
@@ -81,6 +82,8 @@ __FBSDID("$FreeBSD$");
  *
  * - General interaction kernel debugger (ddb) functions.
  */
+
+FEATURE(vimage, "VIMAGE kernel virtualization");
 
 MALLOC_DEFINE(M_VIMAGE, "vimage", "VIMAGE resource accounting");
 MALLOC_DEFINE(M_VIMAGE_DATA, "vimage_data", "VIMAGE data resource accounting");
