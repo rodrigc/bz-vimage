@@ -31,7 +31,7 @@
 /* $KAME: sctp_asconf.c,v 1.24 2005/03/06 16:04:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.49 2010/12/30 16:56:20 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.50 2010/12/30 21:32:35 tuexen Exp $");
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
 #include <netinet/sctp_sysctl.h>
@@ -632,8 +632,7 @@ sctp_handle_asconf(struct mbuf *m, unsigned int offset,
 	asoc = &stcb->asoc;
 	serial_num = ntohl(cp->serial_number);
 
-	if (compare_with_wrap(asoc->asconf_seq_in, serial_num, MAX_TSN) ||
-	    serial_num == asoc->asconf_seq_in) {
+	if (SCTP_TSN_GE(asoc->asconf_seq_in, serial_num)) {
 		/* got a duplicate ASCONF */
 		SCTPDBG(SCTP_DEBUG_ASCONF1,
 		    "handle_asconf: got duplicate serial number = %xh\n",

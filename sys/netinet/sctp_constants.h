@@ -31,7 +31,7 @@
 /* $KAME: sctp_constants.h,v 1.17 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.54 2010/09/17 16:20:29 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.55 2010/12/30 21:32:35 tuexen Exp $");
 
 #ifndef __sctp_constants_h__
 #define __sctp_constants_h__
@@ -322,7 +322,6 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.54 2010/09/17 16:20:29 
 #define SCTP_VERSION_NUMBER	0x3
 
 #define MAX_TSN	0xffffffff
-#define MAX_SEQ	0xffff
 
 /* how many executions every N tick's */
 #define SCTP_ITERATOR_MAX_AT_ONCE 20
@@ -906,10 +905,13 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.54 2010/09/17 16:20:29 
 #define SCTP_MAX_DATA_BUNDLING		256
 
 /* modular comparison */
-/* True if a > b (mod = M) */
-#define compare_with_wrap(a, b, M) (((a > b) && ((a - b) < ((M >> 1) + 1))) || \
-              ((b > a) && ((b - a) > ((M >> 1) + 1))))
-
+/* See RFC 1982 for details. */
+#define SCTP_SSN_GT(a, b) (((a < b) && ((b - a) > (1<<15))) || \
+                           ((a > b) && ((a - b) < (1<<15))))
+#define SCTP_SSN_GE(a, b) (SCTP_SSN_GT(a, b) || (a == b))
+#define SCTP_TSN_GT(a, b) (((a < b) && ((b - a) > (1<<31))) || \
+                           ((a > b) && ((a - b) < (1<<31))))
+#define SCTP_TSN_GE(a, b) (SCTP_TSN_GT(a, b) || (a == b))
 
 /* Mapping array manipulation routines */
 #define SCTP_IS_TSN_PRESENT(arry, gap) ((arry[(gap >> 3)] >> (gap & 0x07)) & 0x01)

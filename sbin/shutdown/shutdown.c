@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)shutdown.c	8.4 (Berkeley) 4/28/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/shutdown/shutdown.c,v 1.30 2009/12/29 08:49:43 ed Exp $");
+__FBSDID("$FreeBSD: src/sbin/shutdown/shutdown.c,v 1.31 2010/12/30 18:06:31 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -115,8 +115,31 @@ main(int argc, char **argv)
 	if (geteuid())
 		errx(1, "NOT super-user");
 #endif
+
 	nosync = NULL;
 	readstdin = 0;
+
+	/*
+	 * Test for the special case where the utility is called as
+	 * "poweroff", for which it runs 'shutdown -p now'.
+	 */
+	if ((p = rindex(argv[0], '/')) == NULL)
+		p = argv[0];
+	else
+		++p;
+	if (strcmp(p, "poweroff") == 0) {
+		if (getopt(argc, argv, "") != -1)
+			usage((char *)NULL);
+		argc -= optind;
+		argv += optind;
+		if (argc != 0)
+			usage((char *)NULL);
+		dopower = 1;
+		offset = 0;
+		(void)time(&shuttime);
+		goto poweroff;
+	}
+
 	while ((ch = getopt(argc, argv, "-hknopr")) != -1)
 		switch (ch) {
 		case '-':
@@ -161,6 +184,7 @@ main(int argc, char **argv)
 
 	getoffset(*argv++);
 
+poweroff:
 	if (*argv) {
 		for (p = mbuf, len = sizeof(mbuf); *argv; ++argv) {
 			arglen = strlen(*argv);
@@ -510,7 +534,7 @@ usage(const char *cp)
 	if (cp != NULL)
 		warnx("%s", cp);
 	(void)fprintf(stderr,
-	    "usage: shutdown [-] [-h | -p | -r | -k] [-o [-n]]"
-	    " time [warning-message ...]\n");
+	    "usage: shutdown [-] [-h | -p | -r | -k] [-o [-n]] time [warning-message ...]\n"
+	    "       poweroff\n");
 	exit(1);
 }

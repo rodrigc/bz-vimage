@@ -26,13 +26,14 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)shutdown.8	8.2 (Berkeley) 4/27/95
-.\" $FreeBSD: src/sbin/shutdown/shutdown.8,v 1.25 2008/12/23 15:00:03 trhodes Exp $
+.\" $FreeBSD: src/sbin/shutdown/shutdown.8,v 1.26 2010/12/30 18:06:31 pjd Exp $
 .\"
-.Dd December 23, 2008
+.Dd December 30, 2010
 .Dt SHUTDOWN 8
 .Os
 .Sh NAME
-.Nm shutdown
+.Nm shutdown ,
+.Nm poweroff
 .Nd "close down the system at a given time"
 .Sh SYNOPSIS
 .Nm
@@ -47,6 +48,7 @@
 .Oc
 .Ar time
 .Op Ar warning-message ...
+.Nm poweroff
 .Sh DESCRIPTION
 The
 .Nm
@@ -173,6 +175,13 @@ When run without options, the
 utility will place the system into single user mode at the 
 .Ar time
 specified.
+.Pp
+Calling utility as
+.Nm poweroff
+is equivalent of calling:
+.Bd -literal -offset indent
+shutdown -p now
+.Ed
 .Sh FILES
 .Bl -tag -width /var/run/nologin -compact
 .It Pa /var/run/nologin
