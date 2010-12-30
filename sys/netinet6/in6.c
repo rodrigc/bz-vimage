@@ -2021,20 +2021,28 @@ in6_is_addr_deprecated(struct sockaddr_in6 *sa6)
 int
 in6_matchlen(struct in6_addr *src, struct in6_addr *dst)
 {
-	int match = 0;
-	u_char *s = (u_char *)src, *d = (u_char *)dst;
-	u_char *lim = s + 16, r;
+	int match;
+	u_char *s, *d;
+	u_char *lim, r;
 
-	while (s < lim)
+	s = (u_char *)src;
+	d = (u_char *)dst;
+	lim = s + 16;
+	match = 0;
+
+	while (s < lim) {
 		if ((r = (*d++ ^ *s++)) != 0) {
 			while (r < 128) {
 				match++;
 				r <<= 1;
 			}
 			break;
-		} else
+		} else {
 			match += 8;
-	return match;
+		}
+	}
+
+	return (match);
 }
 
 /* XXX: to be scope conscious */
