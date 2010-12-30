@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/psycho.c,v 1.89 2010/06/18 14:06:27 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/psycho.c,v 1.90 2010/11/15 21:58:10 marius Exp $");
 
 /*
  * Support for `Hummingbird' (UltraSPARC IIe), `Psycho' and `Psycho+'
@@ -159,7 +159,8 @@ static devclass_t psycho_devclass;
 
 DEFINE_CLASS_0(pcib, psycho_driver, psycho_methods,
     sizeof(struct psycho_softc));
-DRIVER_MODULE(psycho, nexus, psycho_driver, psycho_devclass, 0, 0);
+EARLY_DRIVER_MODULE(psycho, nexus, psycho_driver, psycho_devclass, 0, 0,
+    BUS_PASS_BUS);
 
 static SLIST_HEAD(, psycho_softc) psycho_softcs =
     SLIST_HEAD_INITIALIZER(psycho_softcs);

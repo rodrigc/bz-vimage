@@ -23,6 +23,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/powerpc/crtn.S,v 1.3 2010/12/09 21:31:21 dim Exp $");
+
 	.section .init,"ax",@progbits
 	lwz 11,0(1)
 	lwz 0,4(11)
@@ -39,7 +42,3 @@
 	lwz 31,-4(11)
 	mr 1,11
 	blr
-
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/powerpc/crtn.S,v 1.2 2002/05/15 04:19:49 obrien Exp $\0"

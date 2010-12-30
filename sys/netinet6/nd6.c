@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.136 2010/08/19 11:31:03 anchie Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6.c,v 1.142 2010/12/07 22:43:29 bz Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1056,15 +1056,6 @@ nd6_free(struct llentry *ln, int gc)
 			return (next);
 		}
 
-		if (ln->ln_router || dr) {
-			/*
-			 * rt6_flush must be called whether or not the neighbor
-			 * is in the Default Router List.
-			 * See a corresponding comment in nd6_na_input().
-			 */
-			rt6_flush(&L3_ADDR_SIN6(ln)->sin6_addr, ifp);
-		}
-
 		if (dr) {
 			/*
 			 * Unreachablity of a router might affect the default
@@ -1080,7 +1071,27 @@ nd6_free(struct llentry *ln, int gc)
 			 * or the entry itself will be deleted.
 			 */
 			ln->ln_state = ND6_LLINFO_INCOMPLETE;
+		}
 
+		if (ln->ln_router || dr) {
+
+			/*
+			 * We need to unlock to avoid a LOR with rt6_flush() with the
+			 * rnh and for the calls to pfxlist_onlink_check() and
+			 * defrouter_select() in the block further down for calls
+			 * into nd6_lookup().  We still hold a ref.
+			 */
+			LLE_WUNLOCK(ln);
+
+			/*
+			 * rt6_flush must be called whether or not the neighbor
+			 * is in the Default Router List.
+			 * See a corresponding comment in nd6_na_input().
+			 */
+			rt6_flush(&L3_ADDR_SIN6(ln)->sin6_addr, ifp);
+		}
+
+		if (dr) {
 			/*
 			 * Since defrouter_select() does not affect the
 			 * on-link determination and MIP6 needs the check
@@ -1090,13 +1101,15 @@ nd6_free(struct llentry *ln, int gc)
 			pfxlist_onlink_check();
 
 			/*
-			 * Refresh default router list.  Have to unlock as
-			 * it calls into nd6_lookup(), still holding a ref.
+			 * Refresh default router list.
 			 */
 			LLE_WUNLOCK(ln);
 			defrouter_select();
 			LLE_WLOCK(ln);
 		}
+
+		if (ln->ln_router || dr)
+			LLE_WLOCK(ln);
 	}
 
 	/*

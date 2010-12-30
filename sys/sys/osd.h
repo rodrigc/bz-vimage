@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/osd.h,v 1.3 2009/04/29 21:14:15 jamie Exp $
+ * $FreeBSD: src/sys/sys/osd.h,v 1.4 2010/12/21 13:45:29 lstewart Exp $
  */
 
 #ifndef _SYS_OSD_H_
@@ -46,9 +46,10 @@ struct osd {
 
 #define	OSD_THREAD	0
 #define	OSD_JAIL	1
+#define	OSD_KHELP	2
 
 #define	OSD_FIRST	OSD_THREAD
-#define	OSD_LAST	OSD_JAIL
+#define	OSD_LAST	OSD_KHELP
 
 typedef void (*osd_destructor_t)(void *value);
 typedef int (*osd_method_t)(void *obj, void *data);

@@ -24,10 +24,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/acpica/acpi_wakecode.S,v 1.13 2006/06/10 08:20:03 njl Exp $
+ * $FreeBSD: src/sys/i386/acpica/acpi_wakecode.S,v 1.14 2010/11/12 20:55:14 jkim Exp $
  */
-
-#define LOCORE
 
 #include <machine/asmacros.h>
 #include <machine/specialreg.h>

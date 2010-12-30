@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.20 2010/06/11 18:46:34 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.22 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_ddb.h"
 

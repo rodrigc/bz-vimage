@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/class/eli/geom_eli.c,v 1.38 2010/10/20 20:50:55 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/class/eli/geom_eli.c,v 1.40 2010/11/22 20:10:48 brucec Exp $");
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -374,7 +374,7 @@ eli_genkey_files(struct gctl_req *req, bool new, const char *type,
 		if (!gctl_has_param(req, argname))
 			return (i);
 
-		file = gctl_get_ascii(req, argname);
+		file = gctl_get_ascii(req, "%s", argname);
 		assert(file != NULL);
 
 		if (strcmp(file, "-") == 0)
@@ -749,8 +749,8 @@ eli_init(struct gctl_req *req)
 			return;
 		}
 		if (val > sysconf(_SC_PAGE_SIZE)) {
-			gctl_error(req, "warning: Using sectorsize bigger than "
-			    "the page size!");
+			fprintf(stderr,
+			    "warning: Using sectorsize bigger than the page size!\n");
 		}
 		md.md_sectorsize = val;
 	}

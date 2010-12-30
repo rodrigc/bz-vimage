@@ -1,6 +1,6 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.arm,v 1.3 2006/09/14 07:44:05 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.arm,v 1.4 2010/11/10 06:39:49 imp Exp $
 
-.if defined(TARGET_BIG_ENDIAN)
+.if ${TARGET_ARCH} == "armeb"
 NATIVE_EMULATION= armelfb_fbsd
 .else
 NATIVE_EMULATION= armelf_fbsd

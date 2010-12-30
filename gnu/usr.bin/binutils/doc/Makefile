@@ -1,13 +1,12 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/doc/Makefile,v 1.21 2004/06/25 06:55:49 marcel Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/doc/Makefile,v 1.22 2010/11/11 23:41:36 dim Exp $
 
 .include "../Makefile.inc0"
 
 .PATH: ${SRCDIR}/gas/doc ${SRCDIR}/ld ${SRCDIR}/bfd/doc
 
-INFO=	as ld gasp binutils
+INFO=	as ld binutils
 INFOSECTION=	"Programming & development tools."
 INFOENTRY_as=	"* As: (as).            The GNU assembler."
-INFOENTRY_gasp=	"* Gasp: (gasp).        The GNU Assembler Macro Preprocessor."
 INFOENTRY_ld=	"* Ld: (ld).		The GNU linker."
 INFOENTRY_binutils= "* Binutils: (binutils).		The GNU Binary Utilities."
 

@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.31 2010/09/16 16:13:12 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.32 2010/11/09 10:59:09 brucec Exp $");
 
 #include "opt_ddb.h"
 #include "opt_mprof.h"
@@ -170,7 +170,7 @@ SLIST_HEAD(lphead, lock_prof);
 
 /*
  * Array of objects and profs for each type of object for each cpu.  Spinlocks
- * are handled seperately because a thread may be preempted and acquire a
+ * are handled separately because a thread may be preempted and acquire a
  * spinlock while in the lock profiling code of a non-spinlock.  In this way
  * we only need a critical section to protect the per-cpu lists.
  */

@@ -59,7 +59,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ar/ar.c,v 1.23 2010/10/09 05:31:08 kientzle Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ar/ar.c,v 1.24 2010/11/28 18:53:57 kaiw Exp $");
 
 #include <sys/queue.h>
 #include <sys/types.h>
@@ -113,11 +113,14 @@ main(int argc, char **argv)
 	len = strlen(bsdar->progname);
 	if (len >= strlen("ranlib") &&
 	    strcmp(bsdar->progname + len - strlen("ranlib"), "ranlib") == 0) {
-		while ((opt = getopt_long(argc, argv, "tV", longopts,
+		while ((opt = getopt_long(argc, argv, "tDV", longopts,
 		    NULL)) != -1) {
 			switch(opt) {
 			case 't':
 				/* Ignored. */
+				break;
+			case 'D':
+				bsdar->options |= AR_D;
 				break;
 			case 'V':
 				ranlib_version();

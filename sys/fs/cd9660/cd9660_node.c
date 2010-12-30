@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/cd9660/cd9660_node.c,v 1.61 2009/01/28 18:54:56 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/cd9660/cd9660_node.c,v 1.62 2010/11/19 21:17:34 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -69,9 +69,6 @@ cd9660_inactive(ap)
 	struct iso_node *ip = VTOI(vp);
 	int error = 0;
 
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("cd9660_inactive: pushing active", vp);
-
 	/*
 	 * If we are done with the inode, reclaim it
 	 * so that it can be reused immediately.
@@ -93,8 +90,6 @@ cd9660_reclaim(ap)
 {
 	struct vnode *vp = ap->a_vp;
 
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("cd9660_reclaim: pushing active", vp);
 	/*
 	 * Destroy the vm object and flush associated pages.
 	 */

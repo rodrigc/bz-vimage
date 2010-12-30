@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)lang.l	8.1 (Berkeley) 6/6/93
- * $FreeBSD: src/usr.sbin/config/lang.l,v 1.49 2010/03/30 13:46:40 ru Exp $
+ * $FreeBSD: src/usr.sbin/config/lang.l,v 1.50 2010/11/22 14:16:22 brucec Exp $
  */
 
 #include <assert.h>
@@ -39,6 +39,7 @@
 #include "config.h"
 
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 
 /*
  * Data for returning to previous files from include files.

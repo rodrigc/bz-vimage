@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libjail/jail.c,v 1.8 2010/08/31 23:14:03 jamie Exp $");
+__FBSDID("$FreeBSD: src/lib/libjail/jail.c,v 1.9 2010/10/27 21:01:53 jamie Exp $");
 
 #define _WANT_CPUSET
 #define _WANT_PRISON
@@ -268,10 +268,6 @@ jailparam_all(struct jailparam **jpp)
 		}
 		if (jailparam_init(jp + njp, buf + sizeof(SJPARAM)) < 0)
 			goto error;
-		if (jailparam_type(jp + njp) < 0) {
-			njp++;
-			goto error;
-		}
 		mib1[1] = 2;
 	}
 	jp = realloc(jp, njp * sizeof(*jp));
@@ -297,6 +293,10 @@ jailparam_init(struct jailparam *jp, const char *name)
 		strerror_r(errno, jail_errmsg, JAIL_ERRMSGLEN);
 		return (-1);
 	}
+	if (jailparam_type(jp) < 0) {
+		jailparam_free(jp, 1);
+		return (-1);
+	}
 	return (0);
 }
 
@@ -311,8 +311,6 @@ jailparam_import(struct jailparam *jp, const char *value)
 	const char *avalue;
 	int i, nval, fw;
 
-	if (!jp->jp_ctltype && jailparam_type(jp) < 0)
-		return (-1);
 	if (value == NULL)
 		return (0);
 	if ((jp->jp_ctltype & CTLTYPE) == CTLTYPE_STRING) {
@@ -1604,8 +1602,6 @@ _jailparam_get(struct jailparam *jp, unsigned njp, int flags,
 	jp_lastjid = jp_jid = jp_name = NULL;
 	arrays = 0;
 	for (ai = j = 0; j < njp; j++) {
-		if (!jp[j].jp_ctltype && jailparam_type(jp + j) < 0)
-			return (-1);
 		if (!strcmp(jp[j].jp_name, "lastjid"))
 			jp_lastjid = jp + j;
 		else if (!strcmp(jp[j].jp_name, "jid"))
@@ -1801,8 +1797,6 @@ jailparam_export(struct jailparam *jp)
 	int i, nval, ival;
 	char valbuf[INET6_ADDRSTRLEN];
 
-	if (!jp->jp_ctltype && jailparam_type(jp) < 0)
-		return (NULL);
 	if ((jp->jp_ctltype & CTLTYPE) == CTLTYPE_STRING) {
 		value = strdup(jp->jp_value);
 		if (value == NULL)

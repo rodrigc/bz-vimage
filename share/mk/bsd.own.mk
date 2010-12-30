@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.own.mk,v 1.91 2010/10/05 21:19:20 gonzo Exp $
+# $FreeBSD: src/share/mk/bsd.own.mk,v 1.92 2010/12/22 14:59:22 nwhitehorn Exp $
 #
 # The include file <bsd.own.mk> set common variables for owner,
 # group, mode, and directories. Defaults are in brackets.
@@ -326,6 +326,7 @@ _clang_no=CLANG
     DICT \
     DYNAMICROOT \
     EXAMPLES \
+    FDT \
     FLOPPY \
     FORTH \
     FP_LIBC \
@@ -421,7 +422,6 @@ MK_${var}:=	yes
     BIND_XML \
     BSD_GREP \
     ${_clang_no} \
-    FDT \
     GPIO \
     HESIOD \
     IDEA

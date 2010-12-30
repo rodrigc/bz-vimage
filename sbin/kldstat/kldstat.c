@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/kldstat/kldstat.c,v 1.22 2010/05/12 15:47:43 brueffer Exp $");
+__FBSDID("$FreeBSD: src/sbin/kldstat/kldstat.c,v 1.23 2010/11/13 16:49:07 kib Exp $");
 
 #include <err.h>
 #include <stdio.h>
@@ -50,14 +50,15 @@ printmod(int modid)
 	printf("\t\t%2d %s\n", stat.id, stat.name);
 }
 
-static void printfile(int fileid, int verbose)
+static void
+printfile(int fileid, int verbose)
 {
     struct kld_file_stat stat;
     int modid;
 
     stat.version = sizeof(struct kld_file_stat);
     if (kldstat(fileid, &stat) < 0)
-	warn("can't stat file id %d", fileid);
+	err(1, "can't stat file id %d", fileid);
     else
 	printf("%2d %4d %p %-8zx %s",
 	       stat.id, stat.refs, stat.address, stat.size, 

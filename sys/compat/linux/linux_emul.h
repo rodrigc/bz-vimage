@@ -25,14 +25,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/linux/linux_emul.h,v 1.10 2009/04/19 13:48:42 dchagin Exp $
+ * $FreeBSD: src/sys/compat/linux/linux_emul.h,v 1.11 2010/11/22 09:06:59 netchild Exp $
  */
 
 #ifndef _LINUX_EMUL_H_
 #define	_LINUX_EMUL_H_
 
+#define EMUL_SHARED_HASXSTAT	0x01
+
 struct linux_emuldata_shared {
 	int	refs;
+	int	flags;
+	int	xstat;
 	pid_t	group_pid;
 
 	LIST_HEAD(, linux_emuldata) threads; /* head of list of linux threads */
@@ -76,6 +80,7 @@ int	linux_proc_init(struct thread *, pid_t, int);
 void	linux_proc_exit(void *, struct proc *);
 void	linux_schedtail(void *, struct proc *);
 void	linux_proc_exec(void *, struct proc *, struct image_params *);
+void	linux_kill_threads(struct thread *, int);
 
 extern struct sx	emul_shared_lock;
 extern struct mtx	emul_lock;

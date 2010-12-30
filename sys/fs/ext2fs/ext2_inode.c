@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ffs_inode.c	8.5 (Berkeley) 12/30/93
- * $FreeBSD: src/sys/fs/ext2fs/ext2_inode.c,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_inode.c,v 1.2 2010/11/19 21:17:34 kib Exp $
  */
 
 #include <sys/param.h>
@@ -481,9 +481,6 @@ ext2_inactive(ap)
 	struct thread *td = ap->a_td;
 	int mode, error = 0;
 
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("ext2_inactive: pushing active", vp);
-
 	/*
 	 * Ignore inodes related to stale file handles.
 	 */
@@ -522,8 +519,6 @@ ext2_reclaim(ap)
 	struct inode *ip;
 	struct vnode *vp = ap->a_vp;
 
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("ufs_reclaim: pushing active", vp);
 	ip = VTOI(vp);
 	if (ip->i_flag & IN_LAZYMOD) {
 		ip->i_flag |= IN_MODIFIED;

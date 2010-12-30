@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/Makefile,v 1.256 2010/08/28 15:03:11 nwhitehorn Exp $
+# $FreeBSD: src/lib/Makefile,v 1.257 2010/11/11 15:48:27 ed Exp $
 
 .include <bsd.own.mk>
 
@@ -34,6 +34,7 @@ SUBDIR_ORDERED=	${_csu} \
 	libbsm \
 	libauditd \
 	libcom_err \
+	libcompiler_rt \
 	libcrypt \
 	libelf \
 	libkvm \
@@ -53,6 +54,7 @@ SUBDIR=	${SUBDIR_ORDERED} \
 	libarchive \
 	${_libatm} \
 	libbegemot \
+	libblocksruntime \
 	${_libbluetooth} \
 	${_libbsnmp} \
 	libbz2 \

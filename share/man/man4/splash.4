@@ -24,9 +24,9 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/splash.4,v 1.30 2010/05/13 12:07:55 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/splash.4,v 1.31 2010/11/29 21:31:25 dougb Exp $
 .\"
-.Dd April 7, 2010
+.Dd November 29, 2010
 .Dt SPLASH 4
 .Os
 .Sh NAME
@@ -114,7 +114,10 @@ The screen will gradually fade away.
 .It Pa fire_saver.ko
 A fire which becomes higher as load increases.
 .It Pa green_saver.ko
-If the monitor supports power saving mode, it will be turned off.
+The screen will be blanked, similar to
+.Pa blank_saver.ko .
+If the monitor and the video card's BIOS support it
+the screen will also be powered off.
 .It Pa logo_saver.ko
 Animated graphical
 .Fx

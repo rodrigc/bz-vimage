@@ -53,7 +53,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_shm.c,v 1.12 2010/06/02 15:46:37 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_shm.c,v 1.13 2010/12/02 17:37:16 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -271,7 +271,7 @@ shm_dotruncate(struct shmfd *shmfd, off_t length)
 			swap_pager_freespace(object, nobjsize, delta);
 
 		/* Free the swap accounted for shm */
-		swap_release_by_uid(delta, object->uip);
+		swap_release_by_cred(delta, object->cred);
 		object->charge -= delta;
 
 		/*
@@ -314,7 +314,7 @@ shm_dotruncate(struct shmfd *shmfd, off_t length)
 
 		/* Attempt to reserve the swap */
 		delta = ptoa(nobjsize - object->size);
-		if (!swap_reserve_by_uid(delta, object->uip)) {
+		if (!swap_reserve_by_cred(delta, object->cred)) {
 			VM_OBJECT_UNLOCK(object);
 			return (ENOMEM);
 		}

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/libkern/gets.c,v 1.4 2006/01/14 20:45:02 ru Exp $");
+__FBSDID("$FreeBSD: src/sys/libkern/gets.c,v 1.5 2010/11/14 14:12:43 ed Exp $");
 
 #include <sys/param.h>
 #include <sys/cons.h>
@@ -60,8 +60,16 @@ gets(char *cp, size_t size, int visible)
 			continue;
 		default:
 			if (lp < end) {
-				if (visible)
+				switch (visible) {
+				case GETS_NOECHO:
+					break;
+				case GETS_ECHOPASS:
+					printf("*");
+					break;
+				default:	
 					printf("%c", c);
+					break;
+				}
 				*lp++ = c;
 			}
 		}

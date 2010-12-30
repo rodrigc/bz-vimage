@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)trap.c	8.5 (Berkeley) 6/5/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/trap.c,v 1.38 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/trap.c,v 1.39 2010/12/21 20:47:06 jilles Exp $");
 
 #include <signal.h>
 #include <unistd.h>
@@ -185,7 +185,7 @@ trapcmd(int argc, char **argv)
 	}
 	while (*argv) {
 		if ((signo = sigstring_to_signum(*argv)) == -1) {
-			out2fmt_flush("trap: bad signal %s\n", *argv);
+			warning("bad signal %s", *argv);
 			errors = 1;
 		}
 		INTOFF;

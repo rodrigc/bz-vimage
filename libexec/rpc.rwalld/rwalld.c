@@ -27,10 +27,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef lint
-static const char rcsid[] =
-  "$FreeBSD: src/libexec/rpc.rwalld/rwalld.c,v 1.13 2005/02/14 17:42:58 stefanf Exp $";
-#endif /* not lint */
+#include <sys/cdefs.h>
+__FBSDID("$FreeBSD: src/libexec/rpc.rwalld/rwalld.c,v 1.14 2010/12/19 13:05:17 charnier Exp $");
 
 #include <err.h>
 #include <pwd.h>
@@ -136,14 +134,14 @@ possess(void)
 }
 
 void
-killkids(int sig)
+killkids(int sig __unused)
 {
 	while(wait4(-1, NULL, WNOHANG, NULL) > 0)
 		;
 }
 
 void *
-wallproc_wall_1_svc(wrapstring *s, struct svc_req *rqstp)
+wallproc_wall_1_svc(wrapstring *s, struct svc_req *rqstp __unused)
 {
 	static void		*dummy = NULL;
 

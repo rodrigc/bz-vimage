@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)eval.c	8.9 (Berkeley) 6/8/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.89 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.96 2010/12/28 21:27:08 jilles Exp $");
 
 #include <paths.h>
 #include <signal.h>
@@ -94,6 +94,7 @@ static void evalsubshell(union node *, int);
 static void evalredir(union node *, int);
 static void expredir(union node *);
 static void evalpipe(union node *);
+static int is_valid_fast_cmdsubst(union node *n);
 static void evalcommand(union node *, int, struct backcmd *);
 static void prehash(union node *);
 
@@ -135,8 +136,7 @@ evalcmd(int argc, char **argv)
                         STARTSTACKSTR(concat);
                         ap = argv + 2;
                         for (;;) {
-                                while (*p)
-                                        STPUTC(*p++, concat);
+                                STPUTS(p, concat);
                                 if ((p = *ap++) == NULL)
                                         break;
                                 STPUTC(' ', concat);
@@ -196,6 +196,7 @@ void
 evaltree(union node *n, int flags)
 {
 	int do_etest;
+	union node *next;
 
 	do_etest = 0;
 	if (n == NULL) {
@@ -203,84 +204,88 @@ evaltree(union node *n, int flags)
 		exitstatus = 0;
 		goto out;
 	}
+	do {
+		next = NULL;
 #ifndef NO_HISTORY
-	displayhist = 1;	/* show history substitutions done with fc */
+		displayhist = 1;	/* show history substitutions done with fc */
 #endif
-	TRACE(("evaltree(%p: %d) called\n", (void *)n, n->type));
-	switch (n->type) {
-	case NSEMI:
-		evaltree(n->nbinary.ch1, flags & ~EV_EXIT);
-		if (evalskip)
-			goto out;
-		evaltree(n->nbinary.ch2, flags);
-		break;
-	case NAND:
-		evaltree(n->nbinary.ch1, EV_TESTED);
-		if (evalskip || exitstatus != 0) {
-			goto out;
+		TRACE(("evaltree(%p: %d) called\n", (void *)n, n->type));
+		switch (n->type) {
+		case NSEMI:
+			evaltree(n->nbinary.ch1, flags & ~EV_EXIT);
+			if (evalskip)
+				goto out;
+			next = n->nbinary.ch2;
+			break;
+		case NAND:
+			evaltree(n->nbinary.ch1, EV_TESTED);
+			if (evalskip || exitstatus != 0) {
+				goto out;
+			}
+			next = n->nbinary.ch2;
+			break;
+		case NOR:
+			evaltree(n->nbinary.ch1, EV_TESTED);
+			if (evalskip || exitstatus == 0)
+				goto out;
+			next = n->nbinary.ch2;
+			break;
+		case NREDIR:
+			evalredir(n, flags);
+			break;
+		case NSUBSHELL:
+			evalsubshell(n, flags);
+			do_etest = !(flags & EV_TESTED);
+			break;
+		case NBACKGND:
+			evalsubshell(n, flags);
+			break;
+		case NIF: {
+			evaltree(n->nif.test, EV_TESTED);
+			if (evalskip)
+				goto out;
+			if (exitstatus == 0)
+				next = n->nif.ifpart;
+			else if (n->nif.elsepart)
+				next = n->nif.elsepart;
+			else
+				exitstatus = 0;
+			break;
 		}
-		evaltree(n->nbinary.ch2, flags);
-		break;
-	case NOR:
-		evaltree(n->nbinary.ch1, EV_TESTED);
-		if (evalskip || exitstatus == 0)
-			goto out;
-		evaltree(n->nbinary.ch2, flags);
-		break;
-	case NREDIR:
-		evalredir(n, flags);
-		break;
-	case NSUBSHELL:
-		evalsubshell(n, flags);
-		do_etest = !(flags & EV_TESTED);
-		break;
-	case NBACKGND:
-		evalsubshell(n, flags);
-		break;
-	case NIF: {
-		evaltree(n->nif.test, EV_TESTED);
-		if (evalskip)
-			goto out;
-		if (exitstatus == 0)
-			evaltree(n->nif.ifpart, flags);
-		else if (n->nif.elsepart)
-			evaltree(n->nif.elsepart, flags);
-		else
+		case NWHILE:
+		case NUNTIL:
+			evalloop(n, flags & ~EV_EXIT);
+			break;
+		case NFOR:
+			evalfor(n, flags & ~EV_EXIT);
+			break;
+		case NCASE:
+			evalcase(n, flags);
+			break;
+		case NDEFUN:
+			defun(n->narg.text, n->narg.next);
 			exitstatus = 0;
-		break;
-	}
-	case NWHILE:
-	case NUNTIL:
-		evalloop(n, flags & ~EV_EXIT);
-		break;
-	case NFOR:
-		evalfor(n, flags & ~EV_EXIT);
-		break;
-	case NCASE:
-		evalcase(n, flags);
-		break;
-	case NDEFUN:
-		defun(n->narg.text, n->narg.next);
-		exitstatus = 0;
-		break;
-	case NNOT:
-		evaltree(n->nnot.com, EV_TESTED);
-		exitstatus = !exitstatus;
-		break;
+			break;
+		case NNOT:
+			evaltree(n->nnot.com, EV_TESTED);
+			exitstatus = !exitstatus;
+			break;
 
-	case NPIPE:
-		evalpipe(n);
-		do_etest = !(flags & EV_TESTED);
-		break;
-	case NCMD:
-		evalcommand(n, flags, (struct backcmd *)NULL);
-		do_etest = !(flags & EV_TESTED);
-		break;
-	default:
-		out1fmt("Node type = %d\n", n->type);
-		flushout(&output);
-		break;
-	}
+		case NPIPE:
+			evalpipe(n);
+			do_etest = !(flags & EV_TESTED);
+			break;
+		case NCMD:
+			evalcommand(n, flags, (struct backcmd *)NULL);
+			do_etest = !(flags & EV_TESTED);
+			break;
+		default:
+			out1fmt("Node type = %d\n", n->type);
+			flushout(&output);
+			break;
+		}
+		n = next;
+	} while (n != NULL);
 out:
 	if (pendingsigs)
 		dotrap();
@@ -561,6 +566,19 @@ evalpipe(union node *n)
 
 
 
+static int
+is_valid_fast_cmdsubst(union node *n)
+{
+	union node *argp;
+
+	if (n->type != NCMD)
+		return 0;
+	for (argp = n->ncmd.args ; argp ; argp = argp->narg.next)
+		if (expandhassideeffects(argp->narg.text))
+			return 0;
+	return 1;
+}
+
 /*
  * Execute a command inside back quotes.  If it's a builtin command, we
  * want to save its output in a block obtained from malloc.  Otherwise
@@ -574,6 +592,8 @@ evalbackcmd(union node *n, struct backcmd *result)
 	int pip[2];
 	struct job *jp;
 	struct stackmark smark;		/* unnecessary */
+	struct jmploc jmploc;
+	struct jmploc *savehandler;
 
 	setstackmark(&smark);
 	result->fd = -1;
@@ -584,9 +604,21 @@ evalbackcmd(union node *n, struct backcmd *result)
 		exitstatus = 0;
 		goto out;
 	}
-	if (n->type == NCMD) {
+	if (is_valid_fast_cmdsubst(n)) {
 		exitstatus = oexitstatus;
-		evalcommand(n, EV_BACKCMD, result);
+		savehandler = handler;
+		if (setjmp(jmploc.loc)) {
+			if (exception == EXERROR || exception == EXEXEC)
+				exitstatus = 2;
+			else if (exception != 0) {
+				handler = savehandler;
+				longjmp(handler->loc, 1);
+			}
+		} else {
+			handler = &jmploc;
+			evalcommand(n, EV_BACKCMD, result);
+		}
+		handler = savehandler;
 	} else {
 		exitstatus = 0;
 		if (pipe(pip) < 0)
@@ -694,13 +726,13 @@ evalcommand(union node *cmd, int flags, struct backcmd *backcmd)
 		for (sp = varlist.list ; sp ; sp = sp->next) {
 			if (sep != 0)
 				out2c(' ');
-			p = sp->text;
-			while (*p != '=' && *p != '\0')
-				out2c(*p++);
-			if (*p != '\0') {
-				out2c(*p++);
+			p = strchr(sp->text, '=');
+			if (p != NULL) {
+				p++;
+				outbin(sp->text, p - sp->text, out2);
 				out2qstr(p);
-			}
+			} else
+				out2qstr(sp->text);
 			sep = ' ';
 		}
 		for (sp = arglist.list ; sp ; sp = sp->next) {
@@ -1130,7 +1162,7 @@ commandcmd(int argc, char **argv)
 		return typecmd_impl(2, argv - 1, cmd, path);
 	}
 	if (argc != 0)
-		error("commandcmd() called while it should not be");
+		error("commandcmd bad call");
 
 	/*
 	 * Do nothing successfully if no command was specified;

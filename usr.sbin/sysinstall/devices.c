@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/devices.c,v 1.194 2010/07/16 20:42:20 brucec Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/devices.c,v 1.195 2010/11/29 11:28:31 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -91,7 +91,7 @@ static struct _devname {
     DISK("ipsd%d",	"IBM ServeRAID RAID array",		4),
     DISK("mfid%d",	"LSI MegaRAID SAS array",		4),
     FLOPPY("fd%d",	"floppy drive unit A",			4),
-    SERIAL("cuad%d",	"%s on device %s (COM%d)",		16),
+    SERIAL("cuau%d",	"%s on device %s (COM%d)",		16),
     USB("da%da",	"USB Mass Storage Device",		16),
     NETWORK("ae",	"Attansic/Atheros L2 Fast Ethernet"),
     NETWORK("age",	"Attansic/Atheros L1 Gigabit Ethernet"),

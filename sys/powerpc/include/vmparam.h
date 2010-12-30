@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: vmparam.h,v 1.11 2000/02/11 19:25:16 thorpej Exp $
- * $FreeBSD: src/sys/powerpc/include/vmparam.h,v 1.19 2010/07/27 20:33:50 jhb Exp $
+ * $FreeBSD: src/sys/powerpc/include/vmparam.h,v 1.20 2010/12/20 14:25:01 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_VMPARAM_H_
@@ -140,9 +140,14 @@ struct pmap_physseg {
 #define	VM_PHYSSEG_MAX		16	/* 1? */
 
 /*
- * The physical address space is densely populated.
+ * The physical address space is densely populated on 32-bit systems,
+ * but may not be on 64-bit ones.
  */
+#ifdef __powerpc64__
+#define	VM_PHYSSEG_SPARSE
+#else
 #define	VM_PHYSSEG_DENSE
+#endif
 
 /*
  * Create three free page pools: VM_FREEPOOL_DEFAULT is the default pool

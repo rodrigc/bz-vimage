@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.237 2010/10/19 11:55:58 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/nfs_vfsops.c,v 1.238 2010/10/27 14:08:37 jh Exp $");
 
 
 #include "opt_bootp.h"
@@ -777,10 +777,10 @@ static const char *nfs_opts[] = { "from", "nfs_args",
     "noatime", "noexec", "suiddir", "nosuid", "nosymfollow", "union",
     "noclusterr", "noclusterw", "multilabel", "acls", "force", "update",
     "async", "dumbtimer", "noconn", "nolockd", "intr", "rdirplus", "resvport",
-    "readdirsize", "soft", "hard", "mntudp", "tcp", "udp", "wsize", "rsize",
-    "retrans", "acregmin", "acregmax", "acdirmin", "acdirmax", 
-    "deadthresh", "hostname", "timeout", "addr", "fh", "nfsv3", "sec",
-    "maxgroups", "principal", "negnametimeo",
+    "readahead", "readdirsize", "soft", "hard", "mntudp", "tcp", "udp",
+    "wsize", "rsize", "retrans", "acregmin", "acregmax", "acdirmin",
+    "acdirmax", "deadthresh", "hostname", "timeout", "addr", "fh", "nfsv3",
+    "sec", "maxgroups", "principal", "negnametimeo",
     NULL };
 
 /*

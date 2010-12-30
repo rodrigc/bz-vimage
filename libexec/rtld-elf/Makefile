@@ -1,4 +1,4 @@
-# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.51 2010/10/22 04:43:04 marcel Exp $
+# $FreeBSD: src/libexec/rtld-elf/Makefile,v 1.53 2010/12/25 08:42:38 kib Exp $
 
 .include <bsd.own.mk>
 MK_SSP=		no
@@ -29,7 +29,12 @@ SYMLINKS=	${BINDIR}/${PROG} /usr/libexec/${PROG}
 MLINKS=		rtld.1 ld-elf.so.1.1 \
 		rtld.1 ld.so.1
 
-CFLAGS+=	-fpic -DPIC
+.if ${MACHINE_CPUARCH} == "sparc64"
+CFLAGS+=	-fPIC
+.else
+CFLAGS+=	-fpic
+.endif
+CFLAGS+=	-DPIC $(DEBUG)
 LDFLAGS+=	-shared -Wl,-Bsymbolic
 DPADD=		${LIBC_PIC}
 LDADD=		-lc_pic -lssp_nonshared

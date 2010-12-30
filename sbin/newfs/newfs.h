@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/newfs/newfs.h,v 1.25 2010/03/09 19:31:08 sobomax Exp $
+ * $FreeBSD: src/sbin/newfs/newfs.h,v 1.26 2010/12/29 12:31:18 kib Exp $
  */
 
 #include <libufs.h>
@@ -85,6 +85,7 @@ extern int	Xflag;		/* exit in middle of newfs for testing */
 extern int	Jflag;		/* enable gjournal for file system */
 extern int	lflag;		/* enable multilabel MAC for file system */
 extern int	nflag;		/* do not create .snap directory */
+extern int	tflag;		/* enable TRIM */
 extern intmax_t	fssize;		/* file system size */
 extern int	sectorsize;	/* bytes/sector */
 extern int	realsectorsize;	/* bytes/sector in hardware*/

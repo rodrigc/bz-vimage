@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2008  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 2004-2008, 2010  Internet Systems Consortium, Inc. ("ISC")
  * Copyright (C) 1999-2001, 2003  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -468,7 +468,7 @@ isc_print_vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 			if (width > 0) {
 				count += width;
 				width--;
-				if (left) {
+				if (left && size > 1) {
 					*str++ = c;
 					size--;
 				}

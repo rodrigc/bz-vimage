@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004, 2005, 2007  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 2004, 2005, 2007, 2010  Internet Systems Consortium, Inc. ("ISC")
  * Copyright (C) 1999-2002  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -71,6 +71,8 @@ struct ns_query {
 #define NS_QUERYATTR_SECURE		0x0200
 #define NS_QUERYATTR_NOAUTHORITY	0x0400
 #define NS_QUERYATTR_NOADDITIONAL	0x0800
+#define NS_QUERYATTR_CACHEACLOKVALID	0x1000
+#define NS_QUERYATTR_CACHEACLOK		0x2000
 
 isc_result_t
 ns_query_init(ns_client_t *client);

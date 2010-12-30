@@ -1,7 +1,7 @@
-# $FreeBSD: src/gnu/usr.bin/gdb/kgdb/Makefile,v 1.7 2008/01/24 19:11:13 jhb Exp $
+# $FreeBSD: src/gnu/usr.bin/gdb/kgdb/Makefile,v 1.8 2010/11/10 06:39:49 imp Exp $
 
 PROG=	kgdb${GDB_SUFFIX}
-SRCS=	main.c kld.c kthr.c trgt.c trgt_${TARGET_ARCH}.c
+SRCS=	main.c kld.c kthr.c trgt.c trgt_${TARGET_CPUARCH}.c
 WARNS?=	2
 
 BULIBS= ${OBJ_BU}/libbfd/libbfd.a ${OBJ_BU}/libopcodes/libopcodes.a \

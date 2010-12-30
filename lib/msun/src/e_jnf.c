@@ -14,7 +14,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/e_jnf.c,v 1.10 2008/08/08 00:21:27 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/e_jnf.c,v 1.11 2010/11/13 10:54:10 uqs Exp $");
 
 #include "math.h"
 #include "math_private.h"
@@ -152,7 +152,12 @@ __ieee754_jnf(int n, float x)
 			}
 	     	    }
 		}
-	    	b = (t*__ieee754_j0f(x)/b);
+		z = __ieee754_j0f(x);
+		w = __ieee754_j1f(x);
+		if (fabsf(z) >= fabsf(w))
+		    b = (t*z/b);
+		else
+		    b = (t*w/a);
 	    }
 	}
 	if(sgn==1) return -b; else return b;

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.254 2010/10/24 16:31:57 brucec Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.255 2010/11/30 22:39:46 ken Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -2386,6 +2386,7 @@ xpt_action_default(union ccb *start_ccb)
 		/* FALLTHROUGH */
 	case XPT_RESET_DEV:
 	case XPT_ENG_EXEC:
+	case XPT_SMP_IO:
 	{
 		struct cam_path *path = start_ccb->ccb_h.path;
 		int frozen;

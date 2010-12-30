@@ -25,7 +25,7 @@
  */
 
 #include "archive_platform.h"
-__FBSDID("$FreeBSD: src/lib/libarchive/archive_read_disk.c,v 1.1 2009/03/06 04:35:31 kientzle Exp $");
+__FBSDID("$FreeBSD: src/lib/libarchive/archive_read_disk.c,v 1.2 2010/11/05 05:11:54 kientzle Exp $");
 
 #include "archive.h"
 #include "archive_string.h"
@@ -33,7 +33,7 @@ __FBSDID("$FreeBSD: src/lib/libarchive/archive_read_disk.c,v 1.1 2009/03/06 04:3
 #include "archive_private.h"
 #include "archive_read_disk_private.h"
 
-static int	_archive_read_finish(struct archive *);
+static int	_archive_read_free(struct archive *);
 static int	_archive_read_close(struct archive *);
 static const char *trivial_lookup_gname(void *, gid_t gid);
 static const char *trivial_lookup_uname(void *, uid_t uid);
@@ -45,7 +45,7 @@ archive_read_disk_vtable(void)
 	static int inited = 0;
 
 	if (!inited) {
-		av.archive_finish = _archive_read_finish;
+		av.archive_free = _archive_read_free;
 		av.archive_close = _archive_read_close;
 	}
 	return (&av);
@@ -129,7 +129,7 @@ archive_read_disk_new(void)
 }
 
 static int
-_archive_read_finish(struct archive *_a)
+_archive_read_free(struct archive *_a)
 {
 	struct archive_read_disk *a = (struct archive_read_disk *)_a;
 

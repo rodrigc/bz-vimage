@@ -31,7 +31,7 @@
 /* $KAME: sctp_structs.h,v 1.13 2005/03/06 16:04:18 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_structs.h,v 1.39 2010/07/29 11:37:04 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_structs.h,v 1.40 2010/12/04 19:29:49 tuexen Exp $");
 
 #ifndef __sctp_structs_h__
 #define __sctp_structs_h__
@@ -1058,6 +1058,7 @@ struct sctp_association {
 	uint8_t delayed_connection;
 	uint8_t ifp_had_enobuf;
 	uint8_t saw_sack_with_frags;
+	uint8_t saw_sack_with_nr_frags;
 	uint8_t in_asocid_hash;
 	uint8_t assoc_up_sent;
 	uint8_t adaptation_needed;

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if_clone.c,v 1.20 2010/04/11 18:47:38 bz Exp $
+ * $FreeBSD: src/sys/net/if_clone.c,v 1.22 2010/11/22 19:32:54 dim Exp $
  */
 
 #include "opt_ddb.h"

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.264 2010/05/25 20:42:35 qingli Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.268 2010/12/27 19:38:25 rwatson Exp $");
 
 #include "opt_ddb.h"
 #include "opt_ipsec.h"
@@ -870,10 +870,6 @@ in_pcbconnect_setup(struct inpcb *inp, struct sockaddr *nam,
 		}
 	}
 	if (laddr.s_addr == INADDR_ANY) {
-		error = in_pcbladdr(inp, &faddr, &laddr, cred);
-		if (error)
-			return (error);
-
 		/*
 		 * If the destination address is multicast and an outgoing
 		 * interface has been set as a multicast option, use the
@@ -898,9 +894,12 @@ in_pcbconnect_setup(struct inpcb *inp, struct sockaddr *nam,
 				laddr = ia->ia_addr.sin_addr;
 				IN_IFADDR_RUNLOCK();
 			}
+		} else {
+			error = in_pcbladdr(inp, &faddr, &laddr, cred);
+			if (error) 
+				return (error);
 		}
 	}
-
 	oinp = in_pcblookup_hash(inp->inp_pcbinfo, faddr, fport, laddr, lport,
 	    0, NULL);
 	if (oinp != NULL) {
@@ -1073,12 +1072,6 @@ in_pcbfree(struct inpcb *inp)
  * or a RST on the wire, and allows the port binding to be reused while still
  * maintaining the invariant that so_pcb always points to a valid inpcb until
  * in_pcbdetach().
- *
- * XXXRW: An inp_lport of 0 is used to indicate that the inpcb is not on hash
- * lists, but can lead to confusing netstat output, as open sockets with
- * closed TCP connections will no longer appear to have their bound port
- * number.  An explicit flag would be better, as it would allow us to leave
- * the port number intact after the connection is dropped.
  *
  * XXXRW: Possibly in_pcbdrop() should also prevent future notifications by
  * in_pcbnotifyall() and in_pcbpurgeif0()?

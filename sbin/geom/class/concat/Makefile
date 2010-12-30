@@ -1,7 +1,7 @@
-# $FreeBSD: src/sbin/geom/class/concat/Makefile,v 1.3 2004/05/21 22:12:24 pjd Exp $
+# $FreeBSD: src/sbin/geom/class/concat/Makefile,v 1.4 2010/12/15 23:24:34 obrien Exp $
 
 .PATH: ${.CURDIR}/../../misc
 
-CLASS=	concat
+GEOM_CLASS=	concat
 
 .include <bsd.lib.mk>

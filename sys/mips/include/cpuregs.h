@@ -52,7 +52,7 @@
  * from: Header: /sprite/src/kernel/vm/ds3100.md/RCS/vmPmaxConst.h,
  *	v 9.1 89/09/18 17:33:00 shirriff Exp  SPRITE (DECWRL)
  *
- * $FreeBSD: src/sys/mips/include/cpuregs.h,v 1.14 2010/09/17 02:14:21 neel Exp $
+ * $FreeBSD: src/sys/mips/include/cpuregs.h,v 1.15 2010/11/07 03:09:02 gonzo Exp $
  */
 
 #ifndef _MIPS_CPUREGS_H_
@@ -181,6 +181,9 @@
 #define	MIPS_XUSEG_END			0x0000010000000000
 #define	MIPS_XKSEG_START		0xc000000000000000
 #define	MIPS_XKSEG_END			0xc00000ff80000000
+#define	MIPS_XKSEG_COMPAT32_START	0xffffffff80000000
+#define	MIPS_XKSEG_COMPAT32_END		0xffffffffffffffff
+#define	MIPS_XKSEG_TO_COMPAT32(va)	((va) & 0xffffffff)
 
 #ifdef __mips_n64
 #define	MIPS_DIRECT_MAPPABLE(pa)	1

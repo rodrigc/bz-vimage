@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.6 2010/09/14 01:33:21 emaste Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.7 2010/12/25 11:52:04 osa Exp $");
 
 #include <ctype.h>
 #include <math.h>
@@ -80,7 +80,7 @@ static char *floattotime(double f);
  * ModifierIndex	::=	'Second' | 'Third' | 'Fourth' | 'Fifth' |
  *				'First' | 'Last'
  * 
- * SpecialDay		::=	'Easter' | 'Pashka' | 'ChineseNewYear'
+ * SpecialDay		::=	'Easter' | 'Paskha' | 'ChineseNewYear'
  *
  */
 static int

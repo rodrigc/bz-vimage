@@ -26,7 +26,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)mount.8	8.8 (Berkeley) 6/16/94
-.\" $FreeBSD: src/sbin/mount/mount.8,v 1.96 2010/05/29 20:24:01 jilles Exp $
+.\" $FreeBSD: src/sbin/mount/mount.8,v 1.97 2010/11/20 18:40:50 mckusick Exp $
 .\"
 .Dd February 10, 2010
 .Dt MOUNT 8
@@ -305,9 +305,6 @@ When you are done with the mounted snapshot:
 umount /mnt
 mdconfig -d -u 4
 .Ed
-.Pp
-Further details can be found in the file at
-.Pa /usr/src/sys/ufs/ffs/README.snapshot .
 .El
 .It Cm suiddir
 A directory on the mounted file system will respond to the SUID bit

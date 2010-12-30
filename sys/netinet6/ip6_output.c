@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/ip6_output.c,v 1.144 2010/09/24 14:38:54 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/ip6_output.c,v 1.145 2010/11/27 21:51:39 brucec Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -814,13 +814,13 @@ again:
 
 #ifdef DIAGNOSTIC
 		if ((hbh->ip6h_len + 1) << 3 > exthdrs.ip6e_hbh->m_len)
-			panic("ip6e_hbh is not continuous");
+			panic("ip6e_hbh is not contiguous");
 #endif
 		/*
 		 *  XXX: if we have to send an ICMPv6 error to the sender,
 		 *       we need the M_LOOP flag since icmp6_error() expects
 		 *       the IPv6 and the hop-by-hop options header are
-		 *       continuous unless the flag is set.
+		 *       contiguous unless the flag is set.
 		 */
 		m->m_flags |= M_LOOP;
 		m->m_pkthdr.rcvif = ifp;

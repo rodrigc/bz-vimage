@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/sparc64/loader/main.c,v 1.49 2010/05/02 19:38:17 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/sparc64/loader/main.c,v 1.50 2010/10/29 20:42:02 marius Exp $");
 
 /*
  * FreeBSD/sparc64 kernel loader - machine dependent part
@@ -811,14 +811,14 @@ main(int (*openfirm)(void *))
 	archsw.arch_autoload = sparc64_autoload;
 	archsw.arch_maphint = sparc64_maphint;
 
+	if (init_heap() == (vm_offset_t)-1)
+		OF_exit();
+	setheap((void *)heapva, (void *)(heapva + HEAPSZ));
+
 	/*
 	 * Probe for a console.
 	 */
 	cons_probe();
-
-	if (init_heap() == (vm_offset_t)-1)
-		panic("%s: can't claim heap", __func__);
-	setheap((void *)heapva, (void *)(heapva + HEAPSZ));
 
 	if ((root = OF_peer(0)) == -1)
 		panic("%s: can't get root phandle", __func__);

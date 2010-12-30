@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ata/ata-pci.h,v 1.122 2010/08/28 07:10:51 mav Exp $
+ * $FreeBSD: src/sys/dev/ata/ata-pci.h,v 1.123 2010/11/17 17:52:04 mav Exp $
  */
 
 /* structure holding chipset config info */
@@ -512,7 +512,10 @@ struct ata_pci_controller {
 #define ATA_VIACX700            0x83241106
 #define ATA_VIASATAIDE          0x53241106
 #define ATA_VIAVX800            0x83531106
+#define ATA_VIASATAIDE2         0xc4091106
 #define ATA_VIAVX855            0x84091106
+#define ATA_VIASATAIDE3         0x90011106
+#define ATA_VIAVX900            0x84101106
 
 /* global prototypes ata-pci.c */
 int ata_pci_probe(device_t dev);

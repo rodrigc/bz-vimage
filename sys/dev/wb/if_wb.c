@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wb/if_wb.c,v 1.6 2010/10/15 15:00:30 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wb/if_wb.c,v 1.7 2010/11/07 12:29:26 marius Exp $");
 
 /*
  * Winbond fast ethernet PCI NIC driver
@@ -857,7 +857,7 @@ wb_attach(dev)
 	 */
 	error = mii_attach(dev, &sc->wb_miibus, ifp, wb_ifmedia_upd,
 	    wb_ifmedia_sts, BMSR_DEFCAPMASK, MII_PHY_ANY, MII_OFFSET_ANY, 0);
-		if (error != 0) {
+	if (error != 0) {
 		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
 	}

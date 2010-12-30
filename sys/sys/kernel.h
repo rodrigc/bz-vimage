@@ -39,7 +39,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)kernel.h	8.3 (Berkeley) 1/21/94
- * $FreeBSD: src/sys/sys/kernel.h,v 1.152 2010/05/24 11:40:49 mav Exp $
+ * $FreeBSD: src/sys/sys/kernel.h,v 1.153 2010/11/10 16:42:36 mav Exp $
  */
 
 #ifndef _SYS_KERNEL_H_
@@ -64,8 +64,6 @@ extern int stathz;			/* statistics clock's frequency */
 extern int profhz;			/* profiling clock's frequency */
 extern int profprocs;			/* number of process's profiling */
 extern int ticks;
-extern int timer1hz;			/* timer 1 frequency */
-extern int timer2hz;			/* timer 2 frequency */
 
 #endif /* _KERNEL */
 

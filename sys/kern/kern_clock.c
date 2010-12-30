@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.223 2010/09/14 08:48:06 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_clock.c,v 1.226 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_kdb.h"
 #include "opt_device_polling.h"
@@ -195,7 +195,7 @@ deadlkres(void)
 		panic("%s: possible deadlock detected on allproc_lock\n",
 				    __func__);
 			tryl++;
-			pause("allproc_lock deadlkres", sleepfreq * hz);
+			pause("allproc", sleepfreq * hz);
 			continue;
 		}
 		tryl = 0;
@@ -288,7 +288,7 @@ deadlkres(void)
 		sx_sunlock(&allproc_lock);
 
 		/* Sleep for sleepfreq seconds. */
-		pause("deadlkres", sleepfreq * hz);
+		pause("-", sleepfreq * hz);
 	}
 }
 

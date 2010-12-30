@@ -11,7 +11,7 @@
 
 /*
  * from: @(#)fdlibm.h 5.1 93/09/24
- * $FreeBSD: src/lib/msun/src/math.h,v 1.78 2010/06/12 17:32:05 das Exp $
+ * $FreeBSD: src/lib/msun/src/math.h,v 1.79 2010/12/05 22:11:22 das Exp $
  */
 
 #ifndef _MATH_H_
@@ -236,6 +236,7 @@ double	lgamma(double);
 long long llrint(double);
 long long llround(double);
 double	log1p(double);
+double	log2(double);
 double	logb(double);
 long	lrint(double);
 long	lround(double);
@@ -319,6 +320,7 @@ int	ilogbf(float) __pure2;
 float	ldexpf(float, int);
 float	log10f(float);
 float	log1pf(float);
+float	log2f(float);
 float	logf(float);
 float	modff(float, float *);	/* fundamentally !__pure2 */
 

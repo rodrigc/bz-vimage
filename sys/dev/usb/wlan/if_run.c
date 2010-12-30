@@ -17,7 +17,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.16 2010/09/02 03:28:03 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.17 2010/11/06 18:17:20 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2700U/RT2800U/RT3000U chipset driver.
@@ -632,8 +632,7 @@ run_attach(device_t self)
 	    IEEE80211_C_SHPREAMBLE |	/* short preamble supported */
 	    IEEE80211_C_SHSLOT |	/* short slot time supported */
 	    IEEE80211_C_WME |		/* WME */
-	    IEEE80211_C_WPA |		/* WPA1|WPA2(RSN) */
-	    IEEE80211_C_RATECTL;	/* use ratectl */
+	    IEEE80211_C_WPA;		/* WPA1|WPA2(RSN) */
 
 	ic->ic_cryptocaps =
 	    IEEE80211_CRYPTO_WEP |

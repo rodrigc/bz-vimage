@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mps/mps.c,v 1.6 2010/10/15 15:24:59 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mps/mps.c,v 1.9 2010/12/10 21:45:10 ken Exp $");
 
 /* Communications core for LSI MPT2 */
 
@@ -43,6 +43,7 @@ __FBSDID("$FreeBSD: src/sys/dev/mps/mps.c,v 1.6 2010/10/15 15:24:59 mdf Exp $");
 #include <sys/malloc.h>
 #include <sys/uio.h>
 #include <sys/sysctl.h>
+#include <sys/endian.h>
 
 #include <machine/bus.h>
 #include <machine/resource.h>
@@ -607,9 +608,16 @@ mps_alloc_queues(struct mps_softc *sc)
 static int
 mps_alloc_replies(struct mps_softc *sc)
 {
-	int rsize;
+	int rsize, num_replies;
 
-	rsize = sc->facts->ReplyFrameSize * sc->num_replies * 4; 
+	/*
+	 * sc->num_replies should be one less than sc->fqdepth.  We need to
+	 * allocate space for sc->fqdepth replies, but only sc->num_replies
+	 * replies can be used at once.
+	 */
+	num_replies = max(sc->fqdepth, sc->num_replies);
+
+	rsize = sc->facts->ReplyFrameSize * num_replies * 4; 
         if (bus_dma_tag_create( sc->mps_parent_dmat,    /* parent */
 				4, 0,			/* algnmnt, boundary */
 				BUS_SPACE_MAXADDR_32BIT,/* lowaddr */
@@ -782,11 +790,19 @@ mps_init_queues(struct mps_softc *sc)
 
 	memset((uint8_t *)sc->post_queue, 0xff, sc->pqdepth * 8);
 
+	/*
+	 * According to the spec, we need to use one less reply than we
+	 * have space for on the queue.  So sc->num_replies (the number we
+	 * use) should be less than sc->fqdepth (allocated size).
+	 */
 	if (sc->num_replies >= sc->fqdepth)
 		return (EINVAL);
 
-	for (i = 0; i < sc->num_replies; i++)
-		sc->free_queue[i] = sc->reply_busaddr + i * sc->facts->ReplyFrameSize * 4;
+	/*
+	 * Initialize all of the free queue entries.
+	 */
+	for (i = 0; i < sc->fqdepth; i++)
+		sc->free_queue[i] = sc->reply_busaddr + (i * sc->facts->ReplyFrameSize * 4);
 	sc->replyfreeindex = sc->num_replies;
 
 	return (0);
@@ -907,7 +923,6 @@ mps_attach(struct mps_softc *sc)
 	 * replies.
 	 */
 	sc->replypostindex = 0;
-	sc->replycurindex = 0;
 	mps_regwrite(sc, MPI2_REPLY_FREE_HOST_INDEX_OFFSET, sc->replyfreeindex);
 	mps_regwrite(sc, MPI2_REPLY_POST_HOST_INDEX_OFFSET, 0);
 
@@ -1211,7 +1226,8 @@ mps_intr_locked(void *data)
 		desc = &sc->post_queue[pq];
 		flags = desc->Default.ReplyFlags &
 		    MPI2_RPY_DESCRIPT_FLAGS_TYPE_MASK;
-		if (flags == MPI2_RPY_DESCRIPT_FLAGS_UNUSED)
+		if ((flags == MPI2_RPY_DESCRIPT_FLAGS_UNUSED)
+		 || (desc->Words.High == 0xffffffff))
 			break;
 
 		switch (flags) {
@@ -1224,9 +1240,36 @@ mps_intr_locked(void *data)
 			uint32_t baddr;
 			uint8_t *reply;
 
+			/*
+			 * Re-compose the reply address from the address
+			 * sent back from the chip.  The ReplyFrameAddress
+			 * is the lower 32 bits of the physical address of
+			 * particular reply frame.  Convert that address to
+			 * host format, and then use that to provide the
+			 * offset against the virtual address base
+			 * (sc->reply_frames).
+			 */
+			baddr = le32toh(desc->AddressReply.ReplyFrameAddress);
 			reply = sc->reply_frames +
-			    sc->replycurindex * sc->facts->ReplyFrameSize * 4;
-			baddr = desc->AddressReply.ReplyFrameAddress;
+				(baddr - ((uint32_t)sc->reply_busaddr));
+			/*
+			 * Make sure the reply we got back is in a valid
+			 * range.  If not, go ahead and panic here, since
+			 * we'll probably panic as soon as we deference the
+			 * reply pointer anyway.
+			 */
+			if ((reply < sc->reply_frames)
+			 || (reply > (sc->reply_frames +
+			     (sc->fqdepth * sc->facts->ReplyFrameSize * 4)))) {
+				printf("%s: WARNING: reply %p out of range!\n",
+				       __func__, reply);
+				printf("%s: reply_frames %p, fqdepth %d, "
+				       "frame size %d\n", __func__,
+				       sc->reply_frames, sc->fqdepth,
+				       sc->facts->ReplyFrameSize * 4);
+				printf("%s: baddr %#x,\n", __func__, baddr);
+				panic("Reply address out of range");
+			}
 			if (desc->AddressReply.SMID == 0) {
 				mps_dispatch_event(sc, baddr,
 				   (MPI2_EVENT_NOTIFICATION_REPLY *) reply);
@@ -1236,8 +1279,6 @@ mps_intr_locked(void *data)
 				cm->cm_reply_data =
 				    desc->AddressReply.ReplyFrameAddress;
 			}
-			if (++sc->replycurindex >= sc->fqdepth)
-				sc->replycurindex = 0;
 			break;
 		}
 		case MPI2_RPY_DESCRIPT_FLAGS_TARGETASSIST_SUCCESS:
@@ -1282,7 +1323,7 @@ mps_dispatch_event(struct mps_softc *sc, uintptr_t data,
     MPI2_EVENT_NOTIFICATION_REPLY *reply)
 {
 	struct mps_event_handle *eh;
-	int event, handled = 0;;
+	int event, handled = 0;
 
 	event = reply->Event;
 	TAILQ_FOREACH(eh, &sc->event_list, eh_list) {
@@ -1569,17 +1610,53 @@ mps_data_cb(void *arg, bus_dma_segment_t *segs, int nsegs, int error)
 	sc = cm->cm_sc;
 
 	/*
-	 * Set up DMA direction flags.  Note no support for
-	 * bi-directional transactions.
+	 * In this case, just print out a warning and let the chip tell the
+	 * user they did the wrong thing.
+	 */
+	if ((cm->cm_max_segs != 0) && (nsegs > cm->cm_max_segs)) {
+		mps_printf(sc, "%s: warning: busdma returned %d segments, "
+			   "more than the %d allowed\n", __func__, nsegs,
+			   cm->cm_max_segs);
+	}
+
+	/*
+	 * Set up DMA direction flags.  Note that we don't support
+	 * bi-directional transfers, with the exception of SMP passthrough.
 	 */
 	sflags = 0;
-	if (cm->cm_flags & MPS_CM_FLAGS_DATAOUT) {
+	if (cm->cm_flags & MPS_CM_FLAGS_SMP_PASS) {
+		/*
+		 * We have to add a special case for SMP passthrough, there
+		 * is no easy way to generically handle it.  The first
+		 * S/G element is used for the command (therefore the
+		 * direction bit needs to be set).  The second one is used
+		 * for the reply.  We'll leave it to the caller to make
+		 * sure we only have two buffers.
+		 */
+		/*
+		 * Even though the busdma man page says it doesn't make
+		 * sense to have both direction flags, it does in this case.
+		 * We have one s/g element being accessed in each direction.
+		 */
+		dir = BUS_DMASYNC_PREWRITE | BUS_DMASYNC_PREREAD;
+
+		/*
+		 * Set the direction flag on the first buffer in the SMP
+		 * passthrough request.  We'll clear it for the second one.
+		 */
+		sflags |= MPI2_SGE_FLAGS_DIRECTION |
+			  MPI2_SGE_FLAGS_END_OF_BUFFER;
+	} else if (cm->cm_flags & MPS_CM_FLAGS_DATAOUT) {
 		sflags |= MPI2_SGE_FLAGS_DIRECTION;
 		dir = BUS_DMASYNC_PREWRITE;
 	} else
 		dir = BUS_DMASYNC_PREREAD;
 
 	for (i = 0; i < nsegs; i++) {
+		if ((cm->cm_flags & MPS_CM_FLAGS_SMP_PASS)
+		 && (i != 0)) {
+			sflags &= ~MPI2_SGE_FLAGS_DIRECTION;
+		}
 		error = mps_add_dmaseg(cm, segs[i].ds_addr, segs[i].ds_len,
 		    sflags, nsegs - i);
 		if (error != 0) {
@@ -1595,6 +1672,13 @@ mps_data_cb(void *arg, bus_dma_segment_t *segs, int nsegs, int error)
 	return;
 }
 
+static void
+mps_data_cb2(void *arg, bus_dma_segment_t *segs, int nsegs, bus_size_t mapsize,
+	     int error)
+{
+	mps_data_cb(arg, segs, nsegs, error);
+}
+
 /*
  * Note that the only error path here is from bus_dmamap_load(), which can
  * return EINPROGRESS if it is waiting for resources.
@@ -1605,7 +1689,10 @@ mps_map_command(struct mps_softc *sc, struct mps_command *cm)
 	MPI2_SGE_SIMPLE32 *sge;
 	int error = 0;
 
-	if ((cm->cm_data != NULL) && (cm->cm_length != 0)) {
+	if (cm->cm_flags & MPS_CM_FLAGS_USE_UIO) {
+		error = bus_dmamap_load_uio(sc->buffer_dmat, cm->cm_dmamap,
+		    &cm->cm_uio, mps_data_cb2, cm, 0);
+	} else if ((cm->cm_data != NULL) && (cm->cm_length != 0)) {
 		error = bus_dmamap_load(sc->buffer_dmat, cm->cm_dmamap,
 		    cm->cm_data, cm->cm_length, mps_data_cb, cm, 0);
 	} else {
@@ -1619,7 +1706,7 @@ mps_map_command(struct mps_softc *sc, struct mps_command *cm)
 			    MPI2_SGE_FLAGS_SHIFT;
 			sge->Address = 0;
 		}
-		mps_enqueue_request(sc, cm);	
+		mps_enqueue_request(sc, cm);
 	}
 
 	return (error);

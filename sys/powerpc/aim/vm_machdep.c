@@ -38,7 +38,7 @@
  *
  *	from: @(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
- * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.129 2010/08/31 15:27:46 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.130 2010/10/30 23:07:30 nwhitehorn Exp $
  */
 /*-
  * Copyright (c) 1994, 1995, 1996 Carnegie-Mellon University.
@@ -197,7 +197,6 @@ cpu_fork(struct thread *td1, struct proc *p2, struct thread *td2, int flags)
 	pcb->pcb_lr = (register_t)fork_trampoline;
 	#endif
 	pcb->pcb_cpu.aim.usr_vsid = 0;
-	pcb->pcb_cpu.aim.usr_esid = 0;
 
 	/* Setup to release spin count in fork_exit(). */
 	td2->td_md.md_spinlock_count = 1;

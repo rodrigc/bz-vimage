@@ -1,5 +1,5 @@
 #	$NetBSD: Makefile,v 1.12 2000/08/07 16:23:31 thorpej Exp $
-# $FreeBSD: src/usr.sbin/rpc.lockd/Makefile,v 1.20 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/rpc.lockd/Makefile,v 1.21 2010/12/20 21:12:18 uqs Exp $
 
 PROG=	rpc.lockd
 MAN=	rpc.lockd.8
@@ -7,7 +7,7 @@ MLINKS=	rpc.lockd.8 lockd.8
 SRCS=	kern.c nlm_prot_svc.c lockd.c lock_proc.c lockd_lock.c
 
 CFLAGS+= -I. -I${DESTDIR}/usr/include/rpcsvc
-WARNS?= 0
+WARNS?= 3
 
 DPADD=	${LIBRPCSVC} ${LIBUTIL}
 LDADD=	-lrpcsvc -lutil

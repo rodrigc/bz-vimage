@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/interrupt.h,v 1.48 2009/10/23 15:14:54 jhb Exp $
+ * $FreeBSD: src/sys/sys/interrupt.h,v 1.49 2010/11/03 15:38:52 jhb Exp $
  */
 
 #ifndef _SYS_INTERRUPT_H_
@@ -146,7 +146,6 @@ struct proc;
 
 extern struct	intr_event *tty_intr_event;
 extern struct	intr_event *clk_intr_event;
-extern void	*softclock_ih;
 extern void	*vm_ih;
 
 /* Counts and names for statistics (defined in MD code). */

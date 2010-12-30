@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/cam/Makefile,v 1.18 2010/05/23 20:24:03 marius Exp $
+# $FreeBSD: src/sys/modules/cam/Makefile,v 1.19 2010/12/01 05:39:02 ken Exp $
 
 S=	${.CURDIR}/../..
 
@@ -25,6 +25,7 @@ SRCS+=	scsi_ses.c
 SRCS+=	scsi_sg.c
 SRCS+=	scsi_targ_bh.c scsi_target.c
 SRCS+=	scsi_xpt.c
+SRCS+=	smp_all.c
 SRCS+=	ata_all.c
 SRCS+=	ata_xpt.c
 SRCS+=	ata_da.c

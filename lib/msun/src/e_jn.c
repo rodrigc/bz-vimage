@@ -12,7 +12,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/e_jn.c,v 1.10 2008/02/22 02:30:35 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/e_jn.c,v 1.11 2010/11/13 10:54:10 uqs Exp $");
 
 /*
  * __ieee754_jn(n, x), __ieee754_yn(n, x)
@@ -200,7 +200,12 @@ __ieee754_jn(int n, double x)
 			}
 	     	    }
 		}
-	    	b = (t*__ieee754_j0(x)/b);
+		z = __ieee754_j0(x);
+		w = __ieee754_j1(x);
+		if (fabs(z) >= fabs(w))
+		    b = (t*z/b);
+		else
+		    b = (t*w/a);
 	    }
 	}
 	if(sgn==1) return -b; else return b;

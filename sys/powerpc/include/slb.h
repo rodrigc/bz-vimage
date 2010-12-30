@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/slb.h,v 1.2 2010/07/31 21:35:15 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/slb.h,v 1.3 2010/10/30 23:07:30 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_SLB_H_
@@ -61,6 +61,13 @@
 #define	SLBE_INDEX_MASK	0x0000000000000fffUL /* SLB index mask*/
 #define	SLBE_ESID_MASK	0xfffffffff0000000UL /* Effective segment ID mask */
 #define	SLBE_ESID_SHIFT	28
+
+/*
+ * User segment for copyin/out
+ */
+#define USER_SLB_SLOT 63
+#define USER_SLB_SLBE (((USER_ADDR >> ADDR_SR_SHFT) << SLBE_ESID_SHIFT) | \
+			SLBE_VALID | USER_SLB_SLOT)
 
 struct slb {
 	uint64_t	slbv;

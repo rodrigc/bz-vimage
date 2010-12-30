@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/primary.c,v 1.38 2010/10/24 17:28:25 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/primary.c,v 1.44 2010/12/16 19:48:03 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -180,14 +180,21 @@ static pthread_mutex_t metadata_lock;
 	if (_wakeup)							\
 		cv_signal(&hio_##name##_list_cond);			\
 } while (0)
-#define	QUEUE_TAKE1(hio, name, ncomp)	do {				\
+#define	QUEUE_TAKE1(hio, name, ncomp, timeout)	do {			\
+	bool _last;							\
+									\
 	mtx_lock(&hio_##name##_list_lock[(ncomp)]);			\
-	while (((hio) = TAILQ_FIRST(&hio_##name##_list[(ncomp)])) == NULL) { \
-		cv_wait(&hio_##name##_list_cond[(ncomp)],		\
-		    &hio_##name##_list_lock[(ncomp)]);			\
+	_last = false;							\
+	while (((hio) = TAILQ_FIRST(&hio_##name##_list[(ncomp)])) == NULL && !_last) { \
+		cv_timedwait(&hio_##name##_list_cond[(ncomp)],		\
+		    &hio_##name##_list_lock[(ncomp)], (timeout));	\
+		if ((timeout) != 0) 					\
+			_last = true;					\
 	}								\
-	TAILQ_REMOVE(&hio_##name##_list[(ncomp)], (hio),		\
-	    hio_next[(ncomp)]);						\
+	if (hio != NULL) {						\
+		TAILQ_REMOVE(&hio_##name##_list[(ncomp)], (hio),	\
+		    hio_next[(ncomp)]);					\
+	}								\
 	mtx_unlock(&hio_##name##_list_lock[(ncomp)]);			\
 } while (0)
 #define	QUEUE_TAKE2(hio, name)	do {					\
@@ -504,7 +511,8 @@ init_remote(struct hast_resource *res, struct proto_conn **inp,
 
 	/* Prepare outgoing connection with remote node. */
 	if (proto_client(res->hr_remoteaddr, &out) < 0) {
-		primary_exit(EX_TEMPFAIL, "Unable to create connection to %s",
+		primary_exit(EX_TEMPFAIL,
+		    "Unable to create outgoing connection to %s",
 		    res->hr_remoteaddr);
 	}
 	/* Try to connect, but accept failure. */
@@ -570,7 +578,8 @@ init_remote(struct hast_resource *res, struct proto_conn **inp,
 	 * Setup incoming connection with remote node.
 	 */
 	if (proto_client(res->hr_remoteaddr, &in) < 0) {
-		pjdlog_errno(LOG_WARNING, "Unable to create connection to %s",
+		primary_exit(EX_TEMPFAIL,
+		    "Unable to create incoming connection to %s",
 		    res->hr_remoteaddr);
 	}
 	/* Try to connect, but accept failure. */
@@ -1112,7 +1121,7 @@ local_send_thread(void *arg)
 
 	for (;;) {
 		pjdlog_debug(2, "local_send: Taking request.");
-		QUEUE_TAKE1(hio, send, ncomp);
+		QUEUE_TAKE1(hio, send, ncomp, 0);
 		pjdlog_debug(2, "local_send: (%p) Got request.", hio);
 		ggio = &hio->hio_ggio;
 		switch (ggio->gctl_cmd) {
@@ -1126,6 +1135,15 @@ local_send_thread(void *arg)
 				/*
 				 * If READ failed, try to read from remote node.
 				 */
+				if (ret < 0) {
+					reqlog(LOG_WARNING, 0, ggio,
+					    "Local request failed (%s), trying remote node. ",
+					    strerror(errno));
+				} else if (ret != ggio->gctl_length) {
+					reqlog(LOG_WARNING, 0, ggio,
+					    "Local request failed (%zd != %jd), trying remote node. ",
+					    ret, (intmax_t)ggio->gctl_length);
+				}
 				QUEUE_INSERT1(hio, send, rncomp);
 				continue;
 			}
@@ -1134,28 +1152,43 @@ local_send_thread(void *arg)
 			ret = pwrite(res->hr_localfd, ggio->gctl_data,
 			    ggio->gctl_length,
 			    ggio->gctl_offset + res->hr_localoff);
-			if (ret < 0)
+			if (ret < 0) {
 				hio->hio_errors[ncomp] = errno;
-			else if (ret != ggio->gctl_length)
+				reqlog(LOG_WARNING, 0, ggio,
+				    "Local request failed (%s): ",
+				    strerror(errno));
+			} else if (ret != ggio->gctl_length) {
 				hio->hio_errors[ncomp] = EIO;
-			else
+				reqlog(LOG_WARNING, 0, ggio,
+				    "Local request failed (%zd != %jd): ",
+				    ret, (intmax_t)ggio->gctl_length);
+			} else {
 				hio->hio_errors[ncomp] = 0;
+			}
 			break;
 		case BIO_DELETE:
 			ret = g_delete(res->hr_localfd,
 			    ggio->gctl_offset + res->hr_localoff,
 			    ggio->gctl_length);
-			if (ret < 0)
+			if (ret < 0) {
 				hio->hio_errors[ncomp] = errno;
-			else
+				reqlog(LOG_WARNING, 0, ggio,
+				    "Local request failed (%s): ",
+				    strerror(errno));
+			} else {
 				hio->hio_errors[ncomp] = 0;
+			}
 			break;
 		case BIO_FLUSH:
 			ret = g_flush(res->hr_localfd);
-			if (ret < 0)
+			if (ret < 0) {
 				hio->hio_errors[ncomp] = errno;
-			else
+				reqlog(LOG_WARNING, 0, ggio,
+				    "Local request failed (%s): ",
+				    strerror(errno));
+			} else {
 				hio->hio_errors[ncomp] = 0;
+			}
 			break;
 		}
 		if (refcount_release(&hio->hio_countdown)) {
@@ -1176,6 +1209,38 @@ local_send_thread(void *arg)
 	return (NULL);
 }
 
+static void
+keepalive_send(struct hast_resource *res, unsigned int ncomp)
+{
+	struct nv *nv;
+
+	if (!ISCONNECTED(res, ncomp))
+		return;
+	
+	assert(res->hr_remotein != NULL);
+	assert(res->hr_remoteout != NULL);
+
+	nv = nv_alloc();
+	nv_add_uint8(nv, HIO_KEEPALIVE, "cmd");
+	if (nv_error(nv) != 0) {
+		nv_free(nv);
+		pjdlog_debug(1,
+		    "keepalive_send: Unable to prepare header to send.");
+		return;
+	}
+	if (hast_proto_send(res, res->hr_remoteout, nv, NULL, 0) < 0) {
+		pjdlog_common(LOG_DEBUG, 1, errno,
+		    "keepalive_send: Unable to send request");
+		nv_free(nv);
+		rw_unlock(&hio_remote_lock[ncomp]);
+		remote_close(res, ncomp);
+		rw_rlock(&hio_remote_lock[ncomp]);
+		return;
+	}
+	nv_free(nv);
+	pjdlog_debug(2, "keepalive_send: Request sent.");
+}
+
 /*
  * Thread sends request to secondary node.
  */
@@ -1184,6 +1249,7 @@ remote_send_thread(void *arg)
 {
 	struct hast_resource *res = arg;
 	struct g_gate_ctl_io *ggio;
+	time_t lastcheck, now;
 	struct hio *hio;
 	struct nv *nv;
 	unsigned int ncomp;
@@ -1194,10 +1260,19 @@ remote_send_thread(void *arg)
 
 	/* Remote component is 1 for now. */
 	ncomp = 1;
+	lastcheck = time(NULL);	
 
 	for (;;) {
 		pjdlog_debug(2, "remote_send: Taking request.");
-		QUEUE_TAKE1(hio, send, ncomp);
+		QUEUE_TAKE1(hio, send, ncomp, RETRY_SLEEP);
+		if (hio == NULL) {
+			now = time(NULL);
+			if (lastcheck + RETRY_SLEEP <= now) {
+				keepalive_send(res, ncomp);
+				lastcheck = now;
+			}
+			continue;
+		}
 		pjdlog_debug(2, "remote_send: (%p) Got request.", hio);
 		ggio = &hio->hio_ggio;
 		switch (ggio->gctl_cmd) {
@@ -1394,7 +1469,9 @@ remote_recv_thread(void *arg)
 		error = nv_get_int16(nv, "error");
 		if (error != 0) {
 			/* Request failed on remote side. */
-			hio->hio_errors[ncomp] = 0;
+			hio->hio_errors[ncomp] = error;
+			reqlog(LOG_WARNING, 0, &hio->hio_ggio,
+			    "Remote request failed (%s): ", strerror(error));
 			nv_free(nv);
 			goto done_queue;
 		}
@@ -1883,32 +1960,6 @@ failed:
 }
 
 static void
-keepalive_send(struct hast_resource *res, unsigned int ncomp)
-{
-	struct nv *nv;
-
-	nv = nv_alloc();
-	nv_add_uint8(nv, HIO_KEEPALIVE, "cmd");
-	if (nv_error(nv) != 0) {
-		nv_free(nv);
-		pjdlog_debug(1,
-		    "keepalive_send: Unable to prepare header to send.");
-		return;
-	}
-	if (hast_proto_send(res, res->hr_remoteout, nv, NULL, 0) < 0) {
-		pjdlog_common(LOG_DEBUG, 1, errno,
-		    "keepalive_send: Unable to send request");
-		nv_free(nv);
-		rw_unlock(&hio_remote_lock[ncomp]);
-		remote_close(res, ncomp);
-		rw_rlock(&hio_remote_lock[ncomp]);
-		return;
-	}
-	nv_free(nv);
-	pjdlog_debug(2, "keepalive_send: Request sent.");
-}
-
-static void
 guard_one(struct hast_resource *res, unsigned int ncomp)
 {
 	struct proto_conn *in, *out;
@@ -1921,12 +1972,6 @@ guard_one(struct hast_resource *res, unsigned int ncomp)
 	if (!real_remote(res)) {
 		rw_unlock(&hio_remote_lock[ncomp]);
 		return;
-	}
-
-	if (ISCONNECTED(res, ncomp)) {
-		assert(res->hr_remotein != NULL);
-		assert(res->hr_remoteout != NULL);
-		keepalive_send(res, ncomp);
 	}
 
 	if (ISCONNECTED(res, ncomp)) {
@@ -1991,6 +2036,7 @@ guard_thread(void *arg)
 	PJDLOG_VERIFY(sigaddset(&mask, SIGINT) == 0);
 	PJDLOG_VERIFY(sigaddset(&mask, SIGTERM) == 0);
 
+	timeout.tv_sec = RETRY_SLEEP;
 	timeout.tv_nsec = 0;
 	signo = -1;
 
@@ -2016,7 +2062,6 @@ guard_thread(void *arg)
 				guard_one(res, ii);
 			lastcheck = now;
 		}
-		timeout.tv_sec = RETRY_SLEEP;
 		signo = sigtimedwait(&mask, NULL, &timeout);
 	}
 	/* NOTREACHED */

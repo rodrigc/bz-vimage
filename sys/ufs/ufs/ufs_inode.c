@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_inode.c,v 1.71 2010/07/06 07:11:04 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_inode.c,v 1.73 2010/12/29 11:19:39 kib Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -76,12 +76,10 @@ ufs_inactive(ap)
 	struct thread *td = ap->a_td;
 	mode_t mode;
 	int error = 0;
-	int isize;
+	off_t isize;
 	struct mount *mp;
 
 	mp = NULL;
-	if (prtactive && vp->v_usecount != 0)
-		vprint("ufs_inactive: pushing active", vp);
 	/*
 	 * Ignore inodes related to stale file handles.
 	 */
@@ -191,8 +189,6 @@ ufs_reclaim(ap)
 	int i;
 #endif
 
-	if (prtactive && vp->v_usecount != 0)
-		vprint("ufs_reclaim: pushing active", vp);
 	/*
 	 * Destroy the vm object and flush associated pages.
 	 */

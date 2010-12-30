@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pci/vga_pci.c,v 1.13 2010/03/11 15:25:47 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pci/vga_pci.c,v 1.14 2010/12/20 14:54:24 jhb Exp $");
 
 /*
  * Simple driver for PCI VGA display devices.  Drivers such as agp(4) and
@@ -243,8 +243,6 @@ static int
 vga_pci_enable_busmaster(device_t dev, device_t child)
 {
 
-	device_printf(dev, "child %s requested pci_enable_busmaster\n",
-	    device_get_nameunit(child));
 	return (pci_enable_busmaster(dev));
 }
 
@@ -252,8 +250,6 @@ static int
 vga_pci_disable_busmaster(device_t dev, device_t child)
 {
 
-	device_printf(dev, "child %s requested pci_disable_busmaster\n",
-	    device_get_nameunit(child));
 	return (pci_disable_busmaster(dev));
 }
 

@@ -34,7 +34,7 @@
 static char sccsid[] = "@(#)sysconf.c	8.2 (Berkeley) 3/20/94";
 #endif /* LIBC_SCCS and not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/sysconf.c,v 1.27 2010/02/26 06:44:00 edwin Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/sysconf.c,v 1.28 2010/10/29 13:31:10 davidxu Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -593,6 +593,15 @@ yesno:
 	case _SC_PHYS_PAGES:
 		len = sizeof(lvalue);
 		if (sysctlbyname("hw.availpages", &lvalue, &len, NULL, 0) == -1)
+			return (-1);
+		return (lvalue);
+#endif
+
+#ifdef _SC_CPUSET_SIZE
+	case _SC_CPUSET_SIZE:
+		len = sizeof(lvalue);
+		if (sysctlbyname("kern.sched.cpusetsize", &lvalue, &len, NULL,
+		    0) == -1)
 			return (-1);
 		return (lvalue);
 #endif

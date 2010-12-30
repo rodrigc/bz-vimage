@@ -57,7 +57,7 @@
  * SUCH DAMAGE.
 */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/ixp425_qmgr.c,v 1.6 2009/05/30 15:14:44 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/ixp425_qmgr.c,v 1.7 2010/11/09 10:59:09 brucec Exp $");
 
 /*
  * Intel XScale Queue Manager support.
@@ -317,7 +317,7 @@ ixpqmgr_attach(device_t dev)
 	
 	sc->aqmFreeSramAddress = 0x100;	/* Q buffer space starts at 0x2100 */
 
-	ixpqmgr_rebuild(sc);		/* build inital priority table */
+	ixpqmgr_rebuild(sc);		/* build initial priority table */
 	aqm_reset(sc);			/* reset h/w */
 	return (0);
 }
@@ -775,7 +775,7 @@ ixpqmgr_intr(void *arg)
 		      *
 		      * The search will end when all the bits of the interrupt
 		      * register are cleared. There is no need to maintain
-		      * a seperate value and test it at each iteration.
+		      * a separate value and test it at each iteration.
 		      */
 		     if (intRegVal & sc->lowPriorityTableFirstHalfMask) {
 			 priorityTableIndex = 0;

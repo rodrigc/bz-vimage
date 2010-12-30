@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/core/geom.c,v 1.53 2010/09/14 20:55:25 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/core/geom.c,v 1.54 2010/12/15 23:45:12 obrien Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -500,7 +500,7 @@ library_path(void)
 
 	path = getenv("GEOM_LIBRARY_PATH");
 	if (path == NULL)
-		path = CLASS_DIR;
+		path = GEOM_CLASS_DIR;
 	return (path);
 }
 

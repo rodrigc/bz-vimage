@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $FreeBSD: src/etc/rc.d/devd,v 1.12 2009/09/12 22:13:41 hrs Exp $
+# $FreeBSD: src/etc/rc.d/devd,v 1.13 2010/12/27 22:52:47 dougb Exp $
 #
 
 # PROVIDE: devd
@@ -13,11 +13,17 @@
 name="devd"
 rcvar=`set_rcvar`
 command="/sbin/${name}"
+pidfile=/var/run/${name}.pid
+
+start_precmd=${name}_prestart
+
+devd_prestart ()
+{
+	# If devd is disabled, turn it off in the kernel to avoid memory leaks.
+	if ! checkyesno ${rcvar}; then
+	    $SYSCTL hw.bus.devctl_disable=1
+	fi
+}
 
 load_rc_config $name
 run_rc_command "$1"
-
-# If devd is disabled, turn it off in the kernel to avoid memory leaks.
-if ! checkyesno ${rcvar}; then
-    sysctl hw.bus.devctl_disable=1
-fi

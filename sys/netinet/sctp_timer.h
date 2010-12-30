@@ -30,7 +30,7 @@
 
 /* $KAME: sctp_timer.h,v 1.6 2005/03/06 16:04:18 itojun Exp $	 */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.h,v 1.10 2008/10/27 13:53:31 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.h,v 1.11 2010/11/07 17:50:56 tuexen Exp $");
 
 #ifndef __sctp_timer_h__
 #define __sctp_timer_h__
@@ -64,9 +64,6 @@ sctp_shutdown_timer(struct sctp_inpcb *, struct sctp_tcb *,
 int
 sctp_heartbeat_timer(struct sctp_inpcb *, struct sctp_tcb *,
     struct sctp_nets *, int);
-
-int sctp_is_hb_timer_running(struct sctp_tcb *stcb);
-int sctp_is_sack_timer_running(struct sctp_tcb *stcb);
 
 int
 sctp_cookie_timer(struct sctp_inpcb *, struct sctp_tcb *,

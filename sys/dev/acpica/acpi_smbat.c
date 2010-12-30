@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_smbat.c,v 1.9 2010/01/21 21:14:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_smbat.c,v 1.10 2010/12/17 16:21:30 avg Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -390,6 +390,7 @@ acpi_smbat_get_bst(device_t dev, struct acpi_bst *bst)
 
 	if (val > 0) {
 		sc->bst.rate = val * factor;
+		sc->bst.state &= ~SMBATT_BS_DISCHARGING;
 		sc->bst.state |= ACPI_BATT_STAT_CHARGING;
 	} else if (val < 0)
 		sc->bst.rate = (-val) * factor;

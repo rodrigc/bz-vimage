@@ -23,6 +23,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crtn.S,v 1.7 2010/12/09 21:31:21 dim Exp $");
+
 	.section .init,"ax",@progbits
 	add	$12,%esp
 	ret
@@ -30,6 +33,3 @@
 	.section .fini,"ax",@progbits
 	add	$12,%esp
 	ret
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/i386-elf/crtn.S,v 1.6 2005/05/19 07:31:06 dfr Exp $\0"

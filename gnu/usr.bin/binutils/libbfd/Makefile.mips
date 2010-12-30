@@ -1,14 +1,10 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/libbfd/Makefile.mips,v 1.5 2010/06/02 11:06:03 jmallett Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/libbfd/Makefile.mips,v 1.6 2010/11/10 06:39:49 imp Exp $
 
-#xxxIMPxxx: TARGET_BIG_ENDIAN is lame.  We should use the netbsd convention
-# of mipsel and mips.
-.if !defined(TARGET_BIG_ENDIAN)
+.if ${TARGET_ARCH} == "mipsel"
 _EMULATION_ENDIAN=little
 .else
 _EMULATION_ENDIAN=big
 .endif
-
-DEFAULT_VECTOR=	bfd_elf32_tradbigmips_vec
 
 .if defined(TARGET_ABI) && ${TARGET_ABI} != "o32"
 .if ${TARGET_ABI} == "n32"

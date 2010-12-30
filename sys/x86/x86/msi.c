@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/msi.c,v 1.2 2010/06/14 07:10:37 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/msi.c,v 1.3 2010/11/01 18:18:46 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -45,7 +45,7 @@ __FBSDID("$FreeBSD: src/sys/x86/x86/msi.c,v 1.2 2010/06/14 07:10:37 mav Exp $");
 #include <sys/mutex.h>
 #include <sys/sx.h>
 #include <sys/systm.h>
-#include <machine/apicreg.h>
+#include <x86/apicreg.h>
 #include <machine/cputypes.h>
 #include <machine/md_var.h>
 #include <machine/frame.h>

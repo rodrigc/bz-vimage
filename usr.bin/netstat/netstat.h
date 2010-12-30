@@ -10,10 +10,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -31,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)netstat.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/usr.bin/netstat/netstat.h,v 1.64 2010/03/01 00:46:45 rwatson Exp $
+ * $FreeBSD: src/usr.bin/netstat/netstat.h,v 1.66 2010/12/11 08:32:16 joel Exp $
  */
 
 #include <sys/cdefs.h>
@@ -50,6 +46,7 @@ extern int	numeric_addr;	/* show addresses numerically */
 extern int	numeric_port;	/* show ports numerically */
 extern int	rflag;	/* show routing tables (or routing stats) */
 extern int	sflag;	/* show protocol statistics */
+extern int	Tflag;  /* show TCP control block info */
 extern int	Wflag;	/* wide display */
 extern int	xflag;	/* extended display, includes all socket buffer info */
 extern int	zflag;	/* zero stats */

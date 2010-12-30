@@ -1,4 +1,4 @@
-# $FreeBSD: src/sbin/hastd/Makefile,v 1.5 2010/08/30 23:26:10 pjd Exp $
+# $FreeBSD: src/sbin/hastd/Makefile,v 1.6 2010/11/22 14:16:22 brucec Exp $
 
 .include <bsd.own.mk>
 
@@ -25,6 +25,7 @@ CFLAGS+=-DINET6
 .endif
 # This is needed to have WARNS > 1.
 CFLAGS+=-DYY_NO_UNPUT
+CFLAGS+=-DYY_NO_INPUT
 
 DPADD=	${LIBGEOM} ${LIBBSDXML} ${LIBSBUF} ${LIBL} ${LIBPTHREAD} ${LIBUTIL}
 LDADD=	-lgeom -lbsdxml -lsbuf -ll -lpthread -lutil

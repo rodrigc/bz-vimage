@@ -1,7 +1,7 @@
 /*	$OpenBSD: uslcom.c,v 1.17 2007/11/24 10:52:12 jsg Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uslcom.c,v 1.16 2010/08/07 16:14:40 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uslcom.c,v 1.18 2010/11/05 19:12:48 n_hibma Exp $");
 
 /*
  * Copyright (c) 2006 Jonathan Gray <jsg@openbsd.org>
@@ -324,6 +324,8 @@ uslcom_attach(device_t dev)
 	if (error) {
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);
 
 detach:
@@ -338,7 +340,7 @@ uslcom_detach(device_t dev)
 
 	DPRINTF("sc=%p\n", sc);
 
-	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom, 1);
+	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, USLCOM_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

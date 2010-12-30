@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pci/pci_pci.c,v 1.64 2010/10/20 16:47:09 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pci/pci_pci.c,v 1.65 2010/11/25 15:42:33 jhb Exp $");
 
 /*
  * PCI:PCI bridge support.
@@ -860,7 +860,9 @@ host_pcib_get_busno(pci_read_config_fn read_config, int bus, int slot, int func,
 	case 0x00171166:
 	case 0x01011166:
 	case 0x010f1014:
+	case 0x01101166:
 	case 0x02011166:
+	case 0x02251166:
 	case 0x03021014:
 		*busnum = read_config(bus, slot, func, 0x44, 1);
 		break;

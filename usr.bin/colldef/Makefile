@@ -1,10 +1,10 @@
-# $FreeBSD: src/usr.bin/colldef/Makefile,v 1.22 2010/01/02 10:27:05 ed Exp $
+# $FreeBSD: src/usr.bin/colldef/Makefile,v 1.23 2010/11/22 14:16:22 brucec Exp $
 
 PROG=	colldef
 SRCS=	parse.y scan.l y.tab.h
 LFLAGS=	-8 -i
 CFLAGS+=-I. -I${.CURDIR} -I${.CURDIR}/../../lib/libc/locale
-CFLAGS+=-DCOLLATE_DEBUG -DYY_NO_UNPUT
+CFLAGS+=-DCOLLATE_DEBUG -DYY_NO_UNPUT -DYY_NO_INPUT
 LDADD=	-ll
 DPADD=	${LIBL}
 

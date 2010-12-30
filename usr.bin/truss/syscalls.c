@@ -31,7 +31,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/usr.bin/truss/syscalls.c,v 1.64 2010/03/10 20:31:30 imp Exp $";
+  "$FreeBSD: src/usr.bin/truss/syscalls.c,v 1.65 2010/12/06 09:18:11 jh Exp $";
 #endif /* not lint */
 
 /*
@@ -518,7 +518,7 @@ get_string(pid_t pid, void *offset, int max)
 			buf = realloc(buf, totalsize);
 			size = BLOCKSIZE;
 		} else {
-			buf[totalsize] = '\0';
+			buf[totalsize - 1] = '\0';
 			return (buf);
 		}
 	}

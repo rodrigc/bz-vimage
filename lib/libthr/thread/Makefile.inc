@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libthr/thread/Makefile.inc,v 1.20 2010/01/05 07:50:31 davidxu Exp $
+# $FreeBSD: src/lib/libthr/thread/Makefile.inc,v 1.21 2010/12/22 05:01:52 davidxu Exp $
 
 # thr sources
 .PATH: ${.CURDIR}/thread
@@ -45,6 +45,7 @@ SRCS+= \
 	thr_setschedparam.c \
 	thr_sig.c \
 	thr_single_np.c \
+	thr_sleepq.c \
 	thr_spec.c \
 	thr_spinlock.c \
 	thr_stack.c \

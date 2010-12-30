@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/common/load_elf.c,v 1.39 2008/10/14 10:11:14 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/common/load_elf.c,v 1.41 2010/11/25 03:16:31 emaste Exp $");
 
 #include <sys/param.h>
 #include <sys/exec.h>
@@ -453,7 +453,8 @@ __elfN(loadimage)(struct preloaded_file *fp, elf_file_t ef, u_int64_t off)
 	}
 	result = archsw.arch_readin(ef->fd, lastaddr, shdr[i].sh_size);
 	if (result < 0 || (size_t)result != shdr[i].sh_size) {
-	    printf("\nelf" __XSTRING(__ELF_WORD_SIZE) "_loadimage: could not read symbols - skipped!");
+	    printf("\nelf" __XSTRING(__ELF_WORD_SIZE) "_loadimage: could not read symbols - skipped! (%ju != %ju)", (uintmax_t)result,
+		(uintmax_t)shdr[i].sh_size);
 	    lastaddr = ssym;
 	    ssym = 0;
 	    goto nosyms;

@@ -26,7 +26,7 @@ TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS"
 AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH RESPECT TO THE SOFTWARE, INCLUDING ITS CONDITION, ITS CONFORMITY TO ANY REPRESENTATION OR DESCRIPTION, OR THE EXISTENCE OF ANY LATENT OR PATENT DEFECTS, AND CAVIUM SPECIFICALLY DISCLAIMS ALL IMPLIED (IF ANY) WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT, FITNESS FOR A PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR COMPLETENESS, QUIET ENJOYMENT, QUIET POSSESSION OR CORRESPONDENCE TO DESCRIPTION. THE ENTIRE  RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE LIES WITH YOU.
 
 *************************************************************************/
-/* $FreeBSD: src/sys/mips/cavium/octe/wrapper-cvmx-includes.h,v 1.1 2010/07/20 19:25:11 jmallett Exp $ */
+/* $FreeBSD: src/sys/mips/cavium/octe/wrapper-cvmx-includes.h,v 1.2 2010/11/28 08:18:16 jmallett Exp $ */
 
 #ifndef __WRAPPER_CVMX_INCLUDES_H__
 #define __WRAPPER_CVMX_INCLUDES_H__
@@ -34,7 +34,6 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 #include <contrib/octeon-sdk/cvmx.h>
 #include <contrib/octeon-sdk/cvmx-version.h>
 #include <contrib/octeon-sdk/cvmx-atomic.h>
-#include <contrib/octeon-sdk/cvmx-ciu.h>
 #include <contrib/octeon-sdk/cvmx-pip.h>
 #include <contrib/octeon-sdk/cvmx-ipd.h>
 #include <contrib/octeon-sdk/cvmx-pko.h>

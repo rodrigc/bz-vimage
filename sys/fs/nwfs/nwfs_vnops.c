@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nwfs/nwfs_vnops.c,v 1.51 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/fs/nwfs/nwfs_vnops.c,v 1.52 2010/11/09 20:41:10 jhb Exp $
  */
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -38,8 +38,6 @@
 
 #include <vm/vm.h>
 #include <vm/vm_extern.h>
-
-#include <machine/mutex.h>
 
 #include <netncp/ncp.h>
 #include <netncp/ncp_conn.h>

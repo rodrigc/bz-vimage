@@ -52,7 +52,7 @@
  *
  * 	from: FreeBSD: src/sys/i386/i386/nexus.c,v 1.43 2001/02/09
  *
- * $FreeBSD: src/sys/powerpc/aim/nexus.c,v 1.24 2010/09/10 11:19:03 avg Exp $
+ * $FreeBSD: src/sys/powerpc/aim/nexus.c,v 1.25 2010/11/09 23:53:47 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -213,9 +213,6 @@ nexus_attach(device_t dev)
 	struct		nexus_softc *sc;
 	u_long		start, end;
 
-	if ((root = OF_peer(0)) == -1)
-		panic("nexus_probe: OF_peer failed.");
-
 	sc = device_get_softc(dev);
 
 	start = 0;
@@ -229,6 +226,9 @@ nexus_attach(device_t dev)
 	    rman_manage_region(&sc->sc_rman, start, end))
 		panic("nexus_probe IRQ rman");
 
+	if ((root = OF_peer(0)) == 0)
+		return (bus_generic_attach(dev));
+		
 	/*
 	 * Now walk the OFW tree to locate top-level devices
 	 */

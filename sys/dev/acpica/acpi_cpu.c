@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_cpu.c,v 1.93 2010/09/22 11:32:22 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_cpu.c,v 1.95 2010/12/14 20:07:51 jkim Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -44,6 +44,9 @@ __FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_cpu.c,v 1.93 2010/09/22 11:32:22 mav
 #include <dev/pci/pcivar.h>
 #include <machine/atomic.h>
 #include <machine/bus.h>
+#if defined(__amd64__) || defined(__i386__)
+#include <machine/clock.h>
+#endif
 #include <sys/rman.h>
 
 #include <contrib/dev/acpica/include/acpi.h>
@@ -510,6 +513,14 @@ acpi_cpu_read_ivar(device_t dev, device_t child, int index, uintptr_t *result)
     case CPU_IVAR_PCPU:
 	*result = (uintptr_t)sc->cpu_pcpu;
 	break;
+#if defined(__amd64__) || defined(__i386__)
+    case CPU_IVAR_NOMINAL_MHZ:
+	if (tsc_is_invariant) {
+	    *result = (uintptr_t)(tsc_freq / 1000000);
+	    break;
+	}
+	/* FALLTHROUGH */
+#endif
     default:
 	return (ENOENT);
     }
@@ -668,9 +679,19 @@ acpi_cpu_cx_cst(struct acpi_cpu_softc *sc)
 	count = MAX_CX_STATES;
     }
 
-    /* Set up all valid states. */
+    sc->cpu_non_c3 = 0;
     sc->cpu_cx_count = 0;
     cx_ptr = sc->cpu_cx_states;
+
+    /*
+     * C1 has been required since just after ACPI 1.0.
+     * Reserve the first slot for it.
+     */
+    cx_ptr->type = ACPI_STATE_C0;
+    cx_ptr++;
+    sc->cpu_cx_count++;
+
+    /* Set up all valid states. */
     for (i = 0; i < count; i++) {
 	pkg = &top->Package.Elements[i + 1];
 	if (!ACPI_PKG_VALID(pkg, 4) ||
@@ -685,9 +706,14 @@ acpi_cpu_cx_cst(struct acpi_cpu_softc *sc)
 	/* Validate the state to see if we should use it. */
 	switch (cx_ptr->type) {
 	case ACPI_STATE_C1:
-	    sc->cpu_non_c3 = i;
-	    cx_ptr++;
-	    sc->cpu_cx_count++;
+	    if (sc->cpu_cx_states[0].type == ACPI_STATE_C0) {
+		/* This is the first C1 state.  Use the reserved slot. */
+		sc->cpu_cx_states[0] = *cx_ptr;
+	    } else {
+		sc->cpu_non_c3 = i;
+		cx_ptr++;
+		sc->cpu_cx_count++;
+	    }
 	    continue;
 	case ACPI_STATE_C2:
 	    sc->cpu_non_c3 = i;
@@ -725,6 +751,13 @@ acpi_cpu_cx_cst(struct acpi_cpu_softc *sc)
 	}
     }
     AcpiOsFree(buf.Pointer);
+
+    /* If C1 state was not found, we need one now. */
+    cx_ptr = sc->cpu_cx_states;
+    if (cx_ptr->type == ACPI_STATE_C0) {
+	cx_ptr->type = ACPI_STATE_C1;
+	cx_ptr->trans_lat = 0;
+    }
 
     return (0);
 }

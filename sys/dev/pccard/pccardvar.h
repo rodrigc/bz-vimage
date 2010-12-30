@@ -1,5 +1,5 @@
 /*	$NetBSD: pcmciavar.h,v 1.12 2000/02/08 12:51:31 enami Exp $	*/
-/* $FreeBSD: src/sys/dev/pccard/pccardvar.h,v 1.64 2009/03/03 18:57:59 imp Exp $ */
+/* $FreeBSD: src/sys/dev/pccard/pccardvar.h,v 1.65 2010/11/09 10:59:09 brucec Exp $ */
 
 /*-
  * Copyright (c) 1997 Marc Horowitz.  All rights reserved.
@@ -31,7 +31,7 @@
  */
 
 /*
- * PCCARD_API_LEVEL.  When set to 5, we provide a 5.x compatable API
+ * PCCARD_API_LEVEL.  When set to 5, we provide a 5.x compatible API
  * for driver writers that have to share their code between 5.x and 6.x.
  * The 5.x compatibility interfaces will be unsupported in 7.0, at which
  * point we'll only support 6 and newer, etc.
@@ -191,7 +191,7 @@ enum {
 	PCCARD_IVAR_PRODEXT,
 	PCCARD_IVAR_FUNCTION_NUMBER,
 	PCCARD_IVAR_VENDOR_STR,	/* CIS string for "Manufacturer" */
-	PCCARD_IVAR_PRODUCT_STR,/* CIS strnig for "Product" */
+	PCCARD_IVAR_PRODUCT_STR,/* CIS string for "Product" */
 	PCCARD_IVAR_CIS3_STR,
 	PCCARD_IVAR_CIS4_STR,
 	PCCARD_IVAR_FUNCTION,
@@ -254,7 +254,7 @@ enum {
 #endif
 
 /*
- * Defines to decoe the get_funce_disk return value.  See the PCMCIA standard
+ * Defines to decode the get_funce_disk return value.  See the PCMCIA standard
  * for all the details of what these bits mean.
  */
 #define	PFD_I_V_MASK		0x3

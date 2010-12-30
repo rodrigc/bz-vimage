@@ -1,5 +1,5 @@
 :
-# $FreeBSD: src/release/fixit.profile,v 1.13 2008/02/05 14:06:15 lulf Exp $
+# $FreeBSD: src/release/fixit.profile,v 1.14 2010/10/27 17:13:38 delphij Exp $
 
 export BLOCKSIZE=K
 export PS1="Fixit# "
@@ -24,6 +24,10 @@ echo '|                                                               |'
 echo '| You might want to symlink /mnt/etc/*pwd.db and /mnt/etc/group |'
 echo '| to /etc after mounting a root filesystem from your disk.      |'
 echo '| tar(1) will not restore all permissions correctly otherwise!  |'
+echo '|                                                               |'
+echo '| In order to load kernel modules you might want to add the     |'
+echo '| fixit media to the kern.module_path sysctl variable so that   |'
+echo '| the kernel knows where to find them.                          |'
 echo '|                                                               |'
 echo '| Note: you can use the arrow keys to browse through the        |'
 echo '| command history of this shell.                                |'

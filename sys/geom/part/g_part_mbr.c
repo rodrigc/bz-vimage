@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.17 2010/10/13 11:35:59 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_mbr.c,v 1.18 2010/12/07 20:46:11 brucec Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -449,12 +449,6 @@ g_part_mbr_read(struct g_part_table *basetable, struct g_consumer *cp)
 				basetable->gpt_heads = heads;
 			}
 		}
-		if ((ent.dp_start % basetable->gpt_sectors) != 0)
-			printf("GEOM: %s: partition %d does not start on a "
-			    "track boundary.\n", pp->name, index + 1);
-		if ((ent.dp_size % basetable->gpt_sectors) != 0)
-			printf("GEOM: %s: partition %d does not end on a "
-			    "track boundary.\n", pp->name, index + 1);
 
 		entry = (struct g_part_mbr_entry *)g_part_new_entry(basetable,
 		    index + 1, ent.dp_start, ent.dp_start + ent.dp_size - 1);

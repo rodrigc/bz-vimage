@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/aac/aac_cam.c,v 1.39 2010/09/29 14:22:00 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/aac/aac_cam.c,v 1.40 2010/12/06 17:06:21 jhb Exp $");
 
 /*
  * CAM front-end for communicating with non-DASD devices
@@ -587,7 +587,8 @@ aac_cam_complete(struct aac_command *cm)
 				    (device == T_PROCESSOR) ||
 				    (sc->flags & AAC_FLAGS_CAM_PASSONLY))
 					ccb->csio.data_ptr[0] =
-					    ((device & 0xe0) | T_NODEVICE);
+					    ((ccb->csio.data_ptr[0] & 0xe0) |
+					    T_NODEVICE);
 				} else if (ccb->ccb_h.status == CAM_SEL_TIMEOUT &&
 					ccb->ccb_h.target_lun != 0) {
 					/* fix for INQUIRYs on Lun>0 */

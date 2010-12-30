@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.17 2010/09/09 20:26:30 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.18 2010/11/15 21:58:10 marius Exp $");
 
 /*
  * Driver for `Schizo' Fireplane/Safari to PCI 2.1 and `Tomatillo' JBus to
@@ -158,7 +158,8 @@ static devclass_t schizo_devclass;
 
 DEFINE_CLASS_0(pcib, schizo_driver, schizo_methods,
     sizeof(struct schizo_softc));
-DRIVER_MODULE(schizo, nexus, schizo_driver, schizo_devclass, 0, 0);
+EARLY_DRIVER_MODULE(schizo, nexus, schizo_driver, schizo_devclass, 0, 0,
+    BUS_PASS_BUS);
 
 static SLIST_HEAD(, schizo_softc) schizo_softcs =
     SLIST_HEAD_INITIALIZER(schizo_softcs);

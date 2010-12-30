@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bce/if_bce.c,v 1.83 2010/10/15 15:00:30 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bce/if_bce.c,v 1.84 2010/11/14 13:26:10 marius Exp $");
 
 /*
  * The following controllers are supported by this driver:
@@ -1143,7 +1143,7 @@ bce_attach(device_t dev)
 	/* MII child bus by attaching the PHY. */
 	rc = mii_attach(dev, &sc->bce_miibus, ifp, bce_ifmedia_upd,
 	    bce_ifmedia_sts, BMSR_DEFCAPMASK, sc->bce_phy_addr,
-	    MII_OFFSET_ANY, 0);
+	    MII_OFFSET_ANY, MIIF_DOPAUSE);
 	if (rc != 0) {
 		BCE_PRINTF("%s(%d): attaching PHYs failed\n", __FILE__,
 		    __LINE__);
@@ -1769,8 +1769,7 @@ bce_miibus_statchg(device_t dev)
 
 	REG_WR(sc, BCE_EMAC_MODE, val);
 
-	/* FLAG0 is set if RX is enabled and FLAG1 if TX is enabled */
- 	if (mii->mii_media_active & IFM_FLAG0) {
+ 	if ((mii->mii_media_active & IFM_ETH_RXPAUSE) != 0) {
 		DBPRINT(sc, BCE_INFO_PHY,
 		    "%s(): Enabling RX flow control.\n", __FUNCTION__);
 		BCE_SETBIT(sc, BCE_EMAC_RX_MODE, BCE_EMAC_RX_MODE_FLOW_EN);
@@ -1780,7 +1779,7 @@ bce_miibus_statchg(device_t dev)
 		BCE_CLRBIT(sc, BCE_EMAC_RX_MODE, BCE_EMAC_RX_MODE_FLOW_EN);
 	}
 
- 	if (mii->mii_media_active & IFM_FLAG1) {
+ 	if ((mii->mii_media_active & IFM_ETH_TXPAUSE) != 0) {
 		DBPRINT(sc, BCE_INFO_PHY,
 		    "%s(): Enabling TX flow control.\n", __FUNCTION__);
 		BCE_SETBIT(sc, BCE_EMAC_TX_MODE, BCE_EMAC_TX_MODE_FLOW_EN);

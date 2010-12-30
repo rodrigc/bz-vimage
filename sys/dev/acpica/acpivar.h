@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.118 2010/08/17 15:44:52 jhb Exp $
+ * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.121 2010/12/22 20:27:20 jhb Exp $
  */
 
 #ifndef _ACPIVAR_H_
@@ -58,6 +58,7 @@ struct acpi_softc {
     int			acpi_enabled;
     int			acpi_sstate;
     int			acpi_sleep_disabled;
+    int			acpi_resources_reserved;
 
     struct sysctl_ctx_list acpi_sysctl_ctx;
     struct sysctl_oid	*acpi_sysctl_tree;
@@ -395,6 +396,9 @@ ACPI_STATUS	acpi_pwr_wake_enable(ACPI_HANDLE consumer, int enable);
 ACPI_STATUS	acpi_pwr_switch_consumer(ACPI_HANDLE consumer, int state);
 int		acpi_device_pwr_for_sleep(device_t bus, device_t dev,
 		    int *dstate);
+
+/* APM emulation */
+void		acpi_apm_init(struct acpi_softc *);
 
 /* Misc. */
 static __inline struct acpi_softc *

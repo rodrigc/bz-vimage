@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/ddb/ddb.c,v 1.4 2008/04/25 17:34:09 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sbin/ddb/ddb.c,v 1.5 2010/11/22 07:00:47 kevlo Exp $");
 
 #include <err.h>
 #include <stdio.h>
@@ -96,6 +96,7 @@ ddb_readfile(char *filename)
 #endif
 		ddb_main(argc, argv);
 	}
+	fclose(f);
 }
 
 void

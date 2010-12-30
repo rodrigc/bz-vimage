@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	from: vector.s, 386BSD 0.1 unknown origin
- * $FreeBSD: src/sys/amd64/amd64/apic_vector.S,v 1.117 2010/06/17 11:54:49 mav Exp $
+ * $FreeBSD: src/sys/amd64/amd64/apic_vector.S,v 1.118 2010/11/01 18:18:46 jhb Exp $
  */
 
 /*
@@ -39,7 +39,7 @@
 #include "opt_smp.h"
 
 #include <machine/asmacros.h>
-#include <machine/apicreg.h>
+#include <x86/apicreg.h>
 
 #include "assym.s"
 

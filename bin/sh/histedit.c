@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)histedit.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.39 2010/10/13 23:29:09 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/histedit.c,v 1.42 2010/12/29 19:39:51 jilles Exp $");
 
 #include <sys/param.h>
 #include <limits.h>
@@ -232,6 +232,7 @@ histcmd(int argc, char **argv)
 		}
 	argc -= optind, argv += optind;
 
+	savehandler = handler;
 	/*
 	 * If executing...
 	 */
@@ -242,7 +243,6 @@ histcmd(int argc, char **argv)
 		 * Catch interrupts to reset active counter and
 		 * cleanup temp files.
 		 */
-		savehandler = handler;
 		if (setjmp(jmploc.loc)) {
 			active = 0;
 			if (editfile)
@@ -297,7 +297,7 @@ histcmd(int argc, char **argv)
 		laststr = argv[1];
 		break;
 	default:
-		error("too many args");
+		error("too many arguments");
 	}
 	/*
 	 * Turn into event numbers.
@@ -329,7 +329,7 @@ histcmd(int argc, char **argv)
 		editfile = editfilestr;
 		if ((efp = fdopen(fd, "w")) == NULL) {
 			close(fd);
-			error("can't allocate stdio buffer for temp");
+			error("Out of space");
 		}
 	}
 
@@ -399,6 +399,7 @@ histcmd(int argc, char **argv)
 		--active;
 	if (displayhist)
 		displayhist = 0;
+	handler = savehandler;
 	return 0;
 }
 
@@ -411,8 +412,7 @@ fc_replace(const char *s, char *p, char *r)
 	STARTSTACKSTR(dest);
 	while (*s) {
 		if (*s == *p && strncmp(s, p, plen) == 0) {
-			while (*r)
-				STPUTC(*r++, dest);
+			STPUTS(r, dest);
 			s += plen;
 			*p = '\0';	/* so no more matches */
 		} else

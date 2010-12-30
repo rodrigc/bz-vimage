@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/bus.h,v 1.95 2010/09/10 11:19:03 avg Exp $
+ * $FreeBSD: src/sys/sys/bus.h,v 1.96 2010/11/17 22:28:04 jhb Exp $
  */
 
 #ifndef _SYS_BUS_H_
@@ -256,6 +256,7 @@ int	resource_list_add_next(struct resource_list *rl,
 			  u_long start, u_long end, u_long count);
 int	resource_list_busy(struct resource_list *rl,
 			   int type, int rid);
+int	resource_list_reserved(struct resource_list *rl, int type, int rid);
 struct resource_list_entry*
 	resource_list_find(struct resource_list *rl,
 			   int type, int rid);

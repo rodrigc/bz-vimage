@@ -19,7 +19,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $FreeBSD: src/contrib/libpcap/grammar.y,v 1.13 2009/03/21 22:58:08 rpaulo Exp $
+ * $FreeBSD: src/contrib/libpcap/grammar.y,v 1.14 2010/10/29 18:43:23 rpaulo Exp $
  */
 #ifndef lint
 static const char rcsid[] _U_ =
@@ -46,6 +46,7 @@ struct rtentry;
 #endif
 
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #endif /* WIN32 */
 
 #include <stdio.h>

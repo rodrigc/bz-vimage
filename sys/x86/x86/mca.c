@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/mca.c,v 1.4 2010/07/28 21:52:09 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/mca.c,v 1.5 2010/11/01 17:40:35 jhb Exp $");
 
 #ifdef __amd64__
 #define	DEV_APIC
@@ -54,7 +54,7 @@ __FBSDID("$FreeBSD: src/sys/x86/x86/mca.c,v 1.4 2010/07/28 21:52:09 jhb Exp $");
 #include <machine/intr_machdep.h>
 #include <machine/apicvar.h>
 #include <machine/cputypes.h>
-#include <machine/mca.h>
+#include <x86/mca.h>
 #include <machine/md_var.h>
 #include <machine/specialreg.h>
 

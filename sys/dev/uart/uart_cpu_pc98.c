@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_pc98.c,v 1.19 2008/09/07 04:47:39 nyan Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_pc98.c,v 1.20 2010/12/20 16:39:43 tijl Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -37,8 +37,8 @@ __FBSDID("$FreeBSD: src/sys/dev/uart/uart_cpu_pc98.c,v 1.19 2008/09/07 04:47:39 
 #include <dev/uart/uart.h>
 #include <dev/uart/uart_cpu.h>
 
-bus_space_tag_t uart_bus_space_io = I386_BUS_SPACE_IO;
-bus_space_tag_t uart_bus_space_mem = I386_BUS_SPACE_MEM;
+bus_space_tag_t uart_bus_space_io = X86_BUS_SPACE_IO;
+bus_space_tag_t uart_bus_space_mem = X86_BUS_SPACE_MEM;
 
 static struct {
 	u_long iobase;

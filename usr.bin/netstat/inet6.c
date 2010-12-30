@@ -11,10 +11,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -39,7 +35,7 @@ static char sccsid[] = "@(#)inet6.c	8.4 (Berkeley) 4/20/94";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/netstat/inet6.c,v 1.35 2009/04/29 09:52:04 bms Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/netstat/inet6.c,v 1.37 2010/12/11 08:32:16 joel Exp $");
 
 #ifdef INET6
 #include <sys/param.h>
@@ -438,7 +434,7 @@ ip6_stats(u_long off, const char *name, int af1 __unused, int proto __unused)
 	printf("\t\t%ju two or more ext mbuf\n",
 	    (uintmax_t)ip6stat.ip6s_mext2m);
 	p(ip6s_exthdrtoolong,
-	    "\t%ju packet%s whose headers are not continuous\n");
+	    "\t%ju packet%s whose headers are not contiguous\n");
 	p(ip6s_nogif, "\t%ju tunneling packet%s that can't find gif\n");
 	p(ip6s_toomanyhdr,
 	    "\t%ju packet%s discarded because of too many headers\n");

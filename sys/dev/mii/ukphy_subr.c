@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/ukphy_subr.c,v 1.12 2010/10/03 17:00:57 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/ukphy_subr.c,v 1.13 2010/11/14 13:26:10 marius Exp $");
 
 /*
  * Subroutines shared by the ukphy driver and other PHY drivers.
@@ -117,6 +117,13 @@ ukphy_status(struct mii_softc *phy)
 			mii->mii_media_active |= IFM_10_T|IFM_HDX;
 		else
 			mii->mii_media_active |= IFM_NONE;
+
+		if ((mii->mii_media_active & IFM_1000_T) != 0 &&
+		    (gtsr & GTSR_MS_RES) != 0)
+			mii->mii_media_active |= IFM_ETH_MASTER;
+
+		if ((mii->mii_media_active & IFM_FDX) != 0)
+			mii->mii_media_active |= mii_phy_flowstatus(phy);
 	} else
 		mii->mii_media_active = ife->ifm_media;
 }

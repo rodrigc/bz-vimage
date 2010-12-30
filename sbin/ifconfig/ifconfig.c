@@ -38,7 +38,7 @@ static const char copyright[] =
 static char sccsid[] = "@(#)ifconfig.c	8.2 (Berkeley) 2/16/94";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/ifconfig/ifconfig.c,v 1.154 2010/08/06 15:09:21 jhb Exp $";
+  "$FreeBSD: src/sbin/ifconfig/ifconfig.c,v 1.156 2010/12/07 20:23:47 weongyo Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -307,6 +307,8 @@ main(int argc, char *argv[])
 		}
 		cp = ifa->ifa_name;
 
+		if ((ifa->ifa_flags & IFF_CANTCONFIG) != 0)
+			continue;
 		if (downonly && (ifa->ifa_flags & IFF_UP) != 0)
 			continue;
 		if (uponly && (ifa->ifa_flags & IFF_UP) == 0)

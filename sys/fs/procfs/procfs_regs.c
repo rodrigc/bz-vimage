@@ -34,7 +34,7 @@
  *
  * From:
  *	$Id$
- * $FreeBSD: src/sys/fs/procfs/procfs_regs.c,v 1.34 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/fs/procfs/procfs_regs.c,v 1.35 2010/12/02 12:44:51 kib Exp $
  */
 
 #include "opt_compat.h"
@@ -96,6 +96,10 @@ procfs_doprocregs(PFS_FILL_ARGS)
 	if (p_candebug(td, p)) {
 		PROC_UNLOCK(p);
 		return (EPERM);
+	}
+	if (!P_SHOULDSTOP(p)) {
+		PROC_UNLOCK(p);
+		return (EBUSY);
 	}
 
 	/* XXXKSE: */

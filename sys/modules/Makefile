@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.664 2010/09/10 15:03:56 ken Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.667 2010/12/02 03:10:35 lstewart Exp $
 
 .include <bsd.own.mk>
 
@@ -51,6 +51,7 @@ SUBDIR=	${_3dfx} \
 	${_cardbus} \
 	cas \
 	${_cbb} \
+	cc \
 	cd9660 \
 	cd9660_iconv \
 	${_ce} \
@@ -331,7 +332,7 @@ _syscons=	syscons
 _vpo=		vpo
 .endif
 
-.if ${MACHINE_ARCH} != "arm" && ${MACHINE_ARCH} != "mips"
+.if ${MACHINE_CPUARCH} != "arm" && ${MACHINE_CPUARCH} != "mips"
 # no BUS_SPACE_UNSPECIFIED
 # No barrier instruction support (specific to this driver)
 _sym=		sym
@@ -633,6 +634,7 @@ _xe=		xe
 .endif
 
 .if ${MACHINE_CPUARCH} == "powerpc"
+_agp=		agp
 _an=		an
 _bm=		bm
 _cpufreq=	cpufreq

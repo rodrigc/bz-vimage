@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/nsphyter.c,v 1.5 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/nsphyter.c,v 1.6 2010/11/22 21:24:29 marius Exp $");
 
 /*
  * driver for National Semiconductor's DP83843 `PHYTER' ethernet 10/100 PHY
@@ -142,6 +142,8 @@ nsphyter_attach(device_t dev)
 	sc->mii_phy = ma->mii_phyno;
 	sc->mii_service = nsphyter_service;
 	sc->mii_pdata = mii;
+
+	sc->mii_flags |= MIIF_NOMANPAUSE;
 
 #if 1
 
@@ -242,12 +244,8 @@ nsphyter_status(struct mii_softc *sc)
 		else
 			mii->mii_media_active |= IFM_100_TX;
 		if ((physts & PHYSTS_DUPLEX) != 0)
-#ifdef notyet
 			mii->mii_media_active |=
 			    IFM_FDX | mii_phy_flowstatus(sc);
-#else
-			mii->mii_media_active |= IFM_FDX;
-#endif
 		else
 			mii->mii_media_active |= IFM_HDX;
 	} else

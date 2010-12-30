@@ -22,7 +22,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_sysctl.c,v 1.9 2010/04/22 18:21:25 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_sysctl.c,v 1.10 2010/11/16 03:43:06 nwhitehorn Exp $");
 
 /** @file drm_sysctl.c
  * Implementation of various sysctls for controlling DRM behavior and reporting
@@ -259,7 +259,7 @@ static int drm_bufs_info DRM_SYSCTL_HANDLER_ARGS
 				       *(1 << dma->bufs[i].page_order),
 				       (dma->bufs[i].seg_count
 					* (1 << dma->bufs[i].page_order))
-				       * PAGE_SIZE / 1024);
+				       * (int)PAGE_SIZE / 1024);
 	}
 	DRM_SYSCTL_PRINT("\n");
 	for (i = 0; i < dma->buf_count; i++) {

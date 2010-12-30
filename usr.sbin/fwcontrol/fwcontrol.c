@@ -34,7 +34,7 @@
 
 #if defined(__FreeBSD__)
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/fwcontrol/fwcontrol.c,v 1.28 2009/02/17 23:56:16 sbruno Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/fwcontrol/fwcontrol.c,v 1.29 2010/12/09 08:36:23 kevlo Exp $");
 #endif
 
 #include <sys/param.h>
@@ -508,6 +508,7 @@ load_crom(char *filename, u_int32_t *p)
 			p, p+1, p+2, p+3, p+4, p+5, p+6, p+7);
 		p += 8;
 	}
+	fclose(file);
 }
 
 static void

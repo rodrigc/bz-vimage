@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/arm/conf/AVILA.hints,v 1.8 2009/06/22 22:46:37 sam Exp $
+# $FreeBSD: src/sys/arm/conf/AVILA.hints,v 1.9 2010/11/07 20:33:39 thompsa Exp $
 
 #
 # Device wiring for the Gateworks Avila 2384.
@@ -40,6 +40,9 @@ hint.ata_avila.0.at="ixp0"
 
 # Front Panel LED
 hint.led_avila.0.at="ixp0"
+
+# GPIO pins
+hint.gpio_avila.0.at="ixp0"
 
 # Analog Devices AD7418 temperature sensor
 hint.ad7418.0.at="iicbus0"

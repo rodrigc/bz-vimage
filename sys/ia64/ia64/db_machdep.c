@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/db_machdep.c,v 1.9 2010/05/21 17:17:56 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/db_machdep.c,v 1.10 2010/11/09 20:41:10 jhb Exp $");
 
 #include "opt_xtrace.h"
 
@@ -48,7 +48,6 @@ __FBSDID("$FreeBSD: src/sys/ia64/ia64/db_machdep.c,v 1.9 2010/05/21 17:17:56 jhb
 #include <machine/frame.h>
 #include <machine/kdb.h>
 #include <machine/md_var.h>
-#include <machine/mutex.h>
 #include <machine/pcb.h>
 #include <machine/setjmp.h>
 #include <machine/unwind.h>

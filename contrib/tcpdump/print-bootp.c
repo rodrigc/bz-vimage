@@ -20,7 +20,7 @@
  *
  * Format and print bootp packets.
  *
- * $FreeBSD: src/contrib/tcpdump/print-bootp.c,v 1.13 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/print-bootp.c,v 1.14 2010/10/28 19:06:17 rpaulo Exp $
  */
 #ifndef lint
 static const char rcsid[] _U_ =
@@ -587,8 +587,6 @@ rfc1048_print(register const u_char *bp)
 				if (len < 1)  {
 					printf("ERROR: option %u len %u < 1 bytes",
 					    TAG_NETBIOS_NODE, len);
-					bp += len;
-					len = 0;
 					break;
 				}
 				tag = *bp++;
@@ -601,8 +599,6 @@ rfc1048_print(register const u_char *bp)
 				if (len < 1)  {
 					printf("ERROR: option %u len %u < 1 bytes",
 					    TAG_OPT_OVERLOAD, len);
-					bp += len;
-					len = 0;
 					break;
 				}
 				tag = *bp++;
@@ -642,8 +638,6 @@ rfc1048_print(register const u_char *bp)
 				if (len < 1)  {
 					printf("ERROR: option %u len %u < 1 bytes",
 					    TAG_CLIENT_ID, len);
-					bp += len;
-					len = 0;
 					break;
 				}
 				type = *bp++;

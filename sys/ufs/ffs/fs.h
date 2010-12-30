@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)fs.h	8.13 (Berkeley) 3/21/95
- * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.56 2010/09/14 18:04:05 mckusick Exp $
+ * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.58 2010/12/29 12:25:28 kib Exp $
  */
 
 #ifndef _UFS_FFS_FS_H_
@@ -417,6 +417,7 @@ CTASSERT(sizeof(struct fs) == 1376);
 #define FS_FLAGS_UPDATED 0x0080	/* flags have been moved to new location */
 #define FS_NFS4ACLS	0x0100	/* file system has NFSv4 ACLs enabled */
 #define FS_INDEXDIRS	0x0200	/* kernel supports indexed directories */
+#define	FS_TRIM		0x0400	/* issue BIO_DELETE for deleted blocks */
 
 /*
  * Macros to access bits in the fs_active array.
@@ -607,6 +608,11 @@ struct cg {
 	  : (fragroundup(fs, blkoff(fs, (size)))))
 
 /*
+ * Number of indirects in a filesystem block.
+ */
+#define	NINDIR(fs)	((fs)->fs_nindir)
+
+/*
  * Indirect lbns are aligned on NDADDR addresses where single indirects
  * are the negated address of the lowest lbn reachable, double indirects
  * are this lbn - 1 and triple indirects are this lbn - 2.  This yields
@@ -631,16 +637,22 @@ lbn_level(ufs_lbn_t lbn)
 	}
 	return (-1);
 }
+
+static inline ufs_lbn_t
+lbn_offset(struct fs *fs, int level)
+{
+	ufs_lbn_t res;
+
+	for (res = 1; level > 0; level--)
+		res *= NINDIR(fs);
+	return (res);
+}
+
 /*
  * Number of inodes in a secondary storage block/fragment.
  */
 #define	INOPB(fs)	((fs)->fs_inopb)
 #define	INOPF(fs)	((fs)->fs_inopb >> (fs)->fs_fragshift)
-
-/*
- * Number of indirects in a filesystem block.
- */
-#define	NINDIR(fs)	((fs)->fs_nindir)
 
 /*
  * Softdep journal record format.

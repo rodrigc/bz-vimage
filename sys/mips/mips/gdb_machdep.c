@@ -92,7 +92,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	JNPR: gdb_machdep.c,v 1.1 2007/08/09 12:25:25 katta
- * $FreeBSD: src/sys/mips/mips/gdb_machdep.c,v 1.2 2010/01/10 20:29:20 imp Exp $
+ * $FreeBSD: src/sys/mips/mips/gdb_machdep.c,v 1.3 2010/11/08 00:26:49 gonzo Exp $
  */
 
 #include <sys/cdefs.h>
@@ -117,26 +117,33 @@ gdb_cpu_getreg(int regnum, size_t *regsz)
 
  	*regsz = gdb_cpu_regsz(regnum);
  	if (kdb_thread  == PCPU_GET(curthread)) {
-		switch (regnum) {
-		/*
-		* XXX: May need to add more registers 
-		*/
-		case 2: return (&kdb_frame->v0);
-		case 3: return (&kdb_frame->v1);
-		}
+		register_t *zero_ptr = &kdb_frame->zero;
+		return zero_ptr + regnum;
 	}
+	
 	switch (regnum) {
-	case 16: return (&kdb_thrctx->pcb_context[0]);
-	case 17: return (&kdb_thrctx->pcb_context[1]);
-	case 18: return (&kdb_thrctx->pcb_context[2]);
-	case 19: return (&kdb_thrctx->pcb_context[3]);
-	case 20: return (&kdb_thrctx->pcb_context[4]);
-	case 21: return (&kdb_thrctx->pcb_context[5]);
-	case 22: return (&kdb_thrctx->pcb_context[6]);
-	case 23: return (&kdb_thrctx->pcb_context[7]);
-	case 29: return (&kdb_thrctx->pcb_context[8]);
-	case 30: return (&kdb_thrctx->pcb_context[9]);
-	case 31: return (&kdb_thrctx->pcb_context[10]);
+	/* 
+	 * S0..S7
+	 */
+	case 16:
+	case 17:
+	case 18:
+	case 19:
+	case 20:
+	case 21:
+	case 22:
+	case 23:
+ 		return (&kdb_thrctx->pcb_context[PCB_REG_S0 + regnum - 16]);
+	case 28: 
+		return (&kdb_thrctx->pcb_context[PCB_REG_GP]);
+	case 29: 
+		return (&kdb_thrctx->pcb_context[PCB_REG_SP]);
+	case 30: 
+		return (&kdb_thrctx->pcb_context[PCB_REG_S8]);
+	case 31: 
+		return (&kdb_thrctx->pcb_context[PCB_REG_RA]);
+	case 37: 
+		return (&kdb_thrctx->pcb_context[PCB_REG_PC]);
 	}
 	return (NULL);
 }

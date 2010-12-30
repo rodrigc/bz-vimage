@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/cpufunc.h,v 1.31 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/cpufunc.h,v 1.32 2010/11/12 15:20:10 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_CPUFUNC_H_
@@ -105,6 +105,17 @@ mfsrin(vm_offset_t va)
 	return (value);
 }
 #endif
+
+static __inline register_t
+mfctrl(void)
+{
+	register_t value;
+
+	__asm __volatile ("mfspr %0,136" : "=r"(value));
+
+	return (value);
+}
+
 
 static __inline void
 mtdec(register_t value)

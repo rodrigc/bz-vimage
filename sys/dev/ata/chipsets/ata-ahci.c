@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-ahci.c,v 1.35 2010/10/18 11:30:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-ahci.c,v 1.36 2010/11/28 18:53:29 marius Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -1005,12 +1005,12 @@ ata_ahci_dmainit(device_t dev)
     struct ata_pci_controller *ctlr = device_get_softc(device_get_parent(dev));
     struct ata_channel *ch = device_get_softc(dev);
 
-    ata_dmainit(dev);
     /* note start and stop are not used here */
     ch->dma.setprd = ata_ahci_dmasetprd;
     ch->dma.max_iosize = (ATA_AHCI_DMA_ENTRIES - 1) * PAGE_SIZE;
     if (ATA_INL(ctlr->r_res2, ATA_AHCI_CAP) & ATA_AHCI_CAP_64BIT)
 	ch->dma.max_address = BUS_SPACE_MAXADDR;
+    ata_dmainit(dev);
 }
 
 static int

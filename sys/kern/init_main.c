@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.316 2010/10/17 11:01:52 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.318 2010/12/09 02:42:02 davidxu Exp $");
 
 #include "opt_ddb.h"
 #include "opt_init_path.h"
@@ -179,6 +179,9 @@ mi_startup(void)
 	int last;
 	int verbose;
 #endif
+
+	if (boothowto & RB_VERBOSE)
+		bootverbose++;
 
 	if (sysinit == NULL) {
 		sysinit = SET_BEGIN(sysinit_set);
@@ -327,15 +330,6 @@ SYSINIT(diagwarn2, SI_SUB_RUN_SCHEDULER, SI_ORDER_THIRD + 2,
     print_caddr_t, diag_warn);
 #endif
 
-static void
-set_boot_verbose(void *data __unused)
-{
-
-	if (boothowto & RB_VERBOSE)
-		bootverbose++;
-}
-SYSINIT(boot_verbose, SI_SUB_TUNABLES, SI_ORDER_ANY, set_boot_verbose, NULL);
-
 static int
 null_fetch_syscall_args(struct thread *td __unused,
     struct syscall_args *sa __unused)
@@ -466,6 +460,7 @@ proc0_init(void *dummy __unused)
 	td->td_pri_class = PRI_TIMESHARE;
 	td->td_user_pri = PUSER;
 	td->td_base_user_pri = PUSER;
+	td->td_lend_user_pri = PRI_MAX;
 	td->td_priority = PVM;
 	td->td_base_pri = PUSER;
 	td->td_oncpu = 0;

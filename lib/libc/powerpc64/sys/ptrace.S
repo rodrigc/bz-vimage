@@ -26,14 +26,14 @@
 /*      $NetBSD: ptrace.S,v 1.3 2000/02/23 20:16:57 kleink Exp $        */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/ptrace.S,v 1.1 2010/07/10 14:45:03 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/ptrace.S,v 1.2 2010/12/11 17:57:42 nwhitehorn Exp $");
 
 #include "SYS.h"
 
 ENTRY(ptrace)
 	mflr	%r0
-	stdu	%r1,-68(%r1)
-	std	%r0,84(%r1)
+	std	%r0,16(%r1)
+	stdu	%r1,-80(%r1)
 	stw	%r3,48(%r1)
 	stw	%r4,52(%r1)
 	std	%r5,56(%r1)
@@ -47,10 +47,10 @@ ENTRY(ptrace)
 	lwz	%r3,48(%r1)
 	lwz	%r4,52(%r1)
 	ld	%r5,56(%r1)
-	ld	%r0,84(%r1)
 	lwz	%r6,64(%r1)
-	mtlr	%r0
 	ld	%r1,0(%r1)
+	ld	%r0,16(%r1)
+	mtlr	%r0
 	li	%r0,SYS_ptrace
 	sc
 	bso	1f

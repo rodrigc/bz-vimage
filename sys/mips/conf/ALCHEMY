@@ -15,12 +15,9 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/mips/conf/ALCHEMY,v 1.4 2010/02/15 23:44:48 attilio Exp $
+# $FreeBSD: src/sys/mips/conf/ALCHEMY,v 1.5 2010/11/13 22:34:12 imp Exp $
 
 ident		ALCHEMY
-
-makeoptions	ARCH_FLAGS=-march=mips32
-makeoptions	MIPS_LITTLE_ENDIAN=defined
 
 # Don't build any modules yet.
 makeoptions	MODULES_OVERRIDE=""

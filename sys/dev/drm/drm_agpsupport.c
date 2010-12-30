@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_agpsupport.c,v 1.10 2008/10/13 18:03:27 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_agpsupport.c,v 1.11 2010/11/16 03:43:06 nwhitehorn Exp $");
 
 /** @file drm_agpsupport.c
  * Support code for tying the kernel AGP support to DRM drivers and
@@ -318,7 +318,7 @@ int drm_agp_bind(struct drm_device *dev, struct drm_agp_binding *request)
 	if (!dev->agp || !dev->agp->acquired)
 		return EINVAL;
 
-	DRM_DEBUG("agp_bind, page_size=%x\n", PAGE_SIZE);
+	DRM_DEBUG("agp_bind, page_size=%x\n", (int)PAGE_SIZE);
 
 	entry = drm_agp_lookup_entry(dev, (void *)request->handle);
 	if (entry == NULL || entry->bound)

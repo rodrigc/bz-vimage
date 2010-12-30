@@ -1,11 +1,12 @@
 #
-# $FreeBSD: src/sys/mips/conf/SWARM,v 1.11 2010/09/15 05:29:13 neel Exp $
+# $FreeBSD: src/sys/mips/conf/SWARM,v 1.14 2010/12/16 05:13:41 gonzo Exp $
 #
 
-include		SWARM_COMMON
+include		"std.SWARM"
 
 ident		SWARM
 
+machine		mips mipseb
 options		ISA_MIPS32
 
 makeoptions	ARCH_FLAGS="-mabi=32 -march=mips32"

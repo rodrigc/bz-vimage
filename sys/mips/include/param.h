@@ -36,7 +36,7 @@
  *	from: Utah Hdr: machparam.h 1.11 89/08/14
  *	from: @(#)param.h	8.1 (Berkeley) 6/10/93
  *	JNPR: param.h,v 1.6.2.1 2007/09/10 07:49:36 girish
- * $FreeBSD: src/sys/mips/include/param.h,v 1.16 2010/08/04 14:12:09 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/param.h,v 1.17 2010/11/28 04:07:45 jmallett Exp $
  */
 
 #ifndef _MIPS_INCLUDE_PARAM_H_
@@ -57,7 +57,23 @@
 #define	MACHINE		"mips"
 #endif
 #ifndef MACHINE_ARCH
-#define	MACHINE_ARCH	"mips"
+#if _BYTE_ORDER == _BIG_ENDIAN
+#ifdef __mips_n64
+#define	MACHINE_ARCH	"mips64eb"
+#elif defined(__mips_n32)
+#define	MACHINE_ARCH	"mipsn32eb"
+#else
+#define	MACHINE_ARCH	"mipseb"
+#endif
+#else
+#ifdef __mips_n64
+#define	MACHINE_ARCH	"mips64el"
+#elif defined(__mips_n32)
+#define	MACHINE_ARCH	"mipsn32el"
+#else
+#define	MACHINE_ARCH	"mipsel"
+#endif
+#endif
 #endif
 
 /*

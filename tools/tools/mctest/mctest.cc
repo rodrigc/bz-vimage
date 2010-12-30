@@ -33,7 +33,7 @@
 //
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/tools/mctest/mctest.cc,v 1.7 2010/10/01 14:36:36 gnn Exp $");
+__FBSDID("$FreeBSD: src/tools/tools/mctest/mctest.cc,v 1.8 2010/11/16 20:39:52 gnn Exp $");
 
 // C++ STL and other related includes
 #include <iostream>
@@ -419,7 +419,7 @@ int source(char *interface, struct in_addr *group, int pkt_size,
 // 	    cout << "sec: " << result.tv_sec;
 // 	    cout << " usecs: " << result.tv_usec << endl;
             }
-	cout << "comparing %lu deltas" << long(deltas.size()) << endl;
+	cout << "comparing " << long(deltas.size()) << " deltas" << endl;
 	cout << "number represents usecs of round-trip time" << endl;
 	sort(deltas.begin(), deltas.end());
 	for (int i = 0; idx[i] != 0; ++i) {

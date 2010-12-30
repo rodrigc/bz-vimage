@@ -23,10 +23,8 @@
  * For semi-intelligent modem handling.
  */
 
-#ifndef lint
-static const char rcsid[] =
-  "$FreeBSD: src/libexec/getty/chat.c,v 1.11 2005/04/06 17:42:24 stefanf Exp $";
-#endif /* not lint */
+#include <sys/cdefs.h>
+__FBSDID("$FreeBSD: src/libexec/getty/chat.c,v 1.12 2010/12/20 08:29:54 charnier Exp $");
 
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -78,7 +76,7 @@ static int    chat_send(char const *);
  */
 
 static void
-chat_alrm(int signo)
+chat_alrm(int signo __unused)
 {
 	int on = 1;
 

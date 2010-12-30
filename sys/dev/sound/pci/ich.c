@@ -36,7 +36,7 @@
 #include <dev/pci/pcireg.h>
 #include <dev/pci/pcivar.h>
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/ich.c,v 1.81 2009/06/07 19:12:08 ariff Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/ich.c,v 1.82 2010/12/18 14:21:28 tijl Exp $");
 
 /* -------------------------------------------------------------------- */
 
@@ -1191,12 +1191,6 @@ ich_pci_resume(device_t dev)
 	int i;
 
 	sc = pcm_getdevinfo(dev);
-
-	if (sc->regtype == SYS_RES_IOPORT)
-		pci_enable_io(dev, SYS_RES_IOPORT);
-	else
-		pci_enable_io(dev, SYS_RES_MEMORY);
-	pci_enable_busmaster(dev);
 
 	ICH_LOCK(sc);
 	/* Reinit audio device */

@@ -21,11 +21,11 @@
 .\" out of the use of this software, even if advised of the possibility of
 .\" such damage.
 .\"
-.\" $FreeBSD: src/lib/libpmc/pmc.mips.3,v 1.3 2010/08/06 14:33:42 joel Exp $
+.\" $FreeBSD: src/lib/libpmc/pmc.mips.3,v 1.4 2010/11/06 10:54:33 uqs Exp $
 .\"
 .Dd February 11, 2010
-.Os
 .Dt PMC.MIPS 3
+.Os
 .Sh NAME
 .Nm pmc.mips
 .Nd measurement events for
@@ -123,7 +123,6 @@ Counts every time the instruction cache is accessed. All replays,
 wasted fetches etc. are counted.
 For example, following a branch, even though the prediction is taken,
 the fall through access is counted.
-
 .It Li IC_MISS
 .Pq Event 9, Counter 1
 Counts all instruction cache misses that result in a bus request.

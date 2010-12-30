@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_umtx.c,v 1.20 2010/09/01 03:11:21 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_umtx.c,v 1.21 2010/12/22 05:01:52 davidxu Exp $
  *
  */
 
@@ -68,6 +68,39 @@ __thr_umutex_lock(struct umutex *mtx, uint32_t id)
 			if ((owner & ~UMUTEX_CONTESTED) == 0 &&
 			     atomic_cmpset_acq_32(&mtx->m_owner, owner, id|owner))
 				return (0);
+		}
+	}
+
+	return	_umtx_op_err(mtx, UMTX_OP_MUTEX_LOCK, 0, 0, 0);
+}
+
+#define SPINLOOPS 1000
+
+int
+__thr_umutex_lock_spin(struct umutex *mtx, uint32_t id)
+{
+	uint32_t owner;
+
+	if (!_thr_is_smp)
+		return __thr_umutex_lock(mtx, id);
+
+	if ((mtx->m_flags & (UMUTEX_PRIO_PROTECT | UMUTEX_PRIO_INHERIT)) == 0) {
+		for (;;) {
+			int count = SPINLOOPS;
+			while (count--) {
+				owner = mtx->m_owner;
+				if ((owner & ~UMUTEX_CONTESTED) == 0) {
+					if (atomic_cmpset_acq_32(
+					    &mtx->m_owner,
+					    owner, id|owner)) {
+						return (0);
+					}
+				}
+				CPU_SPINWAIT;
+			}
+
+			/* wait in kernel */
+			_umtx_op_err(mtx, UMTX_OP_MUTEX_WAIT, 0, 0, 0);
 		}
 	}
 
@@ -161,6 +194,26 @@ _thr_umtx_wait_uint(volatile u_int *mtx, u_int id, const struct timespec *timeou
 	return _umtx_op_err(__DEVOLATILE(void *, mtx), 
 			shared ? UMTX_OP_WAIT_UINT : UMTX_OP_WAIT_UINT_PRIVATE, id, 0,
 			__DECONST(void*, timeout));
+}
+
+int
+_thr_umtx_timedwait_uint(volatile u_int *mtx, u_int id, int clockid,
+	const struct timespec *abstime, int shared)
+{
+	struct timespec ts, ts2, *tsp;
+
+	if (abstime != NULL) {
+		clock_gettime(clockid, &ts);
+		TIMESPEC_SUB(&ts2, abstime, &ts);
+		if (ts2.tv_sec < 0 || ts2.tv_nsec <= 0)
+			return (ETIMEDOUT);
+		tsp = &ts2;
+	} else {
+		tsp = NULL;
+	}
+	return _umtx_op_err(__DEVOLATILE(void *, mtx), 
+		shared ? UMTX_OP_WAIT_UINT : UMTX_OP_WAIT_UINT_PRIVATE, id, NULL,
+			tsp);
 }
 
 int

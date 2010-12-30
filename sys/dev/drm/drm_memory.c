@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_memory.c,v 1.7 2010/04/22 18:21:25 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_memory.c,v 1.8 2010/11/16 03:43:06 nwhitehorn Exp $");
 
 /** @file drm_memory.c
  * Wrappers for kernel memory allocation routines, and MTRR management support.
@@ -73,7 +73,7 @@ void drm_mem_uninit(void)
 
 void *drm_ioremap_wc(struct drm_device *dev, drm_local_map_t *map)
 {
-	return pmap_mapdev_attr(map->offset, map->size, PAT_WRITE_COMBINING);
+	return pmap_mapdev_attr(map->offset, map->size, VM_MEMATTR_WRITE_COMBINING);
 }
 
 void *drm_ioremap(struct drm_device *dev, drm_local_map_t *map)

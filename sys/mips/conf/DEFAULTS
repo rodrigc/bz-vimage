@@ -1,9 +1,7 @@
 #
 # DEFAULTS -- Default kernel configuration file for FreeBSD/mips
 #
-# $FreeBSD: src/sys/mips/conf/DEFAULTS,v 1.4 2010/01/04 21:30:04 imp Exp $
-
-machine 	mips
+# $FreeBSD: src/sys/mips/conf/DEFAULTS,v 1.5 2010/11/13 22:34:12 imp Exp $
 
 device		mem
 

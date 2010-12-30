@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/extattrctl/extattrctl.c,v 1.20 2010/01/02 11:05:34 ed Exp $
+ * $FreeBSD: src/usr.sbin/extattrctl/extattrctl.c,v 1.21 2010/12/08 10:27:07 kevlo Exp $
  */
 /*
  * Developed by the TrustedBSD Project.
@@ -144,9 +144,11 @@ initattr(int argc, char *argv[])
 	if (error == -1) {
 		perror(argv[1]);
 		unlink(argv[1]);
+		close(i);
 		return (-1);
 	}
 
+	close(i);
 	return (0);
 }
 
@@ -168,21 +170,25 @@ showattr(int argc, char *argv[])
 	i = read(fd, &uef, sizeof(uef));
 	if (i == -1) {
 		perror(argv[0]);
+		close(fd);
 		return (-1);
 	}
 	if (i != sizeof(uef)) {
 		fprintf(stderr, "%s: invalid file header\n", argv[0]);
+		close(fd);
 		return (-1);
 	}
 
 	if (uef.uef_magic != UFS_EXTATTR_MAGIC) {
 		fprintf(stderr, "%s: bad magic\n", argv[0]);
+		close(fd);
 		return (-1);
 	}
 
 	printf("%s: version %d, size %d\n", argv[0], uef.uef_version,
 	    uef.uef_size);
 
+	close(fd);
 	return (0);
 }
 

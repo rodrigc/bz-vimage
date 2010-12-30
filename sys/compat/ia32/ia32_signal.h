@@ -26,8 +26,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/ia32/ia32_signal.h,v 1.13 2010/04/03 12:34:32 bz Exp $
+ * $FreeBSD: src/sys/compat/ia32/ia32_signal.h,v 1.14 2010/11/23 12:47:15 kib Exp $
  */
+
+#ifndef	_COMPAT_IA32_IA32_SIGNAL_H
+#define	_COMPAT_IA32_IA32_SIGNAL_H
 
 struct ia32_mcontext {
 	u_int32_t	mc_onstack;		/* XXX - sigcontext compat. */
@@ -188,3 +191,5 @@ extern int sz_freebsd4_ia32_sigcode;
 extern void ia32_sendsig(sig_t, struct ksiginfo *, sigset_t *);
 extern void ia32_setregs(struct thread *td, struct image_params *imgp,
     u_long stack);
+
+#endif

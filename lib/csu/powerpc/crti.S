@@ -22,7 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-	
+
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/powerpc/crti.S,v 1.3 2010/12/09 21:31:21 dim Exp $");
+
 	.section .init,"ax",@progbits
 	.align	2
 	.globl	_init
@@ -44,7 +47,3 @@ _fini:
 	stw 31,12(1)
 	stw 0,20(1)
 	mr 31,1
-
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/powerpc/crti.S,v 1.2 2002/05/15 04:19:49 obrien Exp $\0"

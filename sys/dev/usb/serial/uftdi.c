@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.27 2010/10/14 21:53:42 hselasky Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.30 2010/11/29 08:17:44 gavin Exp $");
 
 /*
  * NOTE: all function names beginning like "uftdi_cfg_" can only
@@ -213,6 +213,7 @@ static struct usb_device_id uftdi_devs[] = {
 	UFTDI_DEV(ATMEL, STK541, 8U232AM),
 	UFTDI_DEV(DRESDENELEKTRONIK, SENSORTERMINALBOARD, 8U232AM),
 	UFTDI_DEV(DRESDENELEKTRONIK, WIRELESSHANDHELDTERMINAL, 8U232AM),
+	UFTDI_DEV(FALCOM, TWIST, 8U232AM),
 	UFTDI_DEV(FTDI, GAMMASCOUT, 8U232AM),
 	UFTDI_DEV(FTDI, SERIAL_8U100AX, SIO),
 	UFTDI_DEV(FTDI, SERIAL_2232C, 8U232AM),
@@ -332,6 +333,8 @@ uftdi_attach(device_t dev)
 	if (error) {
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);			/* success */
 
 detach:
@@ -344,7 +347,7 @@ uftdi_detach(device_t dev)
 {
 	struct uftdi_softc *sc = device_get_softc(dev);
 
-	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom, 1);
+	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, UFTDI_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

@@ -41,7 +41,7 @@ static const char copyright[] =
 static char sccsid[] = "@(#)mknod.c	8.1 (Berkeley) 6/5/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/mknod/mknod.c,v 1.17 2010/01/31 11:48:25 ed Exp $";
+  "$FreeBSD: src/sbin/mknod/mknod.c,v 1.18 2010/11/22 20:10:48 brucec Exp $";
 #endif /* not lint */
 
 #include <sys/types.h>
@@ -139,7 +139,7 @@ main(int argc, char **argv)
 			errx(1, "%s: non-numeric minor number", argv[4]);
 		range_error |= errno;
 		dev = makedev(mymajor, myminor);
-		if (range_error || major(dev) != (u_int) mymajor ||
+		if (range_error || major(dev) != mymajor ||
 		    (long)(u_int)minor(dev) != myminor)
 			errx(1, "major or minor number too large");
 	} else {

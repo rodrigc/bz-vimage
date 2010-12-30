@@ -30,7 +30,7 @@
 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/xen/xenstore/xenstore.c,v 1.1 2010/10/19 20:53:30 gibbs Exp $");
+__FBSDID("$FreeBSD: src/sys/xen/xenstore/xenstore.c,v 1.3 2010/12/14 20:57:40 gibbs Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -1099,10 +1099,9 @@ xs_probe(device_t dev)
 	 * We are either operating within a PV kernel or being probed
 	 * as the child of the successfully attached xenpci device.
 	 * Thus we are in a Xen environment and there will be a XenStore.
-	 * Uncontitionally return success.
+	 * Unconditionally return success.
 	 */
 	device_set_desc(dev, "XenStore");
-printf("xs_probe: Probe retuns 0\n");
 	return (0);
 }
 

@@ -26,7 +26,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/booke/trap_subr.S,v 1.8 2010/03/23 01:07:30 marcel Exp $
+ * $FreeBSD: src/sys/powerpc/booke/trap_subr.S,v 1.9 2010/11/11 13:35:23 raj Exp $
  */
 /*-
  * Copyright (C) 1995, 1996 Wolfgang Solfrank.
@@ -330,7 +330,7 @@
 	lwz	%r22, PC_BOOKE_TLB_LOCK(%r20);				\
 									\
 1:	lwarx	%r23, 0, %r22;						\
-	cmpwi	%r23, MTX_UNOWNED;					\
+	cmpwi	%r23, TLB_UNLOCKED;					\
 	beq	2f;							\
 									\
 	/* check if this is recursion */				\
@@ -364,7 +364,7 @@
 	msync;								\
 									\
 	/* release the lock */						\
-	li	%r23, MTX_UNOWNED;					\
+	li	%r23, TLB_UNLOCKED;					\
 	stw	%r23, 0(%r22);						\
 1:	isync;								\
 	msync
@@ -860,7 +860,7 @@ ENTRY(tlb_lock)
 	GET_CPUINFO(%r5)
 	lwz	%r5, PC_CURTHREAD(%r5)
 1:	lwarx	%r4, 0, %r3
-	cmpwi	%r4, MTX_UNOWNED
+	cmpwi	%r4, TLB_UNLOCKED
 	bne	1b
 	stwcx.	%r5, 0, %r3
 	bne-	1b
@@ -871,11 +871,12 @@ ENTRY(tlb_lock)
 ENTRY(tlb_unlock)
 	isync
 	msync
-	li	%r4, MTX_UNOWNED
+	li	%r4, TLB_UNLOCKED
 	stw	%r4, 0(%r3)
 	isync
 	msync
 	blr
+
 /*
  * TLB miss spin locks. For each CPU we have a reservation granule (32 bytes);
  * only a single word from this granule will actually be used as a spin lock

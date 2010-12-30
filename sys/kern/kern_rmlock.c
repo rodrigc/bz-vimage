@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_rmlock.c,v 1.12 2010/09/01 19:50:03 mlaier Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_rmlock.c,v 1.13 2010/11/16 14:08:21 cognet Exp $");
 
 #include "opt_ddb.h"
 #include "opt_kdtrace.h"
@@ -48,7 +48,6 @@ __FBSDID("$FreeBSD: src/sys/kern/kern_rmlock.c,v 1.12 2010/09/01 19:50:03 mlaier
 #include <sys/rmlock.h>
 #include <sys/sched.h>
 #include <sys/smp.h>
-#include <sys/systm.h>
 #include <sys/turnstile.h>
 #include <sys/lock_profile.h>
 #include <machine/cpu.h>

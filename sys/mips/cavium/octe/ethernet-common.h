@@ -26,8 +26,11 @@ TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED "AS IS"
 AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR WARRANTIES, EITHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, WITH RESPECT TO THE SOFTWARE, INCLUDING ITS CONDITION, ITS CONFORMITY TO ANY REPRESENTATION OR DESCRIPTION, OR THE EXISTENCE OF ANY LATENT OR PATENT DEFECTS, AND CAVIUM SPECIFICALLY DISCLAIMS ALL IMPLIED (IF ANY) WARRANTIES OF TITLE, MERCHANTABILITY, NONINFRINGEMENT, FITNESS FOR A PARTICULAR PURPOSE, LACK OF VIRUSES, ACCURACY OR COMPLETENESS, QUIET ENJOYMENT, QUIET POSSESSION OR CORRESPONDENCE TO DESCRIPTION. THE ENTIRE  RISK ARISING OUT OF USE OR PERFORMANCE OF THE SOFTWARE LIES WITH YOU.
 
 *************************************************************************/
-/* $FreeBSD: src/sys/mips/cavium/octe/ethernet-common.h,v 1.1 2010/07/20 19:25:11 jmallett Exp $ */
+/* $FreeBSD: src/sys/mips/cavium/octe/ethernet-common.h,v 1.3 2010/11/30 07:14:05 jmallett Exp $ */
 
+int cvm_oct_common_open(struct ifnet *ifp);
+int cvm_oct_common_stop(struct ifnet *ifp);
+void cvm_oct_common_poll(struct ifnet *ifp);
 int cvm_oct_common_init(struct ifnet *ifp);
 void cvm_oct_common_uninit(struct ifnet *ifp);
 
@@ -45,8 +48,6 @@ void cvm_oct_cleanup_module(void);
 int cvm_oct_rgmii_init(struct ifnet *ifp);
 void cvm_oct_rgmii_uninit(struct ifnet *ifp);
 int cvm_oct_sgmii_init(struct ifnet *ifp);
-void cvm_oct_sgmii_uninit(struct ifnet *ifp);
 int cvm_oct_spi_init(struct ifnet *ifp);
 void cvm_oct_spi_uninit(struct ifnet *ifp);
 int cvm_oct_xaui_init(struct ifnet *ifp);
-void cvm_oct_xaui_uninit(struct ifnet *ifp);

@@ -1,13 +1,13 @@
 #
 # XEN -- Kernel configuration for i386 XEN DomU
 #
-# $FreeBSD: src/sys/i386/conf/XEN,v 1.13 2010/03/13 09:21:00 ed Exp $
+# $FreeBSD: src/sys/i386/conf/XEN,v 1.14 2010/12/27 23:59:27 cperciva Exp $
 
 cpu		I686_CPU
 ident		XEN
 
 makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
-makeoptions	MODULES_OVERRIDE=""
+makeoptions	WITHOUT_MODULES="aha ahb amd cxgb dpt drm hptmv ida malo mps mwl nve sound sym trm xfs"
 
 options 	SCHED_ULE		# ULE scheduler
 options 	PREEMPTION		# Enable kernel thread preemption

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/usb/net/if_ruereg.h,v 1.3 2009/06/15 01:02:43 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/net/if_ruereg.h,v 1.4 2010/11/15 06:04:25 kevlo Exp $
  */
 
 #define	RUE_CONFIG_IDX		0	/* config number 1 */
@@ -156,11 +156,6 @@ struct rue_intrpkt {
 	uint8_t	rue_crcerr_cnt;
 	uint8_t	rue_col_cnt;
 } __packed;
-
-struct rue_type {
-	uint16_t rue_vid;
-	uint16_t rue_did;
-};
 
 enum {
 	RUE_BULK_DT_WR,

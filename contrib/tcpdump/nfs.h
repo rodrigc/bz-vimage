@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/contrib/tcpdump/nfs.h,v 1.5 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/nfs.h,v 1.6 2010/10/28 19:06:17 rpaulo Exp $
  *	@(#)nfsproto.h	8.2 (Berkeley) 3/30/95
  */
 
@@ -216,6 +216,7 @@
 #define NFSV3ACCESS_EXTEND		0x08
 #define NFSV3ACCESS_DELETE		0x10
 #define NFSV3ACCESS_EXECUTE		0x20
+#define NFSV3ACCESS_FULL		0x3f
 
 #define NFSV3WRITE_UNSTABLE		0
 #define NFSV3WRITE_DATASYNC		1

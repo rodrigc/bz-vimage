@@ -27,13 +27,14 @@
  * SUCH DAMAGE.
  *
  *	@(#)ptrace.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/sys/sys/ptrace.h,v 1.33 2010/07/04 11:48:30 kib Exp $
+ * $FreeBSD: src/sys/sys/ptrace.h,v 1.34 2010/11/22 14:42:13 attilio Exp $
  */
 
 #ifndef	_SYS_PTRACE_H_
 #define	_SYS_PTRACE_H_
 
 #include <sys/signal.h>
+#include <sys/param.h>
 #include <machine/reg.h>
 
 #define	PT_TRACE_ME	0	/* child declares it's being traced */
@@ -106,6 +107,7 @@ struct ptrace_lwpinfo {
 	sigset_t	pl_sigmask;	/* LWP signal mask */
 	sigset_t	pl_siglist;	/* LWP pending signal */
 	struct __siginfo pl_siginfo;	/* siginfo for signal */
+	char		pl_tdname[MAXCOMLEN + 1]; /* LWP name */
 };
 
 /* Argument structure for PT_VM_ENTRY. */

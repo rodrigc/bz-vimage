@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/idt/idt_machdep.c,v 1.4 2010/01/25 00:44:05 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/idt/idt_machdep.c,v 1.6 2010/12/09 07:47:40 gonzo Exp $");
 
 #include "opt_ddb.h"
 
@@ -166,6 +166,9 @@ platform_start(__register_t a0, __register_t a1,
 	/* phys_avail regions are in bytes */
 	phys_avail[0] = MIPS_KSEG0_TO_PHYS(kernel_kseg0_end);
 	phys_avail[1] = ctob(realmem);
+
+	dump_avail[0] = phys_avail[0];
+	dump_avail[1] = phys_avail[1];
 
 	physmem = realmem;
 

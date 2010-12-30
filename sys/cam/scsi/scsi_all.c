@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_all.c,v 1.58 2010/06/08 05:14:18 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_all.c,v 1.59 2010/11/30 22:39:46 ken Exp $");
 
 #include <sys/param.h>
 
@@ -3550,6 +3550,34 @@ scsi_calc_syncparam(u_int period)
 	 * 1/4 period in ns conversion.
 	 */
 	return (period/400);
+}
+
+uint8_t *
+scsi_get_sas_addr(struct scsi_vpd_device_id *id, uint32_t len)
+{
+	uint8_t *bufp, *buf_end;
+	struct scsi_vpd_id_descriptor *descr;
+	struct scsi_vpd_id_naa_basic *naa;
+
+	bufp = buf_end = (uint8_t *)id;
+	bufp += SVPD_DEVICE_ID_HDR_LEN;
+	buf_end += len;
+	while (bufp < buf_end) {
+		descr = (struct scsi_vpd_id_descriptor *)bufp;
+		bufp += SVPD_DEVICE_ID_DESC_HDR_LEN;
+		/* Right now, we only care about SAS NAA IEEE Reg addrs */
+		if (((descr->id_type & SVPD_ID_PIV) != 0)
+		 && (descr->proto_codeset >> SVPD_ID_PROTO_SHIFT) ==
+		     SCSI_PROTO_SAS
+		 && (descr->id_type & SVPD_ID_TYPE_MASK) == SVPD_ID_TYPE_NAA){
+			naa = (struct scsi_vpd_id_naa_basic *)bufp;
+			if ((naa->naa >> 4) == SVPD_ID_NAA_IEEE_REG)
+				return bufp;
+		}
+		bufp += descr->length;
+	}
+
+	return NULL;
 }
 
 void

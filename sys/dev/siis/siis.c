@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.34 2010/10/25 07:41:21 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/siis/siis.c,v 1.35 2010/11/08 15:36:15 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -1208,6 +1208,17 @@ siis_end_transaction(struct siis_slot *slot, enum siis_err_type et)
 			res->sector_count_exp = ATA_INB(ch->r_mem, offs + 13);
 		} else
 			bzero(res, sizeof(*res));
+		if ((ccb->ccb_h.flags & CAM_DIR_MASK) == CAM_DIR_IN &&
+		    ch->numrslots == 1) {
+			ccb->ataio.resid = ccb->ataio.dxfer_len -
+			    ATA_INL(ch->r_mem, SIIS_P_LRAM_SLOT(slot->slot) + 4);
+		}
+	} else {
+		if ((ccb->ccb_h.flags & CAM_DIR_MASK) == CAM_DIR_IN &&
+		    ch->numrslots == 1) {
+			ccb->csio.resid = ccb->csio.dxfer_len -
+			    ATA_INL(ch->r_mem, SIIS_P_LRAM_SLOT(slot->slot) + 4);
+		}
 	}
 	if ((ccb->ccb_h.flags & CAM_DIR_MASK) != CAM_DIR_NONE) {
 		bus_dmamap_sync(ch->dma.data_tag, slot->dma.data_map,

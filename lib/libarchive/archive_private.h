@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libarchive/archive_private.h,v 1.37 2009/12/28 02:58:14 kientzle Exp $
+ * $FreeBSD: src/lib/libarchive/archive_private.h,v 1.38 2010/11/05 05:11:54 kientzle Exp $
  */
 
 #ifndef __LIBARCHIVE_BUILD
@@ -58,7 +58,7 @@
 
 struct archive_vtable {
 	int	(*archive_close)(struct archive *);
-	int	(*archive_finish)(struct archive *);
+	int	(*archive_free)(struct archive *);
 	int	(*archive_write_header)(struct archive *,
 	    struct archive_entry *);
 	int	(*archive_write_finish_entry)(struct archive *);

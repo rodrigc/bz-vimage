@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/atkbdc/atkbdcreg.h,v 1.13 2010/04/29 06:16:00 sobomax Exp $
+ * $FreeBSD: src/sys/dev/atkbdc/atkbdcreg.h,v 1.14 2010/12/16 17:14:37 jhb Exp $
  * from kbdio.h,v 1.8 1998/09/25 11:55:46 yokota Exp
  */
 
@@ -192,6 +192,7 @@ struct resource;
 typedef struct atkbdc_softc {
     struct resource *port0;	/* data port */
     struct resource *port1;	/* status port */
+    struct resource *irq;
     bus_space_tag_t iot;
     bus_space_handle_t ioh0;
     bus_space_handle_t ioh1;

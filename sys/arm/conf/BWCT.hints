@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/arm/conf/BWCT.hints,v 1.4 2010/03/12 22:39:35 ticso Exp $
+# $FreeBSD: src/sys/arm/conf/BWCT.hints,v 1.5 2010/11/11 15:02:14 ticso Exp $
 
 # Dallas Semiconductor DS1672 RTC sitting on the I2C bus
 hint.ds1672_rtc.0.at="iicbus0"
@@ -7,3 +7,7 @@ hint.ds1672_rtc.0.addr=0xd0
 # National Semiconductor LM75 temperature sensor sitting on the I2C bus
 hint.lm75.0.at="iicbus0"
 hint.lm75.0.addr=0x9e
+
+# Atmel SPIflash sitting on the spibus
+hint.at45d.0.at="spibus0"
+hint.at45d.0.addr=0x00

@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/cavium/octopci.c,v 1.6 2010/09/27 20:35:40 jmallett Exp $
+ * $FreeBSD: src/sys/mips/cavium/octopci.c,v 1.7 2010/11/03 23:29:52 jmallett Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octopci.c,v 1.6 2010/09/27 20:35:40 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octopci.c,v 1.7 2010/11/03 23:29:52 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -107,6 +107,8 @@ static int
 octopci_probe(device_t dev)
 {
 	if (device_get_unit(dev) != 0)
+		return (ENXIO);
+	if (octeon_has_feature(OCTEON_FEATURE_PCIE))
 		return (ENXIO);
 	/* XXX Check sysinfo flag.  */
 	device_set_desc(dev, "Cavium Octeon PCI bridge");

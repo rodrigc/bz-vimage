@@ -1,5 +1,6 @@
-# $FreeBSD: src/lib/clang/Makefile,v 1.3 2010/09/20 16:43:17 dim Exp $
+# $FreeBSD: src/lib/clang/Makefile,v 1.4 2010/10/30 16:53:42 rpaulo Exp $
 
+.if !make(install)
 SUBDIR=	libclanganalysis \
 	libclangast \
 	libclangbasic \
@@ -48,8 +49,9 @@ SUBDIR=	libclanganalysis \
 	libllvmx86asmprinter \
 	libllvmx86codegen \
 	libllvmx86disassembler \
-	libllvmx86info \
-	\
-	include
+	libllvmx86info
+.endif
+
+SUBDIR+= include
 
 .include <bsd.subdir.mk>

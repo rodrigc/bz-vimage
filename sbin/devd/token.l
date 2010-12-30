@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/devd/token.l,v 1.7 2008/03/21 20:38:28 imp Exp $
+ * $FreeBSD: src/sbin/devd/token.l,v 1.8 2010/11/22 12:33:48 brucec Exp $
  */
 
 #include <ctype.h>
@@ -38,6 +38,7 @@
 
 int lineno = 1;
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 
 static void
 update_lineno(const char *cp)

@@ -1,9 +1,10 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/6/93
-# $FreeBSD: src/usr.bin/calendar/Makefile,v 1.34 2010/03/29 07:08:47 edwin Exp $
+# $FreeBSD: src/usr.bin/calendar/Makefile,v 1.35 2010/11/25 19:22:24 uqs Exp $
 
 PROG=	calendar
 SRCS=	calendar.c locale.c events.c dates.c parsedata.c io.c day.c \
 	ostern.c paskha.c pom.c sunpos.c
+DPADD=	${LIBM}
 LDADD=	-lm
 INTER=          de_AT.ISO_8859-15 de_DE.ISO8859-1 fr_FR.ISO8859-1 \
 		hr_HR.ISO8859-2 hu_HU.ISO8859-2 ru_RU.KOI8-R uk_UA.KOI8-U

@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.24 2010/10/24 15:38:58 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/hastd.c,v 1.25 2010/12/16 07:28:40 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -618,6 +618,9 @@ main_loop(void)
 	PJDLOG_VERIFY(sigaddset(&mask, SIGINT) == 0);
 	PJDLOG_VERIFY(sigaddset(&mask, SIGTERM) == 0);
 	PJDLOG_VERIFY(sigaddset(&mask, SIGCHLD) == 0);
+
+	pjdlog_info("Started successfully, running protocol version %d.",
+	    HAST_PROTO_VERSION);
 
 	for (;;) {
 		while ((signo = sigtimedwait(&mask, NULL, &sigtimeout)) != -1) {

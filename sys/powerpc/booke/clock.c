@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/clock.c,v 1.11 2010/09/11 04:45:51 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/clock.c,v 1.14 2010/11/22 19:32:54 dim Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -108,7 +108,7 @@ static struct timecounter	decr_timecounter = {
 };
 
 /*
- * Decrementor interrupt handler.
+ * Decrementer interrupt handler.
  */
 void
 decr_intr(struct trapframe *frame)

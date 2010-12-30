@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: pte.h,v 1.2 1998/08/31 14:43:40 tsubai Exp $
- * $FreeBSD: src/sys/powerpc/include/pte.h,v 1.11 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/pte.h,v 1.12 2010/12/05 01:17:53 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_PTE_H_
@@ -95,8 +95,8 @@ struct lpteg {
 /* High quadword: */
 #define LPTE_VSID_SHIFT		12
 #define LPTE_API		0x0000000000000F80ULL
-#define LPTE_WIRED		0x0000000000000010ULL
-#define LPTE_LOCKED		0x0000000000000008ULL
+#define LPTE_LOCKED		0x0000000000000040ULL
+#define LPTE_WIRED		0x0000000000000008ULL
 #define LPTE_BIG		0x0000000000000004ULL	/* 4kb/16Mb page */
 #define LPTE_HID		0x0000000000000002ULL
 #define LPTE_VALID		0x0000000000000001ULL

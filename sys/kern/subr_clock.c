@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_clock.c,v 1.16 2010/10/17 17:31:49 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_clock.c,v 1.20 2010/12/09 22:02:48 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -49,8 +49,8 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_clock.c,v 1.16 2010/10/17 17:31:49 nwhiteh
 #include <sys/sysctl.h>
 #include <sys/timetc.h>
 
-#define ct_debug bootverbose
-static int adjkerntz;		/* local offset from GMT in seconds */
+static int ct_debug;
+static int adjkerntz;		/* local offset from UTC in seconds */
 static int wall_cmos_clock;	/* wall CMOS clock assumed if != 0 */
 
 int tz_minuteswest;
@@ -60,8 +60,10 @@ int tz_dsttime;
  * This have traditionally been in machdep, but should probably be moved to
  * kern.
  */
+SYSCTL_INT(_machdep, OID_AUTO, ct_debug,
+	CTLFLAG_RW, &ct_debug, 0, "Print ct debug if enabled.");
 SYSCTL_INT(_machdep, OID_AUTO, wall_cmos_clock,
-	CTLFLAG_RW, &wall_cmos_clock, 0, "");
+    CTLFLAG_RW, &wall_cmos_clock, 0, "CMOS clock keeps wall time");
 
 static int
 sysctl_machdep_adjkerntz(SYSCTL_HANDLER_ARGS)
@@ -74,7 +76,8 @@ sysctl_machdep_adjkerntz(SYSCTL_HANDLER_ARGS)
 }
 
 SYSCTL_PROC(_machdep, OID_AUTO, adjkerntz, CTLTYPE_INT|CTLFLAG_RW,
-	&adjkerntz, 0, sysctl_machdep_adjkerntz, "I", "");
+    &adjkerntz, 0, sysctl_machdep_adjkerntz, "I",
+    "Local offset from UTC in seconds");
 
 /*--------------------------------------------------------------------*
  * Generic routines to convert between a POSIX date

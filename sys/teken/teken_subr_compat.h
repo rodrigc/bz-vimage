@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/teken/teken_subr_compat.h,v 1.4 2009/09/26 15:26:32 ed Exp $
+ * $FreeBSD: src/sys/teken/teken_subr_compat.h,v 1.5 2010/11/05 00:56:21 ed Exp $
  */
 
 static void
@@ -85,6 +85,20 @@ teken_subr_cons25_set_bell_pitch_duration(teken_t *t, unsigned int pitch,
 
 	teken_funcs_param(t, TP_SETBELLPD, (pitch << 16) |
 	    (duration & 0xffff));
+}
+
+static void
+teken_subr_cons25_set_graphic_rendition(teken_t *t, unsigned int cmd,
+    unsigned int param __unused)
+{
+
+	switch (cmd) {
+	case 0: /* Reset. */
+		t->t_curattr = t->t_defattr;
+		break;
+	default:
+		teken_printf("unsupported attribute %u\n", cmd);
+	}
 }
 
 static void

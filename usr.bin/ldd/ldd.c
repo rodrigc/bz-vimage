@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ldd/ldd.c,v 1.40 2008/08/02 12:04:59 jhb Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ldd/ldd.c,v 1.41 2010/11/22 20:18:46 brucec Exp $");
 
 #include <sys/wait.h>
 
@@ -331,7 +331,7 @@ is_executable(const char *fname, int fd, int *is_shlib, int *type)
 			return (0);
 		}
 		if (hdr.elf32.e_type == ET_DYN) {
-			if (hdr.elf32.e_ident[EI_OSABI] & ELFOSABI_FREEBSD) {
+			if (hdr.elf32.e_ident[EI_OSABI] == ELFOSABI_FREEBSD) {
 				*is_shlib = 1;
 				return (1);
 			}
@@ -373,7 +373,7 @@ is_executable(const char *fname, int fd, int *is_shlib, int *type)
 			return (0);
 		}
 		if (hdr.elf.e_type == ET_DYN) {
-			if (hdr.elf.e_ident[EI_OSABI] & ELFOSABI_FREEBSD) {
+			if (hdr.elf.e_ident[EI_OSABI] == ELFOSABI_FREEBSD) {
 				*is_shlib = 1;
 				return (1);
 			}

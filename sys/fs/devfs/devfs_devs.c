@@ -25,7 +25,7 @@
  *
  * From: FreeBSD: src/sys/miscfs/kernfs/kernfs_vfsops.c 1.36
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.67 2010/09/27 18:20:56 jh Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_devs.c,v 1.68 2010/12/15 16:42:44 jh Exp $
  */
 
 #include <sys/param.h>
@@ -281,8 +281,10 @@ devfs_vmkdir(struct devfs_mount *dmp, char *name, int namelen, struct devfs_dire
 		de->de_dir = dd;
 	} else {
 		de->de_dir = dotdot;
+		sx_assert(&dmp->dm_lock, SX_XLOCKED);
 		TAILQ_INSERT_TAIL(&dotdot->de_dlist, dd, de_list);
 		dotdot->de_links++;
+		devfs_rules_apply(dmp, dd);
 	}
 
 #ifdef MAC

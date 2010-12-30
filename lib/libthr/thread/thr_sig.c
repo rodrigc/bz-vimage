@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.39 2010/09/21 06:47:04 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.41 2010/10/29 09:35:36 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -317,14 +317,11 @@ check_deferred_signal(struct pthread *curthread)
 	ucontext_t uc;
 	struct sigaction act;
 	siginfo_t info;
-	volatile int first;
 
 	if (__predict_true(curthread->deferred_siginfo.si_signo == 0))
 		return;
-	first = 1;
 	getcontext(&uc);
-	if (first) {
-		first = 0;
+	if (curthread->deferred_siginfo.si_signo == 0) {
 		act = curthread->deferred_sigact;
 		uc.uc_sigmask = curthread->deferred_sigmask;
 		memcpy(&info, &curthread->deferred_siginfo, sizeof(siginfo_t));
@@ -550,7 +547,10 @@ _sigaction(int sig, const struct sigaction * act, struct sigaction * oact)
 
 	if (oldact.sa_handler != SIG_DFL &&
 	    oldact.sa_handler != SIG_IGN) {
-		oldact = _thr_sigact[sig-1].sigact;
+		if (act != NULL)
+			oldact = oldact2;
+		else if (oact != NULL)
+			oldact = _thr_sigact[sig-1].sigact;
 	}
 
 	_thr_rwl_unlock(&_thr_sigact[sig-1].lock);

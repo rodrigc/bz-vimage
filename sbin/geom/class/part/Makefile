@@ -1,8 +1,8 @@
-# $FreeBSD: src/sbin/geom/class/part/Makefile,v 1.4 2010/02/25 20:24:19 ru Exp $
+# $FreeBSD: src/sbin/geom/class/part/Makefile,v 1.5 2010/12/15 23:24:34 obrien Exp $
 
 .PATH: ${.CURDIR}/../../misc
 
-CLASS=	part
+GEOM_CLASS=	part
 
 DPADD=	${LIBUTIL}
 LDADD=	-lutil

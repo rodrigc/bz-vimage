@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/ata/ata_xpt.c,v 1.34 2010/07/06 19:05:41 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/ata/ata_xpt.c,v 1.35 2010/11/18 13:38:33 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -963,6 +963,8 @@ noerror:
 		xpt_action((union ccb *)&cts);
 		if (cts.xport_specific.sata.valid & CTS_SATA_VALID_CAPS)
 			caps &= cts.xport_specific.sata.caps;
+		else
+			caps = 0;
 		/* Store result to SIM. */
 		bzero(&cts, sizeof(cts));
 		xpt_setup_ccb(&cts.ccb_h, path, CAM_PRIORITY_NONE);
@@ -1103,6 +1105,8 @@ notsata:
 		xpt_action((union ccb *)&cts);
 		if (cts.xport_specific.sata.valid & CTS_SATA_VALID_CAPS)
 			caps &= cts.xport_specific.sata.caps;
+		else
+			caps = 0;
 		/* Store result to SIM. */
 		bzero(&cts, sizeof(cts));
 		xpt_setup_ccb(&cts.ccb_h, path, CAM_PRIORITY_NONE);

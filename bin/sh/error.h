@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)error.h	8.2 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/error.h,v 1.19 2009/12/24 20:55:14 jilles Exp $
+ * $FreeBSD: src/bin/sh/error.h,v 1.20 2010/12/21 20:47:06 jilles Exp $
  */
 
 /*
@@ -80,6 +80,7 @@ extern volatile sig_atomic_t intpending;
 
 void exraise(int) __dead2;
 void onint(void);
+void warning(const char *, ...) __printflike(1, 2);
 void error(const char *, ...) __printf0like(1, 2) __dead2;
 void exerror(int, const char *, ...) __printf0like(2, 3) __dead2;
 

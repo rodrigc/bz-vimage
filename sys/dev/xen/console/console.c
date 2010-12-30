@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/xen/console/console.c,v 1.15 2009/11/24 07:18:38 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/xen/console/console.c,v 1.16 2010/12/29 05:13:21 cperciva Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -125,17 +125,18 @@ xc_cnterm(struct consdev *cp)
 static int
 xc_cngetc(struct consdev *dev)
 {
-	int ret = (xc_mute ? 0 : -1);
+	int ret;
 
 	if (xencons_has_input())
 		xencons_handle_input(NULL);
 	
 	CN_LOCK(cn_mtx);
-	if ((rp - rc)) {
+	if ((rp - rc) && !xc_mute) {
 		/* we need to return only one char */
 		ret = (int)rbuf[RBUF_MASK(rc)];
 		rc++;
-	}
+	} else
+		ret = -1;
 	CN_UNLOCK(cn_mtx);
 	return(ret);
 }

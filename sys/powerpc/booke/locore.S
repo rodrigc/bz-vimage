@@ -23,12 +23,10 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/booke/locore.S,v 1.12 2010/07/13 05:32:19 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/booke/locore.S,v 1.13 2010/11/09 20:41:10 jhb Exp $
  */
 
 #include "assym.s"
-
-#include <sys/mutex.h>
 
 #include <machine/asm.h>
 #include <machine/hid.h>

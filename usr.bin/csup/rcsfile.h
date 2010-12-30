@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/csup/rcsfile.h,v 1.1 2010/03/02 07:26:07 lulf Exp $
+ * $FreeBSD: src/usr.bin/csup/rcsfile.h,v 1.2 2010/12/18 20:43:18 lulf Exp $
  */
 
 #ifndef _RCSFILE_H_
@@ -42,7 +42,8 @@ struct delta;
 struct stream;
 
 /* Fetching, sending and writing an RCS file. */
-struct rcsfile	*rcsfile_frompath(char *, char *, char *, char *, int);
+struct rcsfile	*rcsfile_frompath(const char *, const char *, const char *,
+		    const char *, int);
 int		 rcsfile_send_details(struct rcsfile *, struct stream *);
 int		 rcsfile_write(struct rcsfile *, struct stream *);
 void		 rcsfile_print(struct rcsfile *);

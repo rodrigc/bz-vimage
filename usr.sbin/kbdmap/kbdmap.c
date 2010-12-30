@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/kbdmap/kbdmap.c,v 1.6 2007/08/27 21:56:42 murray Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/kbdmap/kbdmap.c,v 1.7 2010/11/29 09:21:26 kevlo Exp $");
 
 #include <sys/types.h>
 #include <sys/queue.h>
@@ -229,6 +229,7 @@ get_font(void)
 	} else
 		fprintf(stderr, "Could not open %s for reading\n", sysconfig);
 
+	fclose(fp);
 	return fnt;
 }
 

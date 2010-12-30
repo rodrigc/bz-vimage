@@ -1,5 +1,5 @@
 #	From: @(#)Makefile	5.20 (Berkeley) 6/12/93
-# $FreeBSD: src/usr.sbin/Makefile,v 1.433 2010/10/05 21:19:20 gonzo Exp $
+# $FreeBSD: src/usr.sbin/Makefile,v 1.434 2010/11/06 15:04:48 uqs Exp $
 
 .include <bsd.own.mk>
 
@@ -155,7 +155,7 @@ SUBDIR+=	fdwrite
 SUBDIR+=	freebsd-update
 .endif
 
-.if ${MK_GSSAPI} != no
+.if ${MK_GSSAPI} != "no"
 SUBDIR+=	gssd
 .endif
 

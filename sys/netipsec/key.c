@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/key.c,v 1.73 2010/10/23 20:35:40 bz Exp $	*/
+/*	$FreeBSD: src/sys/netipsec/key.c,v 1.75 2010/11/22 19:32:54 dim Exp $	*/
 /*	$KAME: key.c,v 1.191 2001/06/27 10:46:49 sakane Exp $	*/
 
 /*-

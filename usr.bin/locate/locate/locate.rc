@@ -1,7 +1,7 @@
 #
 # /etc/locate.rc -  command script for updatedb(8)
 #
-# $FreeBSD: src/usr.bin/locate/locate/locate.rc,v 1.11 2007/10/17 07:27:51 se Exp $
+# $FreeBSD: src/usr.bin/locate/locate/locate.rc,v 1.12 2010/10/31 02:36:05 wollman Exp $
 
 #
 # All commented values are the defaults
@@ -15,8 +15,11 @@
 # directories to be put in the database
 #SEARCHPATHS="/"
 
-# directories unwanted in output
+# paths unwanted in output
 #PRUNEPATHS="/tmp /usr/tmp /var/tmp /var/db/portsnap"
+
+# directories unwanted in output
+#PRUNEDIRS=".zfs"
 
 # filesystems allowed. Beware: a non-listed filesystem will be pruned
 # and if the SEARCHPATHS starts in such a filesystem locate will build

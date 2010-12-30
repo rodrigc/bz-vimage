@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/gentbi.c,v 1.9 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/gentbi.c,v 1.11 2010/11/22 21:20:11 marius Exp $");
 
 /*
  * Driver for generic unknown ten-bit interfaces(1000BASE-{LX,SX}
@@ -172,6 +172,8 @@ gentbi_attach(device_t dev)
 	sc->mii_service = gentbi_service;
 	sc->mii_pdata = mii;
 
+	sc->mii_flags |= MIIF_NOMANPAUSE;
+
 	mii_phy_reset(sc);
 
 	/*
@@ -267,7 +269,8 @@ gentbi_status(struct mii_softc *sc)
 		anlpar = PHY_READ(sc, MII_ANLPAR);
 		if ((sc->mii_extcapabilities & EXTSR_1000XFDX) != 0 &&
 		    (anlpar & ANLPAR_X_FD) != 0)
-			mii->mii_media_active |= IFM_FDX;
+			mii->mii_media_active |=
+			    IFM_FDX | mii_phy_flowstatus(sc);
 		else
 			mii->mii_media_active |= IFM_HDX;
 	} else

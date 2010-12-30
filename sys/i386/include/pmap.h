@@ -38,7 +38,7 @@
  *
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/i386/include/pmap.h,v 1.147 2010/10/05 17:06:51 alc Exp $
+ * $FreeBSD: src/sys/i386/include/pmap.h,v 1.148 2010/11/20 20:04:29 cperciva Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -220,6 +220,8 @@ extern pt_entry_t pg_nx;
 
 #define MACH_TO_VM_PAGE(ma) PHYS_TO_VM_PAGE(xpmap_mtop((ma)))
 #define VM_PAGE_TO_MACH(m) xpmap_ptom(VM_PAGE_TO_PHYS((m)))
+
+#define VTOM(va) xpmap_ptom(VTOP(va))
 
 static __inline vm_paddr_t
 pmap_kextract_ma(vm_offset_t va)

@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfs.h,v 1.7 2009/06/20 17:11:07 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfs.h,v 1.8 2010/12/25 21:56:25 rmacklem Exp $
  */
 
 #ifndef _NFS_NFS_H_
@@ -568,6 +568,7 @@ struct nfsv4_opflag {
 	int	needscfh;
 	int	savereply;
 	int	modifyfs;
+	int	lktype;
 };
 
 /*

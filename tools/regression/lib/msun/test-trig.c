@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-trig.c,v 1.2 2008/03/02 20:49:24 das Exp $");
+__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-trig.c,v 1.3 2010/12/06 00:02:49 das Exp $");
 
 #include <assert.h>
 #include <fenv.h>
@@ -90,7 +90,7 @@ __FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-trig.c,v 1.2 2008/03/02 2
 int
 fpequal(long double x, long double y)
 {
-	return ((x == y && signbit(x) == signbit(y)) || isnan(x) && isnan(y));
+	return ((x == y && !signbit(x) == !signbit(y)) || isnan(x) && isnan(y));
 }
 
 /*

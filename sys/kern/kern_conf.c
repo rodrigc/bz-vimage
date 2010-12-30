@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_conf.c,v 1.243 2010/10/07 18:00:55 jh Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_conf.c,v 1.245 2010/12/11 08:44:10 hselasky Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -752,7 +752,7 @@ make_dev_credv(int flags, struct cdev **dres, struct cdevsw *devsw, int unit,
 		return (res);
 	}
 	dev = newdev(devsw, unit, dev_new);
-	if ((dev->si_flags & SI_NAMED) == 0)
+	if ((dev->si_flags & SI_NAMED) == 0) {
 		res = prep_devname(dev, fmt, ap);
 		if (res != 0) {
 			if ((flags & MAKEDEV_CHECKNAME) == 0) {
@@ -766,6 +766,7 @@ make_dev_credv(int flags, struct cdev **dres, struct cdevsw *devsw, int unit,
 				devfs_free(dev);
 			}
 			return (res);
+		}
 	}
 	if (flags & MAKEDEV_REF)
 		dev_refl(dev);
@@ -925,7 +926,7 @@ static void
 destroy_devl(struct cdev *dev)
 {
 	struct cdevsw *csw;
-	struct cdev_privdata *p, *p1;
+	struct cdev_privdata *p;
 
 	mtx_assert(&devmtx, MA_OWNED);
 	KASSERT(dev->si_flags & SI_NAMED,
@@ -973,7 +974,7 @@ destroy_devl(struct cdev *dev)
 	dev_unlock();
 	notify_destroy(dev);
 	mtx_lock(&cdevpriv_mtx);
-	LIST_FOREACH_SAFE(p, &cdev2priv(dev)->cdp_fdpriv, cdpd_list, p1) {
+	while ((p = LIST_FIRST(&cdev2priv(dev)->cdp_fdpriv)) != NULL) {
 		devfs_destroy_cdevpriv(p);
 		mtx_lock(&cdevpriv_mtx);
 	}

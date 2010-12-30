@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis_pccard.c,v 1.18 2009/06/23 02:19:59 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis_pccard.c,v 1.19 2010/12/16 15:19:32 jhb Exp $");
 
 #include <sys/ctype.h>
 #include <sys/param.h>
@@ -198,9 +198,8 @@ ndis_attach_pccard(dev)
 	resource_list_init(&sc->ndis_rl);
 
 	sc->ndis_io_rid = 0;
-	sc->ndis_res_io = bus_alloc_resource(dev,
-	    SYS_RES_IOPORT, &sc->ndis_io_rid,
-	    0, ~0, 1, RF_ACTIVE);
+	sc->ndis_res_io = bus_alloc_resource_any(dev, SYS_RES_IOPORT,
+	    &sc->ndis_io_rid, RF_ACTIVE);
 	if (sc->ndis_res_io == NULL) {
 		device_printf(dev,
 		    "couldn't map iospace\n");
@@ -213,8 +212,7 @@ ndis_attach_pccard(dev)
 	    rman_get_size(sc->ndis_res_io));
 
 	rid = 0;
-	sc->ndis_irq = bus_alloc_resource(dev,
-	    SYS_RES_IRQ, &rid, 0, ~0, 1,
+	sc->ndis_irq = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid,
 	    RF_SHAREABLE | RF_ACTIVE);
 	if (sc->ndis_irq == NULL) {
 		device_printf(dev,

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_controller.h,v 1.20 2010/10/04 23:18:05 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_controller.h,v 1.22 2010/11/25 22:56:26 weongyo Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *

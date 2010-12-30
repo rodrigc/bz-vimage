@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mps/mps_user.c,v 1.8 2010/10/14 23:26:08 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mps/mps_user.c,v 1.9 2010/11/30 22:39:46 ken Exp $");
 
 #include "opt_compat.h"
 
@@ -322,7 +322,7 @@ mps_user_write_cfg_page(struct mps_softc *sc,
 	return (0);
 }
 
-static void
+void
 mpi_init_sge(struct mps_command *cm, void *req, void *sge)
 {
 	int off, space;

@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/regression/acltools/02.t,v 1.1 2009/12/21 20:47:41 trasz Exp $
+# $FreeBSD: src/tools/regression/acltools/02.t,v 1.2 2010/12/13 18:59:55 trasz Exp $
 #
 
 # This is a wrapper script to run tools-nfs4.test.
@@ -69,7 +69,11 @@ chmod 600 xxx
 rm xxx
 echo "ok 2"
 
-perl $TESTDIR/run $TESTDIR/tools-nfs4.test > /dev/null
+if [ `sysctl -n vfs.acl_nfs4_old_semantics` = 0 ]; then
+	perl $TESTDIR/run $TESTDIR/tools-nfs4-psarc.test > /dev/null
+else
+	perl $TESTDIR/run $TESTDIR/tools-nfs4.test > /dev/null
+fi
 
 if [ $? -eq 0 ]; then
 	echo "ok 3"

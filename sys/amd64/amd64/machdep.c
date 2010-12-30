@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.726 2010/10/12 20:53:12 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.736 2010/12/22 00:18:42 jkim Exp $");
 
 #include "opt_atalk.h"
 #include "opt_atpic.h"
@@ -112,7 +112,7 @@ __FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.726 2010/10/12 20:53:12 jk
 #include <machine/cpu.h>
 #include <machine/cputypes.h>
 #include <machine/intr_machdep.h>
-#include <machine/mca.h>
+#include <x86/mca.h>
 #include <machine/md_var.h>
 #include <machine/metadata.h>
 #include <machine/pc/bios.h>
@@ -303,6 +303,7 @@ void
 sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 {
 	struct sigframe sf, *sfp;
+	struct pcb *pcb;
 	struct proc *p;
 	struct thread *td;
 	struct sigacts *psp;
@@ -312,6 +313,7 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	int oonstack;
 
 	td = curthread;
+	pcb = td->td_pcb;
 	p = td->td_proc;
 	PROC_LOCK_ASSERT(p, MA_OWNED);
 	sig = ksi->ksi_signo;
@@ -331,8 +333,8 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	sf.sf_uc.uc_mcontext.mc_len = sizeof(sf.sf_uc.uc_mcontext); /* magic */
 	get_fpcontext(td, &sf.sf_uc.uc_mcontext);
 	fpstate_drop(td);
-	sf.sf_uc.uc_mcontext.mc_fsbase = td->td_pcb->pcb_fsbase;
-	sf.sf_uc.uc_mcontext.mc_gsbase = td->td_pcb->pcb_gsbase;
+	sf.sf_uc.uc_mcontext.mc_fsbase = pcb->pcb_fsbase;
+	sf.sf_uc.uc_mcontext.mc_gsbase = pcb->pcb_gsbase;
 
 	/* Allocate space for the signal handler context. */
 	if ((td->td_pflags & TDP_ALTSTACK) != 0 && !oonstack &&
@@ -392,7 +394,7 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	regs->tf_fs = _ufssel;
 	regs->tf_gs = _ugssel;
 	regs->tf_flags = TF_HASSEGS;
-	td->td_pcb->pcb_full_iret = 1;
+	set_pcb_flags(pcb, PCB_FULL_IRET);
 	PROC_LOCK(p);
 	mtx_lock(&psp->ps_mtx);
 }
@@ -416,12 +418,16 @@ sigreturn(td, uap)
 	} */ *uap;
 {
 	ucontext_t uc;
-	struct proc *p = td->td_proc;
+	struct pcb *pcb;
+	struct proc *p;
 	struct trapframe *regs;
 	ucontext_t *ucp;
 	long rflags;
 	int cs, error, ret;
 	ksiginfo_t ksi;
+
+	pcb = td->td_pcb;
+	p = td->td_proc;
 
 	error = copyin(uap->sigcntxp, &uc, sizeof(uc));
 	if (error != 0) {
@@ -481,8 +487,8 @@ sigreturn(td, uap)
 		return (ret);
 	}
 	bcopy(&ucp->uc_mcontext.mc_rdi, regs, sizeof(*regs));
-	td->td_pcb->pcb_fsbase = ucp->uc_mcontext.mc_fsbase;
-	td->td_pcb->pcb_gsbase = ucp->uc_mcontext.mc_gsbase;
+	pcb->pcb_fsbase = ucp->uc_mcontext.mc_fsbase;
+	pcb->pcb_gsbase = ucp->uc_mcontext.mc_gsbase;
 
 #if defined(COMPAT_43)
 	if (ucp->uc_mcontext.mc_onstack & 1)
@@ -492,8 +498,7 @@ sigreturn(td, uap)
 #endif
 
 	kern_sigprocmask(td, SIG_SETMASK, &ucp->uc_sigmask, NULL, 0);
-	td->td_pcb->pcb_flags |= PCB_FULLCTX;
-	td->td_pcb->pcb_full_iret = 1;
+	set_pcb_flags(pcb, PCB_FULL_IRET);
 	return (EJUSTRETURN);
 }
 
@@ -538,6 +543,10 @@ cpu_est_clockrate(int cpu_id, uint64_t *rate)
 	if (pcpu_find(cpu_id) == NULL || rate == NULL)
 		return (EINVAL);
 
+	/* If TSC is P-state invariant, DELAY(9) based logic fails. */
+	if (tsc_is_invariant)
+		return (EOPNOTSUPP);
+
 	/* If we're booting, trust the rate calibrated moments ago. */
 	if (cold) {
 		*rate = tsc_freq;
@@ -564,13 +573,7 @@ cpu_est_clockrate(int cpu_id, uint64_t *rate)
 	thread_unlock(curthread);
 #endif
 
-	/*
-	 * Calculate the difference in readings, convert to Mhz, and
-	 * subtract 0.5% of the total.  Empirical testing has shown that
-	 * overhead in DELAY() works out to approximately this value.
-	 */
-	tsc2 -= tsc1;
-	*rate = tsc2 * 1000 - tsc2 * 5;
+	*rate = (tsc2 - tsc1) * 1000;
 	return (0);
 }
 
@@ -860,9 +863,9 @@ exec_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 	
 	pcb->pcb_fsbase = 0;
 	pcb->pcb_gsbase = 0;
-	pcb->pcb_flags &= ~(PCB_32BIT | PCB_GS32BIT);
+	clear_pcb_flags(pcb, PCB_32BIT | PCB_GS32BIT);
 	pcb->pcb_initial_fpucw = __INITIAL_FPUCW__;
-	pcb->pcb_full_iret = 1;
+	set_pcb_flags(pcb, PCB_FULL_IRET);
 
 	bzero((char *)regs, sizeof(struct trapframe));
 	regs->tf_rip = imgp->entry_addr;
@@ -876,6 +879,7 @@ exec_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 	regs->tf_fs = _ufssel;
 	regs->tf_gs = _ugssel;
 	regs->tf_flags = TF_HASSEGS;
+	td->td_retval[1] = 0;
 
 	/*
 	 * Reset the hardware debug registers if they were in use.
@@ -896,7 +900,7 @@ exec_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 			 */
 			reset_dbregs();
 		}
-		pcb->pcb_flags &= ~PCB_DBREGS;
+		clear_pcb_flags(pcb, PCB_DBREGS);
 	}
 
 	/*
@@ -1762,11 +1766,15 @@ void
 spinlock_enter(void)
 {
 	struct thread *td;
+	register_t flags;
 
 	td = curthread;
-	if (td->td_md.md_spinlock_count == 0)
-		td->td_md.md_saved_flags = intr_disable();
-	td->td_md.md_spinlock_count++;
+	if (td->td_md.md_spinlock_count == 0) {
+		flags = intr_disable();
+		td->td_md.md_spinlock_count = 1;
+		td->td_md.md_saved_flags = flags;
+	} else
+		td->td_md.md_spinlock_count++;
 	critical_enter();
 }
 
@@ -1774,12 +1782,14 @@ void
 spinlock_exit(void)
 {
 	struct thread *td;
+	register_t flags;
 
 	td = curthread;
 	critical_exit();
+	flags = td->td_md.md_saved_flags;
 	td->td_md.md_spinlock_count--;
 	if (td->td_md.md_spinlock_count == 0)
-		intr_restore(td->td_md.md_saved_flags);
+		intr_restore(flags);
 }
 
 /*
@@ -1900,8 +1910,8 @@ set_regs(struct thread *td, struct reg *regs)
 		tp->tf_fs = regs->r_fs;
 		tp->tf_gs = regs->r_gs;
 		tp->tf_flags = TF_HASSEGS;
+		set_pcb_flags(td->td_pcb, PCB_FULL_IRET);
 	}
-	td->td_pcb->pcb_flags |= PCB_FULLCTX;
 	return (0);
 }
 
@@ -1969,6 +1979,9 @@ int
 fill_fpregs(struct thread *td, struct fpreg *fpregs)
 {
 
+	KASSERT(td == curthread || TD_IS_SUSPENDED(td),
+	    ("not suspended thread %p", td));
+	fpugetregs(td);
 	fill_fpregs_xmm(&td->td_pcb->pcb_user_save, fpregs);
 	return (0);
 }
@@ -1979,6 +1992,7 @@ set_fpregs(struct thread *td, struct fpreg *fpregs)
 {
 
 	set_fpregs_xmm(fpregs, &td->td_pcb->pcb_user_save);
+	fpuuserinited(td);
 	return (0);
 }
 
@@ -1988,8 +2002,10 @@ set_fpregs(struct thread *td, struct fpreg *fpregs)
 int
 get_mcontext(struct thread *td, mcontext_t *mcp, int flags)
 {
+	struct pcb *pcb;
 	struct trapframe *tp;
 
+	pcb = td->td_pcb;
 	tp = td->td_frame;
 	PROC_LOCK(curthread->td_proc);
 	mcp->mc_onstack = sigonstack(tp->tf_rsp);
@@ -2027,8 +2043,8 @@ get_mcontext(struct thread *td, mcontext_t *mcp, int flags)
 	mcp->mc_flags = tp->tf_flags;
 	mcp->mc_len = sizeof(*mcp);
 	get_fpcontext(td, mcp);
-	mcp->mc_fsbase = td->td_pcb->pcb_fsbase;
-	mcp->mc_gsbase = td->td_pcb->pcb_gsbase;
+	mcp->mc_fsbase = pcb->pcb_fsbase;
+	mcp->mc_gsbase = pcb->pcb_gsbase;
 	return (0);
 }
 
@@ -2041,10 +2057,12 @@ get_mcontext(struct thread *td, mcontext_t *mcp, int flags)
 int
 set_mcontext(struct thread *td, const mcontext_t *mcp)
 {
+	struct pcb *pcb;
 	struct trapframe *tp;
 	long rflags;
 	int ret;
 
+	pcb = td->td_pcb;
 	tp = td->td_frame;
 	if (mcp->mc_len != sizeof(*mcp) ||
 	    (mcp->mc_flags & ~_MC_FLAG_MASK) != 0)
@@ -2081,11 +2099,10 @@ set_mcontext(struct thread *td, const mcontext_t *mcp)
 		tp->tf_gs = mcp->mc_gs;
 	}
 	if (mcp->mc_flags & _MC_HASBASES) {
-		td->td_pcb->pcb_fsbase = mcp->mc_fsbase;
-		td->td_pcb->pcb_gsbase = mcp->mc_gsbase;
+		pcb->pcb_fsbase = mcp->mc_fsbase;
+		pcb->pcb_gsbase = mcp->mc_gsbase;
 	}
-	td->td_pcb->pcb_flags |= PCB_FULLCTX;
-	td->td_pcb->pcb_full_iret = 1;
+	set_pcb_flags(pcb, PCB_FULL_IRET);
 	return (0);
 }
 
@@ -2093,8 +2110,9 @@ static void
 get_fpcontext(struct thread *td, mcontext_t *mcp)
 {
 
-	mcp->mc_ownedfp = fpugetuserregs(td,
-	    (struct savefpu *)&mcp->mc_fpstate);
+	mcp->mc_ownedfp = fpugetregs(td);
+	bcopy(&td->td_pcb->pcb_user_save, &mcp->mc_fpstate,
+	    sizeof(mcp->mc_fpstate));
 	mcp->mc_fpformat = fpuformat();
 }
 
@@ -2114,7 +2132,7 @@ set_fpcontext(struct thread *td, const mcontext_t *mcp)
 	    mcp->mc_ownedfp == _MC_FPOWNED_PCB) {
 		fpstate = (struct savefpu *)&mcp->mc_fpstate;
 		fpstate->sv_env.en_mxcsr &= cpu_mxcsr_mask;
-		fpusetuserregs(td, fpstate);
+		fpusetregs(td, fpstate);
 	} else
 		return (EINVAL);
 	return (0);
@@ -2138,8 +2156,8 @@ fpstate_drop(struct thread *td)
 	 * sendsig() is the only caller of fpugetuserregs()... perhaps we just
 	 * have too many layers.
 	 */
-	curthread->td_pcb->pcb_flags &= ~(PCB_FPUINITDONE |
-	    PCB_USERFPUINITDONE);
+	clear_pcb_flags(curthread->td_pcb,
+	    PCB_FPUINITDONE | PCB_USERFPUINITDONE);
 	critical_exit();
 }
 
@@ -2253,7 +2271,7 @@ set_dbregs(struct thread *td, struct dbreg *dbregs)
 		pcb->pcb_dr6 = dbregs->dr[6];
 		pcb->pcb_dr7 = dbregs->dr[7];
 
-		pcb->pcb_flags |= PCB_DBREGS;
+		set_pcb_flags(pcb, PCB_DBREGS);
 	}
 
 	return (0);

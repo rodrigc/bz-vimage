@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/posix4_mib.c,v 1.13 2010/06/02 09:59:05 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/posix4_mib.c,v 1.14 2010/11/19 17:56:16 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -164,9 +164,10 @@ p31b_iscfg(int num)
 static void
 p31b_set_standard(void *dummy)
 {
-	/* ??? p31b_setcfg(CTL_P1003_1B_FSYNC, 1); */
-	p31b_setcfg(CTL_P1003_1B_MAPPED_FILES, 1);
-	p31b_setcfg(CTL_P1003_1B_SHARED_MEMORY_OBJECTS, 1);
+
+	p31b_setcfg(CTL_P1003_1B_FSYNC, 200112L);
+	p31b_setcfg(CTL_P1003_1B_MAPPED_FILES, 200112L);
+	p31b_setcfg(CTL_P1003_1B_SHARED_MEMORY_OBJECTS, 200112L);
 	p31b_setcfg(CTL_P1003_1B_PAGESIZE, PAGE_SIZE);
 	if (!p31b_iscfg(CTL_P1003_1B_AIO_LISTIO_MAX))
 		p31b_setcfg(CTL_P1003_1B_AIO_LISTIO_MAX, -1);

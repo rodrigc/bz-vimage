@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.18 2010/09/28 23:23:23 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_pfil.c,v 1.20 2010/11/22 19:32:54 dim Exp $");
 
 #if !defined(KLD_MODULE)
 #include "opt_ipfw.h"

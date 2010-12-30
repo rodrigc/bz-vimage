@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.322 2010/07/06 07:11:04 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.324 2010/12/30 10:52:07 kib Exp $");
 
 #include "opt_quota.h"
 #include "opt_suiddir.h"
@@ -60,8 +60,6 @@ __FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.322 2010/07/06 07:11:04 jeff
 #include <sys/lockf.h>
 #include <sys/conf.h>
 #include <sys/acl.h>
-
-#include <machine/mutex.h>
 
 #include <security/mac/mac_framework.h>
 
@@ -1499,7 +1497,9 @@ relock:
 			/* Don't go to bad here as the new link exists. */
 			if (error)
 				goto unlockout;
-		}
+		} else if (DOINGSUJ(tdvp))
+			/* Journal must account for each new link. */
+			softdep_setup_dotdot_link(tdp, fip);
 		fip->i_offset = mastertemplate.dot_reclen;
 		ufs_dirrewrite(fip, fdp, newparent, DT_DIR, 0);
 		cache_purge(fdvp);

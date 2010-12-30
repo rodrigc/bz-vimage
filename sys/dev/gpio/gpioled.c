@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/gpio/gpioled.c,v 1.2 2010/09/29 20:53:33 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/gpio/gpioled.c,v 1.3 2010/11/08 03:08:01 thompsa Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -102,6 +102,9 @@ gpioled_attach(device_t dev)
 	if (resource_string_value(device_get_name(dev), 
 	    device_get_unit(dev), "name", &name))
 		name = NULL;
+
+	GPIOBUS_PIN_SETFLAGS(sc->sc_busdev, sc->sc_dev, GPIOLED_PIN,
+	    GPIO_PIN_OUTPUT);
 
 	sc->sc_leddev = led_create(gpioled_control, sc, name ? name :
 	    device_get_nameunit(dev));

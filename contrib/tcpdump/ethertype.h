@@ -19,7 +19,7 @@
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  * @(#) $Header$ (LBL)
- * $FreeBSD: src/contrib/tcpdump/ethertype.h,v 1.11 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/ethertype.h,v 1.12 2010/10/28 19:06:17 rpaulo Exp $
  */
 
 /*
@@ -76,6 +76,9 @@
 #endif
 #ifndef ETHERTYPE_SCA
 #define ETHERTYPE_SCA		0x6007
+#endif
+#ifndef ETHERTYPE_TEB
+#define ETHERTYPE_TEB		0x6558
 #endif
 #ifndef	ETHERTYPE_LANBRIDGE
 #define	ETHERTYPE_LANBRIDGE	0x8038

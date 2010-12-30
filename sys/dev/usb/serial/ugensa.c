@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.15 2010/09/01 23:47:53 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.17 2010/11/05 19:12:48 n_hibma Exp $ */
 /*	$NetBSD: ugensa.c,v 1.9.2.1 2007/03/24 14:55:50 yamt Exp $	*/
 
 /*
@@ -247,6 +247,8 @@ ugensa_attach(device_t dev)
 		DPRINTF("attach failed\n");
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);			/* success */
 
 detach:
@@ -260,7 +262,7 @@ ugensa_detach(device_t dev)
 	struct ugensa_softc *sc = device_get_softc(dev);
 	uint8_t x;
 
-	ucom_detach(&sc->sc_super_ucom, sc->sc_ucom, sc->sc_niface);
+	ucom_detach(&sc->sc_super_ucom, sc->sc_ucom);
 
 	for (x = 0; x < sc->sc_niface; x++) {
 		usbd_transfer_unsetup(sc->sc_sub[x].sc_xfer, UGENSA_N_TRANSFER);

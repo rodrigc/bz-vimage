@@ -39,6 +39,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/cdefs.h>
+__FBSDID("$FreeBSD: src/lib/csu/powerpc/crt1.c,v 1.13 2010/12/09 21:31:21 dim Exp $");
+
 #ifndef lint
 #ifndef __GNUC__
 #error "GCC is needed to compile this file"
@@ -120,5 +123,3 @@ __asm__(".text");
 __asm__("eprol:");
 __asm__(".previous");
 #endif
-
-__asm__(".ident\t\"$FreeBSD: src/lib/csu/powerpc/crt1.c,v 1.12 2010/03/05 13:28:05 uqs Exp $\"");

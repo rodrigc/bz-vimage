@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.18 2010/10/03 04:33:58 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.20 2010/12/13 14:30:35 avg Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -170,10 +170,8 @@ extern uint32_t cpu_ltop_map[32];
 static int port_counters[4][8] __aligned(XLR_CACHELINE_SIZE);
 
 #define port_inc_counter(port, counter) 	atomic_add_int(&port_counters[port][(counter)], 1)
-#define port_set_counter(port, counter, value) 	atomic_set_int(&port_counters[port][(counter)], (value))
 #else
 #define port_inc_counter(port, counter)	/* Nothing */
-#define port_set_counter(port, counter, value)	/* Nothing */
 #endif
 
 int xlr_rge_tx_prepend[MAXCPU];
@@ -2281,7 +2279,7 @@ rmi_xlr_mac_open(struct rge_softc *sc)
 	mtx_unlock_spin(&priv->lock);
 
 	for (i = 0; i < 8; i++) {
-		atomic_set_int(&(priv->frin_to_be_sent[i]), 0);
+		priv->frin_to_be_sent[i] = 0;
 	}
 
 	return 0;

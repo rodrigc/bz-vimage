@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sentry5/s5_machdep.c,v 1.6 2010/01/25 00:44:05 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sentry5/s5_machdep.c,v 1.8 2010/12/09 07:47:40 gonzo Exp $");
 
 #include <sys/param.h>
 #include <machine/cpuregs.h>
@@ -91,7 +91,7 @@ platform_cpu_init()
 static void
 mips_init(void)
 {
-	int i;
+	int i, j;
 
 	printf("entry: mips_init()\n");
 
@@ -127,6 +127,9 @@ mips_init(void)
 
 	realmem = btoc(physmem);
 #endif
+
+	for (j = 0; j < i; j++)
+		dump_avail[j] = phys_avail[j];
 
 	physmem = realmem;
 

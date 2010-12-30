@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-fma.c,v 1.1 2008/04/03 06:15:58 das Exp $");
+__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-fma.c,v 1.2 2010/12/06 00:02:49 das Exp $");
 
 #include <assert.h>
 #include <fenv.h>
@@ -85,7 +85,8 @@ int
 fpequal(long double x, long double y)
 {
 
-	return ((x == y && signbit(x) == signbit(y)) || (isnan(x) && isnan(y)));
+	return ((x == y && !signbit(x) == !signbit(y))
+		|| (isnan(x) && isnan(y)));
 }
 
 static void

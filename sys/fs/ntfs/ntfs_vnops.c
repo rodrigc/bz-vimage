@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/ntfs/ntfs_vnops.c,v 1.67 2008/12/16 21:13:11 trasz Exp $
+ * $FreeBSD: src/sys/fs/ntfs/ntfs_vnops.c,v 1.68 2010/11/19 21:17:34 kib Exp $
  *
  */
 
@@ -81,8 +81,6 @@ static vop_cachedlookup_t	ntfs_lookup;
 static vop_fsync_t	ntfs_fsync;
 static vop_pathconf_t	ntfs_pathconf;
 static vop_vptofh_t	ntfs_vptofh;
-
-int	ntfs_prtactive = 1;	/* 1 => print out reclaim of active vnodes */
 
 /*
  * This is a noop, simply returning what one has been given.
@@ -214,15 +212,12 @@ ntfs_inactive(ap)
 		struct vnode *a_vp;
 	} */ *ap;
 {
-	register struct vnode *vp = ap->a_vp;
 #ifdef NTFS_DEBUG
-	register struct ntnode *ip = VTONT(vp);
+	register struct ntnode *ip = VTONT(ap->a_vp);
 #endif
 
-	dprintf(("ntfs_inactive: vnode: %p, ntnode: %d\n", vp, ip->i_number));
-
-	if (ntfs_prtactive && vrefcnt(vp) != 0)
-		vprint("ntfs_inactive: pushing active", vp);
+	dprintf(("ntfs_inactive: vnode: %p, ntnode: %d\n", ap->a_vp,
+	    ip->i_number));
 
 	/* XXX since we don't support any filesystem changes
 	 * right now, nothing more needs to be done
@@ -245,9 +240,6 @@ ntfs_reclaim(ap)
 	int error;
 
 	dprintf(("ntfs_reclaim: vnode: %p, ntnode: %d\n", vp, ip->i_number));
-
-	if (ntfs_prtactive && vrefcnt(vp) != 0)
-		vprint("ntfs_reclaim: pushing active", vp);
 
 	/*
 	 * Destroy the vm object and flush associated pages.

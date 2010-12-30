@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/traceroute/Makefile,v 1.25 2010/01/08 16:59:28 bz Exp $
+# $FreeBSD: src/usr.sbin/traceroute/Makefile,v 1.27 2010/12/04 14:19:27 uqs Exp $
 
 TRACEROUTE_DISTDIR?= ${.CURDIR}/../../contrib/traceroute
 .PATH: ${TRACEROUTE_DISTDIR}
@@ -29,9 +29,9 @@ DPADD=	${LIBIPSEC}
 LDADD=	-lipsec
 .endif
 
-CFLAGS+= -I${TRACEROUTE_DISTDIR}/lbl -I${TRACEROUTE_DISTDIR}
+CFLAGS+= -I${TRACEROUTE_DISTDIR}
 
-WARNS?=	0
+WARNS?=	3
 
 version.c: ${TRACEROUTE_DISTDIR}/VERSION
 	@rm -f ${.TARGET}

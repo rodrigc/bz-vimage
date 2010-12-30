@@ -23,9 +23,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/bsnmpd/modules/snmp_pf/pf_snmp.c,v 1.13 2010/03/24 16:07:33 syrinx Exp $
+ * $FreeBSD: src/usr.sbin/bsnmpd/modules/snmp_pf/pf_snmp.c,v 1.14 2010/12/08 13:51:38 syrinx Exp $
  */
 
+#include <sys/queue.h>
 #include <bsnmp/snmpmod.h>
 
 #include <net/pfvar.h>

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/powerpc/aim/trap_subr64.S,v 1.2 2010/09/16 03:46:17 nwhitehorn Exp $ */
+/* $FreeBSD: src/sys/powerpc/aim/trap_subr64.S,v 1.3 2010/10/30 23:07:30 nwhitehorn Exp $ */
 /* $NetBSD: trap_subr.S,v 1.20 2002/04/22 23:20:08 kleink Exp $	*/
 
 /*-
@@ -99,7 +99,7 @@ instkernslb:
 
 	addi	%r28, %r28, 16;		/* Advance pointer */
 	addi	%r29, %r29, 1;
-	cmpli	0, %r29, USER_SR;	/* Repeat if we are not at the end */
+	cmpli	0, %r29, USER_SLB_SLOT;	/* Repeat if we are not at the end */
 	blt instkernslb;
 	blr;
 

@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.81 2010/05/21 15:57:24 gallatin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.82 2010/11/22 16:43:05 gallatin Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1855,9 +1855,20 @@ mxge_encap_tso(struct mxge_slice_state *ss, struct mbuf *m,
 
 	tcp = (struct tcphdr *)((char *)ip + (ip->ip_hl << 2));
 	cum_len = -(ip_off + ((ip->ip_hl + tcp->th_off) << 2));
+	cksum_offset = ip_off + (ip->ip_hl << 2);
 
 	/* TSO implies checksum offload on this hardware */
-	cksum_offset = ip_off + (ip->ip_hl << 2);
+	if (__predict_false((m->m_pkthdr.csum_flags & (CSUM_TCP)) == 0)) {
+		/*
+		 * If packet has full TCP csum, replace it with pseudo hdr
+		 * sum that the NIC expects, otherwise the NIC will emit
+		 * packets with bad TCP checksums.
+		 */
+		m->m_pkthdr.csum_flags = CSUM_TCP;
+		m->m_pkthdr.csum_data = offsetof(struct tcphdr, th_sum);
+		tcp->th_sum = in_pseudo(ip->ip_src.s_addr, ip->ip_dst.s_addr,
+			htons(IPPROTO_TCP + (m->m_pkthdr.len - cksum_offset)));		
+	}
 	flags = MXGEFW_FLAGS_TSO_HDR | MXGEFW_FLAGS_FIRST;
 
 	

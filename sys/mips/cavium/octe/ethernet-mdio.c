@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-mdio.c,v 1.3 2010/10/13 09:17:44 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-mdio.c,v 1.4 2010/11/28 05:57:24 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -70,10 +70,6 @@ int cvm_oct_mdio_read(struct ifnet *ifp, int phy_id, int location)
 	cvmx_write_csr(CVMX_SMI_CMD, smi_cmd.u64);
 
 	do {
-#if 0
-		if (!in_interrupt())
-			yield();
-#endif
 		smi_rd.u64 = cvmx_read_csr(CVMX_SMI_RD_DAT);
 	} while (smi_rd.s.pending);
 
@@ -111,10 +107,6 @@ void cvm_oct_mdio_write(struct ifnet *ifp, int phy_id, int location, int val)
 	cvmx_write_csr(CVMX_SMI_CMD, smi_cmd.u64);
 
 	do {
-#if 0
-		if (!in_interrupt())
-			yield();
-#endif
 		smi_wr.u64 = cvmx_read_csr(CVMX_SMI_WR_DAT);
 	} while (smi_wr.s.pending);
 	MDIO_UNLOCK();

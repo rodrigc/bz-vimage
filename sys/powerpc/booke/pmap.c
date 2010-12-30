@@ -49,7 +49,7 @@
   */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.36 2010/09/15 00:17:52 grehan Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.37 2010/11/11 13:35:23 raj Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -162,8 +162,6 @@ unsigned int kernel_ptbls;	/* Number of KVA ptbls. */
 #define PMAP_REMOVE_DONE(pmap) \
 	((pmap) != kernel_pmap && (pmap)->pm_stats.resident_count == 0)
 
-extern void tlb_lock(uint32_t *);
-extern void tlb_unlock(uint32_t *);
 extern void tid_flush(tlbtid_t);
 
 /**************************************************************************/

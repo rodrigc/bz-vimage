@@ -4,7 +4,7 @@
  * This is probably the last attempt in the `sysinstall' line, the next
  * generation being slated to essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/media.c,v 1.129 2010/06/11 20:56:40 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/media.c,v 1.131 2010/12/13 13:52:03 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -117,8 +117,6 @@ cpioVerbosity()
 
     if (cp && !strcmp(cp, "high"))
 	return "-v";
-    else if (cp && !strcmp(cp, "medium"))
-	return "-V";
     return "";
 }
 
@@ -241,7 +239,7 @@ mediaSetUSB(dialogMenuItem *self)
 	cnt = deviceCount(devs);
 
 	if (!cnt) {
-		msgConfirm("No USB devices found!");
+		msgConfirm("No USB devices found (try Options/Re-scan Devices)");
 		return DITEM_FAILURE | DITEM_CONTINUE;
 	}
 	else if (cnt > 1) {
@@ -848,8 +846,6 @@ mediaSetCPIOVerbosity(dialogMenuItem *self)
     }
     else {
 	if (!strcmp(cp, "low"))
-	    variable_set2(VAR_CPIO_VERBOSITY, "medium", 0);
-	else if (!strcmp(cp, "medium"))
 	    variable_set2(VAR_CPIO_VERBOSITY, "high", 0);
 	else /* must be "high" - wrap around */
 	    variable_set2(VAR_CPIO_VERBOSITY, "low", 0);

@@ -23,11 +23,12 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-info.sh,v 1.5 2010/10/22 00:11:55 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-info.sh,v 1.6 2010/10/28 06:45:20 imp Exp $
 
 # Query a disk for partitions and display them
 #############################################################################
 
+. ${PROGDIR}/backend/functions.sh
 . ${PROGDIR}/backend/functions-disk.sh
 
 DISK="${1}"
@@ -57,4 +58,3 @@ echo "heads=${HEADS}"
 echo "sectors=${SECS}"
 echo "size=${MB}"
 echo "type=${CTYPE}"
-

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsclstate.h,v 1.3 2010/04/18 22:21:23 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsclstate.h,v 1.4 2010/10/26 23:18:37 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSCLSTATE_H_
@@ -118,6 +118,7 @@ struct nfscldeleg {
 #define	NFSCLDL_NEEDRECLAIM	0x08
 #define	NFSCLDL_ZAPPED		0x10
 #define	NFSCLDL_MODTIMESET	0x20
+#define	NFSCLDL_DELEGRET	0x40
 
 /*
  * MALLOC'd to the correct length to accommodate the file handle.

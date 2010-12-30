@@ -25,13 +25,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/kbdcontrol/lex.l,v 1.15 2002/07/11 21:12:18 alfred Exp $
+ * $FreeBSD: src/usr.sbin/kbdcontrol/lex.l,v 1.16 2010/11/22 14:16:22 brucec Exp $
  */
 
 %{
 
 #include "lex.h"
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 
 %}
 

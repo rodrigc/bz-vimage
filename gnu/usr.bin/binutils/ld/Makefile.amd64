@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.amd64,v 1.8 2006/07/22 14:37:17 obrien Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.amd64,v 1.9 2010/11/17 19:54:01 tijl Exp $
 
 NATIVE_EMULATION= elf_x86_64_fbsd
 
@@ -12,7 +12,7 @@ e${NATIVE_EMULATION}.c: emulparams/${NATIVE_EMULATION}.sh emultempl/elf32.em \
 	    ${NATIVE_EMULATION} "" no ${NATIVE_EMULATION} ${TARGET_TUPLE}
 
 X86_EMULATION=	elf_i386_fbsd
-_i386_path=	\"${TOOLS_PREFIX}/usr/lib/i386\"
+_i386_path=	\"${TOOLS_PREFIX}/usr/lib32\"
 EMS+=		${X86_EMULATION}
 .for ext in ${ELF_SCR_EXT}
 LDSCRIPTS+=	${X86_EMULATION}.${ext}

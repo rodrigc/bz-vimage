@@ -28,7 +28,7 @@
  *
  *	@(#)socketvar.h	8.3 (Berkeley) 2/19/95
  *
- * $FreeBSD: src/sys/sys/socketvar.h,v 1.174 2010/09/18 11:18:42 rwatson Exp $
+ * $FreeBSD: src/sys/sys/socketvar.h,v 1.175 2010/11/12 13:02:26 luigi Exp $
  */
 
 #ifndef _SYS_SOCKETVAR_H_
@@ -117,7 +117,14 @@ struct socket {
 		void	*so_accept_filter_arg;	/* saved filter args */
 		char	*so_accept_filter_str;	/* saved user args */
 	} *so_accf;
+	/*
+	 * so_fibnum, so_user_cookie and friends can be used to attach
+	 * some user-specified metadata to a socket, which then can be
+	 * used by the kernel for various actions.
+	 * so_user_cookie is used by ipfw/dummynet.
+	 */
 	int so_fibnum;		/* routing domain for this socket */
+	uint32_t so_user_cookie;
 };
 
 /*

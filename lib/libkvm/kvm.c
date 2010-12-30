@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm.c,v 1.35 2010/03/01 00:27:55 rwatson Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm.c,v 1.36 2010/11/14 20:14:25 dim Exp $");
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
@@ -51,6 +51,7 @@ static char sccsid[] = "@(#)kvm.c	8.2 (Berkeley) 2/13/94";
 #include <sys/stat.h>
 #include <sys/sysctl.h>
 #include <sys/linker.h>
+#include <sys/pcpu.h>
 
 #include <net/vnet.h>
 
@@ -435,7 +436,7 @@ _kvm_nlist(kvm_t *kd, struct nlist *nl, int initialize)
 
 		if (error > 0 && _kvm_dpcpu_initialized(kd, initialize))
 			error = kvm_fdnlist_prefix(kd, nl, error,
-			    "pcpu_entry_", _kvm_dpcpu_validaddr);
+			    DPCPU_SYMPREFIX, _kvm_dpcpu_validaddr);
 
 		return (error);
 	}
@@ -475,7 +476,7 @@ again:
 				p->n_value =
 				    _kvm_vnet_validaddr(kd, lookup.symvalue);
 			else if (_kvm_dpcpu_initialized(kd, initialize) &&
-			    !strcmp(prefix, "pcpu_entry_"))
+			    !strcmp(prefix, DPCPU_SYMPREFIX))
 				p->n_value =
 				    _kvm_dpcpu_validaddr(kd, lookup.symvalue);
 			else
@@ -497,7 +498,7 @@ again:
 	}
 	if (error && _kvm_dpcpu_initialized(kd, initialize) && !tried_dpcpu) {
 		tried_dpcpu = 1;
-		prefix = "pcpu_entry_";
+		prefix = DPCPU_SYMPREFIX;
 		goto again;
 	}
 

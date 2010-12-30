@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libproc/proc_create.c,v 1.3 2010/07/31 16:10:20 rpaulo Exp $
+ * $FreeBSD: src/lib/libproc/proc_create.c,v 1.4 2010/12/14 15:14:08 kevlo Exp $
  */
 
 #include "_libproc.h"
@@ -84,7 +84,7 @@ proc_attach(pid_t pid, int flags, struct proc_handle **pphdl)
 	else
 		*pphdl = phdl;
 out:
-
+	proc_free(phdl);
 	return (error);
 }
 

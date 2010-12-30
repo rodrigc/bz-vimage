@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/ia64/ia64/genassym.c,v 1.47 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/ia64/ia64/genassym.c,v 1.48 2010/11/09 20:41:10 jhb Exp $
  */
 
 #include "opt_compat.h"
@@ -49,7 +49,6 @@
 #include <sys/resourcevar.h>
 #include <sys/ucontext.h>
 #include <machine/frame.h>
-#include <machine/mutex.h>
 #include <machine/elf.h>
 #include <machine/pal.h>
 #include <machine/pcb.h>

@@ -32,7 +32,7 @@
 static char sccsid[] = "@(#)mkmakefile.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.100 2010/07/15 22:28:19 imp Exp $";
+  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.101 2010/11/02 05:27:05 obrien Exp $";
 #endif /* not lint */
 
 /*
@@ -382,8 +382,8 @@ next:
 		mandatory = 1;
 	} else if (!eq(wd, "optional")) {
 		fprintf(stderr,
-		    "%s: %s must be optional, mandatory or standard\n",
-		    fname, this);
+		    "%s: \"%s\" %s must be optional, mandatory or standard\n",
+		    fname, wd, this);
 		exit(1);
 	}
 nextparam:

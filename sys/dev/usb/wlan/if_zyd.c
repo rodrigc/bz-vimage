@@ -1,6 +1,6 @@
 /*	$OpenBSD: if_zyd.c,v 1.52 2007/02/11 00:08:04 jsg Exp $	*/
 /*	$NetBSD: if_zyd.c,v 1.7 2007/06/21 04:04:29 kiyohara Exp $	*/
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.31 2010/09/02 03:28:03 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.32 2010/11/06 18:17:20 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2006 by Damien Bergamini <damien.bergamini@free.fr>
@@ -20,7 +20,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.31 2010/09/02 03:28:03 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_zyd.c,v 1.32 2010/11/06 18:17:20 bschmidt Exp $");
 
 /*
  * ZyDAS ZD1211/ZD1211B USB WLAN driver.
@@ -397,7 +397,6 @@ zyd_attach(device_t dev)
 	        | IEEE80211_C_SHSLOT		/* short slot time supported */
 		| IEEE80211_C_BGSCAN		/* capable of bg scanning */
 	        | IEEE80211_C_WPA		/* 802.11i */
-		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	bands = 0;

@@ -36,7 +36,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/net/vnet.h,v 1.32 2010/06/02 15:29:21 zec Exp $
+ * $FreeBSD: src/sys/net/vnet.h,v 1.37 2010/11/22 19:32:54 dim Exp $
  */
 
 /*-

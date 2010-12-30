@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/mfiutil/mfi_cmd.c,v 1.1 2009/08/13 23:18:45 scottl Exp $
+ * $FreeBSD: src/usr.sbin/mfiutil/mfi_cmd.c,v 1.2 2010/11/04 10:47:19 bcr Exp $
  */
 
 #include <sys/errno.h>
@@ -46,7 +46,7 @@
 #include <dev/mfi/mfi_ioctl.h>
 
 static const char *mfi_status_codes[] = {
-	"Command completed succesfully",
+	"Command completed successfully",
 	"Invalid command",
 	"Invalid DMCD opcode",
 	"Invalid parameter",

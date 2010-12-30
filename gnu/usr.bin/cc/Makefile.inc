@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/cc/Makefile.inc,v 1.71 2010/06/02 21:15:00 jmallett Exp $
+# $FreeBSD: src/gnu/usr.bin/cc/Makefile.inc,v 1.72 2010/11/10 06:39:49 imp Exp $
 
 .include "../Makefile.inc"
 
@@ -32,9 +32,13 @@ CFLAGS+=	-DLONG_TYPE_SIZE=${LONG_TYPE_SIZE}
 CFLAGS+=	-DCROSS_COMPILE
 .endif
 
-.if ${TARGET_ARCH} == "mips"
-# XXX This is backwards, MIPS should default to BE.
-.if !defined(TARGET_BIG_ENDIAN)
+.if ${TARGET_ARCH} == "armeb"
+CFLAGS += -DTARGET_ENDIAN_DEFAULT=MASK_BIG_END
+.endif
+
+
+.if ${TARGET_CPUARCH} == "mips"
+.if ${TARGET_ARCH} == "mipsel"
 CFLAGS += -DTARGET_ENDIAN_DEFAULT=0
 .endif
 

@@ -24,6 +24,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/cdefs.h>
+__FBSDID("$FreeBSD: src/lib/csu/amd64/crt1.c,v 1.17 2010/12/09 21:31:21 dim Exp $");
+
 #ifndef lint
 #ifndef __GNUC__
 #error "GCC is needed to compile this file"
@@ -92,5 +95,3 @@ __asm__("eprol:");
 	_init();
 	exit( main(argc, argv, env) );
 }
-
-__asm__(".ident\t\"$FreeBSD: src/lib/csu/amd64/crt1.c,v 1.16 2010/03/05 13:28:05 uqs Exp $\"");

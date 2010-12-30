@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/acpica/acpi_switch.S,v 1.10 2010/08/03 16:08:58 jkim Exp $
+ * $FreeBSD: src/sys/amd64/acpica/acpi_switch.S,v 1.11 2010/11/23 16:12:35 jkim Exp $
  */
 
 #include <machine/asmacros.h>
@@ -74,12 +74,6 @@ ENTRY(acpi_restorecpu)
 	/* Restore EFER. */
 	movl	$MSR_EFER, %ecx
 	movl	WAKEUP_CTX(efer), %eax
-	wrmsr
-
-	/* Restore PAT. */
-	movl	$MSR_PAT, %ecx
-	movl	WAKEUP_CTX(pat), %eax
-	movl	4 + WAKEUP_CTX(pat), %edx
 	wrmsr
 
 	/* Restore fast syscall stuff. */

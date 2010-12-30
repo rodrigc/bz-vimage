@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/send.c,v 1.1 2010/08/19 11:31:03 anchie Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/send.c,v 1.3 2010/11/22 19:32:54 dim Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>

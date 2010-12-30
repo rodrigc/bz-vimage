@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cam/cam_xpt_internal.h,v 1.8 2010/06/08 16:17:25 mjacob Exp $
+ * $FreeBSD: src/sys/cam/cam_xpt_internal.h,v 1.9 2010/11/30 22:39:46 ken Exp $
  */
 
 #ifndef _CAM_CAM_XPT_INTERNAL_H
@@ -93,6 +93,10 @@ struct cam_ed {
 	cam_xport	 transport;
 	u_int		 transport_version;
 	struct		 scsi_inquiry_data inq_data;
+	uint8_t		 *supported_vpds;
+	uint8_t		 supported_vpds_len;
+	uint32_t	 device_id_len;
+	uint8_t		 *device_id;
 	struct		 ata_params ident_data;
 	u_int8_t	 inq_flags;	/*
 					 * Current settings for inquiry flags.

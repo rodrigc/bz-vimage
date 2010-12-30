@@ -63,7 +63,7 @@
 //	  - devd.conf needs more details on the supported statements.
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/devd/devd.cc,v 1.38 2010/10/09 07:29:13 imp Exp $");
+__FBSDID("$FreeBSD: src/sbin/devd/devd.cc,v 1.39 2010/11/21 04:02:37 kevlo Exp $");
 
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -422,6 +422,7 @@ config::parse_files_in_dir(const char *dirname)
 			parse_one_file(path);
 		}
 	}
+	closedir(dirp);
 }
 
 class epv_greater {

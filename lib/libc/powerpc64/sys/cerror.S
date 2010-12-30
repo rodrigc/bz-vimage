@@ -26,7 +26,7 @@
 /*      $NetBSD: cerror.S,v 1.5 2000/01/27 14:58:48 kleink Exp $        */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/cerror.S,v 1.1 2010/07/10 14:45:03 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/cerror.S,v 1.2 2010/12/11 17:57:42 nwhitehorn Exp $");
 	
 #include "SYS.h"
 
@@ -41,7 +41,7 @@ __FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/cerror.S,v 1.1 2010/07/10 14:45:0
 ENTRY(HIDENAME(cerror))
 	mflr	%r0
 	std	%r0,16(%r1)		/* save lr */
-	stdu	%r1,-56(%r1)		/* allocate new stack frame */
+	stdu	%r1,-64(%r1)		/* allocate new stack frame */
 	std	%r31,48(%r1)
 
 	mr	%r31,%r3          /* stash errval in callee-saved register */

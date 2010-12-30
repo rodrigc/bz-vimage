@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/as/Makefile,v 1.20 2010/07/10 02:29:22 nwhitehorn Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/as/Makefile,v 1.22 2010/11/15 22:12:13 nwhitehorn Exp $
 
 
 # BINDIR
@@ -20,19 +20,19 @@ SRCS+=	app.c as.c atof-generic.c atof-ieee.c bignum-copy.c \
 # DEO: why not used?
 #SRCS+=	itbl-ops.c
 
-.if ${TARGET_ARCH} == "mips"
+.if ${TARGET_CPUARCH} == "mips"
 SRCS+=	itbl-ops.c itbl-parse.y itbl-lex.l
 .endif
 
 .if ${TARGET_ARCH} == "amd64"
 SRCS+=	tc-i386.c
-.elif ${TARGET_ARCH} == "powerpc" || ${TARGET_ARCH} == "powerpc64"
+.elif ${TARGET_CPUARCH} == "powerpc"
 SRCS+=	tc-ppc.c
 .elif ${TARGET_ARCH} == "sparc64"
 # change back to tc-sparc.c when new binutils is imported
 SRCS+=	tc-sparc-fixed.c
 .else
-SRCS+=	tc-${TARGET_ARCH}.c
+SRCS+=	tc-${TARGET_CPUARCH}.c
 .endif
 
 .if ${TARGET_ARCH} == "sparc64"
@@ -49,7 +49,7 @@ CFLAGS+= -DTARGET_ALIAS=\"${TARGET_TUPLE}\"
 CFLAGS+= -DVERSION=\"${VERSION}\"
 CFLAGS+= -D_GNU_SOURCE
 CFLAGS+= -I${SRCDIR}/gas -I${SRCDIR}/gas/config -I${SRCDIR}
-CFLAGS+= -I${.CURDIR} -I${.CURDIR}/${TARGET_ARCH}-freebsd
+CFLAGS+= -I${.CURDIR} -I${.CURDIR}/${TARGET_CPUARCH}-freebsd
 
 NO_SHARED?=	yes
 

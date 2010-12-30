@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/18/93
-# $FreeBSD: src/share/man/man4/Makefile,v 1.494 2010/09/19 12:54:18 anchie Exp $
+# $FreeBSD: src/share/man/man4/Makefile,v 1.496 2010/12/13 23:26:31 rwatson Exp $
 
 MAN=	aac.4 \
 	acpi.4 \
@@ -469,6 +469,7 @@ MAN=	aac.4 \
 	urio.4 \
 	${_urtw.4} \
 	usb.4 \
+	usb_quirk.4 \
 	uslcom.4 \
 	utopia.4 \
 	uvisor.4 \
@@ -494,6 +495,7 @@ MAN=	aac.4 \
 	wlan_xauth.4 \
 	${_wpi.4} \
 	xe.4 \
+	${_xen.4} \
 	xl.4 \
 	xpt.4 \
 	zero.4 \
@@ -686,6 +688,7 @@ _spkr.4=	spkr.4
 _tpm.4=		tpm.4
 _urtw.4=	urtw.4
 _wpi.4=		wpi.4
+_xen.4=		xen.4
 
 MLINKS+=lindev.4 full.4
 .endif

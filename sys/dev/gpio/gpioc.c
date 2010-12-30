@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/gpio/gpioc.c,v 1.2 2010/09/29 20:53:33 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/gpio/gpioc.c,v 1.3 2010/11/11 20:18:33 thompsa Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -188,7 +188,7 @@ static device_method_t gpioc_methods[] = {
 	{ 0, 0 }
 };
 
-static driver_t gpioc_driver = {
+driver_t gpioc_driver = {
 	"gpioc",
 	gpioc_methods,
 	sizeof(struct gpioc_softc)

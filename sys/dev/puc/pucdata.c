@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/puc/pucdata.c,v 1.75 2010/05/20 13:16:42 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/puc/pucdata.c,v 1.76 2010/12/18 02:54:51 emaste Exp $");
 
 /*
  * PCI "universal" communications card driver configuration data (used to
@@ -552,6 +552,12 @@ const struct puc_cfg puc_pci_devices[] = {
 	    DEFAULT_RCLK * 8,
 	    PUC_PORT_8S, 0x10, 0, -1,
 	    .config_function = puc_config_cronyx
+	},
+
+	{   0x13a8, 0x0258, 0xffff, 0,
+	    "Exar XR17V258IV",
+	    DEFAULT_RCLK * 8,
+	    PUC_PORT_8S, 0x10, 0, -1,
 	},
 
 	{   0x1407, 0x0100, 0xffff, 0,

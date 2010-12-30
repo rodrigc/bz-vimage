@@ -54,7 +54,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/newsyslog/newsyslog.c,v 1.114 2010/07/23 09:11:47 brian Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/newsyslog/newsyslog.c,v 1.115 2010/11/21 11:50:16 simon Exp $");
 
 #define	OSF
 #ifndef COMPRESS_POSTFIX
@@ -163,7 +163,7 @@ struct include_entry {
 
 struct oldlog_entry {
 	char *fname;		/* Filename of the log file */
-	time_t t;		/* Parses timestamp of the logfile */
+	time_t t;		/* Parsed timestamp of the logfile */
 };
 
 typedef enum {

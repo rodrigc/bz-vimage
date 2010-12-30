@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/nd6_rtr.c,v 1.77 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/nd6_rtr.c,v 1.79 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"

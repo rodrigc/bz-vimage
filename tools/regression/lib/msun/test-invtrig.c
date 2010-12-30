@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-invtrig.c,v 1.2 2008/08/02 19:21:33 das Exp $");
+__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-invtrig.c,v 1.3 2010/12/06 00:02:49 das Exp $");
 
 #include <assert.h>
 #include <fenv.h>
@@ -118,7 +118,7 @@ fpequal(long double x, long double y, long double tol)
 
 	if (isnan(x) && isnan(y))
 		return (1);
-	if (signbit(x) != signbit(y))
+	if (!signbit(x) != !signbit(y))
 		return (0);
 	if (x == y)
 		return (1);

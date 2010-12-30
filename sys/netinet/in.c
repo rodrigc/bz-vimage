@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.164 2010/10/16 19:53:22 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.168 2010/11/30 15:57:00 glebius Exp $");
 
 #include "opt_mpath.h"
 
@@ -49,6 +49,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/in.c,v 1.164 2010/10/16 19:53:22 bz Exp $");
 
 #include <net/if.h>
 #include <net/if_var.h>
+#include <net/if_arp.h>
 #include <net/if_dl.h>
 #include <net/if_llatbl.h>
 #include <net/if_types.h>
@@ -88,6 +89,9 @@ SYSCTL_VNET_INT(_net_inet_ip, OID_AUTO, same_prefix_carp_only, CTLFLAG_RW,
 
 VNET_DECLARE(struct inpcbinfo, ripcbinfo);
 #define	V_ripcbinfo			VNET(ripcbinfo)
+
+VNET_DECLARE(struct arpstat, arpstat);  /* ARP statistics, see if_arp.h */
+#define	V_arpstat		VNET(arpstat)
 
 /*
  * Return 1 if an internet address is for a ``local'' host
@@ -1378,7 +1382,7 @@ in_lltable_new(const struct sockaddr *l3addr, u_int flags)
 	 * For IPv4 this will trigger "arpresolve" to generate
 	 * an ARP request.
 	 */
-	lle->base.la_expire = time_second; /* mark expired */
+	lle->base.la_expire = time_uptime; /* mark expired */
 	lle->l3_addr4 = *(const struct sockaddr_in *)l3addr;
 	lle->base.lle_refcnt = 1;
 	LLE_LOCK_INIT(&lle->base);
@@ -1412,6 +1416,7 @@ in_lltable_prefix_free(struct lltable *llt,
 	const struct sockaddr_in *msk = (const struct sockaddr_in *)mask;
 	struct llentry *lle, *next;
 	register int i;
+	size_t pkts_dropped;
 
 	for (i=0; i < LLTBL_HASHTBL_SIZE; i++) {
 		LIST_FOREACH_SAFE(lle, &llt->lle_head[i], lle_next, next) {
@@ -1424,7 +1429,8 @@ in_lltable_prefix_free(struct lltable *llt,
 				LLE_WLOCK(lle);
 				if (canceled)
 					LLE_REMREF(lle);
-				llentry_free(lle);
+				pkts_dropped = llentry_free(lle);
+				ARPSTAT_ADD(dropped, pkts_dropped);
 			}
 		}
 	}

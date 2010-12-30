@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/smcphy.c,v 1.5 2010/10/24 11:37:01 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/smcphy.c,v 1.6 2010/11/14 13:26:10 marius Exp $");
 
 /*
  * Driver for the internal PHY on the SMSC LAN91C111.
@@ -54,7 +54,7 @@ static int	smcphy_attach(device_t);
 
 static int	smcphy_service(struct mii_softc *, struct mii_data *, int);
 static int	smcphy_reset(struct mii_softc *);
-static void	smcphy_auto(struct mii_softc *);
+static void	smcphy_auto(struct mii_softc *, int);
 
 static device_method_t smcphy_methods[] = {
 	/* device interface */
@@ -148,7 +148,7 @@ smcphy_service(struct mii_softc *sc, struct mii_data *mii, int cmd)
 
 		switch (IFM_SUBTYPE(ife->ifm_media)) {
 		case IFM_AUTO:
-			smcphy_auto(sc);
+			smcphy_auto(sc, ife->ifm_media);
 			break;
 
 		default:
@@ -187,7 +187,7 @@ smcphy_service(struct mii_softc *sc, struct mii_data *mii, int cmd)
 		if (smcphy_reset(sc) != 0) {
 			device_printf(sc->mii_dev, "reset failed\n");
 		}
-		smcphy_auto(sc);
+		smcphy_auto(sc, ife->ifm_media);
                 break;
         }
 
@@ -223,13 +223,13 @@ smcphy_reset(struct mii_softc *sc)
 }
 
 static void
-smcphy_auto(struct mii_softc *sc)
+smcphy_auto(struct mii_softc *sc, int media)
 {
 	uint16_t	anar;
 
 	anar = BMSR_MEDIA_TO_ANAR(sc->mii_capabilities) |
 	    ANAR_CSMA;
-	if (sc->mii_flags & MIIF_DOPAUSE)
+	if ((media & IFM_FLOW) != 0 || (sc->mii_flags & MIIF_FORCEPAUSE) != 0)
 		anar |= ANAR_FC;
 	PHY_WRITE(sc, MII_ANAR, anar);
 	/* Apparently this helps. */

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/mptable.c,v 1.2 2008/12/29 06:31:03 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/mptable.c,v 1.5 2010/11/09 20:28:09 attilio Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -37,12 +37,12 @@ __FBSDID("$FreeBSD: src/sys/i386/xen/mptable.c,v 1.2 2008/12/29 06:31:03 kmacy E
 #include <vm/vm_param.h>
 #include <vm/pmap.h>
 
-#include <machine/apicreg.h>
+#include <x86/apicreg.h>
+#include <x86/mptable.h>
 #include <machine/frame.h>
 #include <machine/intr_machdep.h>
 #include <machine/apicvar.h>
 #include <machine/md_var.h>
-#include <machine/mptable.h>
 #include <machine/specialreg.h>
 
 #include <xen/hypervisor.h>
@@ -109,7 +109,7 @@ mptable_register(void *dummy __unused)
 
 	apic_register_enumerator(&mptable_enumerator);
 }
-SYSINIT(mptable_register, SI_SUB_CPU - 1, SI_ORDER_FIRST, mptable_register,
+SYSINIT(mptable_register, SI_SUB_TUNABLES - 1, SI_ORDER_FIRST, mptable_register,
     NULL);
 
 

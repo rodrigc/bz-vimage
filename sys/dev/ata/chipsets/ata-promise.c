@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-promise.c,v 1.21 2010/10/18 11:30:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-promise.c,v 1.22 2010/11/28 18:53:29 marius Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -979,12 +979,11 @@ ata_promise_mio_dmainit(device_t dev)
 {
     struct ata_channel *ch = device_get_softc(dev);
 
-    ata_dmainit(dev);
     /* note start and stop are not used here */
     ch->dma.setprd = ata_promise_mio_setprd;
     ch->dma.max_iosize = 65536;
+    ata_dmainit(dev);
 }
-
 
 #define MAXLASTSGSIZE (32 * sizeof(u_int32_t))
 static void 

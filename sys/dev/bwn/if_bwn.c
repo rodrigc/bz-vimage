@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.22 2010/10/12 11:05:32 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/bwn/if_bwn.c,v 1.24 2010/12/06 10:24:06 kevlo Exp $");
 
 /*
  * The Broadcom Wireless LAN controller driver.
@@ -1070,7 +1070,6 @@ bwn_attach_post(struct bwn_softc *sc)
 		| IEEE80211_C_WPA		/* capable of WPA1+WPA2 */
 		| IEEE80211_C_BGSCAN		/* capable of bg scanning */
 		| IEEE80211_C_TXPMGT		/* capable of txpow mgt */
-		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	ic->ic_flags_ext |= IEEE80211_FEXT_SWBMISS;	/* s/w bmiss */
@@ -2883,7 +2882,7 @@ bwn_set_channel(struct ieee80211com *ic)
 
 	error = bwn_switch_band(sc, ic->ic_curchan);
 	if (error)
-		goto fail;;
+		goto fail;
 	bwn_mac_suspend(mac);
 	bwn_set_txretry(mac, BWN_RETRY_SHORT, BWN_RETRY_LONG);
 	chan = ieee80211_chan2ieee(ic, ic->ic_curchan);
@@ -8261,7 +8260,7 @@ bwn_switch_band(struct bwn_softc *sc, struct ieee80211_channel *chan)
 	device_printf(sc->sc_dev, "switching to %s-GHz band\n",
 	    IEEE80211_IS_CHAN_2GHZ(chan) ? "2" : "5");
 
-	down_dev = sc->sc_curmac;;
+	down_dev = sc->sc_curmac;
 	status = down_dev->mac_status;
 	if (status >= BWN_MAC_STATUS_STARTED)
 		bwn_core_stop(down_dev);

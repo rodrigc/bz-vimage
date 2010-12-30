@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_machdep.c,v 1.9 2010/09/17 01:13:48 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/atheros/ar71xx_machdep.c,v 1.10 2010/12/09 07:01:03 gonzo Exp $");
 
 #include <sys/param.h>
 #include <machine/cpuregs.h>
@@ -183,6 +183,9 @@ platform_start(__register_t a0 __unused, __register_t a1 __unused,
 	/* phys_avail regions are in bytes */
 	phys_avail[0] = MIPS_KSEG0_TO_PHYS(kernel_kseg0_end);
 	phys_avail[1] = ctob(realmem);
+
+	dump_avail[0] = phys_avail[0];
+	dump_avail[1] = phys_avail[1] - phys_avail[0];
 
 	physmem = realmem;
 

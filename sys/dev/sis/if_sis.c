@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/sis/if_sis.c,v 1.28 2010/10/20 00:19:25 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/sis/if_sis.c,v 1.29 2010/12/20 16:39:43 tijl Exp $");
 
 /*
  * SiS 900/SiS 7016 fast ethernet PCI NIC driver. Datasheets are
@@ -372,10 +372,8 @@ sis_read_cmos(struct sis_softc *sc, device_t dev, caddr_t dest, int off, int cnt
 	pci_write_config(bridge, 0x48, reg|0x40, 1);
 
 	/* XXX */
-#if defined(__i386__)
-	btag = I386_BUS_SPACE_IO;
-#elif defined(__amd64__)
-	btag = AMD64_BUS_SPACE_IO;
+#if defined(__amd64__) || defined(__i386__)
+	btag = X86_BUS_SPACE_IO;
 #endif
 
 	for (i = 0; i < cnt; i++) {

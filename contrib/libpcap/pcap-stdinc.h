@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2002 - 2003
- * NetGroup, Politecnico di Torino (Italy)
+ * Copyright (c) 2002 - 2005 NetGroup, Politecnico di Torino (Italy)
+ * Copyright (c) 2005 - 2009 CACE Technologies, Inc. Davis (California)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@
  *
  * @(#) $Header$ (LBL)
  */
+#ifndef pcap_stdinc_h
+#define pcap_stdinc_h
 
 #define SIZEOF_CHAR 1
 #define SIZEOF_SHORT 2
@@ -60,9 +62,12 @@
 
 #define caddr_t char*
 
+#if _MSC_VER < 1500
 #define snprintf _snprintf
 #define vsnprintf _vsnprintf
 #define strdup _strdup
+#endif
+
 #define inline __inline 
 
 #ifdef __MINGW32__
@@ -88,3 +93,4 @@ typedef _W64 int   intptr_t;
 #endif 
 
 #endif /*__MINGW32__*/
+#endif /* pcap_stdinc_h */

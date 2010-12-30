@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/security/mac_portacl/mac_portacl.c,v 1.21 2009/03/14 20:40:06 pjd Exp $
+ * $FreeBSD: src/sys/security/mac_portacl/mac_portacl.c,v 1.22 2010/11/09 10:59:09 brucec Exp $
  */
 
 /*
@@ -133,7 +133,7 @@ struct rule {
 
 /*
  * Text format for the rule string is that a rule consists of a
- * comma-seperated list of elements.  Each element is in the form
+ * comma-separated list of elements.  Each element is in the form
  * idtype:id:protocol:portnumber, and constitutes granting of permission
  * for the specified binding.
  */

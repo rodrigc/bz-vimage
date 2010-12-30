@@ -26,7 +26,7 @@
 /*      $NetBSD: brk.S,v 1.9 2000/06/26 06:25:43 kleink Exp $   */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/brk.S,v 1.1 2010/07/10 14:45:03 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/brk.S,v 1.2 2010/11/11 22:35:42 dim Exp $");
 
 #include "SYS.h"
 
@@ -35,6 +35,7 @@ __FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/brk.S,v 1.1 2010/07/10 14:45:03 n
         .globl  CNAME(_end)
 
         .data
+        .align 3
 HIDENAME(minbrk):
         .llong   CNAME(_end)
 

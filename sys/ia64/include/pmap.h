@@ -39,7 +39,7 @@
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
  *	from: i386 pmap.h,v 1.54 1997/11/20 19:30:35 bde Exp
- * $FreeBSD: src/sys/ia64/include/pmap.h,v 1.34 2010/05/19 00:23:10 marcel Exp $
+ * $FreeBSD: src/sys/ia64/include/pmap.h,v 1.35 2010/12/01 05:52:27 alc Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -112,7 +112,7 @@ typedef struct pv_entry {
 
 #ifdef	_KERNEL
 
-extern vm_offset_t phys_avail[];
+extern vm_paddr_t phys_avail[];
 extern vm_offset_t virtual_avail;
 extern vm_offset_t virtual_end;
 

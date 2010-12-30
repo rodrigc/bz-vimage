@@ -1,0 +1,3 @@
+# $FreeBSD: src/sys/mips/sibyte/std.sibyte,v 1.1 2010/11/13 22:34:12 imp Exp $
+
+files		"../sibyte/files.sibyte"

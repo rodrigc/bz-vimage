@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)mount.h	8.21 (Berkeley) 5/20/95
- * $FreeBSD: src/sys/sys/mount.h,v 1.255 2010/10/10 07:05:47 kib Exp $
+ * $FreeBSD: src/sys/sys/mount.h,v 1.256 2010/12/21 21:59:21 pjd Exp $
  */
 
 #ifndef _SYS_MOUNT_H_
@@ -644,7 +644,11 @@ vfs_statfs_t	__vfs_statfs;
 		_locked = 0;						\
 	_locked;							\
 })
-#define	VFS_UNLOCK_GIANT(locked)	if ((locked)) mtx_unlock(&Giant);
+#define	VFS_UNLOCK_GIANT(locked) do					\
+{									\
+	if ((locked))							\
+		mtx_unlock(&Giant);					\
+} while (0)
 #define	VFS_ASSERT_GIANT(MP) do						\
 {									\
 	struct mount *_mp;						\

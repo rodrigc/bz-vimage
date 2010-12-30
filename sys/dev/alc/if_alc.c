@@ -28,7 +28,7 @@
 /* Driver for Atheros AR813x/AR815x PCIe Ethernet. */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/alc/if_alc.c,v 1.20 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/alc/if_alc.c,v 1.23 2010/12/10 21:43:20 yongari Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -68,7 +68,6 @@ __FBSDID("$FreeBSD: src/sys/dev/alc/if_alc.c,v 1.20 2010/10/15 14:52:11 marius E
 #include <dev/pci/pcireg.h>
 #include <dev/pci/pcivar.h>
 
-#include <machine/atomic.h>
 #include <machine/bus.h>
 #include <machine/in_cksum.h>
 
@@ -331,8 +330,8 @@ alc_miibus_statchg(device_t dev)
 		reg = CSR_READ_4(sc, ALC_MAC_CFG);
 		reg |= MAC_CFG_TX_ENB | MAC_CFG_RX_ENB;
 		CSR_WRITE_4(sc, ALC_MAC_CFG, reg);
+		alc_aspm(sc, IFM_SUBTYPE(mii->mii_media_active));
 	}
-	alc_aspm(sc, IFM_SUBTYPE(mii->mii_media_active));
 }
 
 static void
@@ -974,7 +973,7 @@ alc_attach(device_t dev)
 	/* Set up MII bus. */
 	error = mii_attach(dev, &sc->alc_miibus, ifp, alc_mediachange,
 	    alc_mediastatus, BMSR_DEFCAPMASK, sc->alc_phyaddr, MII_OFFSET_ANY,
-	    0);
+	    MIIF_DOPAUSE);
 	if (error != 0) {
 		device_printf(dev, "attaching PHYs failed\n");
 		goto fail;
@@ -2475,12 +2474,10 @@ alc_mac_config(struct alc_softc *sc)
 	}
 	if ((IFM_OPTIONS(mii->mii_media_active) & IFM_FDX) != 0) {
 		reg |= MAC_CFG_FULL_DUPLEX;
-#ifdef notyet
 		if ((IFM_OPTIONS(mii->mii_media_active) & IFM_ETH_TXPAUSE) != 0)
 			reg |= MAC_CFG_TX_FC;
 		if ((IFM_OPTIONS(mii->mii_media_active) & IFM_ETH_RXPAUSE) != 0)
 			reg |= MAC_CFG_RX_FC;
-#endif
 	}
 	CSR_WRITE_4(sc, ALC_MAC_CFG, reg);
 }
@@ -2670,9 +2667,10 @@ alc_int_task(void *arg, int pending)
 	ifp = sc->alc_ifp;
 
 	status = CSR_READ_4(sc, ALC_INTR_STATUS);
-	more = atomic_readandclear_int(&sc->alc_morework);
-	if (more != 0)
+	if (sc->alc_morework != 0) {
+		sc->alc_morework = 0;
 		status |= INTR_RX_PKT;
+	}
 	if ((status & ALC_INTRS) == 0)
 		goto done;
 
@@ -2684,7 +2682,7 @@ alc_int_task(void *arg, int pending)
 		if ((status & INTR_RX_PKT) != 0) {
 			more = alc_rxintr(sc, sc->alc_process_limit);
 			if (more == EAGAIN)
-				atomic_set_int(&sc->alc_morework, 1);
+				sc->alc_morework = 1;
 			else if (more == EIO) {
 				ALC_LOCK(sc);
 				ifp->if_drv_flags &= ~IFF_DRV_RUNNING;

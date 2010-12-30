@@ -15,12 +15,9 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/mips/conf/ADM5120,v 1.11 2010/02/20 06:39:14 neel Exp $
+# $FreeBSD: src/sys/mips/conf/ADM5120,v 1.12 2010/11/13 22:34:12 imp Exp $
 
 ident		ADM5120
-
-#makeoptions	ARCH_FLAGS=-march=mips32
-makeoptions	MIPS_LITTLE_ENDIAN=defined
 
 # Don't build any modules yet.
 makeoptions	MODULES_OVERRIDE=""

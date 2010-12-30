@@ -46,7 +46,7 @@
 #include "opt_ddb.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/machdep.c,v 1.37 2010/06/30 18:03:42 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/machdep.c,v 1.38 2010/11/05 13:42:58 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/proc.h>
@@ -493,11 +493,15 @@ void
 spinlock_enter(void)
 {
 	struct thread *td;
+	register_t cspr;
 
 	td = curthread;
-	if (td->td_md.md_spinlock_count == 0)
-		td->td_md.md_saved_cspr = disable_interrupts(I32_bit | F32_bit);
-	td->td_md.md_spinlock_count++;
+	if (td->td_md.md_spinlock_count == 0) {
+		cspr = disable_interrupts(I32_bit | F32_bit);
+		td->td_md.md_spinlock_count = 1;
+		td->td_md.md_saved_cspr = cspr;
+	} else
+		td->td_md.md_spinlock_count++;
 	critical_enter();
 }
 
@@ -505,12 +509,14 @@ void
 spinlock_exit(void)
 {
 	struct thread *td;
+	register_t cspr;
 
 	td = curthread;
 	critical_exit();
+	cspr = td->td_md.md_saved_cspr;
 	td->td_md.md_spinlock_count--;
 	if (td->td_md.md_spinlock_count == 0)
-		restore_interrupts(td->td_md.md_saved_cspr);
+		restore_interrupts(cspr);
 }
 
 /*

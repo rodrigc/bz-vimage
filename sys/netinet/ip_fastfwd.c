@@ -74,7 +74,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_fastfwd.c,v 1.54 2009/10/11 05:59:43 julian Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_fastfwd.c,v 1.57 2010/12/05 01:09:48 bz Exp $");
 
 #include "opt_ipfw.h"
 #include "opt_ipstealth.h"
@@ -218,7 +218,7 @@ ip_fastforward(struct mbuf *m)
 	 */
 	hlen = ip->ip_hl << 2;
 	if (hlen < sizeof(struct ip)) {	/* minimum header length */
-		IPSTAT_INC(ips_badlen);
+		IPSTAT_INC(ips_badhlen);
 		goto drop;
 	}
 	if (hlen > m->m_len) {

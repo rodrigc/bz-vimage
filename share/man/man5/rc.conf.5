@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.386 2010/09/13 19:55:40 hrs Exp $
+.\" $FreeBSD: src/share/man/man5/rc.conf.5,v 1.389 2010/12/08 07:10:25 hrs Exp $
 .\"
-.Dd September 13, 2010
+.Dd November 24, 2010
 .Dt RC.CONF 5
 .Os
 .Sh NAME
@@ -1293,7 +1293,7 @@ the default address selection policy table set by
 will be IPv4-preferred.
 .Pp
 This variable is deprecated.  Use
-.Va ip6addtctl_policy
+.Va ip6addrctl_policy
 instead.
 .It Va ipv6_activate_all_interfaces
 If the variable is
@@ -1575,6 +1575,17 @@ If set to
 .Pa /etc/rc.d/zfs
 will attempt to automatically mount ZFS file systems and initialize ZFS volumes
 (ZVOLs).
+.It Va gptboot_enable
+.Pq Vt bool
+If set to
+.Dq Li YES ,
+.Pa /etc/rc.d/gptboot
+will log if the system successfully (or not) booted from a GPT partition,
+which had the
+.Ar bootonce
+attribute set using
+.Xr gpart 8
+utility.
 .It Va gbde_autoattach_all
 .Pq Vt bool
 If set to
@@ -4082,65 +4093,6 @@ one could set the following:
 .Bd -literal
 mdconfig_md0_cmd="tar xfzC /var/file.tgz \e${_mp}"
 .Ed
-.It Va ramdisk_units
-.Pq Vt str
-A list of one or more ramdisk units to configure with
-.Xr mdconfig 8
-and
-.Xr newfs 8
-in time to be mounted from
-.Xr fstab 5 .
-Each listed unit
-.Ar X
-must specify at least a
-.Ar type
-in a
-.Va ramdisk_ Ns Ao Ar X Ac Ns Va _config
-variable.
-Note that this way to configure ramdisks has been deprecated
-in favor of new
-.Va mdconfig_md*
-variables (see above).
-.It Va ramdisk_ Ns Ao Ar X Ac Ns Va _config
-.Pq Vt str
-Arguments to
-.Xr mdconfig 8
-for ramdisk
-.Ar X .
-At minimum a
-.Fl t Ar type
-must be specified, where
-.Ar type
-must be one of
-.Cm malloc
-or
-.Cm swap .
-.It Va ramdisk_ Ns Ao Ar X Ac Ns Va _newfs
-.Pq Vt str
-Optional arguments passed to
-.Xr newfs 8
-to initialize ramdisk
-.Ar X .
-.It Va ramdisk_ Ns Ao Ar X Ac Ns Va _owner
-.Pq Vt str
-An ownership specification passed to
-.Xr chown 8
-after the specified ramdisk unit
-.Ar X
-has been mounted.
-Both the
-.Xr md 4
-device and the mount point will be changed.
-.It Va ramdisk_ Ns Ao Ar X Ac Ns Va _perms
-.Pq Vt str
-A mode string passed to
-.Xr chmod 1
-after the specified ramdisk unit
-.Ar X
-has been mounted.
-Both the
-.Xr md 4
-device and the mount point will be changed.
 .It Va autobridge_interfaces
 .Pq Vt str
 Set to the list of bridge interfaces that will have newly arriving interfaces

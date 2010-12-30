@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/xscale/ixp425/ixp425reg.h,v 1.8 2009/06/22 20:41:02 sam Exp $
+ * $FreeBSD: src/sys/arm/xscale/ixp425/ixp425reg.h,v 1.9 2010/11/07 20:33:39 thompsa Exp $
  *
  */
 
@@ -322,6 +322,8 @@
 #define	GPIO_TYPE_MASK		0x7
 #define	GPIO_TYPE(b,v)		((v) << (((b) & 0x7) * 3))
 #define	GPIO_TYPE_REG(b)	(((b)&8)?IXP425_GPIO_GPIT2R:IXP425_GPIO_GPIT1R)
+
+#define	IXP4XX_GPIO_PINS	16
 
 /*
  * Expansion Bus Configuration Space.

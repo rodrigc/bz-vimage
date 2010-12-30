@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)socket.h	8.4 (Berkeley) 2/21/94
- * $FreeBSD: src/sys/sys/socket.h,v 1.105 2010/01/09 23:24:49 brooks Exp $
+ * $FreeBSD: src/sys/sys/socket.h,v 1.106 2010/11/12 13:02:26 luigi Exp $
  */
 
 #ifndef _SYS_SOCKET_H_
@@ -137,6 +137,7 @@ typedef	__uid_t		uid_t;
 #define	SO_LISTENQLEN	0x1012		/* socket's complete queue length */
 #define	SO_LISTENINCQLEN	0x1013	/* socket's incomplete queue length */
 #define	SO_SETFIB	0x1014		/* use this FIB to route */
+#define	SO_USER_COOKIE	0x1015		/* user cookie (dummynet etc.) */
 #endif
 
 /*

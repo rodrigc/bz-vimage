@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld_lock.h,v 1.5 2008/12/02 11:58:31 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld_lock.h,v 1.6 2010/12/25 08:51:20 kib Exp $
  */
 
 #ifndef _RTLD_LOCK_H_
@@ -57,10 +57,18 @@ extern rtld_lock_t	rtld_bind_lock;
 extern rtld_lock_t	rtld_libc_lock;
 extern rtld_lock_t	rtld_phdr_lock;
 
-int	rlock_acquire(rtld_lock_t);
-int 	wlock_acquire(rtld_lock_t);
-void	rlock_release(rtld_lock_t, int);
-void	wlock_release(rtld_lock_t, int);
+#define	RTLD_LOCK_UNLOCKED	0
+#define	RTLD_LOCK_RLOCKED	1
+#define	RTLD_LOCK_WLOCKED	2
+
+struct Struct_RtldLockState;
+typedef struct Struct_RtldLockState RtldLockState;
+
+void	rlock_acquire(rtld_lock_t, RtldLockState *);
+void 	wlock_acquire(rtld_lock_t, RtldLockState *);
+void	lock_release(rtld_lock_t, RtldLockState *);
+void	lock_upgrade(rtld_lock_t, RtldLockState *);
+void	lock_restart_for_upgrade(RtldLockState *);
 
 #endif	/* IN_RTLD */
 

@@ -38,7 +38,7 @@
 #include "opt_rootdevname.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_mountroot.c,v 1.3 2010/10/19 18:32:01 ae Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_mountroot.c,v 1.4 2010/11/14 14:12:43 ed Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -484,7 +484,7 @@ parse_dir_ask(char **conf)
 
  again:
 	printf("\nmountroot> ");
-	gets(name, sizeof(name), 1);
+	gets(name, sizeof(name), GETS_ECHO);
 	if (name[0] == '\0')
 		return (0);
 	if (name[0] == '?') {

@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/sis/if_sisreg.h,v 1.9 2010/09/03 00:34:45 yongari Exp $
+ * $FreeBSD: src/sys/dev/sis/if_sisreg.h,v 1.10 2010/12/06 10:24:06 kevlo Exp $
  */
 
 /*
@@ -497,7 +497,7 @@ struct sis_softc {
 	int			sis_tx_prod;
 	int			sis_tx_cons;
 	int			sis_tx_cnt;
-	int			sis_rx_cons;;
+	int			sis_rx_cons;
 	bus_addr_t		sis_rx_paddr;
 	bus_addr_t		sis_tx_paddr;
 	struct callout		sis_stat_ch;

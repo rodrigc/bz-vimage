@@ -25,8 +25,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/ia32/ia32_util.h,v 1.10 2010/05/23 18:32:02 kib Exp $
+ * $FreeBSD: src/sys/compat/ia32/ia32_util.h,v 1.11 2010/11/23 12:47:15 kib Exp $
  */
+
+#ifndef	_COMPAT_IA32_IA32_UTIL_H
+#define	_COMPAT_IA32_IA32_UTIL_H
 
 #include <vm/vm.h>
 #include <vm/vm_param.h>
@@ -51,3 +54,5 @@
 struct syscall_args;
 int ia32_fetch_syscall_args(struct thread *td, struct syscall_args *sa);
 void ia32_set_syscall_retval(struct thread *, int);
+
+#endif

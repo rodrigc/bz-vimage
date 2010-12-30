@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/freebsd32/freebsd32.h,v 1.14 2010/08/07 11:53:38 kib Exp $
+ * $FreeBSD: src/sys/compat/freebsd32/freebsd32.h,v 1.16 2010/12/19 21:18:33 kib Exp $
  */
 
 #ifndef _COMPAT_FREEBSD32_FREEBSD32_H_
@@ -240,6 +240,11 @@ struct prpsinfo32 {
         char    pr_psargs[PRARGSZ+1];
 };
 
+struct thrmisc32 {
+        char    pr_tname[MAXCOMLEN+1];
+        u_int   _pad;
+};
+
 struct mq_attr32 {
 	int	mq_flags;
 	int	mq_maxmsg;
@@ -323,6 +328,7 @@ struct kinfo_proc32 {
 	uint32_t ki_pcb;
 	uint32_t ki_kstack;
 	uint32_t ki_udata;
+	uint32_t ki_tdaddr;
 	uint32_t ki_spareptrs[KI_NSPARE_PTR];	/* spare room for growth */
 	int	ki_sparelongs[KI_NSPARE_LONG];
 	int	ki_sflag;

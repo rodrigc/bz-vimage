@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ata/ata-all.h,v 1.158 2010/10/18 11:30:13 mav Exp $
+ * $FreeBSD: src/sys/dev/ata/ata-all.h,v 1.159 2010/11/18 19:28:45 mav Exp $
  */
 
 #include "opt_ata.h"
@@ -535,6 +535,7 @@ struct ata_cam_device {
 	int			mode;
 	u_int			bytecount;
 	u_int			atapi;
+	u_int			caps;
 };
 #endif
 

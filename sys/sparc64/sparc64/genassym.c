@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.81 2010/08/08 14:37:16 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/genassym.c,v 1.82 2010/12/29 16:59:33 marius Exp $");
 
 #include "opt_kstack_pages.h"
 
@@ -136,6 +136,7 @@ ASSYM(TS_MIN, TS_MIN);
 ASSYM(TS_MAX, TS_MAX);
 ASSYM(TLB_DAR_SLOT_SHIFT, TLB_DAR_SLOT_SHIFT);
 ASSYM(TLB_CXR_PGSZ_MASK, TLB_CXR_PGSZ_MASK);
+ASSYM(TLB_DIRECT_ADDRESS_MASK, TLB_DIRECT_ADDRESS_MASK);
 ASSYM(TLB_DIRECT_TO_TTE_MASK, TLB_DIRECT_TO_TTE_MASK);
 ASSYM(TV_SIZE_BITS, TV_SIZE_BITS);
 #endif

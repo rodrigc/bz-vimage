@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.15 2010/09/15 05:10:50 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_machdep.c,v 1.17 2010/12/09 07:47:40 gonzo Exp $");
 
 #include <sys/param.h>
 
@@ -138,7 +138,7 @@ sb_intr_init(int cpuid)
 static void
 mips_init(void)
 {
-	int i, cfe_mem_idx, tmp;
+	int i, j, cfe_mem_idx, tmp;
 	uint64_t maxmem;
 
 #ifdef CFE_ENV
@@ -224,6 +224,9 @@ mips_init(void)
 
 	realmem = btoc(physmem);
 #endif
+
+	for (j = 0; j < i; j++)
+		dump_avail[j] = phys_avail[j];
 
 	physmem = realmem;
 

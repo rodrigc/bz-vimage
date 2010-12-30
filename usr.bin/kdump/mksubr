@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $FreeBSD: src/usr.bin/kdump/mksubr,v 1.15 2010/10/06 12:41:42 netchild Exp $
+# $FreeBSD: src/usr.bin/kdump/mksubr,v 1.16 2010/12/02 18:24:22 delphij Exp $
 #
 # Generates kdump_subr.c
 # mkioctls is a special-purpose script, and works fine as it is
@@ -254,6 +254,8 @@ shmctlname (int cmd) {
 void
 semgetname (int flag) {
 	int	or = 0;
+	if_print_or(flag, IPC_CREAT, or);
+	if_print_or(flag, IPC_EXCL, or);
 	if_print_or(flag, SEM_R, or);
 	if_print_or(flag, SEM_A, or);
 	if_print_or(flag, (SEM_R>>3), or);

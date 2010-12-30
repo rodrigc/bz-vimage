@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/iwn/if_iwnvar.h,v 1.11 2010/09/19 12:47:41 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/iwn/if_iwnvar.h,v 1.12 2010/12/05 09:00:32 bschmidt Exp $	*/
 /*	$OpenBSD: if_iwnvar.h,v 1.18 2010/04/30 16:06:46 damien Exp $	*/
 
 /*-
@@ -264,6 +264,7 @@ struct iwn_softc {
 	int			calib_cnt;
 	struct iwn_calib_state	calib;
 	u_int			calib_init;
+	u_int			calib_runtime;
 #define	IWN_CALIB_XTAL			(1 << IWN_CALIB_IDX_XTAL)
 #define	IWN_CALIB_DC			(1 << IWN_CALIB_IDX_DC)
 #define	IWN_CALIB_LO			(1 << IWN_CALIB_IDX_LO)

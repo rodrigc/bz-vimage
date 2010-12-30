@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.29 2010/09/02 03:28:03 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.30 2010/11/06 18:17:20 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2005, 2006
@@ -21,7 +21,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.29 2010/09/02 03:28:03 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_ural.c,v 1.30 2010/11/06 18:17:20 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2500USB chipset driver
@@ -486,7 +486,6 @@ ural_attach(device_t self)
 	    | IEEE80211_C_SHSLOT	/* short slot time supported */
 	    | IEEE80211_C_BGSCAN	/* bg scanning supported */
 	    | IEEE80211_C_WPA		/* 802.11i */
-	    | IEEE80211_C_RATECTL	/* use ratectl */
 	    ;
 
 	bands = 0;

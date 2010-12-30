@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.13 2010/09/01 23:47:53 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.15 2010/11/05 19:12:48 n_hibma Exp $ */
 /*	$OpenBSD: umoscom.c,v 1.2 2006/10/26 06:02:43 jsg Exp $	*/
 
 /*
@@ -338,6 +338,8 @@ umoscom_attach(device_t dev)
 	if (error) {
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);
 
 detach:
@@ -351,7 +353,7 @@ umoscom_detach(device_t dev)
 {
 	struct umoscom_softc *sc = device_get_softc(dev);
 
-	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom, 1);
+	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, UMOSCOM_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

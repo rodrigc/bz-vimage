@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/fifolog/lib/fifolog_write.h,v 1.1 2008/03/09 19:14:36 phk Exp $
+ * $FreeBSD: src/usr.sbin/fifolog/lib/fifolog_write.h,v 1.2 2010/12/07 16:30:52 phk Exp $
  */
 
 #define FIFOLOG_PT_BYTES_PRE		0
@@ -44,8 +44,6 @@ struct fifolog_writer {
 	unsigned			syncrate;
 	unsigned			compression;
 
-	unsigned			writes_since_sync;
-
 	int				cleanup;
 
 	intmax_t			cnt[FIFOLOG_NPOINT];
@@ -55,9 +53,11 @@ struct fifolog_writer {
 	int				flag;
 	time_t				last;
 
+	u_int				obufsize;
+	u_char				*obuf;
+
 	u_int				ibufsize;
 	u_char				*ibuf;
-	u_char				*iptr;
 
 	time_t				starttime;
 	time_t				lastwrite;

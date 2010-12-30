@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options.amd64,v 1.39 2010/06/17 11:54:49 mav Exp $
+# $FreeBSD: src/sys/conf/options.amd64,v 1.40 2010/10/29 18:38:36 attilio Exp $
 # Options specific to AMD64 platform kernels
 
 AUTO_EOI_1		opt_auto_eoi.h
@@ -8,6 +8,7 @@ COUNT_IPIS		opt_smp.h
 MAXMEM
 PERFMON
 PMAP_SHPGPERPROC	opt_pmap.h
+MPTABLE_FORCE_HTT
 MP_WATCHDOG
 
 # Options for emulators.  These should only be used at config time, so

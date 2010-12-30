@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/machdep.c,v 1.170 2010/10/14 21:46:53 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/machdep.c,v 1.171 2010/11/05 13:42:58 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -224,9 +224,10 @@ spinlock_enter(void)
 	if (td->td_md.md_spinlock_count == 0) {
 		pil = rdpr(pil);
 		wrpr(pil, 0, PIL_TICK);
+		td->td_md.md_spinlock_count = 1;
 		td->td_md.md_saved_pil = pil;
-	}
-	td->td_md.md_spinlock_count++;
+	} else
+		td->td_md.md_spinlock_count++;
 	critical_enter();
 }
 
@@ -234,12 +235,14 @@ void
 spinlock_exit(void)
 {
 	struct thread *td;
+	register_t pil;
 
 	td = curthread;
 	critical_exit();
+	pil = td->td_md.md_saved_pil;
 	td->td_md.md_spinlock_count--;
 	if (td->td_md.md_spinlock_count == 0)
-		wrpr(pil, td->td_md.md_saved_pil, 0);
+		wrpr(pil, pil, 0);
 }
 
 static phandle_t

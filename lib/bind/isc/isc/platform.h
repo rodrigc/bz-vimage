@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/bind/isc/isc/platform.h,v 1.7 2009/05/31 05:42:58 dougb Exp $ */
+/* $FreeBSD: src/lib/bind/isc/isc/platform.h,v 1.8 2010/10/31 04:45:25 dougb Exp $ */
 
 /*
  * Copyright (C) 2004-2009  Internet Systems Consortium, Inc. ("ISC")
@@ -252,7 +252,14 @@
  * If the "xaddq" operation (64bit xadd) is available on this architecture,
  * ISC_PLATFORM_HAVEXADDQ will be defined.
  */
+/*
+ * FreeBSD local modification, preserve this over upgrades
+ */
+#ifdef __amd64__
+#define ISC_PLATFORM_HAVEXADDQ 1
+#else
 #undef ISC_PLATFORM_HAVEXADDQ
+#endif
 
 /*
  * If the "atomic swap" operation is available on this architecture,

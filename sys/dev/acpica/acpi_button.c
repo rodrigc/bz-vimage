@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_button.c,v 1.35 2010/07/06 20:57:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_button.c,v 1.36 2010/12/15 23:48:45 jkim Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -168,7 +168,7 @@ acpi_button_attach(device_t dev)
     acpi_wake_set_enable(dev, 1);
     if (acpi_parse_prw(sc->button_handle, &prw) == 0)
 	AcpiEnableGpe(prw.gpe_handle, prw.gpe_bit);
-    
+
     return_VALUE (0);
 }
 

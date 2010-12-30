@@ -1,22 +1,23 @@
-#	$FreeBSD: src/usr.sbin/makefs/Makefile,v 1.2 2008/12/19 22:59:05 sam Exp $
+#	$FreeBSD: src/usr.sbin/makefs/Makefile,v 1.3 2010/11/07 16:05:04 cognet Exp $
 
 PROG=	makefs
+
+CFLAGS+=-I${.CURDIR}
+
+SRCS=	cd9660.c ffs.c \
+	getid.c \
+	makefs.c \
+	walk.c
 MAN=	makefs.8
 
 WARNS?=	2
 
-CFLAGS+=-I${.CURDIR}
-SRCS=	ffs.c getid.c makefs.c walk.c
+.include "${.CURDIR}/cd9660/Makefile.inc"
+.include "${.CURDIR}/ffs/Makefile.inc"
+.include "${.CURDIR}/compat/Makefile.inc"
 
-.PATH:	${.CURDIR}/ffs
-CFLAGS+=-I${.CURDIR}/ffs
 CFLAGS+=-DHAVE_STRUCT_STAT_ST_FLAGS=1
 CFLAGS+=-DHAVE_STRUCT_STAT_ST_GEN=1
-SRCS+=	buf.c ffs_alloc.c ffs_balloc.c ffs_bswap.c ffs_subr.c mkfs.c ufs_bmap.c
-
-.PATH:	${.CURDIR}/compat
-CFLAGS+=-I${.CURDIR}/compat
-SRCS+=	pwcache.c strsuftoll.c
 
 .PATH:	${.CURDIR}/../mtree
 CFLAGS+=-I${.CURDIR}/../mtree

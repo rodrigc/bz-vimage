@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.bin/lex/Makefile,v 1.21 2010/01/02 10:27:05 ed Exp $
+# $FreeBSD: src/usr.bin/lex/Makefile,v 1.22 2010/11/09 18:28:11 uqs Exp $
 #
 # By default, flex will be configured to generate 8-bit scanners only if the
 # -8 flag is given.  If you want it to always generate 8-bit scanners, add
@@ -44,7 +44,7 @@ test: check
 check: $(PROG)
 	./$(PROG) $(LFLAGS) -t $(COMPRESSION) $(.CURDIR)/scan.l \
 	| sed s,\"$(.CURDIR)/scan.l",\"scan.l", \
-	| diff $(.CURDIR)/initscan.c -
+	| diff -I '\$$FreeBS[D]:.*\$$' $(.CURDIR)/initscan.c -
 	@echo "Check successful"
 
 .include <bsd.prog.mk>

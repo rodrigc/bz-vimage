@@ -1,7 +1,7 @@
 /*	$NetBSD: uplcom.c,v 1.21 2001/11/13 06:24:56 lukem Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.23 2010/08/10 19:13:11 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uplcom.c,v 1.25 2010/11/05 19:12:48 n_hibma Exp $");
 
 /*-
  * Copyright (c) 2001-2003, 2005 Shunsuke Akiyama <akiyama@jp.FreeBSD.org>.
@@ -445,6 +445,8 @@ uplcom_attach(device_t dev)
 		device_printf(dev, "init failed\n");
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);
 
 detach:
@@ -459,7 +461,7 @@ uplcom_detach(device_t dev)
 
 	DPRINTF("sc=%p\n", sc);
 
-	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom, 1);
+	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, UPLCOM_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/sys/dev/lmc/if_lmc.c,v 1.42 2010/01/08 15:57:56 trasz Exp $
+ * $FreeBSD: src/sys/dev/lmc/if_lmc.c,v 1.43 2010/12/20 16:39:43 tijl Exp $
  *
  * Copyright (c) 2002-2004 David Boggs. <boggs@boggs.palo-alto.ca.us>
  * All rights reserved.
@@ -6261,8 +6261,8 @@ int if_lmc_lkmentry(struct lkm_table *lkmtp, int cmd, int ver)
         /* XXX Why isn't there an LKM network interface module?    XXX */
         pa.pa_pc    = NULL;					/* XXX */
         pa.pa_bus   = 0;					/* XXX */
-        pa.pa_iot   = I386_BUS_SPACE_IO;			/* XXX */
-        pa.pa_memt  = I386_BUS_SPACE_MEM;			/* XXX */
+        pa.pa_iot   = X86_BUS_SPACE_IO;				/* XXX */
+        pa.pa_memt  = X86_BUS_SPACE_MEM;			/* XXX */
         pa.pa_dmat  = &pci_bus_dma_tag;				/* XXX */
         for (pa.pa_device=0; pa.pa_device<32; pa.pa_device++)	/* XXX */
           {

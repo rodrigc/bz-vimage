@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)var.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.50 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.53 2010/11/20 14:14:52 jilles Exp $");
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -633,10 +633,10 @@ showvarscmd(int argc __unused, char **argv __unused)
 
 	qsort(vars, n, sizeof(*vars), var_compare);
 	for (i = 0; i < n; i++) {
-		for (s = vars[i]; *s != '='; s++)
-			out1c(*s);
-		out1c('=');
-		out1qstr(s + 1);
+		s = strchr(vars[i], '=');
+		s++;
+		outbin(vars[i], s - vars[i], out1);
+		out1qstr(s);
 		out1c('\n');
 	}
 	ckfree(vars);
@@ -710,12 +710,15 @@ found:;
 						out1str(cmdname);
 						out1c(' ');
 					}
-					for (p = vp->text ; *p != '=' ; p++)
-						out1c(*p);
+					p = strchr(vp->text, '=');
 					if (values && !(vp->flags & VUNSET)) {
-						out1c('=');
-						out1qstr(p + 1);
-					}
+						p++;
+						outbin(vp->text, p - vp->text,
+						    out1);
+						out1qstr(p);
+					} else
+						outbin(vp->text, p - vp->text,
+						    out1);
 					out1c('\n');
 				}
 			}
@@ -805,6 +808,7 @@ poplocalvars(void)
 		if (vp == NULL) {	/* $- saved */
 			memcpy(optlist, lvp->text, sizeof optlist);
 			ckfree(lvp->text);
+			optschanged();
 		} else if ((lvp->flags & (VUNSET|VSTRFIXED)) == VUNSET) {
 			(void)unsetvar(vp->text);
 		} else {
@@ -826,7 +830,7 @@ setvarcmd(int argc, char **argv)
 	else if (argc == 3)
 		setvar(argv[1], argv[2], 0);
 	else
-		error("List assignment not implemented");
+		error("too many arguments");
 	return 0;
 }
 

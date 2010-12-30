@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/sys/boot/common/loader.8,v 1.98 2010/10/08 12:40:16 uqs Exp $
+.\" $FreeBSD: src/sys/boot/common/loader.8,v 1.99 2010/11/08 21:50:45 jhb Exp $
 .\"
 .Dd February 15, 2009
 .Dt LOADER 8
@@ -334,12 +334,6 @@ Some options may require a value,
 while others define behavior just by being set.
 Both types of builtin variables are described below.
 .Bl -tag -width bootfile
-.It Va acpi_load
-Unset this to disable automatic loading of the ACPI module.
-See also
-.Va hint.acpi.0.disabled
-in
-.Xr device.hints 5 .
 .It Va autoboot_delay
 Number of seconds
 .Ic autoboot

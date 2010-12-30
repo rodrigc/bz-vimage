@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)options.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.31 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.32 2010/11/20 14:14:52 jilles Exp $");
 
 #include <signal.h>
 #include <unistd.h>
@@ -261,13 +261,12 @@ minus_o(char *name, int val)
 					optlist[i].val ? "on" : "off");
 		} else {
 			/* Output suitable for re-input to shell. */
-			for (i = 0; i < NOPTS; i++) {
-				if (i % 6 == 0)
-					out1str(i == 0 ? "set" : "\nset");
-				out1fmt(" %co %s", optlist[i].val ? '-' : '+',
-					optlist[i].name);
-			}
-			out1c('\n');
+			for (i = 0; i < NOPTS; i++)
+				out1fmt("%s %co %s%s",
+				    i % 6 == 0 ? "set" : "",
+				    optlist[i].val ? '-' : '+',
+				    optlist[i].name,
+				    i % 6 == 5 || i == NOPTS - 1 ? "\n" : "");
 		}
 	} else {
 		for (i = 0; i < NOPTS; i++)

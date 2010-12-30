@@ -23,6 +23,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crti.S,v 1.8 2010/12/09 21:31:21 dim Exp $");
+
 	.section .init,"ax",@progbits
 	.align	4
 	.globl	_init
@@ -36,6 +39,3 @@ _init:
 	.type	_fini,@function
 _fini:
 	sub	$12,%esp	/* re-align stack pointer */
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/i386-elf/crti.S,v 1.7 2005/05/19 07:31:06 dfr Exp $\0"

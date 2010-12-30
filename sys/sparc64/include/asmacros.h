@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/include/asmacros.h,v 1.20 2010/02/13 19:17:06 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/asmacros.h,v 1.21 2010/12/29 14:14:50 marius Exp $
  */
 
 #ifndef	_MACHINE_ASMACROS_H_
@@ -33,7 +33,7 @@
 
 /*
  * Normal and alternate %g6 point to the pcb of the current process.  Normal,
- & alternate and interrupt %g7 point to per-cpu data.
+ * alternate and interrupt %g7 point to per-cpu data.
  */
 #define	PCB_REG		%g6
 #define	PCPU_REG	%g7
@@ -133,6 +133,19 @@
 name:
 
 #define	EMPTY
+
+/*
+ * Generate atomic compare and swap, load and store instructions for the
+ * corresponding width and ASI (or not).  Note that we want to evaluate the
+ * macro args before concatenating, so that EMPTY really turns into nothing.
+ */
+#define		_LD(w, a)	ld ## w ## a
+#define		_ST(w, a)	st ## w ## a
+#define		_CAS(w, a)	cas ## w ## a
+
+#define		LD(w, a)	_LD(w, a)
+#define		ST(w, a)	_ST(w, a)
+#define		CAS(w, a)	_CAS(w, a)
 
 #endif /* LOCORE */
 

@@ -32,7 +32,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ***************************************************************************/
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/cxgbtool/cxgbtool.c,v 1.8 2010/05/05 00:41:40 np Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/cxgbtool/cxgbtool.c,v 1.9 2010/12/08 01:35:19 kevlo Exp $");
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1014,6 +1014,8 @@ load_fw(int argc, char *argv[], int start_arg, const char *iff_name)
 	op.len = len;
 	if (doit(iff_name, CHELSIO_LOAD_FW, &op) < 0)
 		err(1, "load firmware");
+
+	close(fd);
 	return 0;
 }
 
@@ -1048,6 +1050,7 @@ load_boot(int argc, char *argv[], int start_arg, const char *iff_name)
 	if (doit(iff_name, CHELSIO_LOAD_BOOT, &op) < 0)
 		err(1, "load boot image");
 
+	close(fd);
 	return 0;
 }
 

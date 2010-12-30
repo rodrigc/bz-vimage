@@ -99,7 +99,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_pci.c,v 1.59 2010/08/06 17:27:00 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_pci.c,v 1.60 2010/12/28 16:57:29 jhb Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_cam.h>
@@ -523,8 +523,8 @@ mpt_pci_attach(device_t dev)
 	 * some cards otherwise).
 	 */
 	mpt->pci_pio_rid = PCIR_BAR(mpt_io_bar);
-	mpt->pci_pio_reg = bus_alloc_resource(dev, SYS_RES_IOPORT,
-			    &mpt->pci_pio_rid, 0, ~0, 0, RF_ACTIVE);
+	mpt->pci_pio_reg = bus_alloc_resource_any(dev, SYS_RES_IOPORT,
+			    &mpt->pci_pio_rid, RF_ACTIVE);
 	if (mpt->pci_pio_reg == NULL) {
 		device_printf(dev, "unable to map registers in PIO mode\n");
 		goto bad;
@@ -534,8 +534,8 @@ mpt_pci_attach(device_t dev)
 
 	/* Allocate kernel virtual memory for the 9x9's Mem0 region */
 	mpt->pci_mem_rid = PCIR_BAR(mpt_mem_bar);
-	mpt->pci_reg = bus_alloc_resource(dev, SYS_RES_MEMORY,
-			&mpt->pci_mem_rid, 0, ~0, 0, RF_ACTIVE);
+	mpt->pci_reg = bus_alloc_resource_any(dev, SYS_RES_MEMORY,
+			&mpt->pci_mem_rid, RF_ACTIVE);
 	if (mpt->pci_reg == NULL) {
 		device_printf(dev, "Unable to memory map registers.\n");
 		if (mpt->is_sas) {

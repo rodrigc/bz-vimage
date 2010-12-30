@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-exponential.c,v 1.3 2008/02/17 22:45:53 das Exp $");
+__FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-exponential.c,v 1.4 2010/12/06 00:02:49 das Exp $");
 
 #include <assert.h>
 #include <fenv.h>
@@ -89,7 +89,7 @@ __FBSDID("$FreeBSD: src/tools/regression/lib/msun/test-exponential.c,v 1.3 2008/
 int
 fpequal(long double x, long double y)
 {
-	return ((x == y && signbit(x) == signbit(y)) || isnan(x) && isnan(y));
+	return ((x == y && !signbit(x) == !signbit(y)) || isnan(x) && isnan(y));
 }
 
 void

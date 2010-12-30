@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/makeLINT.mk,v 1.3 2010/08/19 03:19:26 nwhitehorn Exp $
+# $FreeBSD: src/sys/conf/makeLINT.mk,v 1.4 2010/12/28 22:49:28 imp Exp $
 
 all:
 	@echo "make LINT only"
@@ -17,6 +17,6 @@ LINT: ${NOTES} ../../conf/makeLINT.sed
 	echo "ident ${.TARGET}-VIMAGE"	>> ${.TARGET}-VIMAGE
 	echo "options VIMAGE"		>> ${.TARGET}-VIMAGE
 .endif
-.if ${TARGET} == "powerpc"
+.if ${TARGET} == "powerpc" || ${TARGET} == "mips"
 	echo "machine	${TARGET} ${TARGET_ARCH}" >> ${.TARGET}
 .endif

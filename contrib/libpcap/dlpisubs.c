@@ -19,6 +19,10 @@ static const char rcsid[] _U_ =
 #include "config.h"
 #endif
 
+#ifndef DL_IPATM
+#define DL_IPATM	0x12	/* ATM Classical IP interface */
+#endif
+
 #ifdef HAVE_SYS_BUFMOD_H
 	/*
 	 * Size of a bufmod chunk to pass upstream; that appears to be the
@@ -41,6 +45,7 @@ static const char rcsid[] _U_ =
 	 * what the value used to be - there's no particular reason why it
 	 * should be tied to MAXDLBUF, but we'll leave it as this for now.
 	 */
+#define	MAXDLBUF	8192
 #define	PKTBUFSIZE	(MAXDLBUF * sizeof(bpf_u_int32))
 
 #endif
@@ -64,7 +69,9 @@ static const char rcsid[] _U_ =
 #include "pcap-int.h"
 #include "dlpisubs.h"
 
+#ifdef HAVE_SYS_BUFMOD_H
 static void pcap_stream_err(const char *, int, char *);
+#endif
 
 /*
  * Get the packet statistics.
@@ -339,6 +346,7 @@ strioctl(int fd, int cmd, int len, char *dp)
 	return (str.ic_len);
 }
 
+#ifdef HAVE_SYS_BUFMOD_H
 /*
  * Write stream error message to errbuf.
  */
@@ -347,3 +355,4 @@ pcap_stream_err(const char *func, int err, char *errbuf)
 {
 	snprintf(errbuf, PCAP_ERRBUF_SIZE, "%s: %s", func, pcap_strerror(err));
 }
+#endif

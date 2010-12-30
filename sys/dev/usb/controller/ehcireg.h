@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/ehcireg.h,v 1.3 2010/10/14 21:41:08 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/ehcireg.h,v 1.4 2010/10/25 15:51:43 nwhitehorn Exp $ */
 /*-
  * Copyright (c) 2001 The NetBSD Foundation, Inc.
  * All rights reserved.
@@ -54,9 +54,13 @@
 #define	EHCI_LEGSUP_USBLEGCTLSTS	0x04
 
 /* EHCI capability registers */
-#define	EHCI_CAPLENGTH		0x00	/* RO Capability register length field */
-#define	EHCI_RESERVED		0x01	/* Reserved register */
-#define	EHCI_HCIVERSION		0x02	/* RO Interface version number */
+#define	EHCI_CAPLEN_HCIVERSION	0x00	/* RO Capability register length
+					 * (least-significant byte) and 
+					 * interface version number (two
+					 * most significant)
+					 */
+#define EHCI_CAPLENGTH(x)	((x) & 0xff)
+#define EHCI_HCIVERSION(x)	(((x) >> 16) & 0xffff)
 #define	EHCI_HCSPARAMS		0x04	/* RO Structural parameters */
 #define	EHCI_HCS_DEBUGPORT(x)	(((x) >> 20) & 0xf)
 #define	EHCI_HCS_P_INDICATOR(x) ((x) & 0x10000)

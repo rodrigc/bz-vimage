@@ -23,9 +23,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/ada.4,v 1.4 2010/10/24 16:31:57 brucec Exp $
+.\" $FreeBSD: src/share/man/man4/ada.4,v 1.7 2010/11/11 19:13:16 brucec Exp $
 .\"
-.Dd November 19, 2009
+.Dd October 24, 2010
 .Dt ADA 4
 .Os
 .Sh NAME
@@ -121,6 +121,8 @@ seconds.
 .It kern.cam.ada.spindown_shutdown
 .Pp
 This variable determines whether to spin-down disks when shutting down.
+Set to 1 to enable spin-down, 0 to disable.  
+The default is currently enabled.
 .El
 .Sh FILES
 .Bl -tag -width ".Pa /dev/ada*" -compact

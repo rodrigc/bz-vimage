@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/ata_dbdma.c,v 1.3 2009/12/06 00:10:13 mav Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/ata_dbdma.c,v 1.4 2010/11/30 20:54:14 marius Exp $
  */
 
 /*
@@ -268,7 +268,6 @@ ata_dbdma_dmainit(device_t dev)
 	dbdma_insert_stop(sc->dbdma,0);
 	sc->next_dma_slot=1;
 
-	ata_dmainit(dev);
 	sc->sc_ch.dma.start = ata_dbdma_start;
 	sc->sc_ch.dma.stop = ata_dbdma_stop;
 	sc->sc_ch.dma.load = ata_dbdma_load;
@@ -279,9 +278,9 @@ ata_dbdma_dmainit(device_t dev)
 	 * if we try to do a 64K transfer, so stop short of 64K.
 	 */
 	sc->sc_ch.dma.segsize = 126 * DEV_BSIZE;
+	ata_dmainit(dev);
 
 	sc->sc_ch.hw.status = ata_dbdma_status;
 
 	mtx_init(&sc->dbdma_mtx, "ATA DBDMA", NULL, MTX_DEF);
 }
-

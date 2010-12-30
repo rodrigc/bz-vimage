@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_cpuset.c,v 1.21 2010/10/25 13:13:16 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_cpuset.c,v 1.24 2010/11/01 00:42:25 davidxu Exp $");
 
 #include "opt_ddb.h"
 
@@ -106,6 +106,10 @@ static struct mtx cpuset_lock;
 static struct setlist cpuset_ids;
 static struct unrhdr *cpuset_unr;
 static struct cpuset *cpuset_zero;
+
+/* Return the size of cpuset_t at the kernel level */
+SYSCTL_INT(_kern_sched, OID_AUTO, cpusetsize, CTLFLAG_RD,
+	0, sizeof(cpuset_t), "sizeof(cpuset_t)");
 
 cpuset_t *cpuset_root;
 

@@ -32,7 +32,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/xscale/ixp425/ixp425var.h,v 1.9 2009/06/22 22:54:13 sam Exp $
+ * $FreeBSD: src/sys/arm/xscale/ixp425/ixp425var.h,v 1.10 2010/11/14 20:41:22 thompsa Exp $
  *
  */
 
@@ -93,6 +93,9 @@ struct ixppcib_softc {
 	bus_space_write_4(sc->sc_iot, sc->sc_gpio_ioh, reg, data)
 #define	GPIO_CONF_READ_4(sc, reg) \
 	bus_space_read_4(sc->sc_iot, sc->sc_gpio_ioh, reg)
+#define	IXP4XX_GPIO_LOCK()	mtx_lock(&ixp425_gpio_mtx)
+#define	IXP4XX_GPIO_UNLOCK()	mtx_unlock(&ixp425_gpio_mtx)
+extern struct mtx ixp425_gpio_mtx;
 
 extern struct bus_space ixp425_bs_tag;
 extern struct bus_space ixp425_a4x_bs_tag;

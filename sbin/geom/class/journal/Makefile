@@ -1,8 +1,8 @@
-# $FreeBSD: src/sbin/geom/class/journal/Makefile,v 1.2 2007/02/10 17:59:46 pjd Exp $
+# $FreeBSD: src/sbin/geom/class/journal/Makefile,v 1.3 2010/12/15 23:24:34 obrien Exp $
 
-.PATH:	${.CURDIR}/../../misc
+.PATH: ${.CURDIR}/../../misc
 
-CLASS=	journal
+GEOM_CLASS=	journal
 SRCS+=	geom_journal_ufs.c
 
 DPADD=	${LIBMD} ${LIBUFS}

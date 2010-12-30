@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/libexec/tftpd/tftp-utils.c,v 1.2 2010/09/24 10:40:17 marius Exp $");
+__FBSDID("$FreeBSD: src/libexec/tftpd/tftp-utils.c,v 1.3 2010/11/09 10:59:09 brucec Exp $");
 
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -100,7 +100,7 @@ unmappedaddr(struct sockaddr_in6 *sin6)
 	sin4->sin_len = sizeof(struct sockaddr_in);
 }
 
-/* Get a field from a \0 seperated string */
+/* Get a field from a \0 separated string */
 ssize_t
 get_field(int peer, char *buffer, ssize_t size)
 {

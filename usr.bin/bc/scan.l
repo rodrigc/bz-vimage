@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/bc/scan.l,v 1.5 2010/06/06 11:36:08 gabor Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/bc/scan.l,v 1.6 2010/11/22 20:10:48 brucec Exp $");
 
 #include <err.h>
 #include <errno.h>
@@ -46,6 +46,7 @@ static void	 init_strbuf(void);
 static void	 add_str(const char *);
 static int	 bc_yyinput(char *, int);
 
+#define YY_NO_INPUT
 #undef YY_INPUT
 #define YY_INPUT(buf,retval,max) \
 	(retval = bc_yyinput(buf, max))

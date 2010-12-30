@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-sata.c,v 1.10 2010/10/18 11:30:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-sata.c,v 1.11 2010/11/18 11:58:17 mav Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -153,8 +153,12 @@ ata_sata_phy_reset(device_t dev, int port, int quick)
     if (quick) {
 	if (ata_sata_scr_read(ch, port, ATA_SCONTROL, &val))
 	    return (0);
-	if ((val & ATA_SC_DET_MASK) == ATA_SC_DET_IDLE)
+	if ((val & ATA_SC_DET_MASK) == ATA_SC_DET_IDLE) {
+	    ata_sata_scr_write(ch, port, ATA_SCONTROL,
+		ATA_SC_DET_IDLE | ((ch->pm_level > 0) ? 0 :
+		ATA_SC_IPM_DIS_PARTIAL | ATA_SC_IPM_DIS_SLUMBER));
 	    return ata_sata_connect(ch, port, quick);
+	}
     }
 
     if (bootverbose) {

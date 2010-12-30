@@ -15,7 +15,6 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $FreeBSD: src/contrib/libpcap/nlpid.h,v 1.3 2004/03/31 09:13:37 bms Exp $
  * @(#) $Header$ (Juniper)
  */
 

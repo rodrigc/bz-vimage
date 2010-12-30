@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2009  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 2004-2010  Internet Systems Consortium, Inc. ("ISC")
  * Copyright (C) 1998-2003  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -304,6 +304,7 @@ enum {
 #define DNS_TRUST_ADDITIONAL(x)		((x) == dns_trust_additional || \
 					 (x) == dns_trust_pending_additional)
 #define DNS_TRUST_GLUE(x)		((x) == dns_trust_glue)
+#define DNS_TRUST_ANSWER(x)		((x) == dns_trust_answer)
 
 
 /*%

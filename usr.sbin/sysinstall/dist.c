@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/dist.c,v 1.263 2010/10/03 17:50:43 nwhitehorn Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/dist.c,v 1.264 2010/12/06 20:55:14 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -757,6 +757,9 @@ distExtract(char *parent, Distribution *me)
 			canceled = 1;	
 
 		    status = FALSE;
+		} else {
+			// ignore any failures with DIST_LOCAL
+			status = TRUE;
 		}
 	    }
 	    break;
@@ -913,7 +916,7 @@ distExtractAll(dialogMenuItem *self)
     restorescr(w);
 
     if (extract_status == FALSE)
-	status = DITEM_FAILURE;
+	status = FALSE;
 
     return status;
 }

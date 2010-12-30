@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_kern.c,v 1.42 2008/08/09 11:14:05 des Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_kern.c,v 1.43 2010/11/22 16:47:53 jh Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -137,10 +137,8 @@ g_event_procbody(void)
 	thread_lock(tp);
 	sched_prio(tp, PRIBIO);
 	thread_unlock(tp);
-	for(;;) {
-		g_run_events();
-		tsleep(&g_wait_event, PRIBIO, "-", hz/10);
-	}
+	g_run_events();
+	/* NOTREACHED */
 }
 
 static struct kproc_desc g_event_kp = {

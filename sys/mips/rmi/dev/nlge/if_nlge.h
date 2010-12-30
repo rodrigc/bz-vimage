@@ -25,7 +25,7 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
- * $FreeBSD: src/sys/mips/rmi/dev/nlge/if_nlge.h,v 1.3 2010/10/06 08:15:28 jchandra Exp $
+ * $FreeBSD: src/sys/mips/rmi/dev/nlge/if_nlge.h,v 1.4 2010/11/27 13:35:19 jchandra Exp $
  *
  * RMI_BSD 
  */
@@ -985,8 +985,10 @@
 
 #define MAC_B2B_IPG                     88
 
+#define	NLGE_PREPAD_LEN			32
+
 /* frame sizes need to be cacheline aligned */
-#define MAX_FRAME_SIZE                  1536
+#define MAX_FRAME_SIZE                  (1536 + NLGE_PREPAD_LEN)
 #define MAX_FRAME_SIZE_JUMBO            9216
 #define RGE_TX_THRESHOLD_BYTES		ETHER_MAX_LEN
 
@@ -1018,7 +1020,6 @@
 #define MAX_P2D_DESC_PER_PORT           512 
 
 #define PHY_STATUS_RETRIES 		25000
-
 
 /* Structs representing hardware data structures */
 struct size_1_desc {
@@ -1110,7 +1111,6 @@ struct nlna_softc {
 	int		mac_type;
 	xlr_reg_t	*base;
 
-	struct callout 	tx_thr;
 	struct fr_desc *frin_spill;
 	struct fr_desc *frout_spill;
 	union rx_tx_desc *class_0_spill;

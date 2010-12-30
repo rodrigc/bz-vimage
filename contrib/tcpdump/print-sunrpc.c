@@ -18,7 +18,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $FreeBSD: src/contrib/tcpdump/print-sunrpc.c,v 1.12 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/print-sunrpc.c,v 1.13 2010/10/28 19:06:17 rpaulo Exp $
  */
 
 #ifndef lint
@@ -29,6 +29,21 @@ static const char rcsid[] _U_ =
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+/*
+ * At least on HP-UX:
+ *
+ *	1) getrpcbynumber() is declared in <netdb.h>, not any of the RPC
+ *	   header files
+ *
+ * and
+ *
+ *	2) if _XOPEN_SOURCE_EXTENDED is defined, <netdb.h> doesn't declare
+ *	   it
+ *
+ * so we undefine it.
+ */
+#undef _XOPEN_SOURCE_EXTENDED
 
 #include <tcpdump-stdinc.h>
 

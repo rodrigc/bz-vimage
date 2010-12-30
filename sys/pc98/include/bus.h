@@ -28,7 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/pc98/include/bus.h,v 1.8 2008/09/07 04:44:24 nyan Exp $
+ * $FreeBSD: src/sys/pc98/include/bus.h,v 1.12 2010/12/20 16:39:43 tijl Exp $
  */
 
 /*	$NecBSD: busio.h,v 3.25.4.2.2.1 2000/06/12 03:53:08 honda Exp $	*/
@@ -158,8 +158,8 @@ struct bus_space_access_methods {
  * Access methods for bus resources and address space.
  */
 struct bus_space_tag {
-#define	BUS_SPACE_IO	0
-#define	BUS_SPACE_MEM	1
+#define	BUS_SPACE_TAG_IO	0
+#define	BUS_SPACE_TAG_MEM	1
 	u_int	bs_tag;			/* bus space flags */
 
 	struct bus_space_access_methods bs_da;	/* direct access */
@@ -192,8 +192,8 @@ struct bus_space_handle {
 extern struct bus_space_tag SBUS_io_space_tag;
 extern struct bus_space_tag SBUS_mem_space_tag;
 
-#define I386_BUS_SPACE_IO	(&SBUS_io_space_tag)
-#define I386_BUS_SPACE_MEM	(&SBUS_mem_space_tag)
+#define X86_BUS_SPACE_IO	(&SBUS_io_space_tag)
+#define X86_BUS_SPACE_MEM	(&SBUS_mem_space_tag)
 
 /*
  * Allocate/Free bus_space_handle

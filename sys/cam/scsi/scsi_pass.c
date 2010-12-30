@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_pass.c,v 1.56 2010/09/20 19:42:14 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_pass.c,v 1.58 2010/12/10 21:38:51 ken Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -524,10 +524,10 @@ passsendccb(struct cam_periph *periph, union ccb *ccb, union ccb *inccb)
 	 * We only attempt to map the user memory into kernel space
 	 * if they haven't passed in a physical memory pointer,
 	 * and if there is actually an I/O operation to perform.
-	 * Right now cam_periph_mapmem() only supports SCSI and device
-	 * match CCBs.  For the SCSI CCBs, we only pass the CCB in if
-	 * there's actually data to map.  cam_periph_mapmem() will do the
-	 * right thing, even if there isn't data to map, but since CCBs
+	 * cam_periph_mapmem() supports SCSI, ATA, SMP, ADVINFO and device
+	 * match CCBs.  For the SCSI, ATA and ADVINFO CCBs, we only pass the
+	 * CCB in if there's actually data to map.  cam_periph_mapmem() will
+	 * do the right thing, even if there isn't data to map, but since CCBs
 	 * without data are a reasonably common occurance (e.g. test unit
 	 * ready), it will save a few cycles if we check for it here.
 	 */
@@ -535,7 +535,10 @@ passsendccb(struct cam_periph *periph, union ccb *ccb, union ccb *inccb)
 	 && (((ccb->ccb_h.func_code == XPT_SCSI_IO ||
 	       ccb->ccb_h.func_code == XPT_ATA_IO)
 	    && ((ccb->ccb_h.flags & CAM_DIR_MASK) != CAM_DIR_NONE))
-	  || (ccb->ccb_h.func_code == XPT_DEV_MATCH))) {
+	  || (ccb->ccb_h.func_code == XPT_DEV_MATCH)
+	  || (ccb->ccb_h.func_code == XPT_SMP_IO)
+	  || ((ccb->ccb_h.func_code == XPT_GDEV_ADVINFO)
+	   && (ccb->cgdai.bufsiz > 0)))) {
 
 		bzero(&mapinfo, sizeof(mapinfo));
 

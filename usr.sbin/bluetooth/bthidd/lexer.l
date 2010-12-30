@@ -29,7 +29,7 @@
  * SUCH DAMAGE.
  *
  * $Id$
- * $FreeBSD: src/usr.sbin/bluetooth/bthidd/lexer.l,v 1.3 2006/09/07 21:47:49 emax Exp $
+ * $FreeBSD: src/usr.sbin/bluetooth/bthidd/lexer.l,v 1.4 2010/11/22 14:16:22 brucec Exp $
  */
 
 #include <bluetooth.h>
@@ -39,7 +39,7 @@
 	int	yylex	(void);
 %}
 
-%option yylineno noyywrap nounput
+%option yylineno noyywrap nounput noinput
 
 delim				[ \t\n]
 ws				{delim}+

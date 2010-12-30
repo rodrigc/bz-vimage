@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)exec.c	8.4 (Berkeley) 6/8/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/exec.c,v 1.45 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/exec.c,v 1.46 2010/12/26 13:25:47 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -190,9 +190,8 @@ padvance(const char **path, const char *name)
 	for (p = start; *p && *p != ':' && *p != '%'; p++)
 		; /* nothing */
 	len = p - start + strlen(name) + 2;	/* "2" is for '/' and '\0' */
-	while (stackblocksize() < len)
-		growstackblock();
-	q = stackblock();
+	STARTSTACKSTR(q);
+	CHECKSTRSPACE(len, q);
 	if (p != start) {
 		memcpy(q, start, p - start);
 		q += p - start;

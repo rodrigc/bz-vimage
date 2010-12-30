@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/dispatch.c,v 1.55 2010/07/08 21:26:26 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/dispatch.c,v 1.56 2010/11/21 14:34:25 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -136,8 +136,12 @@ typedef struct command_buffer_ {
 static void
 dispatch_free_command(command_buffer *item)
 {
-    REMQUE(item);
-    free(item->string);
+    if (item != NULL) {
+	REMQUE(item);
+	free(item->string);
+	item->string = NULL;
+    }
+
     free(item);
 }
 
@@ -155,19 +159,29 @@ dispatch_free_all(qelement *head)
 static command_buffer *
 dispatch_add_command(qelement *head, char *string)
 {
-    command_buffer *new;
+    command_buffer *new = NULL;
 
     new = malloc(sizeof(command_buffer));
 
-    if (!new)
-	return NULL;
+    if (new != NULL) {
 
-    new->string = strdup(string);
-    INSQUEUE(new, head->q_back);
+	new->string = strdup(string);
+
+	/*
+	 * We failed to copy `string'; clean up the allocated
+	 * resources.
+	 */
+	if (new->string == NULL) {
+	    free(new);
+	    new = NULL;
+	} else {
+	    INSQUEUE(new, head->q_back);
+	}
+    }
 
     return new;
 }
-
+
 /*
  * Command processing
  */
@@ -280,7 +294,7 @@ dispatchCommand(char *str)
     return i;
 }
 
-
+
 /*
  * File processing
  */

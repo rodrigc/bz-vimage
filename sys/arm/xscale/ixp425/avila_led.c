@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/avila_led.c,v 1.3 2009/06/11 17:05:13 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/ixp425/avila_led.c,v 1.4 2010/11/14 20:41:22 thompsa Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -52,12 +52,14 @@ led_func(void *arg, int onoff)
 	struct led_avila_softc *sc = arg;
 	uint32_t reg;
 
+	IXP4XX_GPIO_LOCK();
 	reg = GPIO_CONF_READ_4(sc, IXP425_GPIO_GPOUTR);
 	if (onoff)
 		reg &= ~GPIO_LED_STATUS_BIT;
 	else
 		reg |= GPIO_LED_STATUS_BIT;
 	GPIO_CONF_WRITE_4(sc, IXP425_GPIO_GPOUTR, reg);
+	IXP4XX_GPIO_UNLOCK();
 }
 
 static int

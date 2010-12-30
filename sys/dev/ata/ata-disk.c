@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/ata-disk.c,v 1.227 2010/07/25 15:43:52 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/ata-disk.c,v 1.228 2010/11/09 10:59:09 brucec Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -188,13 +188,13 @@ ad_detach(device_t dev)
 	free(children, M_TEMP);
     }
 
-    /* detroy disk from the system so we dont get any further requests */
+    /* destroy disk from the system so we don't get any further requests */
     disk_destroy(adp->disk);
 
-    /* fail requests on the queue and any thats "in flight" for this device */
+    /* fail requests on the queue and any that's "in flight" for this device */
     ata_fail_requests(dev);
 
-    /* dont leave anything behind */
+    /* don't leave anything behind */
     device_set_ivars(dev, NULL);
     free(adp, M_AD);
     return 0;
@@ -536,7 +536,7 @@ ad_describe(device_t dev)
     struct ad_softc *adp = device_get_ivars(dev);
     u_int8_t *marker, vendor[64], product[64];
 
-    /* try to seperate the ATA model string into vendor and model parts */
+    /* try to separate the ATA model string into vendor and model parts */
     if ((marker = index(atadev->param.model, ' ')) ||
 	(marker = index(atadev->param.model, '-'))) {
 	int len = (marker - atadev->param.model);

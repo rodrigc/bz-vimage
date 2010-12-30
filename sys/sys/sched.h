@@ -56,7 +56,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/sched.h,v 1.44 2010/09/30 17:05:23 avg Exp $
+ * $FreeBSD: src/sys/sys/sched.h,v 1.45 2010/12/29 09:26:46 davidxu Exp $
  */
 
 #ifndef _SCHED_H_
@@ -99,7 +99,6 @@ void	sched_sleep(struct thread *td, int prio);
 void	sched_switch(struct thread *td, struct thread *newtd, int flags);
 void	sched_throw(struct thread *td);
 void	sched_unlend_prio(struct thread *td, u_char prio);
-void	sched_unlend_user_prio(struct thread *td, u_char pri);
 void	sched_user_prio(struct thread *td, u_char prio);
 void	sched_userret(struct thread *td);
 void	sched_wakeup(struct thread *td);

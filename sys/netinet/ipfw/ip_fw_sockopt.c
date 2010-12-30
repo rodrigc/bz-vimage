@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_sockopt.c,v 1.17 2010/04/07 08:23:58 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_sockopt.c,v 1.18 2010/11/12 13:05:17 luigi Exp $");
 
 /*
  * Sockopt support for ipfw. The routines here implement
@@ -572,6 +572,7 @@ check_ipfw_struct(struct ip_fw *rule, int size)
 		case O_IPTOS:
 		case O_IPPRECEDENCE:
 		case O_IPVER:
+		case O_SOCKARG:
 		case O_TCPWIN:
 		case O_TCPFLAGS:
 		case O_TCPOPTS:

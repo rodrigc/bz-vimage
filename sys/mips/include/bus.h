@@ -67,7 +67,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/bus.h,v 1.7 2010/08/13 12:56:00 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/bus.h,v 1.9 2010/12/03 07:09:23 brucec Exp $
  */
 
 #ifndef _MACHINE_BUS_H_

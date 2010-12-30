@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_acl.c,v 1.2 2009/05/26 11:42:06 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_acl.c,v 1.3 2010/11/30 21:04:05 trasz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -105,7 +105,10 @@ acl_from_aces(struct acl *aclp, const ace_t *aces, int nentries)
 	struct acl_entry *entry;
 	const ace_t *ace;
 
-	KASSERT(nentries >= 1, ("empty ZFS ACL"));
+	if (nentries < 1) {
+		printf("acl_from_aces: empty ZFS ACL; returning EINVAL.\n");
+		return (EINVAL);
+	}
 
 	if (nentries > ACL_MAX_ENTRIES) {
 		/*

@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.112 2010/07/25 15:43:52 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.113 2010/12/29 12:11:07 kib Exp $");
 
 #include "opt_geom.h"
 
@@ -297,7 +297,11 @@ g_disk_start(struct bio *bp)
 		} while (bp2 != NULL);
 		break;
 	case BIO_GETATTR:
-		if (g_handleattr_int(bp, "GEOM::fwsectors", dp->d_fwsectors))
+		if (g_handleattr_int(bp, "GEOM::candelete",
+		    (dp->d_flags & DISKFLAG_CANDELETE) != 0))
+			break;
+		else if (g_handleattr_int(bp, "GEOM::fwsectors",
+		    dp->d_fwsectors))
 			break;
 		else if (g_handleattr_int(bp, "GEOM::fwheads", dp->d_fwheads))
 			break;

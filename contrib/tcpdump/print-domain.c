@@ -18,7 +18,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $FreeBSD: src/contrib/tcpdump/print-domain.c,v 1.14 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/print-domain.c,v 1.15 2010/10/28 19:06:17 rpaulo Exp $
  */
 
 #ifndef lint

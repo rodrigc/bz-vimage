@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_nat.c,v 1.13 2010/09/06 13:17:01 glebius Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_fw_nat.c,v 1.15 2010/11/22 19:32:54 dim Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>

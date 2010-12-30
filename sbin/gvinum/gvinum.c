@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/gvinum/gvinum.c,v 1.15 2010/06/11 17:02:57 uqs Exp $
+ * $FreeBSD: src/sbin/gvinum/gvinum.c,v 1.16 2010/11/22 20:10:48 brucec Exp $
  */
 
 #include <sys/param.h>
@@ -1427,5 +1427,5 @@ printconfig(FILE *of, char *comment)
 	if (*comment != '\0')
 	    fprintf(of, "# Current configuration:\n");
 
-	fprintf(of, buf);
+	fprintf(of, "%s", buf);
 }

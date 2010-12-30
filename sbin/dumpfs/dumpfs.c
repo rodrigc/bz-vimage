@@ -53,7 +53,7 @@ static const char copyright[] =
 static char sccsid[] = "@(#)dumpfs.c	8.5 (Berkeley) 4/29/95";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/dumpfs/dumpfs.c,v 1.50 2010/04/24 07:05:35 jeff Exp $";
+  "$FreeBSD: src/sbin/dumpfs/dumpfs.c,v 1.51 2010/12/29 12:31:18 kib Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
@@ -253,9 +253,11 @@ dumpfs(const char *name)
 		printf("fs_flags expanded ");
 	if (fsflags & FS_NFS4ACLS)
 		printf("nfsv4acls ");
+	if (fsflags & FS_TRIM)
+		printf("trim ");
 	fsflags &= ~(FS_UNCLEAN | FS_DOSOFTDEP | FS_NEEDSFSCK | FS_INDEXDIRS |
 		     FS_ACLS | FS_MULTILABEL | FS_GJOURNAL | FS_FLAGS_UPDATED |
-		     FS_NFS4ACLS | FS_SUJ);
+		     FS_NFS4ACLS | FS_SUJ | FS_TRIM);
 	if (fsflags != 0)
 		printf("unknown flags (%#x)", fsflags);
 	putchar('\n');

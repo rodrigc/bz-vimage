@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libpam/modules/pam_unix/pam_unix.c,v 1.54 2010/02/02 13:47:18 des Exp $");
+__FBSDID("$FreeBSD: src/lib/libpam/modules/pam_unix/pam_unix.c,v 1.55 2010/11/22 14:45:16 des Exp $");
 
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -50,6 +50,7 @@ __FBSDID("$FreeBSD: src/lib/libpam/modules/pam_unix/pam_unix.c,v 1.54 2010/02/02
 #include <string.h>
 #include <stdio.h>
 #include <syslog.h>
+#include <time.h>
 #include <unistd.h>
 
 #include <libutil.h>

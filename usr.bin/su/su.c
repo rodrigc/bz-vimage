@@ -40,10 +40,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -74,7 +70,7 @@ static char sccsid[] = "@(#)su.c	8.3 (Berkeley) 4/2/94";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/su/su.c,v 1.91 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/su/su.c,v 1.92 2010/12/11 08:32:16 joel Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>

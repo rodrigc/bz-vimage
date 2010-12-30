@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/teken/teken_subr.h,v 1.14 2010/08/09 18:07:15 ed Exp $
+ * $FreeBSD: src/sys/teken/teken_subr.h,v 1.15 2010/12/05 10:15:23 ed Exp $
  */
 
 static void teken_subr_cursor_up(teken_t *, unsigned int);
@@ -1299,9 +1299,8 @@ teken_subr_vertical_position_absolute(teken_t *t, unsigned int row)
 {
 
 	t->t_cursor.tp_row = t->t_originreg.ts_begin + row - 1;
-	if (row >= t->t_originreg.ts_end)
+	if (t->t_cursor.tp_row >= t->t_originreg.ts_end)
 		t->t_cursor.tp_row = t->t_originreg.ts_end - 1;
-
 
 	t->t_stateflags &= ~TS_WRAPPED;
 	teken_funcs_cursor(t);

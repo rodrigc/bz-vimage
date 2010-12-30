@@ -21,7 +21,7 @@
  * Name to id translation routines used by the scanner.
  * These functions are not time critical.
  *
- * $FreeBSD: src/contrib/libpcap/nametoaddr.c,v 1.14 2009/03/21 22:58:08 rpaulo Exp $
+ * $FreeBSD: src/contrib/libpcap/nametoaddr.c,v 1.15 2010/10/29 18:43:23 rpaulo Exp $
  */
 
 #ifndef lint
@@ -31,6 +31,11 @@ static const char rcsid[] _U_ =
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef DECNETLIB
+#include <sys/types.h>
+#include <netdnet/dnetdb.h>
 #endif
 
 #ifdef WIN32
@@ -45,13 +50,6 @@ static const char rcsid[] _U_ =
 
 #include <netinet/in.h>
 #endif /* WIN32 */
-
-/*
- * XXX - why was this included even on UNIX?
- */
-#ifdef __MINGW32__
-#include "IP6_misc.h"
-#endif
 
 #ifndef WIN32
 #ifdef HAVE_ETHER_HOSTTON

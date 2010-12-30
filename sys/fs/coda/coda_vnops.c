@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/coda/coda_vnops.c,v 1.103 2010/08/07 08:08:14 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/coda/coda_vnops.c,v 1.104 2010/11/19 21:17:34 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1549,9 +1549,6 @@ coda_reclaim(struct vop_reclaim_args *ap)
 				    "%p, cp %p\n", vp, cp);
 		}
 #endif
-	} else {
-		if (prtactive && vp->v_usecount != 0)
-			vprint("coda_reclaim: pushing active", vp);
 	}
 	cache_purge(vp);
 	coda_free(VTOC(vp));

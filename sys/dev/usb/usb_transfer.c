@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.42 2010/10/04 23:18:05 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.43 2010/11/22 01:11:28 weongyo Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -60,6 +60,7 @@
 
 #include <dev/usb/usb_controller.h>
 #include <dev/usb/usb_bus.h>
+#include <dev/usb/usb_pf.h>
 
 struct usb_std_packet_size {
 	struct {
@@ -2196,6 +2197,9 @@ usbd_callback_wrapper(struct usb_xfer_queue *pq)
 		}
 	}
 
+	if (xfer->usb_state != USB_ST_SETUP)
+		usbpf_xfertap(xfer, USBPF_XFERTAP_DONE);
+
 	/* call processing routine */
 	(xfer->callback) (xfer, xfer->error);
 
@@ -2383,6 +2387,8 @@ usbd_transfer_start_cb(void *arg)
 
 	DPRINTF("start\n");
 
+	usbpf_xfertap(xfer, USBPF_XFERTAP_SUBMIT);
+
 	/* start the transfer */
 	(ep->methods->start) (xfer);
 
@@ -2559,6 +2565,8 @@ usbd_pipe_start(struct usb_xfer_queue *pq)
 		}
 	}
 	DPRINTF("start\n");
+
+	usbpf_xfertap(xfer, USBPF_XFERTAP_SUBMIT);
 
 	/* start USB transfer */
 	(ep->methods->start) (xfer);

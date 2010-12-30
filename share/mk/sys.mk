@@ -1,5 +1,5 @@
 #	from: @(#)sys.mk	8.2 (Berkeley) 3/21/94
-# $FreeBSD: src/share/mk/sys.mk,v 1.111 2010/09/10 16:19:58 rpaulo Exp $
+# $FreeBSD: src/share/mk/sys.mk,v 1.112 2010/11/11 23:00:37 dim Exp $
 
 unix		?=	We run FreeBSD, not UNIX.
 .FreeBSD	?=	true
@@ -7,11 +7,11 @@ unix		?=	We run FreeBSD, not UNIX.
 .if !defined(%POSIX)
 #
 # MACHINE_CPUARCH defines a collection of MACHINE_ARCH.  Machines with
-# the same MACHINE_ARCH can run reach-other's binaries, so it
-# necessarily has word size and endian swizzled in.  However, support
-# files for these machines often are shared amongst all combinations
-# of size and/or endian.  This is called MACHINE_CPU in NetBSD, but
-# that's used for something different in FreeBSD.
+# the same MACHINE_ARCH can run each other's binaries, so it necessarily
+# has word size and endian swizzled in.  However, support files for
+# these machines often are shared amongst all combinations of size
+# and/or endian.  This is called MACHINE_CPU in NetBSD, but that's used
+# for something different in FreeBSD.
 #
 MACHINE_CPUARCH=${MACHINE_ARCH:C/mipse[lb]/mips/:C/armeb/arm/:C/powerpc64/powerpc/}
 .endif

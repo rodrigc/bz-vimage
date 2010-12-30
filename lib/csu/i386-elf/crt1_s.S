@@ -22,9 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.2 2010/06/18 11:10:39 kib Exp $
+ * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.3 2010/12/09 21:31:21 dim Exp $
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.3 2010/12/09 21:31:21 dim Exp $");
 
 	.text
 	.align	4
@@ -47,5 +49,3 @@ _start:
 	int3
 	.cfi_endproc
 	.size	_start, . - _start
-
-	.ident	"$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.2 2010/06/18 11:10:39 kib Exp $"

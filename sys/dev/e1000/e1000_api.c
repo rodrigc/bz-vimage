@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_api.c,v 1.8 2010/09/28 00:13:15 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_api.c,v 1.9 2010/11/24 01:13:55 jfv Exp $*/
 
 #include "e1000_api.h"
 
@@ -312,6 +312,8 @@ s32 e1000_set_mac_type(struct e1000_hw *hw)
 	case E1000_DEV_ID_82580_SGMII:
 	case E1000_DEV_ID_82580_COPPER_DUAL:
 	case E1000_DEV_ID_82580_QUAD_FIBER:
+	case E1000_DEV_ID_DH89XXCC_SGMII:
+	case E1000_DEV_ID_DH89XXCC_SERDES:
 		mac->type = e1000_82580;
 		break;
 	case E1000_DEV_ID_82576_VF:

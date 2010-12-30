@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/ar/acplex.l,v 1.1 2008/09/20 22:10:10 kaiw Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/ar/acplex.l,v 1.2 2010/11/22 20:10:48 brucec Exp $");
 
 #include <err.h>
 #include <errno.h>
@@ -37,6 +37,7 @@ __FBSDID("$FreeBSD: src/usr.bin/ar/acplex.l,v 1.1 2008/09/20 22:10:10 kaiw Exp $
 #include "y.tab.h"
 
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 int lineno = 1;
 
 int	yylex(void);

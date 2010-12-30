@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/Makefile.amd64,v 1.1 2010/09/13 02:21:07 imp Exp $
+# $FreeBSD: src/usr.sbin/Makefile.amd64,v 1.2 2010/12/09 11:37:40 brucec Exp $
 
 # kgzip: builds, but missing support files
 # mptable: broken (not 64 bit clean)
@@ -27,4 +27,7 @@ SUBDIR+=	ndiscvt
 .endif
 SUBDIR+=	sicontrol
 SUBDIR+=	spkrtest
+.if ${MK_SYSINSTALL} != "no"
+SUBDIR+=	sade
+.endif
 SUBDIR+=	zzz

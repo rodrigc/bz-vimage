@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/mii/jmphyreg.h,v 1.1 2008/05/27 01:16:40 yongari Exp $
+ * $FreeBSD: src/sys/dev/mii/jmphyreg.h,v 1.2 2010/12/18 23:52:50 yongari Exp $
  */
 
 #ifndef	_DEV_MII_JMPHYREG_H_
@@ -104,5 +104,14 @@
 /* PHY specific test mode control register. */
 #define	JMPHY_TMCTL			0x1A
 #define	JMPHY_TMCTL_SLEEP_ENB		0x1000
+
+/* PHY specific configuration register. */
+#define	JMPHY_SPEC_ADDR			0x1E
+#define	JMPHY_SPEC_ADDR_READ		0x4000
+#define	JMPHY_SPEC_ADDR_WRITE		0x8000
+
+#define	JMPHY_SPEC_DATA			0x1F
+
+#define	JMPHY_EXT_COMM_2		0x32
 
 #endif	/* _DEV_MII_JMPHYREG_H_ */

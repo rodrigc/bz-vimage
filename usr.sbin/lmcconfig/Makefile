@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/lmcconfig/Makefile,v 1.3 2010/01/02 11:07:44 ed Exp $
+# $FreeBSD: src/usr.sbin/lmcconfig/Makefile,v 1.4 2010/12/20 19:08:15 uqs Exp $
 
 PROG=	lmcconfig
 MAN=	lmcconfig.8
@@ -6,6 +6,6 @@ MAN=	lmcconfig.8
 DPADD=	${LIBNETGRAPH}
 LDADD=	-lnetgraph
 
-WARNS?=	0
+WARNS?=	3
 
 .include <bsd.prog.mk>

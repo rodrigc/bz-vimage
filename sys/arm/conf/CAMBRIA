@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/arm/conf/CAMBRIA,v 1.18 2010/02/15 23:44:48 attilio Exp $
+# $FreeBSD: src/sys/arm/conf/CAMBRIA,v 1.19 2010/11/11 20:18:33 thompsa Exp $
 
 ident		CAMBRIA
 
@@ -89,6 +89,10 @@ device		ad7418		# AD7418 on I2C bus
 
 device		cambria_fled	# Font Panel LED on I2C bus
 device		cambria_led	# 8-LED latch
+
+device		gpio
+device		gpioled
+device		cambria_gpio	# GPIO pins on J11
 
 device		ata
 device		atadisk		# ATA disk drives

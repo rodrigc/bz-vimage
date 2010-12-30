@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/arm/conf/CAMBRIA.hints,v 1.10 2009/06/25 18:07:19 sam Exp $
+# $FreeBSD: src/sys/arm/conf/CAMBRIA.hints,v 1.11 2010/11/11 20:18:33 thompsa Exp $
 
 #
 # Device wiring for the Gateworks Cambria 2358.
@@ -53,6 +53,10 @@ hint.fled.0.addr=0x5a
 
 # Octal LED Latch
 hint.led_cambria.0.at="ixp0"
+
+# GPIO pins
+hint.gpio_cambria.0.at="iicbus0"
+hint.gpio_cambria.0.addr=0x56
 
 # Analog Devices AD7418 temperature sensor
 hint.ad7418.0.at="iicbus0"

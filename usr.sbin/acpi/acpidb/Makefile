@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/acpi/acpidb/Makefile,v 1.16 2010/09/16 20:08:00 jkim Exp $
+# $FreeBSD: src/usr.sbin/acpi/acpidb/Makefile,v 1.17 2010/12/15 23:48:45 jkim Exp $
 
 PROG=	acpidb
 SRCS=	acpidb.c
@@ -15,7 +15,7 @@ SRCS+=	dmbuffer.c dmnames.c dmobject.c dmopcode.c dmresrc.c	\
 # events
 SRCS+=	evevent.c evgpe.c evgpeblk.c evgpeinit.c evgpeutil.c	\
 	evmisc.c evregion.c evrgnini.c evsci.c evxface.c	\
-	evxfevnt.c evxfregn.c
+	evxfevnt.c evxfgpe.c evxfregn.c
 
 # hardware
 SRCS+=	hwacpi.c hwgpe.c hwpci.c hwregs.c hwsleep.c hwvalid.c	\

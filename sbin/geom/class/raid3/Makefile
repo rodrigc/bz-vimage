@@ -1,8 +1,8 @@
-# $FreeBSD: src/sbin/geom/class/raid3/Makefile,v 1.2 2004/08/18 16:41:29 pjd Exp $
+# $FreeBSD: src/sbin/geom/class/raid3/Makefile,v 1.3 2010/12/15 23:24:34 obrien Exp $
 
 .PATH:	${.CURDIR}/../../misc
 
-CLASS=	raid3
+GEOM_CLASS=	raid3
 
 DPADD=	${LIBMD}
 LDADD=	-lmd

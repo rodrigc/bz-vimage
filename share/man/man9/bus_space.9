@@ -56,7 +56,7 @@
 .\" ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 .\" POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/bus_space.9,v 1.5 2008/03/07 17:02:34 rwatson Exp $
+.\" $FreeBSD: src/share/man/man9/bus_space.9,v 1.8 2010/12/03 18:30:55 brucec Exp $
 .\"
 .Dd June 13, 2005
 .Dt BUS_SPACE 9
@@ -719,6 +719,9 @@ or which return data read from bus space (i.e., functions which
 do not obviously return an error code) do not fail.
 They could only fail
 if given invalid arguments, and in that case their behaviour is undefined.
+Functions which take a count of bytes have undefined results if the specified
+.Fa count
+is zero.
 .Sh TYPES
 Several types are defined in
 .In machine/bus.h

@@ -31,7 +31,7 @@
 /* $KAME: sctp_output.c,v 1.46 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_bsd_addr.c,v 1.32 2010/09/15 21:19:54 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_bsd_addr.c,v 1.33 2010/12/30 16:56:20 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
@@ -77,9 +77,9 @@ static int __sctp_thread_based_iterator_started = 0;
 static void
 sctp_cleanup_itqueue(void)
 {
-	struct sctp_iterator *it;
+	struct sctp_iterator *it, *nit;
 
-	while ((it = TAILQ_FIRST(&sctp_it_ctl.iteratorhead)) != NULL) {
+	TAILQ_FOREACH_SAFE(it, &sctp_it_ctl.iteratorhead, sctp_nxt_itr, nit) {
 		if (it->function_atend != NULL) {
 			(*it->function_atend) (it->pointer, it->val);
 		}

@@ -23,7 +23,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/usr.bin/c89/c89.1,v 1.13 2010/08/02 13:11:35 uqs Exp $
+.\" $FreeBSD: src/usr.bin/c89/c89.1,v 1.14 2010/12/28 10:08:50 uqs Exp $
 .\"
 .Dd September 17, 1997
 .Dt C89 1
@@ -94,7 +94,7 @@ absolute pathnames to look in the directory named by the
 pathname before looking in the usual places.
 Thus, headers whose
 names are enclosed in double-quotes
-.Pq Qq \&
+.Pq Qq
 will be searched for first
 in the directory of the file with the
 .Ic #include
@@ -103,7 +103,7 @@ directories named in
 .Fl I
 options, and last in the usual places.
 For headers whose names are enclosed in angle brackets
-.Pq Aq \& ,
+.Pq Aq ,
 the header
 will be searched for only in directories named in
 .Fl I

@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)cpu.h	5.4 (Berkeley) 5/9/91
- * $FreeBSD: src/sys/amd64/include/cpu.h,v 1.77 2010/07/13 15:06:13 imp Exp $
+ * $FreeBSD: src/sys/amd64/include/cpu.h,v 1.78 2010/12/08 00:09:24 jkim Exp $
  */
 
 #ifndef _MACHINE_CPU_H_
@@ -56,6 +56,7 @@
 #ifdef _KERNEL
 extern char	btext[];
 extern char	etext[];
+extern int	tsc_present;
 
 void	cpu_halt(void);
 void	cpu_reset(void);

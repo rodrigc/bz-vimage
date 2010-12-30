@@ -57,7 +57,7 @@
  * You may select the license of your choice.
  *------------------------------------------------------------------
  *
- * $FreeBSD: src/sys/boot/fdt/dts/mpc8555cds.dts,v 1.2 2010/07/11 20:29:34 raj Exp $
+ * $FreeBSD: src/sys/boot/fdt/dts/mpc8555cds.dts,v 1.3 2010/11/11 13:48:48 raj Exp $
  */
 
 /dts-v1/;
@@ -97,7 +97,7 @@
 
 	memory {
 		device_type = "memory";
-		reg = <0x0 0x8000000>;	// 128M at 0x0
+		reg = <0x0 0x10000000>;	// 256M at 0x0
 	};
 
 	localbus@e0005000 {

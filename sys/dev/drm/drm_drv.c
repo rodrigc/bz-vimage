@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/drm/drm_drv.c,v 1.32 2010/04/22 18:21:25 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/drm/drm_drv.c,v 1.33 2010/11/16 03:43:06 nwhitehorn Exp $");
 
 /** @file drm_drv.c
  * The catch-all file for DRM device support, including module setup/teardown,
@@ -478,7 +478,7 @@ static int drm_load(struct drm_device *dev)
 			retcode = ENOMEM;
 			goto error;
 		}
-		if (dev->agp != NULL) {
+		if (dev->agp != NULL && dev->agp->info.ai_aperture_base != 0) {
 			if (drm_mtrr_add(dev->agp->info.ai_aperture_base,
 			    dev->agp->info.ai_aperture_size, DRM_MTRR_WC) == 0)
 				dev->agp->mtrr = 1;

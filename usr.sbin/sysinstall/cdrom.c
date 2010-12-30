@@ -4,7 +4,7 @@
  * This is probably the last attempt in the `sysinstall' line, the next
  * generation being slated to essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/cdrom.c,v 1.58 2009/10/26 23:24:59 cperciva Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/cdrom.c,v 1.59 2010/11/14 13:25:01 brucec Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -145,7 +145,7 @@ mediaInitCDROM(Device *dev)
 	else {
 	    if (variable_cmp(VAR_RELNAME, cp) &&
 		variable_cmp(VAR_RELNAME, "any") &&
-		variable_cmp(cp, "any") &&
+		strcmp(cp, "any") &&
 		!bogusCDOK) {
 		msgConfirm("Warning: The version of the FreeBSD disc currently in the drive\n"
 			   "(%s) does not match the version of the boot floppy\n"

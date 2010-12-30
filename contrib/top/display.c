@@ -8,7 +8,7 @@
  *  Copyright (c) 1984, 1989, William LeFebvre, Rice University
  *  Copyright (c) 1989, 1990, 1992, William LeFebvre, Northwestern University
  *
- * $FreeBSD: src/contrib/top/display.c,v 1.12 2010/08/17 09:51:08 brucec Exp $
+ * $FreeBSD: src/contrib/top/display.c,v 1.13 2010/11/06 03:59:21 delphij Exp $
  */
 
 /*
@@ -694,13 +694,21 @@ char *text;
 	int width;
 
 	s = NULL;
-	width = display_width;
+	width = screen_width;
 	header_length = strlen(text);
 	if (header_length >= width) {
 		s = malloc((width + 1) * sizeof(char));
 		if (s == NULL)
 			return (NULL);
 		strncpy(s, text, width);
+		s[width] = '\0';
+	} else {
+		s = malloc((width + 1) * sizeof(char));
+		if (s == NULL)
+			return (NULL);
+		strncpy(s, text, width);
+		while (screen_width > header_length)
+			s[header_length++] = ' ';
 		s[width] = '\0';
 	}
 	return (s);
@@ -726,7 +734,7 @@ char *text;
     if (header_status == ON)
     {
 	putchar('\n');
-	fputs(text, stdout);
+	standout(text, stdout);
 	lastline++;
     }
     else if (header_status == ERASE)

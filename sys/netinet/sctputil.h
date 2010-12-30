@@ -32,7 +32,7 @@
 /* $KAME: sctputil.h,v 1.15 2005/03/06 16:04:19 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctputil.h,v 1.41 2010/04/03 15:40:14 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctputil.h,v 1.42 2010/11/07 18:50:35 tuexen Exp $");
 #ifndef __sctputil_h__
 #define __sctputil_h__
 
@@ -124,7 +124,8 @@ sctp_append_to_readq(struct sctp_inpcb *inp,
 
 void sctp_iterator_worker(void);
 
-int find_next_best_mtu(int);
+uint32_t sctp_get_prev_mtu(uint32_t);
+uint32_t sctp_get_next_mtu(struct sctp_inpcb *, uint32_t);
 
 void
      sctp_timeout_handler(void *);

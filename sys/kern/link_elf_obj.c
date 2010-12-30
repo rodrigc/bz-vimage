@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/link_elf_obj.c,v 1.114 2010/10/02 16:04:50 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/link_elf_obj.c,v 1.115 2010/11/14 20:14:25 dim Exp $");
 
 #include "opt_ddb.h"
 
@@ -343,7 +343,7 @@ link_elf_link_preload(linker_class_t cls, const char *filename,
 				ef->progtab[pb].name =
 				    ef->shstrtab + shdr[i].sh_name;
 			if (ef->progtab[pb].name != NULL && 
-			    !strcmp(ef->progtab[pb].name, "set_pcpu")) {
+			    !strcmp(ef->progtab[pb].name, DPCPU_SETNAME)) {
 				void *dpcpu;
 
 				dpcpu = dpcpu_alloc(shdr[i].sh_size);
@@ -774,7 +774,7 @@ link_elf_load_file(linker_class_t cls, const char *filename,
 			else
 				ef->progtab[pb].name = "<<NOBITS>>";
 			if (ef->progtab[pb].name != NULL && 
-			    !strcmp(ef->progtab[pb].name, "set_pcpu")) {
+			    !strcmp(ef->progtab[pb].name, DPCPU_SETNAME)) {
 				ef->progtab[pb].addr =
 				    dpcpu_alloc(shdr[i].sh_size);
 #ifdef VIMAGE
@@ -815,7 +815,7 @@ no_v_subsys:
 				}
 				/* Initialize the per-cpu or vnet area. */
 				if (ef->progtab[pb].addr != (void *)mapbase &&
-				    !strcmp(ef->progtab[pb].name, "set_pcpu"))
+				    !strcmp(ef->progtab[pb].name, DPCPU_SETNAME))
 					dpcpu_copy(ef->progtab[pb].addr,
 					    shdr[i].sh_size);
 #ifdef VIMAGE
@@ -945,7 +945,7 @@ link_elf_unload_file(linker_file_t file)
 				continue;
 			if (ef->progtab[i].name == NULL)
 				continue;
-			if (!strcmp(ef->progtab[i].name, "set_pcpu"))
+			if (!strcmp(ef->progtab[i].name, DPCPU_SETNAME))
 				dpcpu_free(ef->progtab[i].addr,
 				    ef->progtab[i].size);
 #ifdef VIMAGE

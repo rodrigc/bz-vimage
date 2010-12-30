@@ -34,11 +34,11 @@
  *
  * From:
  *	@(#)in.h	8.3 (Berkeley) 1/3/94
- * $FreeBSD: src/contrib/tcpdump/ipproto.h,v 1.2 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/ipproto.h,v 1.3 2010/10/28 19:06:17 rpaulo Exp $
  * FreeBSD: src/sys/netinet/in.h,v 1.38.2.3 1999/08/29 16:29:34 peter Exp
  */
 
-extern struct tok ipproto_values[];
+extern const struct tok ipproto_values[];
 
 #ifndef IPPROTO_IP
 #define	IPPROTO_IP		0		/* dummy for IP */

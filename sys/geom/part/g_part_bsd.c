@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_bsd.c,v 1.18 2010/06/02 17:17:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_bsd.c,v 1.19 2010/12/02 19:47:27 ivoras Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -99,7 +99,7 @@ static struct g_part_scheme g_part_bsd_scheme = {
 	sizeof(struct g_part_bsd_table),
 	.gps_entrysz = sizeof(struct g_part_bsd_entry),
 	.gps_minent = 8,
-	.gps_maxent = 20,
+	.gps_maxent = 20,	/* Only 22 entries fit in 512 byte sectors */
 	.gps_bootcodesz = BBSIZE,
 };
 G_PART_SCHEME_DECLARE(g_part_bsd);

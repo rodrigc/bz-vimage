@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/tick.c,v 1.6 2010/08/25 07:33:35 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/tick.c,v 1.8 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_cputype.h"
 

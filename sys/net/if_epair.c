@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.8 2010/09/02 16:11:12 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_epair.c,v 1.9 2010/11/21 19:33:19 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -78,7 +78,7 @@ SYSCTL_NODE(_net_link, OID_AUTO, epair, CTLFLAG_RW, 0, "epair sysctl");
 
 #ifdef EPAIR_DEBUG
 static int epair_debug = 0;
-SYSCTL_XINT(_net_link_epair, OID_AUTO, epair_debug, CTLFLAG_RW,
+SYSCTL_INT(_net_link_epair, OID_AUTO, epair_debug, CTLFLAG_RW,
     &epair_debug, 0, "if_epair(4) debugging.");
 #define	DPRINTF(fmt, arg...)						\
 	if (epair_debug)						\
@@ -304,7 +304,7 @@ epair_nh_drainedcpu(u_int cpuid)
 
 		if ((ifp->if_drv_flags & IFF_DRV_OACTIVE) != 0) {
 			/* Our "hw"q overflew again. */
-			epair_dpcpu->epair_drv_flags |= IFF_DRV_OACTIVE
+			epair_dpcpu->epair_drv_flags |= IFF_DRV_OACTIVE;
 			DPRINTF("hw queue length overflow at %u\n",
 			    epair_nh.nh_qlimit);
 			break;

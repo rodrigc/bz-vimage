@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/libexec/rtld-elf/mips/reloc.c,v 1.7 2010/08/11 02:28:39 neel Exp $");
+__FBSDID("$FreeBSD: src/libexec/rtld-elf/mips/reloc.c,v 1.8 2010/12/25 08:51:20 kib Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -238,7 +238,8 @@ _mips_rtld_bind(Obj_Entry *obj, Elf_Size reloff)
         const Obj_Entry *defobj;
         Elf_Addr target;
 
-        def = find_symdef(reloff, obj, &defobj, SYMLOOK_IN_PLT, NULL);
+        def = find_symdef(reloff, obj, &defobj, SYMLOOK_IN_PLT, NULL,
+	    NULL);
         if (def == NULL)
 		_rtld_error("bind failed no symbol");
 
@@ -253,7 +254,7 @@ _mips_rtld_bind(Obj_Entry *obj, Elf_Size reloff)
 }
 
 int
-reloc_non_plt(Obj_Entry *obj, Obj_Entry *obj_rtld)
+reloc_non_plt(Obj_Entry *obj, Obj_Entry *obj_rtld, RtldLockState *lockstate)
 {
 	const Elf_Rel *rel;
 	const Elf_Rel *rellim;
@@ -312,7 +313,8 @@ reloc_non_plt(Obj_Entry *obj, Obj_Entry *obj_rtld)
 			 * to 0 if there are non-PLT references, but older
 			 * versions of GNU ld do not do this.
 			 */
-			def = find_symdef(i, obj, &defobj, false, NULL);
+			def = find_symdef(i, obj, &defobj, false, NULL,
+			    lockstate);
 			if (def == NULL)
 				return -1;
 			*got = def->st_value + (Elf_Addr)defobj->relocbase;
@@ -353,7 +355,8 @@ reloc_non_plt(Obj_Entry *obj, Obj_Entry *obj_rtld)
 			}
 		} else {
 			/* TODO: add cache here */
-			def = find_symdef(i, obj, &defobj, false, NULL);
+			def = find_symdef(i, obj, &defobj, false, NULL,
+			    lockstate);
 			if (def == NULL) {
 				dbg("Warning4, cant find symbole %d", i);
 				return -1;
@@ -487,7 +490,7 @@ reloc_plt(Obj_Entry *obj)
  * LD_BIND_NOW was set - force relocation for all jump slots
  */
 int
-reloc_jmpslots(Obj_Entry *obj)
+reloc_jmpslots(Obj_Entry *obj, RtldLockState *lockstate)
 {
 	/* Do nothing */
 	obj->jmpslots_done = true;

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/modules.c,v 1.8 2009/03/13 03:51:41 grog Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/modules.c,v 1.9 2010/11/29 11:55:17 brucec Exp $
  */
 
 #include "sysinstall.h"
@@ -123,13 +123,14 @@ driverFloppyCheck(void)
 int
 kldBrowser(dialogMenuItem *self)
 {
-    DMenu	*menu;
+    DMenu	*menu = NULL;
     int		i, what = DITEM_SUCCESS, msize, count;
     DIR		*dir;
     struct dirent *de;
     char	*err;
     
     err = NULL;
+    count = 0;
     
     if (DITEM_STATUS(mediaSetFloppy(NULL)) == DITEM_FAILURE) {
 	err = "Unable to set media device to floppy.";
@@ -142,7 +143,6 @@ kldBrowser(dialogMenuItem *self)
     }
 
     msize = sizeof(DMenu) + (sizeof(dialogMenuItem) * 2);
-    count = 0;
     if ((menu = malloc(msize)) == NULL) {
 	err = "Failed to allocate memory for menu";
 	goto errout;

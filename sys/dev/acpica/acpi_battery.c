@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_battery.c,v 1.30 2009/08/20 19:17:53 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_battery.c,v 1.31 2010/12/17 16:21:30 avg Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -102,8 +102,9 @@ acpi_battery_get_info_expire(void)
 int
 acpi_battery_bst_valid(struct acpi_bst *bst)
 {
-    return (bst->state < ACPI_BATT_STAT_MAX && bst->cap != ACPI_BATT_UNKNOWN &&
-	bst->volt != ACPI_BATT_UNKNOWN);
+
+    return (bst->state != ACPI_BATT_STAT_NOT_PRESENT &&
+	bst->cap != ACPI_BATT_UNKNOWN && bst->volt != ACPI_BATT_UNKNOWN);
 }
 
 /* Check _BIF results for validity. */

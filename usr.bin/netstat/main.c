@@ -10,10 +10,6 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -44,7 +40,7 @@ static char sccsid[] = "@(#)main.c	8.4 (Berkeley) 3/1/94";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/netstat/main.c,v 1.105 2010/03/01 00:46:45 rwatson Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/netstat/main.c,v 1.107 2010/12/11 08:32:16 joel Exp $");
 
 #include <sys/param.h>
 #include <sys/file.h>
@@ -343,6 +339,7 @@ int	Qflag;		/* show netisr information */
 int	rflag;		/* show routing tables (or routing stats) */
 int	sflag;		/* show protocol statistics */
 int	Wflag;		/* wide display */
+int	Tflag;		/* TCP Information */
 int	xflag;		/* extra information, includes all socket buffer info */
 int	zflag;		/* zero stats */
 
@@ -362,7 +359,7 @@ main(int argc, char *argv[])
 
 	af = AF_UNSPEC;
 
-	while ((ch = getopt(argc, argv, "AaBbdf:ghI:ij:LlM:mN:np:Qq:rSsuWw:xz"))
+	while ((ch = getopt(argc, argv, "AaBbdf:ghI:ij:LlM:mN:np:Qq:rSTsuWw:xz"))
 	    != -1)
 		switch(ch) {
 		case 'A':
@@ -484,6 +481,9 @@ main(int argc, char *argv[])
 			interval = atoi(optarg);
 			iflag = 1;
 			break;
+		case 'T':
+			Tflag = 1;
+			break;
 		case 'x':
 			xflag = 1;
 			break;
@@ -522,6 +522,9 @@ main(int argc, char *argv[])
 	live = (nlistf == NULL && memf == NULL && jid <= 0);
 	if (!live)
 		setgid(getgid());
+
+	if (xflag && Tflag) 
+		errx(1, "-x and -T are incompatible, pick one.");
 
 	if (Bflag) {
 		if (!live)
@@ -807,7 +810,7 @@ static void
 usage(void)
 {
 	(void)fprintf(stderr, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
-"usage: netstat [-AaLnSWx] [-f protocol_family | -p protocol]\n"
+"usage: netstat [-AaLnSTWx] [-f protocol_family | -p protocol]\n"
 "               [-j jid] [-M core] [-N system]",
 "       netstat -i | -I interface [-abdhnW] [-f address_family]\n"
 "               [-j jid] [-M core] [-N system]",

@@ -37,7 +37,7 @@
  *
  *	from: @(#)vmparam.h     5.9 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/vmparam.h,v 1.33 2000/03/30
- * $FreeBSD: src/sys/sparc64/include/vmparam.h,v 1.22 2010/07/27 20:33:50 jhb Exp $
+ * $FreeBSD: src/sys/sparc64/include/vmparam.h,v 1.26 2010/12/21 21:32:17 marius Exp $
  */
 
 #ifndef	_MACHINE_VMPARAM_H_
@@ -128,10 +128,17 @@
 #endif
 
 /*
- * Disable superpage reservations.
+ * Enable superpage reservations: 1 level.
  */
 #ifndef	VM_NRESERVLEVEL
-#define	VM_NRESERVLEVEL		0
+#define	VM_NRESERVLEVEL		1
+#endif
+
+/*
+ * Level 0 reservations consist of 512 pages.
+ */
+#ifndef	VM_LEVEL_0_ORDER
+#define	VM_LEVEL_0_ORDER	9
 #endif
 
 /*
@@ -227,6 +234,14 @@
  */
 #ifndef VM_KMEM_SIZE_SCALE
 #define	VM_KMEM_SIZE_SCALE	(3)
+#endif
+
+/*
+ * Ceiling on amount of kmem_map kva space.
+ */
+#ifndef VM_KMEM_SIZE_MAX
+#define	VM_KMEM_SIZE_MAX	((VM_MAX_KERNEL_ADDRESS - \
+    VM_MIN_KERNEL_ADDRESS + 1) * 3 / 5)
 #endif
 
 /*

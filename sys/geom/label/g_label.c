@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/label/g_label.c,v 1.27 2010/05/31 09:10:39 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/label/g_label.c,v 1.28 2010/12/01 19:24:07 jh Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -124,13 +124,13 @@ g_label_is_name_ok(const char *label)
 {
 	const char *s;
 
-	/* Check is the label starts from ../ */
+	/* Check if the label starts from ../ */
 	if (strncmp(label, "../", 3) == 0)
 		return (0);
-	/* Check is the label contains /../ */
+	/* Check if the label contains /../ */
 	if (strstr(label, "/../") != NULL)
 		return (0);
-	/* Check is the label ends at ../ */
+	/* Check if the label ends at ../ */
 	if ((s = strstr(label, "/..")) != NULL && s[3] == '\0')
 		return (0);
 	return (1);
@@ -151,6 +151,8 @@ g_label_create(struct gctl_req *req, struct g_class *mp, struct g_provider *pp,
 		G_LABEL_DEBUG(0, "%s contains suspicious label, skipping.",
 		    pp->name);
 		G_LABEL_DEBUG(1, "%s suspicious label is: %s", pp->name, label);
+		if (req != NULL)
+			gctl_error(req, "Label name %s is invalid.", label);
 		return (NULL);
 	}
 	gp = NULL;
@@ -346,7 +348,7 @@ g_label_ctl_create(struct gctl_req *req, struct g_class *mp)
 		return;
 	}
 	if (*nargs != 2) {
-		gctl_error(req, "Invalid number of argument.");
+		gctl_error(req, "Invalid number of arguments.");
 		return;
 	}
 	/*

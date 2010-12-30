@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/clang/clang.build.mk,v 1.10 2010/09/20 16:43:17 dim Exp $
+# $FreeBSD: src/lib/clang/clang.build.mk,v 1.11 2010/11/14 22:17:12 dim Exp $
 
 CLANG_SRCS=${LLVM_SRCS}/tools/clang
 
@@ -18,14 +18,14 @@ TARGET_ARCH?=	${MACHINE_ARCH}
 CFLAGS+=-DLLVM_HOSTTRIPLE=\"${TARGET_ARCH}-undermydesk-freebsd9.0\"
 
 .ifndef LLVM_REQUIRES_EH
-CFLAGS+=-fno-exceptions
+CXXFLAGS+=-fno-exceptions
 .else
 # If the library or program requires EH, it also requires RTTI.
 LLVM_REQUIRES_RTTI=
 .endif
 
 .ifndef LLVM_REQUIRES_RTTI
-CFLAGS+=-fno-rtti
+CXXFLAGS+=-fno-rtti
 .endif
 
 .ifdef TOOLS_PREFIX

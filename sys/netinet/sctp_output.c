@@ -31,7 +31,7 @@
 /* $KAME: sctp_output.c,v 1.46 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.124 2010/09/17 19:20:39 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.c,v 1.131 2010/12/30 16:56:20 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
@@ -3686,7 +3686,7 @@ sctp_lowlevel_chunk_output(struct sctp_inpcb *inp,
 						 * Stop any running T3
 						 * timers here?
 						 */
-						if ((stcb->asoc.sctp_cmt_on_off == 1) &&
+						if ((stcb->asoc.sctp_cmt_on_off > 0) &&
 						    (stcb->asoc.sctp_cmt_pf > 0)) {
 							net->dest_state &= ~SCTP_ADDR_PF;
 							SCTPDBG(SCTP_DEBUG_OUTPUT1, "Destination %p moved from PF to unreachable.\n",
@@ -4069,15 +4069,9 @@ sctp_lowlevel_chunk_output(struct sctp_inpcb *inp,
 #if defined(SCTP_WITH_NO_CSUM)
 			SCTP_STAT_INCR(sctps_sendnocrc);
 #else
-			if (!(SCTP_BASE_SYSCTL(sctp_no_csum_on_loopback) &&
-			    (stcb) &&
-			    (stcb->asoc.loopback_scope))) {
-				m->m_pkthdr.csum_flags = CSUM_SCTP;
-				m->m_pkthdr.csum_data = 0;
-				SCTP_STAT_INCR(sctps_sendhwcrc);
-			} else {
-				SCTP_STAT_INCR(sctps_sendnocrc);
-			}
+			m->m_pkthdr.csum_flags = CSUM_SCTP;
+			m->m_pkthdr.csum_data = 0;
+			SCTP_STAT_INCR(sctps_sendhwcrc);
 #endif
 		}
 		/* send it out. table id is taken from stcb */
@@ -5724,9 +5718,7 @@ sctp_prune_prsctp(struct sctp_tcb *stcb,
 			}	/* if chunk has enabled */
 		}		/* tailqforeach */
 
-		chk = TAILQ_FIRST(&asoc->send_queue);
-		while (chk) {
-			nchk = TAILQ_NEXT(chk, sctp_next);
+		TAILQ_FOREACH_SAFE(chk, &asoc->send_queue, sctp_next, nchk) {
 			/* Here we must move to the sent queue and mark */
 			if (PR_SCTP_BUF_ENABLED(chk->flags)) {
 				if (chk->rec.data.timetodrop.tv_sec >= (long)srcv->sinfo_timetolive) {
@@ -5748,8 +5740,7 @@ sctp_prune_prsctp(struct sctp_tcb *stcb,
 					}	/* end if chk->data */
 				}	/* end if right class */
 			}	/* end if chk pr-sctp */
-			chk = nchk;
-		}		/* end while (chk) */
+		}		/* tailqforeachsafe (chk) */
 	}			/* if enabled in asoc */
 }
 
@@ -6451,9 +6442,7 @@ sctp_toss_old_cookies(struct sctp_tcb *stcb, struct sctp_association *asoc)
 {
 	struct sctp_tmit_chunk *chk, *nchk;
 
-	chk = TAILQ_FIRST(&asoc->control_send_queue);
-	while (chk) {
-		nchk = TAILQ_NEXT(chk, sctp_next);
+	TAILQ_FOREACH_SAFE(chk, &asoc->control_send_queue, sctp_next, nchk) {
 		if (chk->rec.chunk_id.id == SCTP_COOKIE_ECHO) {
 			TAILQ_REMOVE(&asoc->control_send_queue, chk, sctp_next);
 			if (chk->data) {
@@ -6463,7 +6452,6 @@ sctp_toss_old_cookies(struct sctp_tcb *stcb, struct sctp_association *asoc)
 			asoc->ctrl_queue_cnt--;
 			sctp_free_a_chunk(stcb, chk);
 		}
-		chk = nchk;
 	}
 }
 
@@ -6471,19 +6459,16 @@ void
 sctp_toss_old_asconf(struct sctp_tcb *stcb)
 {
 	struct sctp_association *asoc;
-	struct sctp_tmit_chunk *chk, *chk_tmp;
+	struct sctp_tmit_chunk *chk, *nchk;
 	struct sctp_asconf_chunk *acp;
 
 	asoc = &stcb->asoc;
-	for (chk = TAILQ_FIRST(&asoc->asconf_send_queue); chk != NULL;
-	    chk = chk_tmp) {
-		/* get next chk */
-		chk_tmp = TAILQ_NEXT(chk, sctp_next);
+	TAILQ_FOREACH_SAFE(chk, &asoc->asconf_send_queue, sctp_next, nchk) {
 		/* find SCTP_ASCONF chunk in queue */
 		if (chk->rec.chunk_id.id == SCTP_ASCONF) {
 			if (chk->data) {
 				acp = mtod(chk->data, struct sctp_asconf_chunk *);
-				if (compare_with_wrap(ntohl(acp->serial_number), stcb->asoc.asconf_seq_out_acked, MAX_SEQ)) {
+				if (compare_with_wrap(ntohl(acp->serial_number), asoc->asconf_seq_out_acked, MAX_TSN)) {
 					/* Not Acked yet */
 					break;
 				}
@@ -6595,9 +6580,7 @@ sctp_clean_up_ctl(struct sctp_tcb *stcb, struct sctp_association *asoc)
 {
 	struct sctp_tmit_chunk *chk, *nchk;
 
-	for (chk = TAILQ_FIRST(&asoc->control_send_queue);
-	    chk; chk = nchk) {
-		nchk = TAILQ_NEXT(chk, sctp_next);
+	TAILQ_FOREACH_SAFE(chk, &asoc->control_send_queue, sctp_next, nchk) {
 		if ((chk->rec.chunk_id.id == SCTP_SELECTIVE_ACK) ||
 		    (chk->rec.chunk_id.id == SCTP_NR_SELECTIVE_ACK) ||	/* EY */
 		    (chk->rec.chunk_id.id == SCTP_HEARTBEAT_REQUEST) ||
@@ -7331,7 +7314,7 @@ sctp_fill_outqueue(struct sctp_tcb *stcb,
 		    (net == stcb->asoc.primary_destination)) {
 			/* ran dry for primary network net */
 			SCTP_STAT_INCR(sctps_primary_randry);
-		} else if (stcb->asoc.sctp_cmt_on_off == 1) {
+		} else if (stcb->asoc.sctp_cmt_on_off > 0) {
 			/* ran dry with CMT on */
 			SCTP_STAT_INCR(sctps_cmt_randry);
 		}
@@ -7532,7 +7515,7 @@ sctp_med_chunk_output(struct sctp_inpcb *inp,
 		*reason_code = 8;
 		return (0);
 	}
-	if (asoc->sctp_cmt_on_off == 1) {
+	if (asoc->sctp_cmt_on_off > 0) {
 		/* get the last start point */
 		start_at = asoc->last_net_cmt_send_started;
 		if (start_at == NULL) {
@@ -7633,9 +7616,7 @@ again_one_more_time:
 		/* ASCONF transmission */
 		/************************/
 		/* Now first lets go through the asconf queue */
-		for (chk = TAILQ_FIRST(&asoc->asconf_send_queue);
-		    chk; chk = nchk) {
-			nchk = TAILQ_NEXT(chk, sctp_next);
+		TAILQ_FOREACH_SAFE(chk, &asoc->asconf_send_queue, sctp_next, nchk) {
 			if (chk->rec.chunk_id.id != SCTP_ASCONF) {
 				continue;
 			}
@@ -7811,9 +7792,7 @@ again_one_more_time:
 		/* Control transmission */
 		/************************/
 		/* Now first lets go through the control queue */
-		for (chk = TAILQ_FIRST(&asoc->control_send_queue);
-		    chk; chk = nchk) {
-			nchk = TAILQ_NEXT(chk, sctp_next);
+		TAILQ_FOREACH_SAFE(chk, &asoc->control_send_queue, sctp_next, nchk) {
 			if (chk->whoTo != net) {
 				/*
 				 * No, not sent to the network we are
@@ -8034,7 +8013,7 @@ again_one_more_time:
 			}
 		}
 		/* JRI: if dest is in PF state, do not send data to it */
-		if ((asoc->sctp_cmt_on_off == 1) &&
+		if ((asoc->sctp_cmt_on_off > 0) &&
 		    (asoc->sctp_cmt_pf > 0) &&
 		    (net->dest_state & SCTP_ADDR_PF)) {
 			goto no_data_fill;
@@ -8042,7 +8021,7 @@ again_one_more_time:
 		if (net->flight_size >= net->cwnd) {
 			goto no_data_fill;
 		}
-		if ((asoc->sctp_cmt_on_off == 1) &&
+		if ((asoc->sctp_cmt_on_off > 0) &&
 		    (SCTP_BASE_SYSCTL(sctp_buffer_splitting) & SCTP_RECV_BUFFER_SPLITTING) &&
 		    (net->flight_size > max_rwnd_per_dest)) {
 			goto no_data_fill;
@@ -8053,7 +8032,7 @@ again_one_more_time:
 		 * net. For now, this is better than nothing and it disabled
 		 * by default...
 		 */
-		if ((asoc->sctp_cmt_on_off == 1) &&
+		if ((asoc->sctp_cmt_on_off > 0) &&
 		    (SCTP_BASE_SYSCTL(sctp_buffer_splitting) & SCTP_SEND_BUFFER_SPLITTING) &&
 		    (max_send_per_dest > 0) &&
 		    (net->flight_size > max_send_per_dest)) {
@@ -8097,7 +8076,7 @@ again_one_more_time:
 		if ((((asoc->state & SCTP_STATE_OPEN) == SCTP_STATE_OPEN) &&
 		    (skip_data_for_this_net == 0)) ||
 		    (cookie)) {
-			for (chk = TAILQ_FIRST(&asoc->send_queue); chk; chk = nchk) {
+			TAILQ_FOREACH_SAFE(chk, &asoc->send_queue, sctp_next, nchk) {
 				if (no_data_chunks) {
 					/* let only control go out */
 					*reason_code = 1;
@@ -8108,7 +8087,6 @@ again_one_more_time:
 					*reason_code = 2;
 					break;
 				}
-				nchk = TAILQ_NEXT(chk, sctp_next);
 				if ((chk->whoTo != NULL) &&
 				    (chk->whoTo != net)) {
 					/* Don't send the chunk on this net */
@@ -8274,7 +8252,7 @@ no_data_fill:
 				 * restart it.
 				 */
 				sctp_timer_start(SCTP_TIMER_TYPE_SEND, inp, stcb, net);
-			} else if ((asoc->sctp_cmt_on_off == 1) &&
+			} else if ((asoc->sctp_cmt_on_off > 0) &&
 				    (asoc->sctp_cmt_pf > 0) &&
 				    pf_hbflag &&
 				    ((net->dest_state & SCTP_ADDR_PF) == SCTP_ADDR_PF) &&
@@ -9582,7 +9560,7 @@ sctp_chunk_output(struct sctp_inpcb *inp,
 			 */
 			if (net->ref_count > 1)
 				sctp_move_chunks_from_net(stcb, net);
-		} else if ((asoc->sctp_cmt_on_off == 1) &&
+		} else if ((asoc->sctp_cmt_on_off > 0) &&
 			    (asoc->sctp_cmt_pf > 0) &&
 		    ((net->dest_state & SCTP_ADDR_PF) == SCTP_ADDR_PF)) {
 			/*
@@ -9927,13 +9905,14 @@ sctp_send_sack(struct sctp_tcb *stcb)
 	caddr_t limit;
 	uint32_t *dup;
 	int limit_reached = 0;
-	unsigned int i, sel_start, siz, j, starting_index;
+	unsigned int i, siz, j;
 	unsigned int num_gap_blocks = 0, num_nr_gap_blocks = 0, space;
 	int num_dups = 0;
 	int space_req;
 	uint32_t highest_tsn;
 	uint8_t flags;
 	uint8_t type;
+	uint8_t tsn_map;
 
 	if ((stcb->asoc.sctp_nr_sack_on_off == 1) &&
 	    (stcb->asoc.peer_supports_nr_sack == 1)) {
@@ -9954,7 +9933,7 @@ sctp_send_sack(struct sctp_tcb *stcb)
 		if (chk->rec.chunk_id.id == type) {
 			/* Hmm, found a sack already on queue, remove it */
 			TAILQ_REMOVE(&asoc->control_send_queue, chk, sctp_next);
-			asoc->ctrl_queue_cnt++;
+			asoc->ctrl_queue_cnt--;
 			a_chk = chk;
 			if (a_chk->data) {
 				sctp_m_freem(a_chk->data);
@@ -9993,15 +9972,13 @@ sctp_send_sack(struct sctp_tcb *stcb)
 	a_chk->whoTo = NULL;
 
 	if ((asoc->numduptsns) ||
-	    (asoc->last_data_chunk_from->dest_state & SCTP_ADDR_NOT_REACHABLE)
-	    ) {
+	    (asoc->last_data_chunk_from->dest_state & SCTP_ADDR_NOT_REACHABLE)) {
 		/*-
 		 * Ok, we have some duplicates or the destination for the
 		 * sack is unreachable, lets see if we can select an
 		 * alternate than asoc->last_data_chunk_from
 		 */
-		if ((!(asoc->last_data_chunk_from->dest_state &
-		    SCTP_ADDR_NOT_REACHABLE)) &&
+		if ((!(asoc->last_data_chunk_from->dest_state & SCTP_ADDR_NOT_REACHABLE)) &&
 		    (asoc->used_alt_onsack > asoc->numnets)) {
 			/* We used an alt last time, don't this time */
 			a_chk->whoTo = NULL;
@@ -10080,7 +10057,7 @@ sctp_send_sack(struct sctp_tcb *stcb)
 	else
 		flags = 0;
 
-	if ((asoc->sctp_cmt_on_off == 1) &&
+	if ((asoc->sctp_cmt_on_off > 0) &&
 	    SCTP_BASE_SYSCTL(sctp_cmt_use_dac)) {
 		/*-
 		 * CMT DAC algorithm: If 2 (i.e., 0x10) packets have been
@@ -10122,56 +10099,27 @@ sctp_send_sack(struct sctp_tcb *stcb)
 
 	if (compare_with_wrap(asoc->mapping_array_base_tsn, asoc->cumulative_tsn, MAX_TSN)) {
 		offset = 1;
-		/*-
-		 * The base TSN is intialized to be the first TSN the peer
-		 * will send us. If the cum-ack is behind this then when they
-		 * send us the next in sequence it will mark the base_tsn bit.
-		 * Thus we need to use the very first selector and the offset
-		 * is 1. Our table is built for this case.
-		 */
-		starting_index = 0;
-		sel_start = 0;
 	} else {
-		/*-
-		 * we skip the first selector  when the cum-ack is at or above the
-		 * mapping array base. This is because the bits at the base or above
-		 * are turned on and our first selector in the table assumes they are
-		 * off. We thus will use the second selector (first is 0). We use
-		 * the reverse of our macro to fix the offset, in bits, that our
-		 * table is at. Note that this method assumes that the cum-tsn is
-		 * within the first bit, i.e. its value is 0-7 which means the
-		 * result to our offset will be either a 0 - -7. If the cumack
-		 * is NOT in the first byte (0) (which it should be since we did
-		 * a mapping array slide above) then we need to calculate the starting
-		 * index i.e. which byte of the mapping array we should start at. We
-		 * do this by dividing by 8 and pushing the remainder (mod) into offset.
-		 * then we multiply the offset to be negative, since we need a negative
-		 * offset into the selector table.
-		 */
-		SCTP_CALC_TSN_TO_GAP(offset, asoc->cumulative_tsn, asoc->mapping_array_base_tsn);
-		if (offset > 7) {
-			starting_index = offset / 8;
-			offset = offset % 8;
-			printf("Strange starting index is %d offset:%d (not 0/x)\n",
-			    starting_index, offset);
-		} else {
-			starting_index = 0;
-		}
-		/* We need a negative offset in our table */
-		offset *= -1;
-		sel_start = 1;
+		offset = asoc->mapping_array_base_tsn - asoc->cumulative_tsn;
 	}
 	if (((type == SCTP_SELECTIVE_ACK) &&
 	    compare_with_wrap(highest_tsn, asoc->cumulative_tsn, MAX_TSN)) ||
 	    ((type == SCTP_NR_SELECTIVE_ACK) &&
 	    compare_with_wrap(asoc->highest_tsn_inside_map, asoc->cumulative_tsn, MAX_TSN))) {
 		/* we have a gap .. maybe */
-		for (i = starting_index; i < siz; i++) {
+		for (i = 0; i < siz; i++) {
+			tsn_map = asoc->mapping_array[i];
 			if (type == SCTP_SELECTIVE_ACK) {
-				selector = &sack_array[asoc->mapping_array[i] | asoc->nr_mapping_array[i]];
-			} else {
-				selector = &sack_array[asoc->mapping_array[i]];
+				tsn_map |= asoc->nr_mapping_array[i];
 			}
+			if (i == 0) {
+				/*
+				 * Clear all bits corresponding to TSNs
+				 * smaller or equal to the cumulative TSN.
+				 */
+				tsn_map &= (~0 << (1 - offset));
+			}
+			selector = &sack_array[tsn_map];
 			if (mergeable && selector->right_edge) {
 				/*
 				 * Backup, left and right edges were ok to
@@ -10183,7 +10131,7 @@ sctp_send_sack(struct sctp_tcb *stcb)
 			if (selector->num_entries == 0)
 				mergeable = 0;
 			else {
-				for (j = sel_start; j < selector->num_entries; j++) {
+				for (j = 0; j < selector->num_entries; j++) {
 					if (mergeable && selector->right_edge) {
 						/*
 						 * do a merge by NOT setting
@@ -10215,7 +10163,6 @@ sctp_send_sack(struct sctp_tcb *stcb)
 				/* Reached the limit stop */
 				break;
 			}
-			sel_start = 0;
 			offset += 8;
 		}
 	}
@@ -10224,30 +10171,30 @@ sctp_send_sack(struct sctp_tcb *stcb)
 
 		mergeable = 0;
 
-		if (asoc->highest_tsn_inside_nr_map > asoc->mapping_array_base_tsn)
+		if (asoc->highest_tsn_inside_nr_map > asoc->mapping_array_base_tsn) {
 			siz = (((asoc->highest_tsn_inside_nr_map - asoc->mapping_array_base_tsn) + 1) + 7) / 8;
-		else
+		} else {
 			siz = (((MAX_TSN - asoc->mapping_array_base_tsn) + 1) + asoc->highest_tsn_inside_nr_map + 7) / 8;
+		}
 
 		if (compare_with_wrap(asoc->mapping_array_base_tsn, asoc->cumulative_tsn, MAX_TSN)) {
 			offset = 1;
-			/*-
-			* cum-ack behind the mapping array, so we start and use all
-			* entries.
-			*/
-			sel_start = 0;
 		} else {
 			offset = asoc->mapping_array_base_tsn - asoc->cumulative_tsn;
-			/*-
-			* we skip the first one when the cum-ack is at or above the
-			* mapping array base. Note this only works if
-			*/
-			sel_start = 1;
 		}
 		if (compare_with_wrap(asoc->highest_tsn_inside_nr_map, asoc->cumulative_tsn, MAX_TSN)) {
 			/* we have a gap .. maybe */
 			for (i = 0; i < siz; i++) {
-				selector = &sack_array[asoc->nr_mapping_array[i]];
+				tsn_map = asoc->nr_mapping_array[i];
+				if (i == 0) {
+					/*
+					 * Clear all bits corresponding to
+					 * TSNs smaller or equal to the
+					 * cumulative TSN.
+					 */
+					tsn_map &= (~0 << (1 - offset));
+				}
+				selector = &sack_array[tsn_map];
 				if (mergeable && selector->right_edge) {
 					/*
 					 * Backup, left and right edges were
@@ -10259,7 +10206,7 @@ sctp_send_sack(struct sctp_tcb *stcb)
 				if (selector->num_entries == 0)
 					mergeable = 0;
 				else {
-					for (j = sel_start; j < selector->num_entries; j++) {
+					for (j = 0; j < selector->num_entries; j++) {
 						if (mergeable && selector->right_edge) {
 							/*
 							 * do a merge by NOT
@@ -10292,7 +10239,6 @@ sctp_send_sack(struct sctp_tcb *stcb)
 					/* Reached the limit stop */
 					break;
 				}
-				sel_start = 0;
 				offset += 8;
 			}
 		}

@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/msun/Symbol.map,v 1.22 2010/06/12 17:32:05 das Exp $
+ * $FreeBSD: src/lib/msun/Symbol.map,v 1.23 2010/12/05 22:11:22 das Exp $
  */
 
 /* 7.0-CURRENT */
@@ -222,4 +222,6 @@ FBSD_1.1 {
 /* First added in 9.0-CURRENT */
 FBSD_1.2 {
 	__isnanf;
+	log2;
+	log2f;
 };

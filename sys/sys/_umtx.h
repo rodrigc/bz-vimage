@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/_umtx.h,v 1.1 2010/01/04 05:27:49 davidxu Exp $
+ * $FreeBSD: src/sys/sys/_umtx.h,v 1.2 2010/12/22 05:01:52 davidxu Exp $
  *
  */
 
@@ -46,7 +46,8 @@ struct umutex {
 struct ucond {
 	volatile __uint32_t	c_has_waiters;	/* Has waiters in kernel */
 	__uint32_t		c_flags;	/* Flags of the condition variable */
-	__uint32_t		c_spare[2];	/* Spare space */
+	__uint32_t              c_clockid;	/* Clock id */
+	__uint32_t              c_spare[1];	/* Spare space */
 };
 
 struct urwlock {

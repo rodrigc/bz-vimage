@@ -88,7 +88,7 @@
 
 #define HDA_DRV_TEST_REV	"20100226_0142"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.128 2010/08/28 00:23:13 jfv Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.129 2010/12/28 17:45:43 yongari Exp $");
 
 #define HDA_BOOTVERBOSE(stmt)	do {			\
 	if (bootverbose != 0 || snd_verbose > 3) {	\
@@ -196,6 +196,10 @@ SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/hda/hdac.c,v 1.128 2010/08/28 
 #define HDA_ATI_RV710		HDA_MODEL_CONSTRUCT(ATI, 0xaa40)
 #define HDA_ATI_RV740		HDA_MODEL_CONSTRUCT(ATI, 0xaa48)
 #define HDA_ATI_ALL		HDA_MODEL_CONSTRUCT(ATI, 0xffff)
+
+/* RDC */
+#define RDC_VENDORID		0x17f3
+#define HDA_RDC_M3010		HDA_MODEL_CONSTRUCT(RDC, 0x3010)
 
 /* VIA */
 #define VIA_VENDORID		0x1106
@@ -533,6 +537,7 @@ static const struct {
 	{ HDA_ATI_RV730,     "ATI RV730",	0 },
 	{ HDA_ATI_RV740,     "ATI RV740",	0 },
 	{ HDA_ATI_RV770,     "ATI RV770",	0 },
+	{ HDA_RDC_M3010,     "RDC M3010",	0 },
 	{ HDA_VIA_VT82XX,    "VIA VT8251/8237A",0 },
 	{ HDA_SIS_966,       "SiS 966",		0 },
 	{ HDA_ULI_M5461,     "ULI M5461",	0 },

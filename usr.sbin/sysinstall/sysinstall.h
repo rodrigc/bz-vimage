@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.293 2010/07/08 21:26:26 randi Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/sysinstall.h,v 1.295 2010/11/14 19:57:56 brucec Exp $
  */
 
 #ifndef _SYSINSTALL_H_INCLUDE
@@ -130,7 +130,7 @@
 #define VAR_INSTALL_CFG			"installConfig"
 #define VAR_INSTALL_ROOT		"installRoot"
 #define VAR_IPADDR			"ipaddr"
-#define VAR_IPV6_ENABLE			"ipv6_enable"
+#define VAR_IPV6_ENABLE			"ipv6_activate_all_interfaces"
 #define VAR_IPV6ADDR			"ipv6addr"
 #define VAR_KERN_SECURELEVEL		"kern_securelevel"
 #define VAR_KEYMAP			"keymap"
@@ -166,7 +166,7 @@
 #define VAR_NONINTERACTIVE		"nonInteractive"
 #define VAR_NOVELL			"novell"
 #define	VAR_RPCBIND_ENABLE		"rpcbind_enable"
-#define VAR_NTPDATE_FLAGS		"ntpdate_flags"
+#define VAR_NTPDATE_HOSTS		"ntpdate_hosts"
 #define VAR_PACKAGE			"package"
 #define VAR_PARTITION			"partition"
 #define VAR_PCNFSD			"pcnfsd"

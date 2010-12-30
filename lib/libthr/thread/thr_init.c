@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_init.c,v 1.58 2010/09/28 04:57:56 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_init.c,v 1.59 2010/12/22 05:01:52 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -444,6 +444,8 @@ init_private(void)
 	_thr_once_init();
 	_thr_spinlock_init();
 	_thr_list_init();
+	_thr_wake_addr_init();
+	_sleepq_init();
 
 	/*
 	 * Avoid reinitializing some things if they don't need to be,

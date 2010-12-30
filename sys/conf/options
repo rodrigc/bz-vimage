@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options,v 1.707 2010/10/06 18:36:50 ambrisko Exp $
+# $FreeBSD: src/sys/conf/options,v 1.708 2010/11/27 20:38:26 mjacob Exp $
 #
 #        On the handling of kernel options
 #
@@ -345,6 +345,7 @@ SCSI_NCR_MYADDR		opt_ncr.h
 ISP_TARGET_MODE		opt_isp.h
 ISP_FW_CRASH_DUMP	opt_isp.h
 ISP_DEFAULT_ROLES	opt_isp.h
+ISP_INTERNAL_TARGET	opt_isp.h
 
 # Options used only in dev/iscsi
 ISCSI_INITIATOR_DEBUG	opt_iscsi_initiator.h

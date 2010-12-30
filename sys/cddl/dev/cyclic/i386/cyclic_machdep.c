@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cddl/dev/cyclic/i386/cyclic_machdep.c,v 1.2 2010/04/20 17:03:30 rpaulo Exp $
+ * $FreeBSD: src/sys/cddl/dev/cyclic/i386/cyclic_machdep.c,v 1.4 2010/12/17 18:22:50 avg Exp $
  *
  */
 
@@ -121,13 +121,7 @@ static void reprogram(cyb_arg_t arg, hrtime_t exp)
 
 static void xcall(cyb_arg_t arg, cpu_t *c, cyc_func_t func, void *param)
 {
-	/*
-	 * If the target CPU is the current one, just call the
-	 * function. This covers the non-SMP case.
-	 */
-	if (c == &solaris_cpu[curcpu])
-		(*func)(param);
-	else
-		smp_rendezvous_cpus((cpumask_t) (1 << c->cpuid), NULL,
-		    func, smp_no_rendevous_barrier, param);
+
+	smp_rendezvous_cpus((cpumask_t) (1 << c->cpuid),
+	    smp_no_rendevous_barrier, func, smp_no_rendevous_barrier, param);
 }

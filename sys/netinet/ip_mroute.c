@@ -67,7 +67,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_mroute.c,v 1.159 2010/06/02 15:44:43 zec Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_mroute.c,v 1.161 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_inet.h"
 #include "opt_mrouting.h"

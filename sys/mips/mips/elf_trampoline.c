@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/elf_trampoline.c,v 1.3 2010/02/18 19:02:33 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/elf_trampoline.c,v 1.4 2010/12/16 04:56:03 jchandra Exp $");
 #include <machine/asm.h>
 #include <sys/param.h>
 
@@ -42,7 +42,10 @@ __FBSDID("$FreeBSD: src/sys/mips/mips/elf_trampoline.c,v 1.3 2010/02/18 19:02:33
  * need to include opt_global.h manually.
  */
 #include "opt_global.h"
-#include "opt_kernname.h"
+
+#ifndef KERNNAME
+#error Kernel name not provided
+#endif
 
 extern char kernel_start[];
 extern char kernel_end[];

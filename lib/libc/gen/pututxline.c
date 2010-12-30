@@ -25,12 +25,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/pututxline.c,v 1.6 2010/10/21 15:10:35 ed Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/pututxline.c,v 1.7 2010/11/14 18:42:39 ed Exp $");
 
 #include "namespace.h"
 #include <sys/endian.h>
 #include <sys/stat.h>
 #include <sys/uio.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -53,6 +54,7 @@ futx_open(const char *file)
 	/* Safety check: never use broken files. */
 	if (_fstat(fd, &sb) != -1 && sb.st_size % sizeof(struct futx) != 0) {
 		_close(fd);
+		errno = EINVAL;
 		return (NULL);
 	}
 	
@@ -142,6 +144,7 @@ utx_active_remove(struct futx *fu)
 	}
 
 	fclose(fp);
+	errno = ESRCH;
 	return (1);
 }
 

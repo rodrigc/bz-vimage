@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.16 2010/09/13 07:25:35 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/mp_machdep.c,v 1.17 2010/11/11 16:06:47 jhb Exp $");
 
 #include "opt_trap_trace.h"
 
@@ -539,7 +539,7 @@ retry:
 }
 
 void
-ipi_selected(u_int icpus, u_int ipi)
+ipi_selected(cpumask_t icpus, u_int ipi)
 {
 	int i, cpu_count;
 	uint16_t *cpulist;

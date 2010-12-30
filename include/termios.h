@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)termios.h	8.3 (Berkeley) 3/28/94
- * $FreeBSD: src/include/termios.h,v 1.2 2010/02/16 19:39:50 imp Exp $
+ * $FreeBSD: src/include/termios.h,v 1.3 2010/11/02 17:00:56 ed Exp $
  */
 
 #ifndef _TERMIOS_H_
@@ -88,6 +88,7 @@ pid_t	tcgetsid(int);
 int	tcsetsid(int, pid_t);
 
 void	cfmakeraw(struct termios *);
+void	cfmakesane(struct termios *);
 int	cfsetspeed(struct termios *, speed_t);
 #endif
 __END_DECLS

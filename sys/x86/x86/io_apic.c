@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/io_apic.c,v 1.2 2010/06/10 17:04:01 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/io_apic.c,v 1.4 2010/12/23 15:17:28 jhb Exp $");
 
 #include "opt_isa.h"
 
@@ -48,7 +48,7 @@ __FBSDID("$FreeBSD: src/sys/x86/x86/io_apic.c,v 1.2 2010/06/10 17:04:01 mav Exp 
 #include <vm/vm.h>
 #include <vm/pmap.h>
 
-#include <machine/apicreg.h>
+#include <x86/apicreg.h>
 #include <machine/frame.h>
 #include <machine/intr_machdep.h>
 #include <machine/apicvar.h>
@@ -359,7 +359,9 @@ ioapic_assign_cpu(struct intsrc *isrc, u_int apic_id)
 	if (!intpin->io_masked && !intpin->io_edgetrigger) {
 		ioapic_write(io->io_addr, IOAPIC_REDTBL_LO(intpin->io_intpin),
 		    intpin->io_lowreg | IOART_INTMSET);
+		mtx_unlock_spin(&icu_lock);
 		DELAY(100);
+		mtx_lock_spin(&icu_lock);
 	}
 
 	intpin->io_cpu = apic_id;

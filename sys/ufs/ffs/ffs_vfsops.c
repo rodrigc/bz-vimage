@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.378 2010/10/10 07:05:47 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_vfsops.c,v 1.380 2010/12/29 12:25:28 kib Exp $");
 
 #include "opt_quota.h"
 #include "opt_ufs.h"
@@ -895,6 +895,21 @@ ffs_mountfs(devvp, mp, td)
 		    mp->mnt_stat.f_mntonname);
 #endif
 	}
+	if ((fs->fs_flags & FS_TRIM) != 0) {
+		size = sizeof(int);
+		if (g_io_getattr("GEOM::candelete", cp, &size,
+		    &ump->um_candelete) == 0) {
+			if (!ump->um_candelete)
+				printf(
+"WARNING: %s: TRIM flag on fs but disk does not support TRIM\n",
+				    mp->mnt_stat.f_mntonname);
+		} else {
+			printf(
+"WARNING: %s: TRIM flag on fs but cannot get whether disk supports TRIM\n",
+			    mp->mnt_stat.f_mntonname);
+			ump->um_candelete = 0;
+		}
+	}
 
 	ump->um_mountp = mp;
 	ump->um_dev = dev;
@@ -928,6 +943,7 @@ ffs_mountfs(devvp, mp, td)
 		if ((fs->fs_flags & FS_DOSOFTDEP) &&
 		    (error = softdep_mount(devvp, mp, fs, cred)) != 0) {
 			free(fs->fs_csp, M_UFSMNT);
+			ffs_flushfiles(mp, FORCECLOSE, td);
 			goto out;
 		}
 		if (fs->fs_snapinum[0] != 0)

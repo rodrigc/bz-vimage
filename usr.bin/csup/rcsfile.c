@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/csup/rcsfile.c,v 1.1 2010/03/02 07:26:07 lulf Exp $
+ * $FreeBSD: src/usr.bin/csup/rcsfile.c,v 1.2 2010/12/18 20:43:18 lulf Exp $
  */
 
 #include <assert.h>
@@ -175,7 +175,8 @@ print_stream(struct stream *s)
  * Parse rcsfile from path and return a pointer to it.
  */
 struct rcsfile *
-rcsfile_frompath(char *path, char *name, char *cvsroot, char *colltag, int ro)
+rcsfile_frompath(const char *path, const char *name, const char *cvsroot,
+    const char *colltag, int ro)
 {
 	struct rcsfile *rf;
 	FILE *infp;

@@ -1,11 +1,13 @@
-# $FreeBSD: src/sys/mips/adm5120/std.adm5120,v 1.2 2008/09/03 18:49:54 obrien Exp $
+# $FreeBSD: src/sys/mips/adm5120/std.adm5120,v 1.3 2010/11/13 22:34:12 imp Exp $
+#
 # Standard include file for ADM5120
 
-files	"../adm5120/files.adm5120"
+files		"../adm5120/files.adm5120"
 
+machine		mips mipsel
 cpu		CPU_MIPS4KC
 options		ISA_MIPS32
 
-# device		admpci
+# device 	admpci
 device		admsw
 device		pci

@@ -23,6 +23,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/amd64/crti.S,v 1.8 2010/12/09 21:31:21 dim Exp $");
+
 	.section .init,"ax",@progbits
 	.align	4
 	.globl	_init
@@ -36,6 +39,3 @@ _init:
 	.type	_fini,@function
 _fini:
 	subq	$8,%rsp
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/amd64/crti.S,v 1.7 2004/03/21 01:39:01 peter Exp $\0"

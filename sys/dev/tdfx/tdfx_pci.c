@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/tdfx/tdfx_pci.c,v 1.43 2009/12/29 21:51:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/tdfx/tdfx_pci.c,v 1.44 2010/11/15 05:25:51 dougb Exp $");
 
 /* 3dfx driver for FreeBSD 4.x - Finished 11 May 2000, 12:25AM ET
  *
@@ -250,7 +250,7 @@ tdfx_attach(device_t dev) {
 	/* 
 	 * make_dev registers the cdev to access the 3dfx card from /dev
 	 *	use hex here for the dev num, simply to provide better support if > 10
-	 * voodoo cards, for the mad. The user must set the link, or use MAKEDEV.
+	 * voodoo cards, for the mad. The user must set the link.
 	 * Why would we want that many voodoo cards anyhow? 
 	 */
 	tdfx_info->devt = make_dev(&tdfx_cdev, device_get_unit(dev),

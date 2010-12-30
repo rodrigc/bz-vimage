@@ -1,7 +1,7 @@
-# $FreeBSD: src/sbin/geom/class/mountver/Makefile,v 1.1 2010/01/16 09:52:49 trasz Exp $
+# $FreeBSD: src/sbin/geom/class/mountver/Makefile,v 1.2 2010/12/15 23:24:34 obrien Exp $
 
 .PATH: ${.CURDIR}/../../misc
 
-CLASS=	mountver
+GEOM_CLASS=	mountver
 
 .include <bsd.lib.mk>

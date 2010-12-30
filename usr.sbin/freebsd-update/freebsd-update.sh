@@ -25,7 +25,7 @@
 # IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-# $FreeBSD: src/usr.sbin/freebsd-update/freebsd-update.sh,v 1.22 2010/09/12 18:53:44 jh Exp $
+# $FreeBSD: src/usr.sbin/freebsd-update/freebsd-update.sh,v 1.23 2010/11/10 14:33:09 bcr Exp $
 
 #### Usage function -- called from command-line handling code.
 
@@ -1470,7 +1470,7 @@ fetch_inspect_system () {
 	    sort -k 3,3 -t '|' > $2.tmp
 	rm filelist
 
-	# Check if an error occured during system inspection
+	# Check if an error occurred during system inspection
 	if [ -f .err ]; then
 		return 1
 	fi

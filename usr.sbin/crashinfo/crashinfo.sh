@@ -27,7 +27,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/crashinfo/crashinfo.sh,v 1.3 2009/11/03 09:17:23 delphij Exp $
+# $FreeBSD: src/usr.sbin/crashinfo/crashinfo.sh,v 1.4 2010/11/30 16:04:40 cperciva Exp $
 
 usage()
 {
@@ -53,7 +53,7 @@ find_kernel()
 	}' $INFO)
 
 	# Look for a matching kernel version.
-	for k in /boot/kernel/kernel $(ls -t /boot/*/kernel); do
+	for k in `sysctl -n kern.bootfile` $(ls -t /boot/*/kernel); do
 		kvers=$(echo 'printf "  Version String: %s", version' | \
 		    gdb -x /dev/stdin -batch $k 2>/dev/null)
 		if [ "$ivers" = "$kvers" ]; then

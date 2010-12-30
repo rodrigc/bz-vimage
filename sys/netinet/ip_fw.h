@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netinet/ip_fw.h,v 1.138 2010/03/15 17:14:27 luigi Exp $
+ * $FreeBSD: src/sys/netinet/ip_fw.h,v 1.139 2010/11/12 13:05:17 luigi Exp $
  */
 
 #ifndef _IPFW2_H
@@ -192,9 +192,12 @@ enum ipfw_opcodes {		/* arguments (4 byte each)	*/
 
 	O_SETFIB,		/* arg1=FIB number */
 	O_FIB,			/* arg1=FIB desired fib number */
+	
+	O_SOCKARG,		/* socket argument */
 
 	O_LAST_OPCODE		/* not an opcode!		*/
 };
+
 
 /*
  * The extension header are filtered only for presence using a bit

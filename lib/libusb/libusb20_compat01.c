@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libusb/libusb20_compat01.c,v 1.8 2010/10/14 20:04:36 hselasky Exp $ */
+/* $FreeBSD: src/lib/libusb/libusb20_compat01.c,v 1.9 2010/12/14 15:11:49 kevlo Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -457,6 +457,11 @@ usb_parse_configuration(struct usb_config_descriptor *config,
 
 	/* allocate memory for our configuration */
 	ptr = malloc(a + b + c + d);
+	if (ptr == NULL) {
+		/* free config structure */
+		free(ps.a.currcfg);
+		return (-1);
+	}
 
 	/* "currifcw" must be first, hence this pointer is freed */
 	ps.b.currifcw = (void *)(ptr);

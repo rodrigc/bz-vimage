@@ -14,7 +14,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/ac/ac.c,v 1.31 2010/04/02 14:30:56 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/ac/ac.c,v 1.32 2010/12/06 10:24:06 kevlo Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -584,7 +584,7 @@ ac(const char *file)
 	if (!(Flags & AC_W))
 		usht.ut_tv.tv_sec = time(NULL);
 	else
-		usht.ut_tv.tv_sec = ut_timecopy;;
+		usht.ut_tv.tv_sec = ut_timecopy;
 	usht.ut_type = SHUTDOWN_TIME;
 
 	if (Flags & AC_D) {

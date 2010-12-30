@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.118 2010/09/13 02:02:20 imp Exp $
+# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.120 2010/12/27 23:52:40 cperciva Exp $
 
 # Part of a unified Makefile for building kernels.  This part contains all
 # of the definitions that need to be before %BEFORE_DEPEND.
@@ -100,8 +100,9 @@ CFLAGS+= --param inline-unit-growth=100
 CFLAGS+= --param large-function-growth=1000
 .else
 # XXX Actually a gross hack just for Octeon because of the Simple Executive.
-CFLAGS+= --param inline-unit-growth=1000
+CFLAGS+= --param inline-unit-growth=10000
 CFLAGS+= --param large-function-growth=100000
+CFLAGS+= --param max-inline-insns-single=10000
 .endif
 .endif
 WERROR?= -Werror
@@ -168,6 +169,9 @@ MKMODULESENV+=	ALL_MODULES=LINT
 .endif
 .if defined(MODULES_OVERRIDE)
 MKMODULESENV+=	MODULES_OVERRIDE="${MODULES_OVERRIDE}"
+.endif
+.if defined(WITHOUT_MODULES)
+MKMODULESENV+=	WITHOUT_MODULES="${WITHOUT_MODULES}"
 .endif
 .if defined(DEBUG)
 MKMODULESENV+=	DEBUG_FLAGS="${DEBUG}"

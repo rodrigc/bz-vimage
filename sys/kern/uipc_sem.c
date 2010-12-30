@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_sem.c,v 1.41 2010/06/02 09:59:05 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_sem.c,v 1.42 2010/11/19 17:57:50 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_posix.h"
@@ -949,6 +949,7 @@ ksem_module_init(void)
 	mtx_init(&ksem_count_lock, "ksem count", NULL, MTX_DEF);
 	sx_init(&ksem_dict_lock, "ksem dictionary");
 	ksem_dictionary = hashinit(1024, M_KSEM, &ksem_hash);
+	p31b_setcfg(CTL_P1003_1B_SEMAPHORES, 200112L);
 	p31b_setcfg(CTL_P1003_1B_SEM_NSEMS_MAX, SEM_MAX);
 	p31b_setcfg(CTL_P1003_1B_SEM_VALUE_MAX, SEM_VALUE_MAX);
 
@@ -972,6 +973,7 @@ ksem_module_destroy(void)
 #endif
 	syscall_helper_unregister(ksem_syscalls);
 
+	p31b_setcfg(CTL_P1003_1B_SEMAPHORES, 0);
 	hashdestroy(ksem_dictionary, M_KSEM, ksem_hash);
 	sx_destroy(&ksem_dict_lock);
 	mtx_destroy(&ksem_count_lock);

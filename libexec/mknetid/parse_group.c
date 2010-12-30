@@ -36,7 +36,7 @@
 static const char sccsid[] = "@(#)getgrent.c	8.2 (Berkeley) 3/21/94";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/libexec/mknetid/parse_group.c,v 1.7 2002/02/17 19:09:20 imp Exp $";
+  "$FreeBSD: src/libexec/mknetid/parse_group.c,v 1.8 2010/12/06 10:24:06 kevlo Exp $";
 #endif /* not lint */
 
 /*
@@ -126,7 +126,7 @@ grscan(int search, int gid)
 		if (_gr_group.gr_name[0] == '+')
 			continue;
 		if ((_gr_group.gr_passwd = strsep(&bp, ":\n")) == NULL)
-			break;;
+			break;
 		if (!(cp = strsep(&bp, ":\n")))
 			continue;
 		_gr_group.gr_gid = atoi(cp);

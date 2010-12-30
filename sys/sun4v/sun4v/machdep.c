@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/machdep.c,v 1.24 2010/06/30 18:03:42 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/machdep.c,v 1.25 2010/11/05 13:42:58 jhb Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -269,9 +269,10 @@ spinlock_enter(void)
 	td = curthread;
 	if (td->td_md.md_spinlock_count == 0) {
 		pil = intr_disable();
+		td->td_md.md_spinlock_count = 1;
 		td->td_md.md_saved_pil = pil;
-	}
-	td->td_md.md_spinlock_count++;
+	} else
+		td->td_md.md_spinlock_count++;
 	critical_enter();
 }
 
@@ -279,14 +280,14 @@ void
 spinlock_exit(void)
 {
 	struct thread *td;
+	register_t pil;
 
 	td = curthread;
 	critical_exit();
+	pil = td->td_md.md_saved_pil;
 	td->td_md.md_spinlock_count--;
-	if (td->td_md.md_spinlock_count == 0) {
-		intr_restore(td->td_md.md_saved_pil);
-	}
-
+	if (td->td_md.md_spinlock_count == 0)
+		intr_restore(pil);
 }
 
 unsigned

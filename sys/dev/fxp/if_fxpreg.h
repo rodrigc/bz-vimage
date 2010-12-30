@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/fxp/if_fxpreg.h,v 1.44 2010/05/09 22:16:15 yongari Exp $
+ * $FreeBSD: src/sys/dev/fxp/if_fxpreg.h,v 1.45 2010/11/26 21:52:33 marius Exp $
  */
 
 #define FXP_VENDORID_INTEL	0x8086
@@ -45,7 +45,8 @@
 #define	FXP_CSR_FLASHCONTROL	12	/* flash control (2 bytes) */
 #define	FXP_CSR_EEPROMCONTROL	14	/* eeprom control (2 bytes) */
 #define	FXP_CSR_MDICONTROL	16	/* mdi control (4 bytes) */
-#define	FXP_CSR_FLOWCONTROL	0x19	/* flow control (2 bytes) */
+#define	FXP_CSR_FC_THRESH	0x19	/* flow control (1 byte) */
+#define	FXP_CSR_FC_STATUS	0x1A	/* flow control status (1 byte) */
 #define	FXP_CSR_PMDR		0x1B	/* power management driver (1 byte) */
 #define	FXP_CSR_GENCONTROL	0x1C	/* general control (1 byte) */
 

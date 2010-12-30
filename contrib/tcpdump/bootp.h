@@ -27,7 +27,8 @@ struct bootp {
 	u_int8_t	bp_hops;	/* gateway hops */
 	u_int32_t	bp_xid;		/* transaction ID */
 	u_int16_t	bp_secs;	/* seconds since boot began */
-	u_int16_t	bp_flags;	/* flags - see bootp_flag_values[] in print-bootp.c */
+	u_int16_t	bp_flags;	/* flags - see bootp_flag_values[]
+					   in print-bootp.c */
 	struct in_addr	bp_ciaddr;	/* client IP address */
 	struct in_addr	bp_yiaddr;	/* 'your' IP address */
 	struct in_addr	bp_siaddr;	/* server IP address */

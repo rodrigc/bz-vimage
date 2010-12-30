@@ -1,6 +1,5 @@
-/* $FreeBSD: src/sys/boot/arm/uboot/ldscript.arm,v 1.1 2008/10/14 10:11:14 raj Exp $ */
+/* $FreeBSD: src/sys/boot/arm/uboot/ldscript.arm,v 1.2 2010/11/15 19:05:09 imp Exp $ */
 
-OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
 OUTPUT_ARCH(arm)
 ENTRY(_start)
 SECTIONS

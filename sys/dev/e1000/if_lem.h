@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.4 2010/09/20 16:04:44 jhb Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/if_lem.h,v 1.5 2010/11/01 20:19:25 jfv Exp $*/
 
 
 #ifndef _LEM_H_DEFINED_
@@ -328,11 +328,9 @@ struct adapter {
 	struct task     tx_task;
 	struct taskqueue *tq;           /* private task queue */
 
-#if __FreeBSD_version >= 700029
 	eventhandler_tag vlan_attach;
 	eventhandler_tag vlan_detach;
 	u32	num_vlans;
-#endif
 
 	/* Management and WOL features */
 	u32		wol;
@@ -341,11 +339,22 @@ struct adapter {
 
 	/* Multicast array memory */
 	u8		*mta;
-	/* Info about the board itself */
+
+	/*
+	** Shadow VFTA table, this is needed because
+	** the real vlan filter table gets cleared during
+	** a soft reset and the driver needs to be able
+	** to repopulate it.
+	*/
+	u32		shadow_vfta[EM_VFTA_SIZE];
+
+	/* Info about the interface */
 	uint8_t		link_active;
 	uint16_t	link_speed;
 	uint16_t	link_duplex;
 	uint32_t	smartspeed;
+	uint32_t	fc_setting;
+
 	struct em_int_delay_info tx_int_delay;
 	struct em_int_delay_info tx_abs_int_delay;
 	struct em_int_delay_info rx_int_delay;
@@ -407,6 +416,9 @@ struct adapter {
         unsigned long	no_tx_dma_setup;
 	unsigned long	watchdog_events;
 	unsigned long	rx_overruns;
+	unsigned long	rx_irq;
+	unsigned long	tx_irq;
+	unsigned long	link_irq;
 
 	/* 82547 workaround */
 	uint32_t	tx_fifo_size;

@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_ebt3000_cf.c,v 1.5 2010/07/20 19:25:11 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_ebt3000_cf.c,v 1.6 2010/11/02 23:43:44 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -147,6 +147,8 @@ struct g_class g_cf_class = {
         .access =       cf_access,
         .ioctl =        cf_ioctl,
 };
+
+DECLARE_GEOM_CLASS(g_cf_class, g_cf);
 
 /* Device methods */
 static int	cf_probe(device_t);

@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.36 2010/08/14 20:12:10 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.37 2010/11/06 18:17:20 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2006
@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.36 2010/08/14 20:12:10 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.37 2010/11/06 18:17:20 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2561, RT2561S and RT2661 chipset driver
@@ -294,7 +294,6 @@ rt2661_attach(device_t dev, int id)
 		| IEEE80211_C_TXFRAG		/* handle tx frags */
 		| IEEE80211_C_WME		/* 802.11e */
 #endif
-		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	bands = 0;

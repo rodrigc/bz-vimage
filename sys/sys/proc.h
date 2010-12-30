@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)proc.h	8.15 (Berkeley) 5/19/95
- * $FreeBSD: src/sys/sys/proc.h,v 1.560 2010/10/17 11:01:52 davidxu Exp $
+ * $FreeBSD: src/sys/sys/proc.h,v 1.561 2010/12/09 02:42:02 davidxu Exp $
  */
 
 #ifndef _SYS_PROC_H_
@@ -214,6 +214,7 @@ struct thread {
 	lwpid_t		td_tid;		/* (b) Thread ID. */
 	sigqueue_t	td_sigqueue;	/* (c) Sigs arrived, not delivered. */
 #define	td_siglist	td_sigqueue.sq_signals
+	u_char		td_lend_user_pri; /* (t) Lend user pri. */
 
 /* Cleared during fork1() */
 #define	td_startzero td_flags
@@ -343,7 +344,7 @@ do {									\
 #define	TDF_CANSWAP	0x00000040 /* Thread can be swapped. */
 #define	TDF_SLEEPABORT	0x00000080 /* sleepq_abort was called. */
 #define	TDF_KTH_SUSP	0x00000100 /* kthread is suspended */
-#define	TDF_UBORROWING	0x00000200 /* Thread is borrowing user pri. */
+#define	TDF_UNUSED09	0x00000200 /* --available-- */
 #define	TDF_BOUNDARY	0x00000400 /* Thread suspended at user boundary */
 #define	TDF_ASTPENDING	0x00000800 /* Thread has some asynchronous events. */
 #define	TDF_TIMOFAIL	0x00001000 /* Timeout from sleep after we were awake. */

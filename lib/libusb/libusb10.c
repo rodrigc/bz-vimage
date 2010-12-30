@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libusb/libusb10.c,v 1.11 2010/10/14 20:50:33 hselasky Exp $ */
+/* $FreeBSD: src/lib/libusb/libusb10.c,v 1.12 2010/11/13 19:25:11 hselasky Exp $ */
 /*-
  * Copyright (c) 2009 Sylvestre Gallon. All rights reserved.
  * Copyright (c) 2009 Hans Petter Selasky. All rights reserved.
@@ -799,6 +799,10 @@ libusb_free_transfer(struct libusb_transfer *uxfer)
 
 	if (uxfer == NULL)
 		return;			/* be NULL safe */
+
+	/* check if we should free the transfer buffer */
+	if (uxfer->flags & LIBUSB_TRANSFER_FREE_BUFFER)
+		free(uxfer->buffer);
 
 	sxfer = (struct libusb_super_transfer *)(
 	    (uint8_t *)uxfer - sizeof(*sxfer));

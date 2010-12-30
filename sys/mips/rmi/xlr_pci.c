@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.13 2010/10/06 15:37:55 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.14 2010/12/09 12:30:13 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -104,13 +104,6 @@ __FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.13 2010/10/06 15:37:55 jchand
 #define MIPS_MSI_DATA(irq)					       \
         (MSI_MIPS_DATA_TRGRLVL | MSI_MIPS_DATA_DELFIXED |	       \
 	 MSI_MIPS_DATA_ASSERT | (irq))
-
-#define DEBUG
-#ifdef DEBUG
-#define dbg_devprintf	device_printf
-#else
-#define dbg_devprintf(dev, fmt, ...)
-#endif
 
 struct xlr_pcib_softc {
 	bus_dma_tag_t	sc_pci_dmat;	/* PCI DMA tag pointer */

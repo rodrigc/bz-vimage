@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_hw.h,v 1.9 2010/09/28 00:13:15 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_hw.h,v 1.10 2010/11/24 01:13:55 jfv Exp $*/
 
 #ifndef _E1000_HW_H_
 #define _E1000_HW_H_
@@ -150,6 +150,8 @@ struct e1000_hw;
 #define E1000_DEV_ID_82580_SGMII              0x1511
 #define E1000_DEV_ID_82580_COPPER_DUAL        0x1516
 #define E1000_DEV_ID_82580_QUAD_FIBER         0x1527
+#define E1000_DEV_ID_DH89XXCC_SGMII           0x0436
+#define E1000_DEV_ID_DH89XXCC_SERDES          0x0438
 #define E1000_REVISION_0 0
 #define E1000_REVISION_1 1
 #define E1000_REVISION_2 2

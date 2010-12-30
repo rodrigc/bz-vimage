@@ -58,7 +58,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ip_var.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/netinet6/ip6_var.h,v 1.58 2010/09/02 17:43:44 bz Exp $
+ * $FreeBSD: src/sys/netinet6/ip6_var.h,v 1.59 2010/11/27 21:51:39 brucec Exp $
  */
 
 #ifndef _NETINET6_IP6_VAR_H_
@@ -209,7 +209,7 @@ struct	ip6stat {
 	u_quad_t ip6s_m2m[32];		/* two or more mbuf */
 	u_quad_t ip6s_mext1;		/* one ext mbuf */
 	u_quad_t ip6s_mext2m;		/* two or more ext mbuf */
-	u_quad_t ip6s_exthdrtoolong;	/* ext hdr are not continuous */
+	u_quad_t ip6s_exthdrtoolong;	/* ext hdr are not contiguous */
 	u_quad_t ip6s_nogif;		/* no match gif found */
 	u_quad_t ip6s_toomanyhdr;	/* discarded due to too many headers */
 

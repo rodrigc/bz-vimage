@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: powerpc.h,v 1.3 2000/06/01 00:49:59 matt Exp $
- * $FreeBSD: src/sys/powerpc/include/platform.h,v 1.1 2009/05/14 00:34:26 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/platform.h,v 1.2 2010/11/12 04:18:19 nwhitehorn Exp $
  */
 
 #ifndef	_MACHINE_PLATFORM_H_
@@ -44,6 +44,7 @@ struct mem_region {
 };
 
 void	mem_regions(struct mem_region **, int *, struct mem_region **, int *);
+vm_offset_t platform_real_maxaddr(void);
 
 u_long	platform_timebase_freq(struct cpuref *);
   

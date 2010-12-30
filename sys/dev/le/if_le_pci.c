@@ -72,7 +72,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/le/if_le_pci.c,v 1.8 2008/09/24 21:26:46 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/le/if_le_pci.c,v 1.10 2010/12/18 14:21:28 tijl Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -312,7 +312,6 @@ le_pci_attach(device_t dev)
 	LE_LOCK_INIT(sc, device_get_nameunit(dev));
 
 	pci_enable_busmaster(dev);
-	pci_enable_io(dev, PCIM_CMD_PORTEN);
 
 	i = PCIR_BAR(0);
 	lesc->sc_rres = bus_alloc_resource_any(dev, SYS_RES_IOPORT,

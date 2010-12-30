@@ -19,7 +19,7 @@
 #define VERSION "20071127"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wpi/if_wpi.c,v 1.34 2010/08/14 20:12:10 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wpi/if_wpi.c,v 1.40 2010/12/19 10:36:06 bschmidt Exp $");
 
 /*
  * Driver for Intel PRO/Wireless 3945ABG 802.11 network adapters.
@@ -634,7 +634,6 @@ wpi_attach(device_t dev)
 		| IEEE80211_C_WME		/* 802.11e */
 		| IEEE80211_C_HOSTAP		/* Host access point mode */
 #endif
-		| IEEE80211_C_RATECTL		/* use ratectl */
 		;
 
 	/*
@@ -1249,8 +1248,25 @@ wpi_newstate(struct ieee80211vap *vap, enum ieee80211_state nstate, int arg)
 
 	IEEE80211_UNLOCK(ic);
 	WPI_LOCK(sc);
-	if (nstate == IEEE80211_S_AUTH) {
-		/* The node must be registered in the firmware before auth */
+	if (nstate == IEEE80211_S_SCAN && vap->iv_state != IEEE80211_S_INIT) {
+		/*
+		 * On !INIT -> SCAN transitions, we need to clear any possible
+		 * knowledge about associations.
+		 */
+		error = wpi_config(sc);
+		if (error != 0) {
+			device_printf(sc->sc_dev,
+			    "%s: device config failed, error %d\n",
+			    __func__, error);
+		}
+	}
+	if (nstate == IEEE80211_S_AUTH ||
+	    (nstate == IEEE80211_S_ASSOC && vap->iv_state == IEEE80211_S_RUN)) {
+		/*
+		 * The node must be registered in the firmware before auth.
+		 * Also the associd must be cleared on RUN -> ASSOC
+		 * transitions.
+		 */
 		error = wpi_auth(sc, vap);
 		if (error != 0) {
 			device_printf(sc->sc_dev,
@@ -1629,9 +1645,15 @@ wpi_notif_intr(struct wpi_softc *sc)
 	struct wpi_rx_data *data;
 	uint32_t hw;
 
+	bus_dmamap_sync(sc->shared_dma.tag, sc->shared_dma.map,
+	    BUS_DMASYNC_POSTREAD);
+
 	hw = le32toh(sc->shared->next);
 	while (sc->rxq.cur != hw) {
 		data = &sc->rxq.data[sc->rxq.cur];
+
+		bus_dmamap_sync(sc->rxq.data_dmat, data->map,
+		    BUS_DMASYNC_POSTREAD);
 		desc = (void *)data->m->m_ext.ext_buf;
 
 		DPRINTFN(WPI_DEBUG_NOTIFY,
@@ -2413,6 +2435,9 @@ wpi_auth(struct wpi_softc *sc, struct ieee80211vap *vap)
 	if (IEEE80211_IS_CHAN_2GHZ(ni->ni_chan)) {
 		sc->config.flags |= htole32(WPI_CONFIG_AUTO |
 		    WPI_CONFIG_24GHZ);
+	} else {
+		sc->config.flags &= ~htole32(WPI_CONFIG_AUTO |
+		    WPI_CONFIG_24GHZ);
 	}
 	if (IEEE80211_IS_CHAN_A(ni->ni_chan)) {
 		sc->config.cck_mask  = 0;
@@ -2988,14 +3013,12 @@ wpi_rfkill_resume(struct wpi_softc *sc)
 	if (ntries == 1000) {
 		device_printf(sc->sc_dev,
 		    "timeout waiting for thermal calibration\n");
-		WPI_UNLOCK(sc);
 		return;
 	}
 	DPRINTFN(WPI_DEBUG_TEMP,("temperature %d\n", sc->temp));
 
 	if (wpi_config(sc) != 0) {
 		device_printf(sc->sc_dev, "device config failed\n");
-		WPI_UNLOCK(sc);
 		return;
 	}
 
@@ -3538,7 +3561,9 @@ wpi_set_channel(struct ieee80211com *ic)
 	 * are already taken care of by their respective firmware commands.
 	 */
 	if (ic->ic_opmode == IEEE80211_M_MONITOR) {
+		WPI_LOCK(sc);
 		error = wpi_config(sc);
+		WPI_UNLOCK(sc);
 		if (error != 0)
 			device_printf(sc->sc_dev,
 			    "error %d settting channel\n", error);

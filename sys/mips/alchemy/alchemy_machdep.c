@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/alchemy/alchemy_machdep.c,v 1.3 2010/01/25 00:44:05 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/alchemy/alchemy_machdep.c,v 1.5 2010/12/09 07:47:40 gonzo Exp $");
 
 #include "opt_ddb.h"
 
@@ -96,6 +96,9 @@ mips_init(void)
 	/* phys_avail regions are in bytes */
 	phys_avail[0] = MIPS_KSEG0_TO_PHYS(kernel_kseg0_end);
 	phys_avail[1] = ctob(realmem);
+
+	dump_avail[0] = phys_avail[0];
+	dump_avail[1] = phys_avail[1];
 
 	physmem = realmem;
 

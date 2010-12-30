@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.178 2010/08/30 21:19:42 jkim Exp $
+ * $FreeBSD: src/sys/amd64/amd64/cpu_switch.S,v 1.181 2010/12/22 19:57:03 jkim Exp $
  */
 
 #include <machine/asmacros.h>
@@ -94,7 +94,7 @@ END(cpu_throw)
 ENTRY(cpu_switch)
 	/* Switch to new thread.  First, save context. */
 	movq	TD_PCB(%rdi),%r8
-	movb	$1,PCB_FULL_IRET(%r8)
+	orl	$PCB_FULL_IRET,PCB_FLAGS(%r8)
 
 	movq	(%rsp),%rax			/* Hardware registers */
 	movq	%r15,PCB_R15(%r8)
@@ -276,7 +276,7 @@ load_dr:
 do_tss:	movq	%rdx,PCPU(TSSP)
 	movq	%rdx,%rcx
 	movq	PCPU(TSS),%rax
-	movw	%rcx,2(%rax)
+	movw	%cx,2(%rax)
 	shrq	$16,%rcx
 	movb	%cl,4(%rax)
 	shrq	$8,%rcx

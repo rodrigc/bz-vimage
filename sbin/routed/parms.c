@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/routed/parms.c,v 1.17 2009/04/05 17:33:07 phk Exp $
+ * $FreeBSD: src/sbin/routed/parms.c,v 1.18 2010/11/22 19:40:27 brucec Exp $
  */
 
 #include "defs.h"
@@ -36,7 +36,7 @@
 #ifdef __NetBSD__
 __RCSID("$NetBSD$");
 #elif defined(__FreeBSD__)
-__RCSID("$FreeBSD: src/sbin/routed/parms.c,v 1.17 2009/04/05 17:33:07 phk Exp $");
+__RCSID("$FreeBSD: src/sbin/routed/parms.c,v 1.18 2010/11/22 19:40:27 brucec Exp $");
 #else
 __RCSID("$Revision: 2.26 $");
 #ident "$Revision: 2.26 $"
@@ -876,11 +876,11 @@ check_parms(struct parm *new)
 		if ((0 != (new->parm_int_state & GROUP_IS_SOL_OUT)
 		     && 0 != (parmp->parm_int_state & GROUP_IS_SOL_OUT)
 		     && 0 != ((new->parm_int_state ^ parmp->parm_int_state)
-			      && GROUP_IS_SOL_OUT))
+			      & GROUP_IS_SOL_OUT))
 		    || (0 != (new->parm_int_state & GROUP_IS_ADV_OUT)
 			&& 0 != (parmp->parm_int_state & GROUP_IS_ADV_OUT)
 			&& 0 != ((new->parm_int_state ^ parmp->parm_int_state)
-				 && GROUP_IS_ADV_OUT))
+				 & GROUP_IS_ADV_OUT))
 		    || (new->parm_rdisc_pref != 0
 			&& parmp->parm_rdisc_pref != 0
 			&& new->parm_rdisc_pref != parmp->parm_rdisc_pref)

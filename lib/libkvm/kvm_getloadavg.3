@@ -26,7 +26,7 @@
 .\" SUCH DAMAGE.
 .\"
 .\"     @(#)kvm_getloadavg.3	8.1 (Berkeley) 6/4/93
-.\" $FreeBSD: src/lib/libkvm/kvm_getloadavg.3,v 1.12 2010/08/02 13:11:35 uqs Exp $
+.\" $FreeBSD: src/lib/libkvm/kvm_getloadavg.3,v 1.13 2010/12/28 10:08:50 uqs Exp $
 .\"
 .Dd June 4, 1993
 .Dt KVM_GETLOADAVG 3
@@ -50,7 +50,7 @@ averaged over various periods of time.
 Up to
 .Fa nelem
 samples are retrieved and assigned to successive elements of
-.Fa loadavg Ns Bq \& .
+.Fa loadavg Ns Bq .
 The system imposes a maximum of 3 samples, representing averages
 over the last 1, 5, and 15 minutes, respectively.
 .Sh DIAGNOSTICS

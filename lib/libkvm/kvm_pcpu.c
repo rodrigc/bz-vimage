@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm_pcpu.c,v 1.2 2010/03/01 00:27:55 rwatson Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm_pcpu.c,v 1.3 2010/11/14 20:14:25 dim Exp $");
 
 #include <sys/param.h>
 #include <sys/pcpu.h>
@@ -197,9 +197,9 @@ _kvm_dpcpu_init(kvm_t *kd)
 {
 	struct nlist nl[] = {
 #define	NLIST_START_SET_PCPU	0
-		{ "___start_set_pcpu" },
+		{ "___start_" DPCPU_SETNAME },
 #define	NLIST_STOP_SET_PCPU	1
-		{ "___stop_set_pcpu" },
+		{ "___stop_" DPCPU_SETNAME },
 #define	NLIST_DPCPU_OFF		2
 		{ "_dpcpu_off" },
 #define	NLIST_MP_MAXCPUS	3

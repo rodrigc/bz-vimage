@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/contrib/ipfilter/tools/ipf_y.y,v 1.7 2007/10/18 21:52:13 darrenr Exp $	*/
+/*	$FreeBSD: src/contrib/ipfilter/tools/ipf_y.y,v 1.8 2010/10/29 21:23:34 rpaulo Exp $	*/
 
 /*
  * Copyright (C) 2001-2006 by Darren Reed.
@@ -10,8 +10,6 @@
 #include <sys/ioctl.h>
 #include <syslog.h>
 #ifdef IPFILTER_BPF
-# include "pcap-bpf.h"
-# define _NET_BPF_H_
 # include <pcap.h>
 #endif
 #include "netinet/ip_pool.h"

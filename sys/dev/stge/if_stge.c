@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/stge/if_stge.c,v 1.19 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/stge/if_stge.c,v 1.20 2010/11/14 13:26:10 marius Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -738,7 +738,7 @@ stge_attach(device_t dev)
 	    (PC_PhyDuplexPolarity | PC_PhyLnkPolarity);
 
 	/* Set up MII bus. */
-	flags = 0;
+	flags = MIIF_DOPAUSE;
 	if (sc->sc_rev >= 0x40 && sc->sc_rev <= 0x4e)
 		flags |= MIIF_MACPRIV0;
 	error = mii_attach(sc->sc_dev, &sc->sc_miibus, ifp, stge_mediachange,
@@ -1524,9 +1524,9 @@ stge_link_task(void *arg, int pending)
 	sc->sc_MACCtrl = 0;
 	if (((mii->mii_media_active & IFM_GMASK) & IFM_FDX) != 0)
 		sc->sc_MACCtrl |= MC_DuplexSelect;
-	if (((mii->mii_media_active & IFM_GMASK) & IFM_FLAG0) != 0)
+	if (((mii->mii_media_active & IFM_GMASK) & IFM_ETH_RXPAUSE) != 0)
 		sc->sc_MACCtrl |= MC_RxFlowControlEnable;
-	if (((mii->mii_media_active & IFM_GMASK) & IFM_FLAG1) != 0)
+	if (((mii->mii_media_active & IFM_GMASK) & IFM_ETH_TXPAUSE) != 0)
 		sc->sc_MACCtrl |= MC_TxFlowControlEnable;
 	/*
 	 * Update STGE_MACCtrl register depending on link status.

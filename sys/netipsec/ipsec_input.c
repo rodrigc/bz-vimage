@@ -1,4 +1,4 @@
-/*	$FreeBSD$	*/
+/*	$FreeBSD: src/sys/netipsec/ipsec_input.c,v 1.32 2010/10/25 16:11:37 thomas Exp $	*/
 /*	$OpenBSD: ipsec_input.c,v 1.63 2003/02/20 18:35:43 deraadt Exp $	*/
 /*-
  * The authors of this code are John Ioannidis (ji@tla.org),
@@ -108,7 +108,7 @@ static void ipsec4_common_ctlinput(int, struct sockaddr *, void *, int);
 
 /*
  * ipsec_common_input gets called when an IPsec-protected packet
- * is received by IPv4 or IPv6.  It's job is to find the right SA
+ * is received by IPv4 or IPv6.  Its job is to find the right SA
  * and call the appropriate transform.  The transform callback
  * takes care of further processing (like ingress filtering).
  */

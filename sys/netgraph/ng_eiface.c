@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netgraph/ng_eiface.c,v 1.57 2010/05/03 07:32:50 sobomax Exp $
+ * $FreeBSD: src/sys/netgraph/ng_eiface.c,v 1.60 2010/11/22 19:32:54 dim Exp $
  */
 
 #include <sys/param.h>
@@ -371,6 +371,8 @@ ng_eiface_constructor(node_p node)
 	ifp->if_ioctl = ng_eiface_ioctl;
 	ifp->if_snd.ifq_maxlen = ifqmaxlen;
 	ifp->if_flags = (IFF_SIMPLEX | IFF_BROADCAST | IFF_MULTICAST);
+	ifp->if_capabilities = IFCAP_VLAN_MTU | IFCAP_JUMBO_MTU;
+	ifp->if_capenable = IFCAP_VLAN_MTU | IFCAP_JUMBO_MTU;
 
 	/* Give this node the same name as the interface (if possible) */
 	if (ng_name_node(node, ifp->if_xname) != 0)

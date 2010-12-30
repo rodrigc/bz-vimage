@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)tcp.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/netinet/tcp.h,v 1.48 2010/09/16 21:06:45 andre Exp $
+ * $FreeBSD: src/sys/netinet/tcp.h,v 1.49 2010/11/17 18:55:12 gnn Exp $
  */
 
 #ifndef _NETINET_TCP_H_
@@ -225,9 +225,12 @@ struct tcp_info {
 	u_int32_t	tcpi_snd_nxt;		/* Next egress seqno */
 	u_int32_t	tcpi_rcv_nxt;		/* Next ingress seqno */
 	u_int32_t	tcpi_toe_tid;		/* HWTID for TOE endpoints */
+	u_int32_t	tcpi_snd_rexmitpack;	/* Retransmitted packets */
+	u_int32_t	tcpi_rcv_ooopack;	/* Out-of-order packets */
+	u_int32_t	tcpi_snd_zerowin;	/* Zero-sized windows sent */
 	
 	/* Padding to grow without breaking ABI. */
-	u_int32_t	__tcpi_pad[29];		/* Padding. */
+	u_int32_t	__tcpi_pad[26];		/* Padding. */
 };
 #endif
 

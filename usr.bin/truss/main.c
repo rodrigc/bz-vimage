@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/truss/main.c,v 1.57 2010/08/28 15:04:53 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/truss/main.c,v 1.58 2010/11/13 09:28:49 jh Exp $");
 
 /*
  * The main module for truss.  Suprisingly simple, but, then, the other
@@ -241,13 +241,14 @@ main(int ac, char **av)
 	if (fname != NULL) { /* Use output file */
 		if ((trussinfo->outfile = fopen(fname, "w")) == NULL)
 			errx(1, "cannot open %s", fname);
+		/*
+		 * Set FD_CLOEXEC, so that the output file is not shared with
+		 * the traced process.
+		 */
+		if (fcntl(fileno(trussinfo->outfile), F_SETFD, FD_CLOEXEC) ==
+		    -1)
+			warn("fcntl()");
 	}
-	/*
-	 * Set FD_CLOEXEC, so that the output file is not shared with
-	 * the traced process.
-	 */
-	if (fcntl(fileno(trussinfo->outfile), F_SETFD, FD_CLOEXEC) == -1)
-		warn("fcntl()");
 
 	/*
 	 * If truss starts the process itself, it will ignore some signals --

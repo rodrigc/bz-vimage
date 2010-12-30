@@ -29,19 +29,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/ndis/hal_var.h,v 1.10 2009/03/12 02:51:55 weongyo Exp $
+ * $FreeBSD: src/sys/compat/ndis/hal_var.h,v 1.11 2010/12/20 16:39:43 tijl Exp $
  */
 
 #ifndef _HAL_VAR_H_
 #define _HAL_VAR_H_
 
-#ifdef __amd64__
-#define NDIS_BUS_SPACE_IO	AMD64_BUS_SPACE_IO
-#define NDIS_BUS_SPACE_MEM	AMD64_BUS_SPACE_MEM
-#else
-#define NDIS_BUS_SPACE_IO	I386_BUS_SPACE_IO
-#define NDIS_BUS_SPACE_MEM	I386_BUS_SPACE_MEM
-#endif
+#define NDIS_BUS_SPACE_IO	X86_BUS_SPACE_IO
+#define NDIS_BUS_SPACE_MEM	X86_BUS_SPACE_MEM
 
 extern image_patch_table hal_functbl[];
 

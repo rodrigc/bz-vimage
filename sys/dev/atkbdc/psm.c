@@ -59,7 +59,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/atkbdc/psm.c,v 1.107 2010/09/09 07:52:15 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/atkbdc/psm.c,v 1.109 2010/12/16 17:08:43 jhb Exp $");
 
 #include "opt_isa.h"
 #include "opt_psm.h"
@@ -1105,6 +1105,7 @@ psmidentify(driver_t *driver, device_t parent)
 	irq = bus_get_resource_start(psmc, SYS_RES_IRQ, 0);
 	if (irq <= 0)
 		return;
+	bus_delete_resource(psmc, SYS_RES_IRQ, 0);
 	bus_set_resource(psm, SYS_RES_IRQ, KBDC_RID_AUX, irq, 1);
 }
 
@@ -1133,8 +1134,7 @@ psmprobe(device_t dev)
 
 	/* see if IRQ is available */
 	rid = KBDC_RID_AUX;
-	sc->intr = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid,
-	    RF_SHAREABLE | RF_ACTIVE);
+	sc->intr = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid, RF_ACTIVE);
 	if (sc->intr == NULL) {
 		if (bootverbose)
 			device_printf(dev, "unable to allocate IRQ\n");
@@ -1214,12 +1214,12 @@ psmprobe(device_t dev)
 	 * be that this is only the case when the controller DOES have the aux
 	 * port but the port is not wired on the motherboard.) The keyboard
 	 * controllers without the port, such as the original AT, are
-	 * supporsed to return with an error code or simply time out. In any
+	 * supposed to return with an error code or simply time out. In any
 	 * case, we have to continue probing the port even when the controller
 	 * passes this test.
 	 *
 	 * XXX: some controllers erroneously return the error code 1, 2 or 3
-	 * when it has the perfectly functional aux port. We have to ignore
+	 * when it has a perfectly functional aux port. We have to ignore
 	 * this error code. Even if the controller HAS error with the aux
 	 * port, it will be detected later...
 	 * XXX: another incompatible controller returns PSM_ACK (0xfa)...
@@ -1250,7 +1250,7 @@ psmprobe(device_t dev)
 	if (sc->config & PSM_CONFIG_NORESET) {
 		/*
 		 * Don't try to reset the pointing device.  It may possibly be
-		 * left in the unknown state, though...
+		 * left in an unknown state, though...
 		 */
 	} else {
 		/*
@@ -1277,7 +1277,7 @@ psmprobe(device_t dev)
 	}
 
 	/*
-	 * both the aux port and the aux device is functioning, see if the
+	 * both the aux port and the aux device are functioning, see if the
 	 * device can be enabled. NOTE: when enabled, the device will start
 	 * sending data; we shall immediately disable the device once we know
 	 * the device can be enabled.
@@ -1438,8 +1438,7 @@ psmattach(device_t dev)
 
 	/* Setup our interrupt handler */
 	rid = KBDC_RID_AUX;
-	sc->intr = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid,
-	    RF_SHAREABLE | RF_ACTIVE);
+	sc->intr = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid, RF_ACTIVE);
 	if (sc->intr == NULL)
 		return (ENXIO);
 	error = bus_setup_intr(dev, sc->intr, INTR_TYPE_TTY, NULL, psmintr, sc,
@@ -4628,6 +4627,7 @@ create_a_copy(device_t atkbdc, device_t me)
 
 	/* move our resource to the found device */
 	irq = bus_get_resource_start(me, SYS_RES_IRQ, 0);
+	bus_delete_resource(me, SYS_RES_IRQ, 0);
 	bus_set_resource(psm, SYS_RES_IRQ, KBDC_RID_AUX, irq, 1);
 
 	/* ...then probe and attach it */
@@ -4661,7 +4661,7 @@ psmcpnp_probe(device_t dev)
 		    "assuming irq %ld\n", irq);
 		bus_set_resource(dev, SYS_RES_IRQ, rid, irq, 1);
 	}
-	res = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid, RF_SHAREABLE);
+	res = bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid, 0);
 	bus_release_resource(dev, SYS_RES_IRQ, rid, res);
 
 	/* keep quiet */
@@ -4675,22 +4675,12 @@ static int
 psmcpnp_attach(device_t dev)
 {
 	device_t atkbdc;
-	int rid;
 
 	/* find the keyboard controller, which may be on acpi* or isa* bus */
 	atkbdc = devclass_get_device(devclass_find(ATKBDC_DRIVER_NAME),
 	    device_get_unit(dev));
 	if ((atkbdc != NULL) && (device_get_state(atkbdc) == DS_ATTACHED))
 		create_a_copy(atkbdc, dev);
-	else {
-		/*
-		 * If we don't have the AT keyboard controller yet,
-		 * just reserve the IRQ for later use...
-		 * (See psmidentify() above.)
-		 */
-		rid = 0;
-		bus_alloc_resource_any(dev, SYS_RES_IRQ, &rid, RF_SHAREABLE);
-	}
 
 	return (0);
 }

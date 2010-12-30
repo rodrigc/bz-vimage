@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.204 2010/10/18 15:46:58 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_resource.c,v 1.206 2010/12/29 09:26:46 davidxu Exp $");
 
 #include "opt_compat.h"
 
@@ -462,37 +462,37 @@ rtp_to_pri(struct rtprio *rtp, struct thread *td)
 	u_char	newpri;
 	u_char	oldpri;
 
-	thread_lock(td);
 	switch (RTP_PRIO_BASE(rtp->type)) {
 	case RTP_PRIO_REALTIME:
-		if (rtp->prio > RTP_PRIO_MAX) {
-			thread_unlock(td);
+		if (rtp->prio > RTP_PRIO_MAX)
 			return (EINVAL);
-		}
 		newpri = PRI_MIN_REALTIME + rtp->prio;
 		break;
 	case RTP_PRIO_NORMAL:
-		if (rtp->prio >  (PRI_MAX_TIMESHARE - PRI_MIN_TIMESHARE)) {
-			thread_unlock(td);
+		if (rtp->prio > (PRI_MAX_TIMESHARE - PRI_MIN_TIMESHARE))
 			return (EINVAL);
-		}
 		newpri = PRI_MIN_TIMESHARE + rtp->prio;
 		break;
 	case RTP_PRIO_IDLE:
+		if (rtp->prio > RTP_PRIO_MAX)
+			return (EINVAL);
 		newpri = PRI_MIN_IDLE + rtp->prio;
 		break;
 	default:
-		thread_unlock(td);
 		return (EINVAL);
 	}
+
+	thread_lock(td);
 	sched_class(td, rtp->type);	/* XXX fix */
 	oldpri = td->td_user_pri;
 	sched_user_prio(td, newpri);
 	if (curthread == td)
 		sched_prio(curthread, td->td_user_pri); /* XXX dubious */
 	if (TD_ON_UPILOCK(td) && oldpri != newpri) {
+		critical_enter();
 		thread_unlock(td);
 		umtx_pi_adjust(td, oldpri);
+		critical_exit();
 	} else
 		thread_unlock(td);
 	return (0);

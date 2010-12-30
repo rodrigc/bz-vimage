@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/mpt/mpt.h,v 1.53 2010/09/24 23:54:03 marius Exp $ */
+/* $FreeBSD: src/sys/dev/mpt/mpt.h,v 1.54 2010/11/14 22:34:33 marius Exp $ */
 /*-
  * Generic defines for LSI '909 FC  adapters.
  * FreeBSD Version.
@@ -1112,10 +1112,10 @@ do {						\
 		mpt_prt(mpt, __VA_ARGS__);	\
 } while (0)
 
-#define mpt_lprtc(mpt, level, ...)		 \
-do {						 \
-	if (level <= (mpt)->debug_level)	 \
-		mpt_prtc(mpt, __VA_ARGS__);	 \
+#define mpt_lprtc(mpt, level, ...)		\
+do {						\
+	if (level <= (mpt)->verbose)		\
+		mpt_prtc(mpt, __VA_ARGS__);	\
 } while (0)
 #else
 void mpt_lprt(struct mpt_softc *, int, const char *, ...)

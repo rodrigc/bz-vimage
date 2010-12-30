@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/apmd/apmdlex.l,v 1.4 2010/05/14 14:26:56 uqs Exp $
+ * $FreeBSD: src/usr.sbin/apmd/apmdlex.l,v 1.5 2010/11/22 14:16:22 brucec Exp $
  */
 
 #include <string.h>
@@ -38,6 +38,7 @@
 
 /* We don't need it, avoid the warning. */
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 
 int lineno;
 int first_time;

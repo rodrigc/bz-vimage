@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mount_nfs.c	8.11 (Berkeley) 5/4/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/mount_nfs/mount_nfs.c,v 1.93 2010/09/04 08:42:19 kevlo Exp $");
+__FBSDID("$FreeBSD: src/sbin/mount_nfs/mount_nfs.c,v 1.95 2010/12/26 22:29:44 simon Exp $");
 
 #include <sys/param.h>
 #include <sys/linker.h>
@@ -177,7 +177,7 @@ main(int argc, char *argv[])
 			mountmode = V3;
 			break;
 		case 'a':
-			printf("-a deprecated, use -o readhead=<value>\n");
+			printf("-a deprecated, use -o readahead=<value>\n");
 			build_iovec(&iov, &iovlen, "readahead", optarg, (size_t)-1);
 			break;
 		case 'b':
@@ -213,7 +213,7 @@ main(int argc, char *argv[])
 			build_iovec(&iov, &iovlen, "intr", NULL, 0);
 			break;
 		case 'L':
-			printf("-i deprecated, use -o nolockd\n");
+			printf("-L deprecated, use -o nolockd\n");
 			build_iovec(&iov, &iovlen, "nolockd", NULL, 0);
 			break;
 		case 'l':

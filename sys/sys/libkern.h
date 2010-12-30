@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)libkern.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/sys/libkern.h,v 1.61 2010/06/02 17:27:23 raj Exp $
+ * $FreeBSD: src/sys/sys/libkern.h,v 1.62 2010/11/14 14:12:43 ed Exp $
  */
 
 #ifndef _SYS_LIBKERN_H_
@@ -186,5 +186,10 @@ strrchr(const char *p, int ch)
 #define	FNM_CASEFOLD	0x10	/* Case insensitive search. */
 #define	FNM_IGNORECASE	FNM_CASEFOLD
 #define	FNM_FILE_NAME	FNM_PATHNAME
+
+/* Visibility of characters in gets() */
+#define	GETS_NOECHO	0	/* Disable echoing of characters. */
+#define	GETS_ECHO	1	/* Enable echoing of characters. */
+#define	GETS_ECHOPASS	2	/* Print a * for every character. */
 
 #endif /* !_SYS_LIBKERN_H_ */

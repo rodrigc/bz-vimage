@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_ifattach.c,v 1.79 2010/04/29 11:52:42 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_ifattach.c,v 1.80 2010/12/22 11:58:31 jhay Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -267,6 +267,7 @@ found:
 	/* get EUI64 */
 	switch (ifp->if_type) {
 	case IFT_ETHER:
+	case IFT_L2VLAN:
 	case IFT_FDDI:
 	case IFT_ISO88025:
 	case IFT_ATM:

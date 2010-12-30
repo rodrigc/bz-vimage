@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.51 2010/07/02 17:22:15 mav Exp $
+ * $FreeBSD: src/sys/amd64/amd64/intr_machdep.c,v 1.52 2010/10/28 13:44:19 jhb Exp $
  */
 
 /*
@@ -458,7 +458,7 @@ intr_next_cpu(void)
 
 	/* Leave all interrupts on the BSP during boot. */
 	if (!assign_cpu)
-		return (cpu_apic_ids[0]);
+		return (PCPU_GET(apic_id));
 
 	mtx_lock_spin(&icu_lock);
 	apic_id = cpu_apic_ids[current_cpu];

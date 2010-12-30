@@ -1,0 +1,9 @@
+.\" $FreeBSD: src/share/doc/psd/12.make/stubs,v 1.1 2010/12/04 10:11:20 uqs Exp $
+.\"
+.de Ix
+..
+.de Rd
+..
+.de Rm
+..
+.if n .ftr CR R

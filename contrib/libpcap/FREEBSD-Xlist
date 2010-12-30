@@ -1,7 +1,0 @@
-$FreeBSD: src/contrib/libpcap/FREEBSD-Xlist,v 1.3 2009/03/21 20:39:22 rpaulo Exp $
-*/README.*
-*/msdos
-*/SUNOS4
-*/Win32
-*/ChmodBPF
-*/*.plist

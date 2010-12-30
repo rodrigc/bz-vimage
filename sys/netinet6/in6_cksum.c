@@ -61,7 +61,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.18 2010/10/13 10:45:22 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.19 2010/11/27 21:51:39 brucec Exp $");
 
 #include <sys/param.h>
 #include <sys/mbuf.h>
@@ -81,7 +81,7 @@ __FBSDID("$FreeBSD: src/sys/netinet6/in6_cksum.c,v 1.18 2010/10/13 10:45:22 rpau
 #define REDUCE {l_util.l = sum; sum = l_util.s[0] + l_util.s[1]; (void)ADDCARRY(sum);}
 
 /*
- * m MUST contain a continuous IP6 header.
+ * m MUST contain a contiguous IP6 header.
  * off is an offset where TCP/UDP/ICMP6 header starts.
  * len is a total length of a transport segment.
  * (e.g. TCP header + TCP payload)

@@ -1,8 +1,6 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.mips,v 1.11 2010/06/02 11:06:03 jmallett Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/ld/Makefile.mips,v 1.12 2010/11/10 06:39:49 imp Exp $
 
-#xxxIMPxxx: TARGET_BIG_ENDIAN is lame.  We should use the netbsd convention
-# of mipsel and mips.
-.if !defined(TARGET_BIG_ENDIAN)
+.if ${TARGET_ARCH} == "mipsel"
 _EMULATION_ENDIAN=l
 .else
 _EMULATION_ENDIAN=b

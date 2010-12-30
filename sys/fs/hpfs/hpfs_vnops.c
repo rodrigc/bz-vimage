@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/hpfs/hpfs_vnops.c,v 1.77 2008/12/16 21:13:11 trasz Exp $
+ * $FreeBSD: src/sys/fs/hpfs/hpfs_vnops.c,v 1.78 2010/11/19 21:17:34 kib Exp $
  */
 
 #include <sys/param.h>
@@ -574,9 +574,6 @@ hpfs_inactive(ap)
 		if (error)
 			return (error);
 	}
-
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("hpfs_inactive: pushing active", vp);
 
 	if (hp->h_flag & H_INVAL) {
 		vrecycle(vp, ap->a_td);

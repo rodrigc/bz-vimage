@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/devfs/devfs_rule.c,v 1.26 2010/08/06 09:42:15 kib Exp $
+ * $FreeBSD: src/sys/fs/devfs/devfs_rule.c,v 1.28 2010/12/15 16:42:44 jh Exp $
  */
 
 /*
@@ -138,6 +138,8 @@ void
 devfs_rules_apply(struct devfs_mount *dm, struct devfs_dirent *de)
 {
 	struct devfs_ruleset *ds;
+
+	sx_assert(&dm->dm_lock, SX_XLOCKED);
 
 	if (dm->dm_ruleset == 0)
 		return;
@@ -740,6 +742,11 @@ devfs_ruleset_use(devfs_rsnum rsnum, struct devfs_mount *dm)
 		cds = devfs_ruleset_bynum(dm->dm_ruleset);
 		--cds->ds_refcount;
 		devfs_ruleset_reap(cds);
+	}
+
+	if (rsnum == 0) {
+		dm->dm_ruleset = 0;
+		return (0);
 	}
 
 	ds = devfs_ruleset_bynum(rsnum);

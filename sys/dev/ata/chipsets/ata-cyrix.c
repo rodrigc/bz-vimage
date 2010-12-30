@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-cyrix.c,v 1.4 2009/12/06 00:10:13 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-cyrix.c,v 1.5 2010/11/28 18:53:29 marius Exp $");
 
 #include "opt_ata.h"
 #include <sys/param.h>
@@ -55,7 +55,6 @@ __FBSDID("$FreeBSD: src/sys/dev/ata/chipsets/ata-cyrix.c,v 1.4 2009/12/06 00:10:
 static int ata_cyrix_chipinit(device_t dev);
 static int ata_cyrix_ch_attach(device_t dev);
 static int ata_cyrix_setmode(device_t dev, int target, int mode);
-
 
 /*
  * Cyrix chipset support functions
@@ -89,14 +88,11 @@ static int
 ata_cyrix_ch_attach(device_t dev)
 {
 	struct ata_channel *ch = device_get_softc(dev);
-	int error;
  
-	error = ata_pci_ch_attach(dev);
 	ch->dma.alignment = 16;
 	ch->dma.max_iosize = 64 * DEV_BSIZE;
-	return (error);
+	return (ata_pci_ch_attach(dev));
 }
-
 
 static int
 ata_cyrix_setmode(device_t dev, int target, int mode)

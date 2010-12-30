@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/amd64/acpica/acpi_wakecode.S,v 1.8 2010/08/03 15:32:08 jkim Exp $
+ * $FreeBSD: src/sys/amd64/acpica/acpi_wakecode.S,v 1.9 2010/11/23 16:12:35 jkim Exp $
  */
 
 #include <machine/asmacros.h>
@@ -273,8 +273,6 @@ wakeup_gdt:
 
 	ALIGN_DATA
 wakeup_efer:
-	.quad	0
-wakeup_pat:
 	.quad	0
 wakeup_star:
 	.quad	0

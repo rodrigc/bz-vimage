@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)arith_lex.l	8.3 (Berkeley) 5/4/95";
 #endif /* not lint */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/arith_lex.l,v 1.26 2010/04/25 20:43:19 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/arith_lex.l,v 1.29 2010/12/18 23:03:51 jilles Exp $");
 
 #include <string.h>
 
@@ -53,8 +53,17 @@ int yylex(void);
 
 #undef YY_INPUT
 #define YY_INPUT(buf,result,max) \
-	result = (*buf = *arith_buf++) ? 1 : YY_NULL;
+	do { \
+		result = strnlen(arith_buf, max); \
+		if (result == 0) \
+			result = YY_NULL; \
+		else { \
+			memcpy(buf, arith_buf, result); \
+			arith_buf += result; \
+		} \
+	} while (0);
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 %}
 
 %%
@@ -65,12 +74,12 @@ int yylex(void);
 			return ARITH_NUM;
 		}
 
-0[0-7]+		{
+0[0-7]*		{
 			yylval.l_value = strtoarith_t(yytext, NULL, 8);
 			return ARITH_NUM;
 		}
 
-[0-9]+		{
+[1-9][0-9]*	{
 			yylval.l_value = strtoarith_t(yytext, NULL, 10);
 			return ARITH_NUM;
 		}

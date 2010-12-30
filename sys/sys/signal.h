@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)signal.h	8.4 (Berkeley) 5/4/95
- * $FreeBSD: src/sys/sys/signal.h,v 1.65 2010/08/24 13:11:24 rpaulo Exp $
+ * $FreeBSD: src/sys/sys/signal.h,v 1.66 2010/11/12 15:30:49 jilles Exp $
  */
 
 #ifndef _SYS_SIGNAL_H_
@@ -284,7 +284,7 @@ typedef	struct __siginfo {
 #define POLL_MSG	3	/* Input message available		*/
 #define POLL_ERR	4	/* I/O Error				*/
 #define POLL_PRI	5	/* High priority input available	*/
-#define POLL_HUP	4	/* Device disconnected			*/
+#define POLL_HUP	6	/* Device disconnected			*/
 
 #endif
 

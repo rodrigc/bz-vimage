@@ -26,7 +26,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/VOP_READDIR.9,v 1.17 2010/10/08 12:40:16 uqs Exp $
+.\" $FreeBSD: src/share/man/man9/VOP_READDIR.9,v 1.18 2010/12/19 18:07:10 pjd Exp $
 .\"
 .Dd July 24, 1996
 .Dt VOP_READDIR 9
@@ -92,8 +92,7 @@ Memory for the cookies should be allocated using:
 .Bd -literal
 	...;
 	*ncookies = number of entries read;
-	*cookies = (u_int*)#
-		malloc(*ncookies * sizeof(u_int), M_TEMP, M_WAITOK);
+	*cookies = malloc(*ncookies * sizeof(u_long), M_TEMP, M_WAITOK);
 .Ed
 .Sh ERRORS
 .Bl -tag -width Er

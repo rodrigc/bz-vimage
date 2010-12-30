@@ -26,6 +26,9 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <machine/asm.h>
+__FBSDID("$FreeBSD: src/lib/csu/sparc64/crtn.S,v 1.2 2010/12/09 21:31:21 dim Exp $");
+
  	.file	"crtn.S"
 
 	.section .init,"ax",@progbits
@@ -37,6 +40,3 @@
 	.align	4
 	ret
 	 restore
-
-	.section .rodata
-.ascii "$FreeBSD: src/lib/csu/sparc64/crtn.S,v 1.1 2001/10/28 00:20:34 obrien Exp $\0"

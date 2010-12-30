@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)memalloc.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/memalloc.c,v 1.32 2010/10/13 23:29:09 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/memalloc.c,v 1.37 2010/12/27 22:18:27 jilles Exp $");
 
 #include <sys/param.h>
 #include "shell.h"
@@ -127,8 +127,7 @@ static struct stack_block *stackp;
 static struct stackmark *markp;
 char *stacknxt;
 int stacknleft;
-int sstrnleft;
-int herefd = -1;
+char *sstrend;
 
 
 static void
@@ -147,6 +146,7 @@ stnewblock(int nbytes)
 	sp->prev = stackp;
 	stacknxt = SPACE(sp);
 	stacknleft = allocsize - (stacknxt - (char*)sp);
+	sstrend = stacknxt + stacknleft;
 	stackp = sp;
 	INTON;
 }
@@ -205,6 +205,7 @@ popstackmark(struct stackmark *mark)
 	}
 	stacknxt = mark->stacknxt;
 	stacknleft = mark->stacknleft;
+	sstrend = stacknxt + stacknleft;
 	INTON;
 }
 
@@ -219,8 +220,8 @@ popstackmark(struct stackmark *mark)
  * part of the block that has been used.
  */
 
-void
-growstackblock(void)
+static void
+growstackblock(int min)
 {
 	char *p;
 	int newlen;
@@ -230,8 +231,15 @@ growstackblock(void)
 	struct stack_block *oldstackp;
 	struct stackmark *xmark;
 
-	newlen = (stacknleft == 0) ? MINSIZE : stacknleft * 2 + 100;
-	newlen = ALIGN(newlen);
+	if (min < stacknleft)
+		min = stacknleft;
+	if (min >= INT_MAX / 2 - ALIGN(sizeof(struct stack_block)))
+		error("Out of space");
+	min += stacknleft;
+	min += ALIGN(sizeof(struct stack_block));
+	newlen = 512;
+	while (newlen < min)
+		newlen <<= 1;
 	oldspace = stacknxt;
 	oldlen = stacknleft;
 
@@ -244,6 +252,7 @@ growstackblock(void)
 		stackp = sp;
 		stacknxt = SPACE(sp);
 		stacknleft = newlen - (stacknxt - (char*)sp);
+		sstrend = stacknxt + stacknleft;
 
 		/*
 		 * Stack marks pointing to the start of the old block
@@ -258,6 +267,7 @@ growstackblock(void)
 		}
 		INTON;
 	} else {
+		newlen -= ALIGN(sizeof(struct stack_block));
 		p = stalloc(newlen);
 		if (oldlen != 0)
 			memcpy(p, oldspace, oldlen);
@@ -296,10 +306,9 @@ grabstackblock(int len)
  */
 
 static char *
-growstrstackblock(int n)
+growstrstackblock(int n, int min)
 {
-	growstackblock();
-	sstrnleft = stackblocksize() - n;
+	growstackblock(min);
 	return stackblock() + n;
 }
 
@@ -309,12 +318,7 @@ growstackstr(void)
 	int len;
 
 	len = stackblocksize();
-	if (herefd >= 0 && len >= 1024) {
-		xwrite(herefd, stackblock(), len);
-		sstrnleft = len;
-		return stackblock();
-	}
-	return growstrstackblock(len);
+	return (growstrstackblock(len, 0));
 }
 
 
@@ -323,20 +327,25 @@ growstackstr(void)
  */
 
 char *
-makestrspace(void)
+makestrspace(int min, char *p)
 {
 	int len;
 
-	len = stackblocksize() - sstrnleft;
-	return growstrstackblock(len);
+	len = p - stackblock();
+	return (growstrstackblock(len, min));
 }
 
 
-
-void
-ungrabstackstr(char *s, char *p)
+char *
+stputbin(const char *data, int len, char *p)
 {
-	stacknleft += stacknxt - s;
-	stacknxt = s;
-	sstrnleft = stacknleft - (p - s);
+	CHECKSTRSPACE(len, p);
+	memcpy(p, data, len);
+	return (p + len);
+}
+
+char *
+stputs(const char *data, char *p)
+{
+	return (stputbin(data, strlen(data), p));
 }

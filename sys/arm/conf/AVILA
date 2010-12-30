@@ -16,7 +16,7 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/arm/conf/AVILA,v 1.37 2010/02/15 23:44:48 attilio Exp $
+# $FreeBSD: src/sys/arm/conf/AVILA,v 1.38 2010/11/07 20:33:39 thompsa Exp $
 
 ident		AVILA
 
@@ -86,6 +86,10 @@ device		ds1672		# DS1672 on I2C bus
 device		ad7418		# AD7418 on I2C bus
 
 device		avila_led
+
+device		gpio
+device		gpioled
+device		avila_gpio	# GPIO pins on J8
 
 device		ata
 device		atadisk         # ATA disk drives

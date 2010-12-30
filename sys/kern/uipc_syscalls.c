@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.301 2010/09/05 20:13:07 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.302 2010/12/14 06:19:13 pjd Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -1875,8 +1875,7 @@ kern_sendfile(struct thread *td, struct sendfile_args *uap,
 		mnw = 1;
 
 	if (uap->flags & SF_SYNC) {
-		sfs = malloc(sizeof *sfs, M_TEMP, M_WAITOK);
-		memset(sfs, 0, sizeof *sfs);
+		sfs = malloc(sizeof *sfs, M_TEMP, M_WAITOK | M_ZERO);
 		mtx_init(&sfs->mtx, "sendfile", NULL, MTX_DEF);
 		cv_init(&sfs->cv, "sendfile");
 	}

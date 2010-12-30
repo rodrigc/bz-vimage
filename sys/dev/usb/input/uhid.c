@@ -5,7 +5,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.16 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.17 2010/11/13 19:26:45 hselasky Exp $");
 
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
@@ -672,7 +672,7 @@ uhid_attach(device_t dev)
 		if (uaa->info.idProduct == USB_PRODUCT_WACOM_GRAPHIRE) {
 
 			sc->sc_repdesc_size = sizeof(uhid_graphire_report_descr);
-			sc->sc_repdesc_ptr = &uhid_graphire_report_descr;
+			sc->sc_repdesc_ptr = (void *)&uhid_graphire_report_descr;
 			sc->sc_flags |= UHID_FLAG_STATIC_DESC;
 
 		} else if (uaa->info.idProduct == USB_PRODUCT_WACOM_GRAPHIRE3_4X5) {
@@ -693,7 +693,7 @@ uhid_attach(device_t dev)
 				    usbd_errstr(error));
 			}
 			sc->sc_repdesc_size = sizeof(uhid_graphire3_4x5_report_descr);
-			sc->sc_repdesc_ptr = &uhid_graphire3_4x5_report_descr;
+			sc->sc_repdesc_ptr = (void *)&uhid_graphire3_4x5_report_descr;
 			sc->sc_flags |= UHID_FLAG_STATIC_DESC;
 		}
 	} else if ((uaa->info.bInterfaceClass == UICLASS_VENDOR) &&
@@ -702,7 +702,7 @@ uhid_attach(device_t dev)
 
 		/* the Xbox 360 gamepad has no report descriptor */
 		sc->sc_repdesc_size = sizeof(uhid_xb360gp_report_descr);
-		sc->sc_repdesc_ptr = &uhid_xb360gp_report_descr;
+		sc->sc_repdesc_ptr = (void *)&uhid_xb360gp_report_descr;
 		sc->sc_flags |= UHID_FLAG_STATIC_DESC;
 	}
 	if (sc->sc_repdesc_ptr == NULL) {

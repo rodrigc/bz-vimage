@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.44 2010/10/14 21:38:06 hselasky Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci.c,v 1.45 2010/10/25 15:51:43 nwhitehorn Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -270,9 +270,9 @@ ehci_init(ehci_softc_t *sc)
 	}
 #endif
 
-	sc->sc_offs = EREAD1(sc, EHCI_CAPLENGTH);
+	sc->sc_offs = EHCI_CAPLENGTH(EREAD4(sc, EHCI_CAPLEN_HCIVERSION));
 
-	version = EREAD2(sc, EHCI_HCIVERSION);
+	version = EHCI_HCIVERSION(EREAD4(sc, EHCI_CAPLEN_HCIVERSION));
 	device_printf(sc->sc_bus.bdev, "EHCI version %x.%x\n",
 	    version >> 8, version & 0xff);
 

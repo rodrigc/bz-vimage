@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/p1003_1b.c,v 1.39 2010/09/29 07:31:05 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/p1003_1b.c,v 1.40 2010/11/19 17:56:16 jhb Exp $");
 
 #include "opt_posix.h"
 
@@ -102,7 +102,7 @@ sched_attach(void)
 	int ret = ksched_attach(&ksched);
 
 	if (ret == 0)
-		p31b_setcfg(CTL_P1003_1B_PRIORITY_SCHEDULING, 1);
+		p31b_setcfg(CTL_P1003_1B_PRIORITY_SCHEDULING, 200112L);
 
 	return ret;
 }

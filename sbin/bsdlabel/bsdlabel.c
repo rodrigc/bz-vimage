@@ -53,7 +53,7 @@ static char sccsid[] = "@(#)disklabel.c	8.2 (Berkeley) 1/7/94";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.122 2010/08/27 11:08:11 jh Exp $");
+__FBSDID("$FreeBSD: src/sbin/bsdlabel/bsdlabel.c,v 1.124 2010/12/01 08:07:32 kevlo Exp $");
 
 #include <sys/param.h>
 #include <stdint.h>
@@ -370,10 +370,12 @@ readboot(void)
 		p[60] = (st.st_size + secsize - 1) / secsize;
 		p[61] = 1;
 		p[62] = 0;
+		close(fd);
 		return;
 	} else if ((!alphacksum) && st.st_size <= BBSIZE) {
 		if (read(fd, bootarea, st.st_size) != st.st_size)
 			err(1, "read error %s", xxboot);
+		close(fd);
 		return;
 	}
 	errx(1, "boot code %s is wrong size", xxboot);
@@ -515,7 +517,7 @@ readlabel(int flag)
 
 	f = open(specname, O_RDONLY);
 	if (f < 0)
-		err(1, specname);
+		err(1, "%s", specname);
 	if (is_file)
 		get_file_parms(f);
 	else {

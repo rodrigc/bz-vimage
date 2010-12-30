@@ -22,9 +22,9 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/sbin/geom/class/part/gpart.8,v 1.16 2010/09/28 09:07:00 pjd Exp $
+.\" $FreeBSD: src/sbin/geom/class/part/gpart.8,v 1.19 2010/11/22 10:08:33 ae Exp $
 .\"
-.Dd September 28, 2010
+.Dd November 22, 2010
 .Dt GPART 8
 .Os
 .Sh NAME
@@ -91,6 +91,10 @@ utility:
 .Op Fl l Ar label
 .Op Fl f Ar flags
 .Ar geom
+.\" ==== BACKUP ====
+.Nm
+.Cm backup
+.Ar geom
 .\" ==== BOOTCODE ====
 .Nm
 .Cm bootcode
@@ -129,6 +133,11 @@ utility:
 .Op Fl t Ar type
 .Op Fl f Ar flags
 .Ar geom
+.\" ==== RECOVER ====
+.Nm
+.Cm recover
+.Op Fl f Ar flags
+.Ar geom
 .\" ==== RESIZE ====
 .Nm
 .Cm resize
@@ -136,6 +145,13 @@ utility:
 .Op Fl s Ar size
 .Op Fl f Ar flags
 .Ar geom
+.\" ==== RESTORE ====
+.Nm
+.Cm restore
+.Op Fl lF
+.Op Fl f Ar flags
+.Ar provider
+.Op Ar ...
 .\" ==== SET ====
 .Nm
 .Cm set
@@ -146,6 +162,7 @@ utility:
 .\" ==== SHOW ====
 .Nm
 .Cm show
+.Op Fl lr
 .Op Ar geom ...
 .\" ==== UNDO ====
 .Nm
@@ -203,6 +220,11 @@ See the section entitled
 below for a discussion
 about its use.
 .El
+.\" ==== BACKUP ====
+.It Cm backup
+Dump a partition table to standard output in special format used by
+.Cm restore
+action.
 .\" ==== BOOTCODE ====
 .It Cm bootcode
 Embed bootstrap code into the partitioning scheme's metadata on the
@@ -353,6 +375,23 @@ See the section entitled
 below for a discussion
 about its use.
 .El
+.\" ==== RECOVER ====
+.It Cm recover
+Recover corrupt partition's scheme metadata on the geom
+.Ar geom .
+See the section entitled
+.Sx "RECOVERING"
+below for the additional information.
+.Pp
+Additional options include:
+.Bl -tag -width 10n
+.It Fl f Ar flags
+Additional operational flags.
+See the section entitled
+.Sx "OPERATIONAL FLAGS"
+below for a discussion
+about its use.
+.El
 .\" ==== RESIZE ====
 .It Cm resize
 Resize a partition from geom
@@ -372,6 +411,30 @@ to maximum available from given geom
 .Pp
 Additional options include:
 .Bl -tag -width 10n
+.It Fl f Ar flags
+Additional operational flags.
+See the section entitled
+.Sx "OPERATIONAL FLAGS"
+below for a discussion
+about its use.
+.El
+.\" ==== RESTORE ====
+.It Cm restore
+Restore the partition table from backup previously created by
+.Cm backup
+action and given from standard input. Only partition table
+may be restored. This action does not affect content of partitions.
+This mean that you should copy your data from backup after restoring
+partition table and write bootcode again if it is needed. 
+.Pp
+Additional options include:
+.Bl -tag -width 10n
+.It Fl F
+Destroy partition table on the given
+.Ar provider
+before doing restore.
+.It Fl l
+Restore partition labels for partitioning schemes that support them.
 .It Fl f Ar flags
 Additional operational flags.
 See the section entitled
@@ -399,6 +462,14 @@ about its use.
 .It Cm show
 Show the current partition information of the specified geoms
 or all geoms if none are specified.
+Additional options include:
+.Bl -tag -width 10n
+.It Fl l
+For partition schemes that support partition labels print them
+instead of partition type.
+.It Fl r
+Show raw partition type instead of symbolic name.
+.El
 .\" ==== UNDO ====
 .It Cm undo
 Revert any pending changes for geom
@@ -629,6 +700,68 @@ the
 action or reverted with the
 .Cm undo
 action.
+.Sh RECOVERING
+The GEOM class PART supports recovering of partition tables only for GPT.
+The GUID partition table has a primary and secondary (backup) copy of
+metadata for redundance. They are stored in the begining and in the end
+of device respectively. Therefore it is acceptable to have some corruptions
+in the metadata that are not fatal to work with GPT. When kernel detects
+corrupt metadata it marks this table as corrupt and reports about corruption.
+Any changes in corrupt table are prohibited except
+.Cm destroy
+and
+.Cm recover . 
+.Pp
+In case when only first sector is corrupt kernel can not detect GPT even
+if partition table is not corrupt. You can write protective MBR with
+.Xr dd 1
+command to restore ability of GPT detection. The copy of protective MBR is
+usually located in the
+.Pa /boot/pmbr
+file.
+.Pp
+In case when some of metadata is corrupt you will get to know about this
+from kernel's messages like these:
+.Bd -literal -offset indent
+GEOM: provider: the primary GPT table is corrupt or invalid.
+GEOM: provider: using the secondary instead -- recovery strongly advised.
+.Ed
+.Pp
+or
+.Bd -literal -offset indent
+GEOM: provider: the secondary GPT table is corrupt or invalid.
+GEOM: provider: using the primary only -- recovery suggested.
+.Ed
+.Pp
+Also 
+.Cm gpart 
+commands like 
+.Cm show ,
+.Cm status
+and
+.Cm list
+will report about corrupt table.
+.Pp
+In case when the size of device has changed (e.g. volume expansion) the 
+secondary GPT header will become located not in the last sector. This is 
+not a metadata corruption, but it is dangerous because any corruption of 
+the primary GPT will lead to lost of partition table. Kernel reports about 
+this problem with message:
+.Bd -literal -offset indent
+GEOM: provider: the secondary GPT header is not in the last LBA.
+.Ed
+.Pp
+A corrupt table can be recovered with 
+.Cm gpart recover 
+command. This command does reconstruction of corrupt metadata using 
+known valid metadata. Also it can relocate secondary GPT to the end of 
+device.
+.Pp
+.Pa NOTE :
+The GEOM class PART can detect the same partition table on different GEOM 
+providers and some of them will marked as corrupt. Be careful when choising 
+a provider for recovering. If you did incorrect choise you can destroy 
+metadata of another GEOM class, e.g. GEOM MIRROR or GEOM LABEL.
 .Sh EXIT STATUS
 Exit status is 0 on success, and 1 if the command fails.
 .Sh EXAMPLES
@@ -686,7 +819,30 @@ After having created all required partitions, embed bootstrap code into them.
 .Bd -literal -offset indent
 /sbin/gpart bootcode -p /boot/boot1 da0
 .Ed
+.Pp
+Create backup of partition table from
+.Pa da0
+.Bd -literal -offset indent
+/sbin/gpart backup da0 > da0.backup
+.Ed
+.Pp
+Restore partition table from backup to
+.Pa da0
+.Bd -literal -offset indent
+/sbin/gpart restore -l da0 < /mnt/da0.backup
+.Ed
+.Pp
+Clone partition table from 
+.Pa ada0 
+to 
+.Pa ada1 
+and 
+.Pa ada2
+.Bd -literal -offset indent
+/sbin/gpart backup ada0 | /sbin/gpart restore -F ada1 ada2
+.Ed
 .Sh SEE ALSO
+.Xr dd 1 ,
 .Xr geom 4 ,
 .Xr geom 8
 .Sh HISTORY

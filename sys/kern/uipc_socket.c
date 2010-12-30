@@ -101,7 +101,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.350 2010/09/18 11:18:42 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.351 2010/11/12 13:02:26 luigi Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2431,6 +2431,7 @@ sosetopt(struct socket *so, struct sockopt *sopt)
 	struct	linger l;
 	struct	timeval tv;
 	u_long  val;
+	uint32_t val32;
 #ifdef MAC
 	struct mac extmac;
 #endif
@@ -2509,6 +2510,15 @@ sosetopt(struct socket *so, struct sockopt *sopt)
 				so->so_fibnum = 0;
 			}
 			break;
+
+		case SO_USER_COOKIE:
+			error = sooptcopyin(sopt, &val32, sizeof val32,
+					    sizeof val32);
+			if (error)
+				goto bad;
+			so->so_user_cookie = val32;
+			break;
+
 		case SO_SNDBUF:
 		case SO_RCVBUF:
 		case SO_SNDLOWAT:

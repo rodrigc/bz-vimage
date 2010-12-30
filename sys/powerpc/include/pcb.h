@@ -29,7 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	$NetBSD: pcb.h,v 1.4 2000/06/04 11:57:17 tsubai Exp $
- * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.15 2010/10/05 18:08:07 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/pcb.h,v 1.16 2010/10/30 23:07:30 nwhitehorn Exp $
  */
 
 #ifndef _MACHINE_PCB_H_
@@ -67,7 +67,6 @@ struct pcb {
 	union {
 		struct {
 			vm_offset_t	usr_segm;	/* Base address */
-			register_t	usr_esid;	/* USER_SR segment */
 			register_t	usr_vsid;	/* USER_SR segment */
 		} aim;
 		struct {

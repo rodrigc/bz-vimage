@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/netipsec/ipsec.c,v 1.58 2010/04/29 11:52:42 bz Exp $	*/
+/*	$FreeBSD: src/sys/netipsec/ipsec.c,v 1.59 2010/10/30 18:52:44 bz Exp $	*/
 /*	$KAME: ipsec.c,v 1.103 2001/05/24 07:14:18 sakane Exp $	*/
 
 /*-
@@ -125,6 +125,11 @@ VNET_DEFINE(int, ip4_esp_randpad) = -1;
  *  0	take anything
  */
 VNET_DEFINE(int, crypto_support) = CRYPTOCAP_F_HARDWARE | CRYPTOCAP_F_SOFTWARE;
+
+FEATURE(ipsec, "Internet Protocol Security (IPsec)");
+#ifdef IPSEC_NAT_T
+FEATURE(ipsec_natt, "UDP Encapsulation of IPsec ESP Packets ('NAT-T')");
+#endif
 
 SYSCTL_DECL(_net_inet_ipsec);
 

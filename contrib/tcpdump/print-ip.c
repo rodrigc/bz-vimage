@@ -18,7 +18,7 @@
  * WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
- * $FreeBSD: src/contrib/tcpdump/print-ip.c,v 1.16 2009/03/21 18:30:25 rpaulo Exp $
+ * $FreeBSD: src/contrib/tcpdump/print-ip.c,v 1.17 2010/10/28 19:06:17 rpaulo Exp $
  */
 
 #ifndef lint
@@ -510,7 +510,8 @@ again:
 		break;
 
 	case IPPROTO_PIM:
-		pim_print(ipds->cp,  ipds->len);
+		pim_print(ipds->cp,  ipds->len,
+			  in_cksum((const u_short*)ipds->cp, ipds->len, 0));
 		break;
 
 	case IPPROTO_VRRP:
@@ -659,7 +660,7 @@ ip_print(netdissect_options *ndo,
                 printf(")");
             }
 
-	    if ((u_char *)ipds->ip + hlen <= snapend) {
+	    if (!Kflag && (u_char *)ipds->ip + hlen <= snapend) {
 	        sum = in_cksum((const u_short *)ipds->ip, hlen, 0);
 		if (sum != 0) {
 		    ip_sum = EXTRACT_16BITS(&ipds->ip->ip_sum);

@@ -38,7 +38,7 @@
  * Authors: Julian Elischer <julian@freebsd.org>
  *          Archie Cobbs <archie@freebsd.org>
  *
- * $FreeBSD: src/sys/netgraph/ng_base.c,v 1.182 2010/05/13 16:48:28 zec Exp $
+ * $FreeBSD: src/sys/netgraph/ng_base.c,v 1.184 2010/11/22 19:32:54 dim Exp $
  * $Whistle: ng_base.c,v 1.39 1999/01/28 23:54:53 julian Exp $
  */
 

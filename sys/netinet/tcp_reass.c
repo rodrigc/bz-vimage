@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_reass.c,v 1.369 2010/10/16 07:12:39 lstewart Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_reass.c,v 1.372 2010/11/22 19:32:54 dim Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -266,6 +266,7 @@ tcp_reass(struct tcpcb *tp, struct tcphdr *th, int *tlenp, struct mbuf *m)
 			th->th_seq += i;
 		}
 	}
+ 	tp->t_rcvoopack++;
 	TCPSTAT_INC(tcps_rcvoopack);
 	TCPSTAT_ADD(tcps_rcvoobyte, *tlenp);
 

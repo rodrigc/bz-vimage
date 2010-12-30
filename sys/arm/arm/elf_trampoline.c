@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/elf_trampoline.c,v 1.27 2010/05/04 10:14:05 kevlo Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/elf_trampoline.c,v 1.28 2010/11/01 21:04:23 cognet Exp $");
 #include <machine/asm.h>
 #include <sys/param.h>
 #include <sys/elf32.h>
@@ -159,7 +159,7 @@ _startC(void)
 #if defined(FLASHADDR) && defined(LOADERRAMADDR)
 	unsigned int pc;
 
-	__asm __volatile("adr %0, _start\n"
+	__asm __volatile("mov %0, pc\n"
 	    : "=r" (pc));
 	if ((FLASHADDR > LOADERRAMADDR && pc >= FLASHADDR) ||
 	    (FLASHADDR < LOADERRAMADDR && pc < LOADERRAMADDR)) {
@@ -173,11 +173,13 @@ _startC(void)
 		 */
 		unsigned int target_addr;
 		unsigned int tmp_sp;
+		uint32_t src_addr = (uint32_t)&_start - PHYSADDR + FLASHADDR
+		    + (pc - FLASHADDR - ((uint32_t)&_startC - PHYSADDR)) & 0xfffff000;
 
 		target_addr = (unsigned int)&_start - PHYSADDR + LOADERRAMADDR;
 		tmp_sp = target_addr + 0x100000 +
 		    (unsigned int)&_end - (unsigned int)&_start;
-		memcpy((char *)target_addr, (char *)pc,
+		memcpy((char *)target_addr, (char *)src_addr,
 		    (unsigned int)&_end - (unsigned int)&_start);
 		/* Temporary set the sp and jump to the new location. */
 		__asm __volatile(

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/at91/at91_pmc.c,v 1.13 2010/10/06 22:40:27 cognet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/at91/at91_pmc.c,v 1.14 2010/12/06 10:24:06 kevlo Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -325,7 +325,7 @@ at91_pmc_clock_disable(struct at91_pmc_clock *clk)
 static int
 at91_pmc_pll_rate(struct at91_pmc_clock *clk, uint32_t reg)
 {
-	uint32_t mul, div, freq;;
+	uint32_t mul, div, freq;
 
 	freq = clk->parent->hz;
 	div = (reg >> clk->pll_div_shift) & clk->pll_div_mask;

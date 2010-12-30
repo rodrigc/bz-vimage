@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/iodi.c,v 1.15 2010/09/16 20:23:22 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/iodi.c,v 1.16 2010/12/12 06:00:26 jchandra Exp $");
 
 #define __RMAN_RESOURCE_VISIBLE
 #include <sys/param.h>
@@ -212,6 +212,7 @@ iodi_attach(device_t dev)
 	 */
 	device_add_child(dev, "uart", 0);
 	device_add_child(dev, "xlr_i2c", 0);
+	device_add_child(dev, "xlr_i2c", 1);
 	device_add_child(dev, "pcib", 0);
 	device_add_child(dev, "rmisec", -1);
 

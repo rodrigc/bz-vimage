@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_inode.c,v 1.119 2010/07/06 07:11:04 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_inode.c,v 1.120 2010/11/11 11:35:42 kib Exp $");
 
 #include "opt_quota.h"
 
@@ -582,9 +582,7 @@ ffs_indirtrunc(ip, lbn, dbn, lastbn, level, countp)
 	 * block to be kept.  -1 indicates the entire
 	 * block so we need not calculate the index.
 	 */
-	factor = 1;
-	for (i = SINGLE; i < level; i++)
-		factor *= NINDIR(fs);
+	factor = lbn_offset(fs, level);
 	last = lastbn;
 	if (lastbn > 0)
 		last /= factor;

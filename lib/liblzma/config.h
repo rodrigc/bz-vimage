@@ -1,4 +1,4 @@
-// $FreeBSD: src/lib/liblzma/config.h,v 1.4 2010/10/11 21:16:50 mm Exp $
+// $FreeBSD: src/lib/liblzma/config.h,v 1.5 2010/11/12 16:53:17 mm Exp $
 #define ASSUME_RAM 128
 #define HAVE_CHECK_CRC32 1
 #define HAVE_CHECK_CRC64 1
@@ -59,13 +59,14 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "lasse.collin@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 4.999.9beta"
+#define PACKAGE_STRING "XZ Utils 5.0.0"
 #define PACKAGE_TARNAME "xz"
 #define PACKAGE_URL "http://tukaani.org/xz/"
-#define PACKAGE_VERSION "4.999.9beta"
+#define PACKAGE_VERSION "5.0.0"
 #define SIZEOF_SIZE_T 8
 #define STDC_HEADERS 1
 #define TUKLIB_CPUCORES_SYSCTL 1
+#define TUKLIB_FAST_UNALIGNED_ACCESS 1
 #define TUKLIB_PHYSMEM_SYSCONF 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -82,7 +83,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "4.999.9beta"
+#define VERSION "5.0.0"
 #if defined(__FreeBSD__)
 #include <machine/endian.h>
 #if _BYTE_ORDER == _BIG_ENDIAN

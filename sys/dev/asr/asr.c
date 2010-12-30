@@ -160,7 +160,7 @@
 
 #include	<dev/asr/sys_info.h>
 
-__FBSDID("$FreeBSD: src/sys/dev/asr/asr.c,v 1.88 2010/01/28 08:41:30 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/asr/asr.c,v 1.89 2010/11/25 21:51:43 brian Exp $");
 
 #define	ASR_VERSION	1
 #define	ASR_REVISION	'1'
@@ -3708,9 +3708,9 @@ asr_ioctl(struct cdev *dev, u_long cmd, caddr_t data, int flag, struct thread *t
 		Info.drive1CMOS = j;
 
 		Info.numDrives = *((char *)ptok(0x475));
-#endif /* ASR_IOCTL_COMPAT */
-
+#else /* ASR_IOCTL_COMPAT */
 		bzero(&Info, sizeof(Info));
+#endif /* ASR_IOCTL_COMPAT */
 
 		Info.processorFamily = ASR_sig.dsProcessorFamily;
 #if defined(__i386__)

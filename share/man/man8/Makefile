@@ -1,10 +1,9 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/5/93
-# $FreeBSD: src/share/man/man8/Makefile,v 1.38 2009/11/18 00:56:05 delphij Exp $
+# $FreeBSD: src/share/man/man8/Makefile,v 1.39 2010/11/15 05:25:51 dougb Exp $
 
 MAN=	crash.8 \
 	diskless.8 \
 	intro.8 \
-	MAKEDEV.8 \
 	nanobsd.8 \
 	picobsd.8 \
 	rc.8 \

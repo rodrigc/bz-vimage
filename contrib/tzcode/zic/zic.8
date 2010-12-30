@@ -1,4 +1,4 @@
-.\" $FreeBSD: src/contrib/tzcode/zic/zic.8,v 1.2 2010/06/15 11:37:33 edwin Exp $
+.\" $FreeBSD: src/contrib/tzcode/zic/zic.8,v 1.3 2010/10/27 07:14:46 edwin Exp $
 .Dd June 20, 2004
 .Dt ZIC 8
 .Os
@@ -118,6 +118,9 @@ White space characters and sharp characters may be enclosed in double quotes
 Any line that is blank (after comment stripping) is ignored.
 Non-blank lines are expected to be of one of three types:
 rule lines, zone lines, and link lines.
+.Pp
+Names (such as month names) must be in English and are case insensitive.
+Abbreviations, if used, must be unambiguous in context.
 .Pp
 A rule line has the form:
 .Dl "Rule	NAME	FROM	TO	TYPE	IN	ON		AT	SAVE	LETTER/S"
@@ -460,6 +463,6 @@ standard directory used for created files
 .Xr ctime 3 ,
 .Xr tzfile 5 ,
 .Xr zdump 8
-.\" @(#)zic.8	8.5
+.\" @(#)zic.8	8.6
 .\" This file is in the public domain, so clarified as of
 .\" 2009-05-17 by Arthur David Olson.

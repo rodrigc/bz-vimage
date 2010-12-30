@@ -1,6 +1,6 @@
 /******************************************************************************
 
-  Copyright (c) 2001-2009, Intel Corporation 
+  Copyright (c) 2001-2010, Intel Corporation 
   All rights reserved.
   
   Redistribution and use in source and binary forms, with or without 
@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_osdep.h,v 1.8 2009/12/07 21:30:54 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_osdep.h,v 1.9 2010/11/26 22:46:32 jfv Exp $*/
 
 #ifndef _IXGBE_OS_H_
 #define _IXGBE_OS_H_
@@ -86,7 +86,8 @@
 #define UNREFERENCED_PARAMETER(_p)
 
 
-#define IXGBE_HTONL	htonl
+#define IXGBE_NTOHL(_i)	ntohl(_i)
+#define IXGBE_NTOHS(_i)	ntohs(_i)
 
 typedef uint8_t		u8;
 typedef int8_t		s8;

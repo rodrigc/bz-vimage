@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/nsgphy.c,v 1.28 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/nsgphy.c,v 1.31 2010/12/21 21:12:18 marius Exp $");
 
 /*
  * Driver for the National Semiconductor DP83861, DP83865 and DP83891
@@ -135,14 +135,20 @@ nsgphy_attach(device_t dev)
 	sc->mii_service = nsgphy_service;
 	sc->mii_pdata = mii;
 
+	sc->mii_flags |= MIIF_NOMANPAUSE;
+
 	mii_phy_reset(sc);
 
 	/*
-	 * NB: the PHY has the 10baseT BMSR bits hard-wired to 0,
-	 * even though it supports 10baseT.
+	 * NB: the PHY has the 10BASE-T BMSR bits hard-wired to 0,
+	 * even though it supports 10BASE-T.
 	 */
 	sc->mii_capabilities = (PHY_READ(sc, MII_BMSR) |
-	    (BMSR_10TFDX | BMSR_10THDX)) & ma->mii_capmask;
+	    BMSR_10TFDX | BMSR_10THDX) & ma->mii_capmask;
+	/*
+	 * Note that as documented manual 1000BASE-T modes of DP83865 only
+	 * work together with other National Semiconductor PHYs.
+	 */
 	if (sc->mii_capabilities & BMSR_EXTSTAT)
 		sc->mii_extcapabilities = PHY_READ(sc, MII_EXTSR);
 
@@ -246,7 +252,8 @@ nsgphy_status(struct mii_softc *sc)
 		}
 
 		if (physup & PHY_SUP_DUPLEX)
-			mii->mii_media_active |= IFM_FDX;
+			mii->mii_media_active |=
+			    IFM_FDX | mii_phy_flowstatus(sc);
 		else
 			mii->mii_media_active |= IFM_HDX;
 	} else

@@ -1,7 +1,7 @@
 /*	$NetBSD: umodem.c,v 1.45 2002/09/23 05:51:23 simonb Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umodem.c,v 1.20 2010/04/22 21:31:34 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umodem.c,v 1.22 2010/11/05 19:12:48 n_hibma Exp $");
 
 /*-
  * Copyright (c) 2003, M. Warner Losh <imp@FreeBSD.org>.
@@ -389,6 +389,8 @@ umodem_attach(device_t dev)
 	if (error) {
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
+
 	return (0);
 
 detach:
@@ -816,7 +818,7 @@ umodem_detach(device_t dev)
 
 	DPRINTF("sc=%p\n", sc);
 
-	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom, 1);
+	ucom_detach(&sc->sc_super_ucom, &sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, UMODEM_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

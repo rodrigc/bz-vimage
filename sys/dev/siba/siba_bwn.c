@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/siba/siba_bwn.c,v 1.4 2010/03/09 20:07:41 weongyo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/siba/siba_bwn.c,v 1.5 2010/12/06 10:24:06 kevlo Exp $");
 
 /*
  * Sonics Silicon Backplane front-end for bwn(4).
@@ -326,7 +326,7 @@ static int
 siba_bwn_read_ivar(device_t dev, device_t child, int which, uintptr_t *result)
 {
 	struct siba_dev_softc *sd;
-	struct siba_softc *siba;;
+	struct siba_softc *siba;
 
 	sd = device_get_ivars(child);
 	siba = sd->sd_bus;

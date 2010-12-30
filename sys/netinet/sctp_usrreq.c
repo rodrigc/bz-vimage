@@ -31,7 +31,7 @@
 /* $KAME: sctp_usrreq.c,v 1.48 2005/03/07 23:26:08 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_usrreq.c,v 1.80 2010/09/15 23:56:25 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_usrreq.c,v 1.84 2010/12/30 16:56:20 tuexen Exp $");
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
 #include <netinet/sctp_pcb.h>
@@ -196,7 +196,7 @@ sctp_notify_mbuf(struct sctp_inpcb *inp,
 		 * mtu is. Rats we will have to guess (in a educated fashion
 		 * of course)
 		 */
-		nxtsz = find_next_best_mtu(totsz);
+		nxtsz = sctp_get_prev_mtu(totsz);
 	}
 	/* Stop any PMTU timer */
 	if (SCTP_OS_TIMER_PENDING(&net->pmtu_timer.timer)) {
@@ -294,7 +294,7 @@ sctp_notify(struct sctp_inpcb *inp,
 			 * PF state.
 			 */
 			/* Stop any running T3 timers here? */
-			if ((stcb->asoc.sctp_cmt_on_off == 1) &&
+			if ((stcb->asoc.sctp_cmt_on_off > 0) &&
 			    (stcb->asoc.sctp_cmt_pf > 0)) {
 				net->dest_state &= ~SCTP_ADDR_PF;
 				SCTPDBG(SCTP_DEBUG_TIMER4, "Destination %p moved from PF to unreachable.\n",
@@ -2443,6 +2443,29 @@ flags_out:
 			*optsize = sizeof(*srto);
 		}
 		break;
+	case SCTP_TIMEOUTS:
+		{
+			struct sctp_timeouts *stimo;
+
+			SCTP_CHECK_AND_CAST(stimo, optval, struct sctp_timeouts, *optsize);
+			SCTP_FIND_STCB(inp, stcb, stimo->stimo_assoc_id);
+
+			if (stcb) {
+				stimo->stimo_init = stcb->asoc.timoinit;
+				stimo->stimo_data = stcb->asoc.timodata;
+				stimo->stimo_sack = stcb->asoc.timosack;
+				stimo->stimo_shutdown = stcb->asoc.timoshutdown;
+				stimo->stimo_heartbeat = stcb->asoc.timoheartbeat;
+				stimo->stimo_cookie = stcb->asoc.timocookie;
+				stimo->stimo_shutdownack = stcb->asoc.timoshutdownack;
+				SCTP_TCB_UNLOCK(stcb);
+			} else {
+				SCTP_LTRACE_ERR_RET(inp, NULL, NULL, SCTP_FROM_SCTP_USRREQ, error);
+				error = EINVAL;
+			}
+			*optsize = sizeof(*stimo);
+		}
+		break;
 	case SCTP_ASSOCINFO:
 		{
 			struct sctp_assocparams *sasoc;
@@ -2819,17 +2842,17 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
 			SCTP_CHECK_AND_CAST(av, optval, struct sctp_assoc_value, optsize);
 			SCTP_FIND_STCB(inp, stcb, av->assoc_id);
 			if (stcb) {
-				if (av->assoc_value != 0)
-					stcb->asoc.sctp_cmt_on_off = 1;
-				else
-					stcb->asoc.sctp_cmt_on_off = 0;
+				stcb->asoc.sctp_cmt_on_off = av->assoc_value;
+				if (stcb->asoc.sctp_cmt_on_off > 2) {
+					stcb->asoc.sctp_cmt_on_off = 2;
+				}
 				SCTP_TCB_UNLOCK(stcb);
 			} else {
 				SCTP_INP_WLOCK(inp);
-				if (av->assoc_value != 0)
-					inp->sctp_cmt_on_off = 1;
-				else
-					inp->sctp_cmt_on_off = 0;
+				inp->sctp_cmt_on_off = av->assoc_value;
+				if (inp->sctp_cmt_on_off > 2) {
+					inp->sctp_cmt_on_off = 2;
+				}
 				SCTP_INP_WUNLOCK(inp);
 			}
 		} else {
@@ -3314,7 +3337,8 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
 				if ((stcb->asoc.strm_realoutsize - stcb->asoc.streamoutcnt) < addstrmcnt) {
 					/* Need to allocate more */
 					struct sctp_stream_out *oldstream;
-					struct sctp_stream_queue_pending *sp;
+					struct sctp_stream_queue_pending *sp,
+					                         *nsp;
 					int removed;
 
 					oldstream = stcb->asoc.strmout;
@@ -3353,8 +3377,7 @@ sctp_setopt(struct socket *so, int optname, void *optval, size_t optsize,
 						 * now anything on those
 						 * queues?
 						 */
-						while (TAILQ_EMPTY(&oldstream[i].outqueue) == 0) {
-							sp = TAILQ_FIRST(&oldstream[i].outqueue);
+						TAILQ_FOREACH_SAFE(sp, &oldstream[i].outqueue, next, nsp) {
 							TAILQ_REMOVE(&oldstream[i].outqueue, sp, next);
 							TAILQ_INSERT_TAIL(&stcb->asoc.strmout[i].outqueue, sp, next);
 						}

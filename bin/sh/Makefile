@@ -1,11 +1,11 @@
 #	@(#)Makefile	8.4 (Berkeley) 5/5/95
-# $FreeBSD: src/bin/sh/Makefile,v 1.53 2010/10/13 23:31:17 obrien Exp $
+# $FreeBSD: src/bin/sh/Makefile,v 1.55 2010/12/21 22:47:34 jilles Exp $
 
 PROG=	sh
 INSTALLFLAGS= -S
 SHSRCS=	alias.c arith.y arith_lex.l cd.c echo.c error.c eval.c exec.c expand.c \
-	histedit.c input.c jobs.c mail.c main.c memalloc.c miscbltin.c \
-	mystring.c options.c output.c parser.c redir.c show.c \
+	histedit.c input.c jobs.c kill.c mail.c main.c memalloc.c miscbltin.c \
+	mystring.c options.c output.c parser.c printf.c redir.c show.c \
 	test.c trap.c var.c
 GENSRCS= builtins.c init.c nodes.c syntax.c
 GENHDRS= builtins.h nodes.h syntax.h token.h
@@ -26,7 +26,9 @@ WARNS?=	2
 WFORMAT=0
 
 .PATH:	${.CURDIR}/bltin \
-	${.CURDIR}/../test
+	${.CURDIR}/../kill \
+	${.CURDIR}/../test \
+	${.CURDIR}/../../usr.bin/printf
 
 CLEANFILES+= mkinit mkinit.o mknodes mknodes.o \
 	mksyntax mksyntax.o

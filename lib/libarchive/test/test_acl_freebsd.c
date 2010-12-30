@@ -23,7 +23,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "test.h"
-__FBSDID("$FreeBSD: src/lib/libarchive/test/test_acl_freebsd.c,v 1.3 2009/03/06 04:21:23 kientzle Exp $");
+__FBSDID("$FreeBSD: src/lib/libarchive/test/test_acl_freebsd.c,v 1.4 2010/12/07 16:48:01 kientzle Exp $");
 
 #if defined(__FreeBSD__) && __FreeBSD__ > 4
 #include <sys/acl.h>
@@ -218,6 +218,11 @@ DEFINE_TEST(test_acl_freebsd)
 	if (n != 0 && errno == EOPNOTSUPP) {
 		close(fd);
 		skipping("ACL tests require that ACL support be enabled on the filesystem");
+		return;
+	}
+	if (n != 0 && errno == EINVAL) {
+		close(fd);
+		skipping("POSIX.1e ACL tests require that POSIX.1e ACL support be enabled on the filesystem");
 		return;
 	}
 	failure("acl_set_fd(): errno = %d (%s)",

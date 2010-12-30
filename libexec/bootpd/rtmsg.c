@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/libexec/bootpd/rtmsg.c,v 1.14 2009/03/31 23:02:51 cognet Exp $");
+__FBSDID("$FreeBSD: src/libexec/bootpd/rtmsg.c,v 1.15 2010/12/06 09:39:36 glebius Exp $");
 
 #include <sys/param.h>
 /*
@@ -126,7 +126,7 @@ int bsd_arp_set(ia, eaddr, len)
 	register struct sockaddr_dl *sdl;
 	register struct rt_msghdr *rtm = &(m_rtmsg.m_rtm);
 	u_char *ea;
-	struct timeval time;
+	struct timespec tp;
 	int op = RTM_ADD;
 
 	getsocket();
@@ -140,8 +140,8 @@ int bsd_arp_set(ia, eaddr, len)
 	doing_proxy = flags = export_only = expire_time = 0;
 
 	/* make arp entry temporary */
-	gettimeofday(&time, 0);
-	expire_time = time.tv_sec + 20 * 60;
+	clock_gettime(CLOCK_MONOTONIC, &tp);
+	expire_time = tp.tv_sec + 20 * 60;
 
 tryagain:
 	if (rtmsg(RTM_GET) < 0) {

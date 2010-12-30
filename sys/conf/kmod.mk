@@ -1,5 +1,5 @@
 #	From: @(#)bsd.prog.mk	5.26 (Berkeley) 6/25/91
-# $FreeBSD: src/sys/conf/kmod.mk,v 1.238 2010/09/13 07:16:48 imp Exp $
+# $FreeBSD: src/sys/conf/kmod.mk,v 1.239 2010/11/01 17:34:04 jhb Exp $
 #
 # The include file <bsd.kmod.mk> handles building and installing loadable
 # kernel modules.
@@ -238,6 +238,9 @@ _ILINKS=@ machine
 .if ${MACHINE} != ${MACHINE_CPUARCH}
 _ILINKS+=${MACHINE_CPUARCH}
 .endif
+.if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
+_ILINKS+=x86
+.endif
 
 all: objwarn ${PROG}
 
@@ -263,12 +266,12 @@ SYSDIR=	${_dir}
 
 ${_ILINKS}:
 	@case ${.TARGET} in \
-	${MACHINE_CPUARCH}) \
-		path=${SYSDIR}/${MACHINE_CPUARCH}/include ;; \
 	machine) \
 		path=${SYSDIR}/${MACHINE}/include ;; \
 	@) \
 		path=${SYSDIR} ;; \
+	*) \
+		path=${SYSDIR}/${.TARGET}/include ;; \
 	esac ; \
 	path=`(cd $$path && /bin/pwd)` ; \
 	${ECHO} ${.TARGET} "->" $$path ; \

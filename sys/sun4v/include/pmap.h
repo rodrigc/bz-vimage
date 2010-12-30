@@ -33,7 +33,7 @@
  *	from: hp300: @(#)pmap.h 7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h        7.4 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/pmap.h,v 1.70 2000/11/30
- * $FreeBSD: src/sys/sun4v/include/pmap.h,v 1.10 2010/04/30 00:46:43 kmacy Exp $
+ * $FreeBSD: src/sys/sun4v/include/pmap.h,v 1.11 2010/11/11 16:06:47 jhb Exp $
  */
 
 #ifndef	_MACHINE_PMAP_H_
@@ -54,7 +54,6 @@
 #define TSB_MAX_RESIZE          (20 - TSB_INIT_SHIFT - PAGE_SHIFT)
 
 typedef	struct pmap *pmap_t;
-typedef uint32_t pmap_cpumask_t;
 
 struct pv_entry;
 struct tte_hash;
@@ -77,8 +76,8 @@ struct pmap {
 	struct hv_tsb_info      pm_tsb;
 	uint32_t		pm_gen_count;	/* generation count (pmap lock dropped) */
 	u_int			pm_retries;
-	pmap_cpumask_t          pm_active;      /* mask of cpus currently using pmap */
-	pmap_cpumask_t          pm_tlbactive;   /* mask of cpus that have used this pmap */
+	cpumask_t		pm_active;      /* mask of cpus currently using pmap */
+	cpumask_t		pm_tlbactive;   /* mask of cpus that have used this pmap */
 	struct	pmap_statistics pm_stats;
 	uint32_t                pm_tsb_miss_count;
 	uint32_t                pm_tsb_cap_miss_count;

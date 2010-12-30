@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/atkbdc/atkbdc.c,v 1.26 2010/04/29 06:16:00 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/atkbdc/atkbdc.c,v 1.27 2010/12/20 16:39:43 tijl Exp $");
 
 #include "opt_kbd.h"
 
@@ -174,10 +174,8 @@ atkbdc_configure(void)
 #endif
 
 	/* XXX: tag should be passed from the caller */
-#if defined(__i386__)
-	tag = I386_BUS_SPACE_IO;
-#elif defined(__amd64__)
-	tag = AMD64_BUS_SPACE_IO;
+#if defined(__amd64__) || defined(__i386__)
+	tag = X86_BUS_SPACE_IO;
 #elif defined(__ia64__)
 	tag = IA64_BUS_SPACE_IO;
 #elif defined(__sparc64__)

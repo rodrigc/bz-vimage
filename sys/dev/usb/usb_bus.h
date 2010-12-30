@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_bus.h,v 1.14 2009/09/28 07:41:17 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_bus.h,v 1.16 2010/11/24 19:11:32 weongyo Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -85,6 +85,8 @@ struct usb_bus {
 #endif
 	struct usb_bus_methods *methods;	/* filled by HC driver */
 	struct usb_device **devices;
+
+	struct ifnet *ifp;	/* only for USB Packet Filter */
 
 	usb_power_mask_t hw_power_state;	/* see USB_HW_POWER_XXX */
 	usb_size_t uframe_usage[USB_HS_MICRO_FRAMES_MAX];

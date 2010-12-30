@@ -70,7 +70,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.18 2010/09/02 04:39:45 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ubser.c,v 1.20 2010/11/05 19:12:48 n_hibma Exp $");
 
 /*
  * BWCT serial adapter driver
@@ -296,6 +296,7 @@ ubser_attach(device_t dev)
 	if (error) {
 		goto detach;
 	}
+	ucom_set_pnpinfo_usb(&sc->sc_super_ucom, dev);
 
 	mtx_lock(&sc->sc_mtx);
 	usbd_xfer_set_stall(sc->sc_xfer[UBSER_BULK_DT_WR]);
@@ -317,7 +318,7 @@ ubser_detach(device_t dev)
 
 	DPRINTF("\n");
 
-	ucom_detach(&sc->sc_super_ucom, sc->sc_ucom, sc->sc_numser);
+	ucom_detach(&sc->sc_super_ucom, sc->sc_ucom);
 	usbd_transfer_unsetup(sc->sc_xfer, UBSER_N_TRANSFER);
 	mtx_destroy(&sc->sc_mtx);
 

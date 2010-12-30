@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/initcpu.c,v 1.68 2010/10/25 15:31:13 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/initcpu.c,v 1.69 2010/11/19 15:00:20 avg Exp $");
 
 #include "opt_cpu.h"
 
@@ -672,7 +672,7 @@ initializecpu(void)
 			     (cpu_id & ~0xf) == 0x670 ||
 			     (cpu_id & ~0xf) == 0x680)) {
 				u_int regs[4];
-				wrmsr(0xC0010015, rdmsr(0xC0010015) & ~0x08000);
+				wrmsr(MSR_HWCR, rdmsr(MSR_HWCR) & ~0x08000);
 				do_cpuid(1, regs);
 				cpu_feature = regs[3];
 			}

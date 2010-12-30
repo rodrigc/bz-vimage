@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_denode.c,v 1.108 2010/10/13 11:37:39 rpaulo Exp $ */
+/* $FreeBSD: src/sys/fs/msdosfs/msdosfs_denode.c,v 1.109 2010/11/19 21:17:34 kib Exp $ */
 /*	$NetBSD: msdosfs_denode.c,v 1.28 1998/02/10 14:10:00 mrg Exp $	*/
 
 /*-
@@ -548,8 +548,6 @@ msdosfs_reclaim(ap)
 	    dep, dep->de_Name, dep->de_refcnt);
 #endif
 
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("msdosfs_reclaim(): pushing active", vp);
 	/*
 	 * Destroy the vm object and flush associated pages.
 	 */
@@ -585,9 +583,6 @@ msdosfs_inactive(ap)
 #ifdef MSDOSFS_DEBUG
 	printf("msdosfs_inactive(): dep %p, de_Name[0] %x\n", dep, dep->de_Name[0]);
 #endif
-
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("msdosfs_inactive(): pushing active", vp);
 
 	/*
 	 * Ignore denodes related to stale file handles.

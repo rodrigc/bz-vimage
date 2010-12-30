@@ -62,7 +62,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/bpf_buffer.c,v 1.4 2009/08/12 17:28:53 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/net/bpf_buffer.c,v 1.5 2010/11/24 05:50:19 maxim Exp $");
 
 #include "opt_bpf.h"
 
@@ -88,10 +88,10 @@ __FBSDID("$FreeBSD: src/sys/net/bpf_buffer.c,v 1.4 2009/08/12 17:28:53 jkim Exp 
 
 static int bpf_bufsize = 4096;
 SYSCTL_INT(_net_bpf, OID_AUTO, bufsize, CTLFLAG_RW,
-    &bpf_bufsize, 0, "Maximum capture buffer size in bytes");
+    &bpf_bufsize, 0, "Default capture buffer size in bytes");
 static int bpf_maxbufsize = BPF_MAXBUFSIZE;
 SYSCTL_INT(_net_bpf, OID_AUTO, maxbufsize, CTLFLAG_RW,
-    &bpf_maxbufsize, 0, "Default capture buffer in bytes");
+    &bpf_maxbufsize, 0, "Maximum capture buffer in bytes");
 
 void
 bpf_buffer_alloc(struct bpf_d *d)

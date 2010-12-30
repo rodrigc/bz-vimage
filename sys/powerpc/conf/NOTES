@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/powerpc/conf/NOTES,v 1.28 2010/10/15 20:08:16 andreast Exp $
+# $FreeBSD: src/sys/powerpc/conf/NOTES,v 1.29 2010/10/31 18:27:05 nwhitehorn Exp $
 #
 # This file contains machine dependent kernel configuration notes.  For
 # machine independent notes, look in /sys/conf/NOTES.
@@ -30,6 +30,7 @@ device		cpufreq
 
 # Standard busses
 device		pci
+device		agp
 
 device		bm		# Apple BMAC (Big Mac Ethernet)
 device		kiic		# Apple Keywest I2C Controller

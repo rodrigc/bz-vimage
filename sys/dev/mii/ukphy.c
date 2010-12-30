@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/ukphy.c,v 1.24 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/ukphy.c,v 1.25 2010/11/22 21:13:42 marius Exp $");
 
 /*
  * driver for generic unknown PHYs
@@ -135,6 +135,8 @@ ukphy_attach(device_t dev)
 	sc->mii_phy = ma->mii_phyno;
 	sc->mii_service = ukphy_service;
 	sc->mii_pdata = mii;
+
+	sc->mii_flags |= MIIF_NOMANPAUSE;
 
 	mii_phy_reset(sc);
 

@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mksyntax.c	8.2 (Berkeley) 5/4/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.32 2010/10/24 22:25:38 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/mksyntax.c,v 1.34 2010/11/20 14:30:28 jilles Exp $");
 
 /*
  * This program creates syntax.h and syntax.c.
@@ -285,6 +285,7 @@ init(void)
 	syntax[base + CTLARI] = "CCTL";
 	syntax[base + CTLENDARI] = "CCTL";
 	syntax[base + CTLQUOTEMARK] = "CCTL";
+	syntax[base + CTLQUOTEEND] = "CCTL";
 }
 
 
@@ -341,9 +342,9 @@ print(const char *name)
 static const char *macro[] = {
 	"#define is_digit(c)\t((is_type+SYNBASE)[(int)c] & ISDIGIT)",
 	"#define is_eof(c)\t((c) == PEOF)",
-	"#define is_alpha(c)\t(((c) < CTLESC || (c) > CTLQUOTEMARK) && (is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER))",
-	"#define is_name(c)\t(((c) < CTLESC || (c) > CTLQUOTEMARK) && (is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER|ISUNDER))",
-	"#define is_in_name(c)\t(((c) < CTLESC || (c) > CTLQUOTEMARK) && (is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER|ISUNDER|ISDIGIT))",
+	"#define is_alpha(c)\t((is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER))",
+	"#define is_name(c)\t((is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER|ISUNDER))",
+	"#define is_in_name(c)\t((is_type+SYNBASE)[(int)c] & (ISUPPER|ISLOWER|ISUNDER|ISDIGIT))",
 	"#define is_special(c)\t((is_type+SYNBASE)[(int)c] & (ISSPECL|ISDIGIT))",
 	NULL
 };

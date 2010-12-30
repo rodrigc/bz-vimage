@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)parser.h	8.3 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/parser.h,v 1.14 2009/12/27 18:04:05 jilles Exp $
+ * $FreeBSD: src/bin/sh/parser.h,v 1.15 2010/10/29 13:42:18 jilles Exp $
  */
 
 /* control characters in argument strings */
@@ -43,6 +43,7 @@
 #define	CTLARI	'\206'
 #define	CTLENDARI '\207'
 #define	CTLQUOTEMARK '\210'
+#define	CTLQUOTEEND '\211' /* only for ${v+-...} */
 
 /* variable substitution byte (follows CTLVAR) */
 #define VSTYPE		0x0f	/* type of variable substitution */

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iicbus/ds1775.c,v 1.1 2010/10/15 20:08:16 andreast Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iicbus/ds1775.c,v 1.2 2010/12/10 20:27:50 andreast Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -127,14 +127,15 @@ ds1775_probe(device_t dev)
 		return (ENXIO);
 
 	if (strcmp(name, "temp-monitor") != 0 ||
-	    strcmp(compatible, "ds1775") != 0)
+	    (strcmp(compatible, "ds1775") != 0 &&
+	     strcmp(compatible, "lm75") != 0))
 		return (ENXIO);
 
 	sc = device_get_softc(dev);
 	sc->sc_dev = dev;
 	sc->sc_addr = iicbus_get_addr(dev);
 
-	device_set_desc(dev, "Temp-Monitor DS1755");
+	device_set_desc(dev, "Temp-Monitor DS1775");
 
 	return (0);
 }

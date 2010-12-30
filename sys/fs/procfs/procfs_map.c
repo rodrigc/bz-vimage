@@ -32,7 +32,7 @@
  *
  *	@(#)procfs_status.c	8.3 (Berkeley) 2/17/94
  *
- * $FreeBSD: src/sys/fs/procfs/procfs_map.c,v 1.52 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/fs/procfs/procfs_map.c,v 1.53 2010/12/02 17:37:16 trasz Exp $
  */
 
 #include "opt_compat.h"
@@ -83,7 +83,7 @@ procfs_doprocmap(PFS_FILL_ARGS)
 	vm_map_entry_t entry, tmp_entry;
 	struct vnode *vp;
 	char *fullpath, *freepath;
-	struct uidinfo *uip;
+	struct ucred *cred;
 	int error, vfslocked;
 	unsigned int last_timestamp;
 #ifdef COMPAT_FREEBSD32
@@ -136,7 +136,7 @@ procfs_doprocmap(PFS_FILL_ARGS)
 			if (obj->shadow_count == 1)
 				privateresident = obj->resident_page_count;
 		}
-		uip = (entry->uip) ? entry->uip : (obj ? obj->uip : NULL);
+		cred = (entry->cred) ? entry->cred : (obj ? obj->cred : NULL);
 
 		resident = 0;
 		addr = entry->start;
@@ -221,7 +221,7 @@ procfs_doprocmap(PFS_FILL_ARGS)
 			(e_eflags & MAP_ENTRY_COW)?"COW":"NCOW",
 			(e_eflags & MAP_ENTRY_NEEDS_COPY)?"NC":"NNC",
 			type, fullpath,
-			uip ? "CH":"NCH", uip ? uip->ui_uid : -1);
+			cred ? "CH":"NCH", cred ? cred->cr_ruid : -1);
 
 		if (freepath != NULL)
 			free(freepath, M_TEMP);

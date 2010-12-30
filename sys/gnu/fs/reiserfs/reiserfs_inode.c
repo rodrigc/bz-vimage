@@ -4,7 +4,7 @@
  * 
  * Ported to FreeBSD by Jean-Sébastien Pédron <dumbbell@FreeBSD.org>
  * 
- * $FreeBSD: src/sys/gnu/fs/reiserfs/reiserfs_inode.c,v 1.6 2008/10/23 15:53:51 des Exp $
+ * $FreeBSD: src/sys/gnu/fs/reiserfs/reiserfs_inode.c,v 1.7 2010/11/19 21:17:34 kib Exp $
  */
 
 #include <gnu/fs/reiserfs/reiserfs_fs.h>
@@ -114,8 +114,6 @@ reiserfs_inactive(struct vop_inactive_args *ap)
 
 	reiserfs_log(LOG_DEBUG, "deactivating inode used %d times\n",
 	    vp->v_usecount);
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("ReiserFS/reclaim: pushing active", vp);
 
 #if 0
 	/* Ignore inodes related to stale file handles. */
@@ -147,8 +145,6 @@ reiserfs_reclaim(struct vop_reclaim_args *ap)
 
 	reiserfs_log(LOG_DEBUG, "reclaiming inode used %d times\n",
 	    vp->v_usecount);
-	if (prtactive && vrefcnt(vp) != 0)
-		vprint("ReiserFS/reclaim: pushing active", vp);
 	ip = VTOI(vp);
 
 	/* XXX Update this node (write to the disk) */

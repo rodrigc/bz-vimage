@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vnode.h	8.7 (Berkeley) 2/4/94
- * $FreeBSD: src/sys/sys/vnode.h,v 1.371 2010/08/20 19:46:50 jhb Exp $
+ * $FreeBSD: src/sys/sys/vnode.h,v 1.372 2010/11/19 21:17:34 kib Exp $
  */
 
 #ifndef _SYS_VNODE_H_
@@ -410,7 +410,6 @@ extern	struct vnode *rootvnode;	/* root (i.e. "/") vnode */
 extern	int async_io_version;		/* 0 or POSIX version of AIO i'face */
 extern	int desiredvnodes;		/* number of vnodes desired */
 extern	struct uma_zone *namei_zone;
-extern	int prtactive;			/* nonzero to call vprint() */
 extern	struct vattr va_null;		/* predefined null vattr structure */
 
 #define	VI_LOCK(vp)	mtx_lock(&(vp)->v_interlock)

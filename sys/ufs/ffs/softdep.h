@@ -36,7 +36,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)softdep.h	9.7 (McKusick) 6/21/00
- * $FreeBSD: src/sys/ufs/ffs/softdep.h,v 1.23 2010/09/14 18:04:05 mckusick Exp $
+ * $FreeBSD: src/sys/ufs/ffs/softdep.h,v 1.24 2010/12/29 12:16:06 kib Exp $
  */
 
 #include <sys/queue.h>
@@ -657,7 +657,6 @@ struct mkdir {
 	struct	buf *md_buf;		/* MKDIR_BODY: buffer holding dir */
 	LIST_ENTRY(mkdir) md_mkdirs;	/* list of all mkdirs */
 };
-LIST_HEAD(mkdirlist, mkdir) mkdirlisthd;
 
 /*
  * A "dirrem" structure describes an operation to decrement the link

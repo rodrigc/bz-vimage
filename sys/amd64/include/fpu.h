@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)npx.h	5.3 (Berkeley) 1/18/91
- * $FreeBSD: src/sys/amd64/include/fpu.h,v 1.36 2010/06/05 15:59:59 kib Exp $
+ * $FreeBSD: src/sys/amd64/include/fpu.h,v 1.37 2010/11/26 14:50:42 kib Exp $
  */
 
 /*
@@ -112,12 +112,11 @@ void	fpudna(void);
 void	fpudrop(void);
 void	fpuexit(struct thread *td);
 int	fpuformat(void);
-int	fpugetregs(struct thread *td, struct savefpu *addr);
-int	fpugetuserregs(struct thread *td, struct savefpu *addr);
+int	fpugetregs(struct thread *td);
 void	fpuinit(void);
 void	fpusetregs(struct thread *td, struct savefpu *addr);
-void	fpusetuserregs(struct thread *td, struct savefpu *addr);
 int	fputrap(void);
+void	fpuuserinited(struct thread *td);
 int	fpu_kern_enter(struct thread *td, struct fpu_kern_ctx *ctx,
 	    u_int flags);
 int	fpu_kern_leave(struct thread *td, struct fpu_kern_ctx *ctx);

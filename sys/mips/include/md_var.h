@@ -28,7 +28,7 @@
  *
  *	from: src/sys/i386/include/md_var.h,v 1.35 2000/02/20 20:51:23 bsd
  *	JNPR: md_var.h,v 1.4 2006/10/16 12:30:34 katta
- * $FreeBSD: src/sys/mips/include/md_var.h,v 1.8 2010/09/17 02:20:12 neel Exp $
+ * $FreeBSD: src/sys/mips/include/md_var.h,v 1.10 2010/12/03 14:20:20 jchandra Exp $
  */
 
 #ifndef _MACHINE_MD_VAR_H_
@@ -42,6 +42,8 @@
 extern	long	Maxmem;
 extern	char	sigcode[];
 extern	int	szsigcode, szosigcode;
+extern	uint32_t *vm_page_dump;
+extern	int vm_page_dump_size;
 
 extern vm_offset_t kstack0;
 extern vm_offset_t kernel_kseg0_end;
@@ -74,4 +76,9 @@ void	platform_identify(void);
 
 extern int busdma_swi_pending;
 void	busdma_swi(void);
+
+struct	dumperinfo;
+void	dump_add_page(vm_paddr_t);
+void	dump_drop_page(vm_paddr_t);
+void	minidumpsys(struct dumperinfo *);
 #endif /* !_MACHINE_MD_VAR_H_ */

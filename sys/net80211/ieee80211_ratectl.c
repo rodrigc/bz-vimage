@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_ratectl.c,v 1.2 2010/10/19 18:49:26 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_ratectl.c,v 1.3 2010/11/06 18:17:20 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -63,6 +63,14 @@ ieee80211_ratectl_unregister(int type)
 	if (type >= IEEE80211_RATECTL_MAX)
 		return;
 	ratectls[type] = NULL;
+}
+
+void
+ieee80211_ratectl_init(struct ieee80211vap *vap)
+{
+	if (vap->iv_rate == ratectls[IEEE80211_RATECTL_NONE])
+		ieee80211_ratectl_set(vap, IEEE80211_RATECTL_AMRR);
+	vap->iv_rate->ir_init(vap);
 }
 
 void

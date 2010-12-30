@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/ndis/ndis_var.h,v 1.50 2009/03/07 07:26:22 weongyo Exp $
+ * $FreeBSD: src/sys/compat/ndis/ndis_var.h,v 1.51 2010/12/06 20:54:53 bschmidt Exp $
  */
 
 #ifndef _NDIS_VAR_H_
@@ -1729,6 +1729,7 @@ extern int ndis_mtop(struct mbuf *, ndis_packet **);
 extern int ndis_ptom(struct mbuf **, ndis_packet *);
 extern int ndis_get_info(void *, ndis_oid, void *, int *);
 extern int ndis_set_info(void *, ndis_oid, void *, int *);
+extern void *ndis_get_routine_address(struct image_patch_table *, char *);
 extern int ndis_get_supported_oids(void *, ndis_oid **, int *);
 extern int ndis_send_packets(void *, ndis_packet **, int);
 extern int ndis_send_packet(void *, ndis_packet *);
