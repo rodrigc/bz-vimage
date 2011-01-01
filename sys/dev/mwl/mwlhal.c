@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/mwl/mwlhal.c,v 1.2 2009/06/29 18:42:54 sam Exp $
+ * $FreeBSD: src/sys/dev/mwl/mwlhal.c,v 1.3 2010/12/31 09:50:15 bschmidt Exp $
  */
 
 #include <sys/param.h>
@@ -279,7 +279,7 @@ mwl_hal_attach(device_t dev, uint16_t devid,
 	hvap->vap_type = MWL_HAL_STA;
 	hvap->bss_type = htole16(WL_MAC_TYPE_PRIMARY_CLIENT);
 	hvap->macid = i;
-	for (i++; i < MWL_MBSS_STA_MAX; i++) {
+	for (i++; i < MWL_MBSS_MAX; i++) {
 		hvap = &mh->mh_vaps[i];
 		hvap->vap_type = MWL_HAL_STA;
 		hvap->bss_type = htole16(WL_MAC_TYPE_SECONDARY_CLIENT);

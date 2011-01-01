@@ -25,7 +25,7 @@
  * SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/net/if_llatbl.h,v 1.9 2010/11/12 22:03:02 gnn Exp $");
+__FBSDID("$FreeBSD: src/sys/net/if_llatbl.h,v 1.10 2010/12/31 21:57:54 bz Exp $");
 
 #ifndef	_NET_IF_LLATBL_H_
 #define	_NET_IF_LLATBL_H_
@@ -116,19 +116,12 @@ struct llentry {
 		LLE_WUNLOCK(lle);				\
 	}							\
 	/* guard against invalid refs */			\
-	lle = 0;						\
+	lle = NULL;						\
 } while (0)
 
 #define	LLE_FREE(lle) do {					\
 	LLE_WLOCK(lle);						\
-	if ((lle)->lle_refcnt <= 1)				\
-		(lle)->lle_tbl->llt_free((lle)->lle_tbl, (lle));\
-	else {							\
-		(lle)->lle_refcnt--;				\
-		LLE_WUNLOCK(lle);				\
-	}							\
-	/* guard against invalid refs */			\
-	lle = NULL;						\
+	LLE_FREE_LOCKED(lle);					\
 } while (0)
 
 

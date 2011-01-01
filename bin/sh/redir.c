@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)redir.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.32 2010/10/24 20:09:49 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.33 2010/12/31 18:20:17 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -155,6 +155,7 @@ openredirect(union node *redir, char memory[10])
 	int fd = redir->nfile.fd;
 	char *fname;
 	int f;
+	int e;
 
 	/*
 	 * We suppress interrupts so that we won't leave open file
@@ -173,7 +174,11 @@ openredirect(union node *redir, char memory[10])
 			error("cannot open %s: %s", fname, strerror(errno));
 movefd:
 		if (f != fd) {
-			dup2(f, fd);
+			if (dup2(f, fd) == -1) {
+				e = errno;
+				close(f);
+				error("%d: %s", fd, strerror(e));
+			}
 			close(f);
 		}
 		break;

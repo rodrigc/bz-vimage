@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)eval.c	8.9 (Berkeley) 6/8/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.96 2010/12/28 21:27:08 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/eval.c,v 1.97 2010/12/30 22:33:55 jilles Exp $");
 
 #include <paths.h>
 #include <signal.h>
@@ -643,7 +643,31 @@ out:
 		result->fd, result->buf, result->nleft, result->jp));
 }
 
-
+/*
+ * Check if a builtin can safely be executed in the same process,
+ * even though it should be in a subshell (command substitution).
+ * Note that jobid, jobs, times and trap can show information not
+ * available in a child process; this is deliberate.
+ * The arguments should already have been expanded.
+ */
+static int
+safe_builtin(int idx, int argc, char **argv)
+{
+	if (idx == BLTINCMD || idx == COMMANDCMD || idx == ECHOCMD ||
+	    idx == FALSECMD || idx == JOBIDCMD || idx == JOBSCMD ||
+	    idx == KILLCMD || idx == PRINTFCMD || idx == PWDCMD ||
+	    idx == TESTCMD || idx == TIMESCMD || idx == TRUECMD ||
+	    idx == TYPECMD)
+		return (1);
+	if (idx == EXPORTCMD || idx == TRAPCMD || idx == ULIMITCMD ||
+	    idx == UMASKCMD)
+		return (argc <= 1 || (argc == 2 && argv[1][0] == '-'));
+	if (idx == SETCMD)
+		return (argc <= 1 || (argc == 2 && (argv[1][0] == '-' ||
+		    argv[1][0] == '+') && argv[1][1] == 'o' &&
+		    argv[1][2] == '\0'));
+	return (0);
+}
 
 /*
  * Execute a simple command.
@@ -861,10 +885,8 @@ evalcommand(union node *cmd, int flags, struct backcmd *backcmd)
 	 || ((cmdentry.cmdtype == CMDNORMAL || cmdentry.cmdtype == CMDUNKNOWN)
 	    && ((flags & EV_EXIT) == 0 || have_traps()))
 	 || ((flags & EV_BACKCMD) != 0
-	    && (cmdentry.cmdtype != CMDBUILTIN
-		 || cmdentry.u.index == CDCMD
-		 || cmdentry.u.index == DOTCMD
-		 || cmdentry.u.index == EVALCMD))) {
+	    && (cmdentry.cmdtype != CMDBUILTIN ||
+		 !safe_builtin(cmdentry.u.index, argc, argv)))) {
 		jp = makejob(cmd, 1);
 		mode = cmd->ncmd.backgnd;
 		if (flags & EV_BACKCMD) {

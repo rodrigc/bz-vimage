@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.667 2010/12/02 03:10:35 lstewart Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.668 2010/12/31 00:21:41 yongari Exp $
 
 .include <bsd.own.mk>
 
@@ -306,6 +306,7 @@ SUBDIR=	${_3dfx} \
 	vkbd \
 	${_vpo} \
 	vr \
+	vte \
 	vx \
 	wb \
 	${_wi} \

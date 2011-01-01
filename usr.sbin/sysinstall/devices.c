@@ -4,7 +4,7 @@
  * This is probably the last program in the `sysinstall' line - the next
  * generation being essentially a complete rewrite.
  *
- * $FreeBSD: src/usr.sbin/sysinstall/devices.c,v 1.195 2010/11/29 11:28:31 brucec Exp $
+ * $FreeBSD: src/usr.sbin/sysinstall/devices.c,v 1.196 2010/12/31 00:24:08 yongari Exp $
  *
  * Copyright (c) 1995
  *	Jordan Hubbard.  All rights reserved.
@@ -169,6 +169,7 @@ static struct _devname {
     NETWORK("urtw",	"Realtek 8187L USB wireless adapter"),
     NETWORK("vge",	"VIA VT612x PCI Gigabit Ethernet card"),
     NETWORK("vr",	"VIA VT3043/VT86C100A Rhine PCI Ethernet card"),
+    NETWORK("vte",	"DM&P Vortex86 RDC R6040 Fast Ethernet"),
     NETWORK("vlan",	"IEEE 802.1Q VLAN network interface"),
     NETWORK("vx",	"3COM 3c590 / 3c595 Ethernet card"),
     NETWORK("wb",	"Winbond W89C840F PCI Ethernet card"),

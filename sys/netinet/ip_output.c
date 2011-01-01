@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.327 2010/09/24 14:38:54 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ip_output.c,v 1.328 2010/12/31 21:47:11 bz Exp $");
 
 #include "opt_ipfw.h"
 #include "opt_ipsec.h"
@@ -326,6 +326,9 @@ again:
 	} else {
 		mtu = ifp->if_mtu;
 	}
+	/* Catch a possible divide by zero later. */
+	KASSERT(mtu > 0, ("%s: mtu %d <= 0, rte=%p (rt_flags=0x%08x) ifp=%p",
+	    __func__, mtu, rte, (rte != NULL) ? rte->rt_flags : 0, ifp));
 	if (IN_MULTICAST(ntohl(ip->ip_dst.s_addr))) {
 		m->m_flags |= M_MCAST;
 		/*

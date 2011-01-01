@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.138 2010/09/10 21:45:42 jamie Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.139 2010/12/31 22:49:13 bz Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -141,11 +141,9 @@ static int prison_restrict_ip6(struct prison *pr, struct in6_addr *newip6);
 #define	PD_LIST_XLOCKED	0x10
 
 /*
- * Size values are for kvm as we cannot figure out the size of a sparse array,
- * or an array without a terminating entry.
- */
-/*
- * Parameter names corresponding to PR_* flag values
+ * Parameter names corresponding to PR_* flag values.  Size values are for kvm
+ * as we cannot figure out the size of a sparse array, or an array without a
+ * terminating entry.
  */
 static char *pr_flag_names[] = {
 	[0] = "persist",

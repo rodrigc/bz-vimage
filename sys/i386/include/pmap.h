@@ -38,7 +38,7 @@
  *
  *	from: hp300: @(#)pmap.h	7.2 (Berkeley) 12/16/90
  *	from: @(#)pmap.h	7.4 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/i386/include/pmap.h,v 1.148 2010/11/20 20:04:29 cperciva Exp $
+ * $FreeBSD: src/sys/i386/include/pmap.h,v 1.149 2010/12/31 17:39:58 cperciva Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -253,7 +253,6 @@ pte_load_store(pt_entry_t *ptep, pt_entry_t v)
 {
 	pt_entry_t r;
 
-	v = xpmap_ptom(v);
 	r = *ptep;
 	PT_SET_VA(ptep, v, TRUE);
 	return (r);

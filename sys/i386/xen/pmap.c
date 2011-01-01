@@ -75,7 +75,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/pmap.c,v 1.56 2010/12/28 14:36:32 cperciva Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/pmap.c,v 1.57 2010/12/31 17:39:31 cperciva Exp $");
 
 /*
  *	Manages physical address maps.
@@ -3647,7 +3647,9 @@ pmap_map_readonly(pmap_t pmap, vm_offset_t va, int len)
 	for (i = 0; i < npages; i++) {
 		pt_entry_t *pte;
 		pte = pmap_pte(pmap, (vm_offset_t)(va + i*PAGE_SIZE));
+		vm_page_lock_queues();
 		pte_store(pte, xpmap_mtop(*pte & ~(PG_RW|PG_M)));
+		vm_page_unlock_queues();
 		PMAP_MARK_PRIV(xpmap_mtop(*pte));
 		pmap_pte_release(pte);
 	}
@@ -3661,7 +3663,9 @@ pmap_map_readwrite(pmap_t pmap, vm_offset_t va, int len)
 		pt_entry_t *pte;
 		pte = pmap_pte(pmap, (vm_offset_t)(va + i*PAGE_SIZE));
 		PMAP_MARK_UNPRIV(xpmap_mtop(*pte));
+		vm_page_lock_queues();
 		pte_store(pte, xpmap_mtop(*pte) | (PG_RW|PG_M));
+		vm_page_unlock_queues();
 		pmap_pte_release(pte);
 	}
 }
