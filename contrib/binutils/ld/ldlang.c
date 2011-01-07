@@ -3517,6 +3517,21 @@ lang_set_startof (void)
       secname = bfd_get_section_name (output_bfd, s);
       buf = xmalloc (10 + strlen (secname));
 
+      sprintf (buf, "__start_%s", secname);
+      h = bfd_link_hash_lookup (link_info.hash, buf, FALSE, FALSE, TRUE);
+      if (h != NULL)
+	{
+	  bfd_vma a;
+
+	  a = bfd_get_section_vma (output_bfd, s);;
+          info_msg("XXX-BZ %s %W -> %W %u\n", secname, h->u.def.value, a, bfd_get_section_alignment(output_bfd, s));
+#if 0
+	  h->type = bfd_link_hash_defined;
+	  h->u.def.value = a;
+	  h->u.def.section = bfd_abs_section_ptr;
+#endif
+	}
+
       sprintf (buf, ".startof.%s", secname);
       h = bfd_link_hash_lookup (link_info.hash, buf, FALSE, FALSE, TRUE);
       if (h != NULL && h->type == bfd_link_hash_undefined)

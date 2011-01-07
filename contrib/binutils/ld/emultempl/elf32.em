@@ -1,4 +1,4 @@
-# $FreeBSD: src/contrib/binutils/ld/emultempl/elf32.em,v 1.15 2010/07/19 18:20:44 avg Exp $
+# $FreeBSD: head/contrib/binutils/ld/emultempl/elf32.em 130565 2004-06-16 06:09:06Z obrien $
 
 
 # This shell script emits a C file. -*- C -*-
@@ -1351,6 +1351,7 @@ gld${EMULATION_NAME}_place_orphan (lang_input_statement_type *file, asection *s)
 	  lang_add_assignment (exp_assop ('=', symname,
 					  exp_unop (ABSOLUTE,
 						    exp_nameop (NAME, "."))));
+	  info_msg("XXX-BZ %s %u %u %W\n", secname, s->alignment_power, s->entsize, s->vma);
 	}
     }
 
