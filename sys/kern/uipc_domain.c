@@ -490,8 +490,10 @@ found:
 
 	if (dp->dom_pr_unregister) {
 		error = dp->dom_pr_unregister(dpr->pr_protocol);
-		if (error != 0 && error != EPROTONOSUPPORT)
+		if (error != 0 && error != EPROTONOSUPPORT) {
+			mtx_unlock(&dom_mtx);
 			return (error);
+		}
 	}
 
 	/* De-orbit the protocol and make the slot available again. */
