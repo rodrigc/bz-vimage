@@ -2341,7 +2341,9 @@ carp_mod_cleanup(void)
 	if_clone_detach(&carp_cloner);
 #ifdef INET
 	if (proto_reg[CARP_INET] == 0) {
+#if 0
 		(void)ipproto_unregister(IPPROTO_CARP);
+#endif
 		pf_proto_unregister(PF_INET, IPPROTO_CARP, SOCK_RAW);
 		proto_reg[CARP_INET] = -1;
 	}
@@ -2349,7 +2351,9 @@ carp_mod_cleanup(void)
 #endif
 #ifdef INET6
 	if (proto_reg[CARP_INET6] == 0) {
+#if 0
 		(void)ip6proto_unregister(IPPROTO_CARP);
+#endif
 		pf_proto_unregister(PF_INET6, IPPROTO_CARP, SOCK_RAW);
 		proto_reg[CARP_INET6] = -1;
 	}
@@ -2365,7 +2369,9 @@ carp_mod_cleanup(void)
 static int
 carp_mod_load(void)
 {
+#if 0
 	int err;
+#endif
 
 	if_detach_event_tag = EVENTHANDLER_REGISTER(ifnet_departure_event,
 		carp_ifdetach, NULL, EVENTHANDLER_PRI_ANY);
@@ -2381,18 +2387,21 @@ carp_mod_load(void)
 	carp_macmatch6_p = carp_macmatch6;
 	proto_reg[CARP_INET6] = pf_proto_register(PF_INET6,
 	    (struct protosw *)&in6_carp_protosw);
+	printf("XX-BZ %s:%d: %d\n", __func__, __LINE__, proto_reg[CARP_INET6]);
 	if (proto_reg[CARP_INET6] != 0) {
 		printf("carp: error %d attaching to PF_INET6\n",
 		    proto_reg[CARP_INET6]);
 		carp_mod_cleanup();
 		return (proto_reg[CARP_INET6]);
 	}
+#if 0	/* XXX-BZ remove; I have the automagic for this */
 	err = ip6proto_register(IPPROTO_CARP);
 	if (err) {
 		printf("carp: error %d registering with INET6\n", err);
 		carp_mod_cleanup();
 		return (err);
 	}
+#endif
 #endif
 #ifdef INET
 	carp_iamatch_p = carp_iamatch;
@@ -2403,12 +2412,14 @@ carp_mod_load(void)
 		carp_mod_cleanup();
 		return (proto_reg[CARP_INET]);
 	}
+#if 0	/* XXX-BZ remove; I have the automagic for this */
 	err = ipproto_register(IPPROTO_CARP);
 	if (err) {
 		printf("carp: error %d registering with INET\n", err);
 		carp_mod_cleanup();
 		return (err);
 	}
+#endif
 #endif
 	return 0;
 }
