@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/acpi/iasl/Makefile,v 1.15 2010/09/16 20:08:00 jkim Exp $
+# $FreeBSD: src/usr.sbin/acpi/iasl/Makefile,v 1.16 2011/01/13 17:32:32 jkim Exp $
 
 PROG=	iasl
 SRCS=	adfile.c adisasm.c adwalk.c
@@ -17,8 +17,8 @@ SRCS+=	aslanalyze.c aslcodegen.c aslcompile.c aslcompiler.y.h	\
 	aslrestype1.c aslrestype1i.c aslrestype2.c		\
 	aslrestype2d.c aslrestype2e.c aslrestype2q.c		\
 	aslrestype2w.c aslstartup.c aslstubs.c asltransform.c	\
-	asltree.c aslutils.c dtcompile.c dtfield.c dtio.c	\
-	dtsubtable.c dttable.c dttemplate.c dtutils.c
+	asltree.c aslutils.c asluuid.c dtcompile.c dtfield.c	\
+	dtio.c dtsubtable.c dttable.c dttemplate.c dtutils.c
 
 # debugger
 SRCS+=	dbfileio.c

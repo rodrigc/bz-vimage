@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/mem.c,v 1.125 2009/12/29 21:51:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/mem.c,v 1.126 2011/01/17 22:58:28 jkim Exp $");
 
 /*
  * Memory special file
@@ -71,6 +71,8 @@ __FBSDID("$FreeBSD: src/sys/amd64/amd64/mem.c,v 1.125 2009/12/29 21:51:28 rnolan
  * Used in /dev/mem drivers and elsewhere
  */
 MALLOC_DEFINE(M_MEMDESC, "memdesc", "memory range descriptors");
+
+struct mem_range_softc mem_range_softc;
 
 /* ARGSUSED */
 int
@@ -213,11 +215,4 @@ memioctl(struct cdev *dev __unused, u_long cmd, caddr_t data, int flags,
 		break;
 	}
 	return (error);
-}
-
-void
-dev_mem_md_init(void)
-{
-	if (mem_range_softc.mr_op != NULL)
-		mem_range_softc.mr_op->init(&mem_range_softc);
 }

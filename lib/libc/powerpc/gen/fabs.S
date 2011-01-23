@@ -25,7 +25,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc/gen/fabs.S,v 1.1 2004/02/12 09:11:06 grehan Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc/gen/fabs.S,v 1.2 2011/01/14 11:33:40 kib Exp $");
 
 /*
  * double fabs(double)
@@ -33,3 +33,5 @@ __FBSDID("$FreeBSD: src/lib/libc/powerpc/gen/fabs.S,v 1.1 2004/02/12 09:11:06 gr
 ENTRY(fabs)
 	fabs	%f1,%f1
 	blr
+
+	.section .note.GNU-stack,"",%progbits

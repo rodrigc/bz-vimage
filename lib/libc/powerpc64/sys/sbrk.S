@@ -26,7 +26,7 @@
 /*      $NetBSD: sbrk.S,v 1.8 2000/06/26 06:25:44 kleink Exp $  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/sbrk.S,v 1.2 2010/11/11 22:35:42 dim Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/sbrk.S,v 1.3 2011/01/14 11:33:40 kib Exp $");
 
 #include "SYS.h"
 
@@ -64,3 +64,5 @@ ENTRY(sbrk)
 	ld	%r0,16(%r1)
 	mtlr	%r0
 	blr
+
+	.section .note.GNU-stack,"",%progbits

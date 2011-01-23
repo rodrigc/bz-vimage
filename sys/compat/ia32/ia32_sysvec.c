@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/ia32/ia32_sysvec.c,v 1.38 2010/05/23 18:32:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/ia32/ia32_sysvec.c,v 1.39 2011/01/08 16:13:44 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -129,7 +129,7 @@ struct sysentvec ia32_freebsd_sysvec = {
 	.sv_minsigstksz	= MINSIGSTKSZ,
 	.sv_pagesize	= IA32_PAGE_SIZE,
 	.sv_minuser	= 0,
-	.sv_maxuser	= FREEBSD32_USRSTACK,
+	.sv_maxuser	= FREEBSD32_MAXUSER,
 	.sv_usrstack	= FREEBSD32_USRSTACK,
 	.sv_psstrings	= FREEBSD32_PS_STRINGS,
 	.sv_stackprot	= VM_PROT_ALL,
@@ -137,12 +137,20 @@ struct sysentvec ia32_freebsd_sysvec = {
 	.sv_setregs	= ia32_setregs,
 	.sv_fixlimit	= ia32_fixlimit,
 	.sv_maxssiz	= &ia32_maxssiz,
-	.sv_flags	= SV_ABI_FREEBSD | SV_IA32 | SV_ILP32,
+	.sv_flags	= SV_ABI_FREEBSD | SV_IA32 | SV_ILP32 |
+#ifdef __amd64__
+		SV_SHP
+#else
+		0
+#endif
+	,
 	.sv_set_syscall_retval = ia32_set_syscall_retval,
 	.sv_fetch_syscall_args = ia32_fetch_syscall_args,
 	.sv_syscallnames = freebsd32_syscallnames,
+	.sv_shared_page_base = FREEBSD32_SHAREDPAGE,
+	.sv_shared_page_len = PAGE_SIZE,
 };
-
+INIT_SYSENTVEC(elf_ia32_sysvec, &ia32_freebsd_sysvec);
 
 static Elf32_Brandinfo ia32_brand_info = {
 	.brand		= ELFOSABI_FREEBSD,
@@ -190,7 +198,6 @@ static Elf32_Brandinfo kia32_brand_info = {
 SYSINIT(kia32, SI_SUB_EXEC, SI_ORDER_ANY,
 	(sysinit_cfunc_t) elf32_insert_brand_entry,
 	&kia32_brand_info);
-
 
 void
 elf32_dump_thread(struct thread *td __unused, void *dst __unused,

@@ -25,9 +25,11 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/msun/amd64/e_sqrtl.S,v 1.1 2008/03/02 01:48:08 das Exp $")
+__FBSDID("$FreeBSD: src/lib/msun/amd64/e_sqrtl.S,v 1.2 2011/01/07 16:13:12 kib Exp $")
 	
 ENTRY(sqrtl)
 	fldt	8(%rsp)
 	fsqrt
 	ret
+
+	.section .note.GNU-stack,"",%progbits

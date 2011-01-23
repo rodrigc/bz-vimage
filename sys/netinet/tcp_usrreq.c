@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_usrreq.c,v 1.198 2010/11/17 18:55:12 gnn Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_usrreq.c,v 1.199 2011/01/07 21:40:34 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_inet.h"
@@ -1042,7 +1042,7 @@ struct pr_usrreqs tcp6_usrreqs = {
 	.pru_send =		tcp_usr_send,
 	.pru_shutdown =		tcp_usr_shutdown,
 	.pru_sockaddr =		in6_mapped_sockaddr,
- 	.pru_sosetlabel =	in_pcbsosetlabel,
+	.pru_sosetlabel =	in_pcbsosetlabel,
 	.pru_close =		tcp_usr_close,
 };
 #endif /* INET6 */

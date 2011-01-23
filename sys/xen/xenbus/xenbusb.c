@@ -52,7 +52,7 @@
  *                        xnb1
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/xen/xenbus/xenbusb.c,v 1.1 2010/10/19 20:53:30 gibbs Exp $");
+__FBSDID("$FreeBSD: src/sys/xen/xenbus/xenbusb.c,v 1.2 2011/01/19 00:57:58 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -308,7 +308,7 @@ xenbusb_device_sysctl_init(device_t dev)
 			SYSCTL_CHILDREN(tree),
 			OID_AUTO,
 			"xenstore_path",
-			CTLFLAG_RD,
+			CTLTYPE_STRING | CTLFLAG_RD,
 			dev,
 			XENBUS_IVAR_NODE,
 			xenbusb_device_sysctl_handler,
@@ -319,7 +319,7 @@ xenbusb_device_sysctl_init(device_t dev)
 			SYSCTL_CHILDREN(tree),
 			OID_AUTO,
 			"xenbus_dev_type",
-			CTLFLAG_RD,
+			CTLTYPE_STRING | CTLFLAG_RD,
 			dev,
 			XENBUS_IVAR_TYPE,
 			xenbusb_device_sysctl_handler,
@@ -330,7 +330,7 @@ xenbusb_device_sysctl_init(device_t dev)
 			SYSCTL_CHILDREN(tree),
 			OID_AUTO,
 			"xenbus_connection_state",
-			CTLFLAG_RD,
+			CTLTYPE_STRING | CTLFLAG_RD,
 			dev,
 			XENBUS_IVAR_STATE,
 			xenbusb_device_sysctl_handler,
@@ -341,7 +341,7 @@ xenbusb_device_sysctl_init(device_t dev)
 			SYSCTL_CHILDREN(tree),
 			OID_AUTO,
 			"xenbus_peer_domid",
-			CTLFLAG_RD,
+			CTLTYPE_INT | CTLFLAG_RD,
 			dev,
 			XENBUS_IVAR_OTHEREND_ID,
 			xenbusb_device_sysctl_handler,
@@ -352,7 +352,7 @@ xenbusb_device_sysctl_init(device_t dev)
 			SYSCTL_CHILDREN(tree),
 			OID_AUTO,
 			"xenstore_peer_path",
-			CTLFLAG_RD,
+			CTLTYPE_STRING | CTLFLAG_RD,
 			dev,
 			XENBUS_IVAR_OTHEREND_PATH,
 			xenbusb_device_sysctl_handler,

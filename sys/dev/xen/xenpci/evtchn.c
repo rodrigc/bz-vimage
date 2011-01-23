@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/xen/xenpci/evtchn.c,v 1.2 2010/10/19 20:53:30 gibbs Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/xen/xenpci/evtchn.c,v 1.3 2011/01/04 14:49:54 rwatson Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -51,13 +51,19 @@ __FBSDID("$FreeBSD: src/sys/dev/xen/xenpci/evtchn.c,v 1.2 2010/10/19 20:53:30 gi
 
 #include <dev/xen/xenpci/xenpcivar.h>
 
+#if defined(__i386__)
+#define	__ffs(word)	ffs(word)
+#elif defined(__amd64__)
 static inline unsigned long __ffs(unsigned long word)
 {
         __asm__("bsfq %1,%0"
                 :"=r" (word)
-                :"rm" (word));
+                :"rm" (word));	/* XXXRW: why no "cc"? */
         return word;
 }
+#else
+#error "evtchn: unsupported architecture"
+#endif
 
 #define is_valid_evtchn(x)	((x) != 0)
 #define evtchn_from_irq(x)	(irq_evtchn[irq].evtchn)

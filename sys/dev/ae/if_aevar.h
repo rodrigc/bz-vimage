@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ae/if_aevar.h,v 1.2 2010/10/15 14:52:11 marius Exp $
+ * $FreeBSD: src/sys/dev/ae/if_aevar.h,v 1.3 2011/01/03 18:28:30 jhb Exp $
  */
 
 #ifndef IF_AEVAR_H
@@ -119,7 +119,6 @@ typedef struct ae_softc	{
 
 	/* Tasks. */
 	struct task		int_task;
-	struct task		tx_task;
 	struct task		link_task;
 	struct taskqueue	*tq;
 	

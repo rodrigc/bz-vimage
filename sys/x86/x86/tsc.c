@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/tsc.c,v 1.2 2010/12/09 21:29:36 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/tsc.c,v 1.3 2011/01/19 23:00:25 mdf Exp $");
 
 #include "opt_clock.h"
 
@@ -263,7 +263,7 @@ sysctl_machdep_tsc_freq(SYSCTL_HANDLER_ARGS)
 	if (tsc_timecounter.tc_frequency == 0)
 		return (EOPNOTSUPP);
 	freq = tsc_freq;
-	error = sysctl_handle_quad(oidp, &freq, 0, req);
+	error = sysctl_handle_64(oidp, &freq, 0, req);
 	if (error == 0 && req->newptr != NULL) {
 		tsc_freq = freq;
 		tsc_timecounter.tc_frequency = tsc_freq;
@@ -271,7 +271,7 @@ sysctl_machdep_tsc_freq(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_machdep, OID_AUTO, tsc_freq, CTLTYPE_QUAD | CTLFLAG_RW,
+SYSCTL_PROC(_machdep, OID_AUTO, tsc_freq, CTLTYPE_U64 | CTLFLAG_RW,
     0, 0, sysctl_machdep_tsc_freq, "QU", "");
 
 static unsigned

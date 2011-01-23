@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/pjdlog.h,v 1.2 2010/08/05 18:26:38 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/pjdlog.h,v 1.3 2011/01/22 22:35:08 pjd Exp $
  */
 
 #ifndef	_PJDLOG_H_
@@ -48,7 +48,7 @@ void pjdlog_debug_set(int level);
 int pjdlog_debug_get(void);
 
 void pjdlog_prefix_set(const char *fmt, ...) __printflike(1, 2);
-void pjdlog_prefix_setv(const char *fmt, va_list ap) __printflike(1, 0);
+void pjdlogv_prefix_set(const char *fmt, va_list ap) __printflike(1, 0);
 
 void pjdlog_common(int loglevel, int debuglevel, int error, const char *fmt,
     ...) __printflike(4, 5);

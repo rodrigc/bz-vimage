@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/template/usb_template.c,v 1.11 2010/03/11 21:48:10 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/template/usb_template.c,v 1.12 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 2007 Hans Petter Selasky. All rights reserved.
  *
@@ -37,7 +37,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

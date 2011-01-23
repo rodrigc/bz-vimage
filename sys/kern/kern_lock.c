@@ -31,11 +31,10 @@
 #include "opt_kdtrace.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_lock.c,v 1.155 2010/08/20 19:46:50 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_lock.c,v 1.156 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/ktr.h>
-#include <sys/linker_set.h>
 #include <sys/lock.h>
 #include <sys/lock_profile.h>
 #include <sys/lockmgr.h>

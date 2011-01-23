@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/libexec/rtld-elf/Symbol.map,v 1.9 2010/08/23 15:27:03 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/Symbol.map,v 1.10 2011/01/08 17:11:49 kib Exp $
  */
 
 FBSD_1.0 {
@@ -28,4 +28,5 @@ FBSDprivate_1.0 {
     _rtld_atfork_pre;
     _rtld_atfork_post;
     _rtld_addr_phdr;
+    _rtld_get_stack_prot;
 };

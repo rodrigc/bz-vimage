@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options.i386,v 1.247 2010/03/10 19:50:52 jhb Exp $
+# $FreeBSD: src/sys/conf/options.i386,v 1.248 2011/01/04 14:49:54 rwatson Exp $
 # Options specific to the i386 platform kernels
 
 AUTO_EOI_1		opt_auto_eoi.h
@@ -118,3 +118,4 @@ BPF_JITTER		opt_bpf.h
 
 NATIVE			opt_global.h
 XEN			opt_global.h
+XENHVM			opt_global.h

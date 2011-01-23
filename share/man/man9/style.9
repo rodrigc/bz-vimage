@@ -24,9 +24,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	From: @(#)style	1.14 (Berkeley) 4/28/95
-.\" $FreeBSD: src/share/man/man9/style.9,v 1.132 2010/10/08 12:40:16 uqs Exp $
+.\" $FreeBSD: src/share/man/man9/style.9,v 1.134 2011/01/07 08:34:12 trasz Exp $
 .\"
-.Dd December 17, 2008
+.Dd January 7, 2010
 .Dt STYLE 9
 .Os
 .Sh NAME
@@ -46,7 +46,7 @@ is silent on an issue.
  * Style guide for FreeBSD.  Based on the CSRG's KNF (Kernel Normal Form).
  *
  *	@(#)style	1.14 (Berkeley) 4/28/95
- * $FreeBSD: src/share/man/man9/style.9,v 1.132 2010/10/08 12:40:16 uqs Exp $
+ * $FreeBSD: src/share/man/man9/style.9,v 1.134 2011/01/07 08:34:12 trasz Exp $
  */
 
 /*
@@ -111,7 +111,7 @@ static char sccsid[] = "@(#)style	1.14 (Berkeley) 4/28/95";
 #endif
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/share/man/man9/style.9,v 1.132 2010/10/08 12:40:16 uqs Exp $");
+__FBSDID("$FreeBSD: src/share/man/man9/style.9,v 1.134 2011/01/07 08:34:12 trasz Exp $");
 .Ed
 .Pp
 Leave another blank line before the header files.
@@ -470,9 +470,9 @@ statement that cascade should have a
 .Li FALLTHROUGH
 comment.
 Numerical arguments should be checked for accuracy.
-Code that cannot be reached should have a
+Code which is unreachable for non-obvious reasons may be marked /*
 .Li NOTREACHED
-comment.
+*/.
 .Bd -literal
 	while ((ch = getopt(argc, argv, "abNn:")) != -1)
 		switch (ch) {		/* Indent the switch. */
@@ -496,7 +496,6 @@ comment.
 		case '?':
 		default:
 			usage();
-			/* NOTREACHED */
 		}
 	argc -= optind;
 	argv += optind;

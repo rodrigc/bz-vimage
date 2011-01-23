@@ -28,7 +28,7 @@
  * Dummynet portions related to packet handling.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dn_io.c,v 1.10 2010/10/01 15:38:35 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dn_io.c,v 1.11 2011/01/12 19:53:50 mdf Exp $");
 
 #include "opt_inet6.h"
 
@@ -144,9 +144,9 @@ SYSCTL_LONG(_net_inet_ip_dummynet, OID_AUTO, tick_lost,
     "Number of ticks coalesced by dummynet taskqueue.");
 
 /* Drain parameters */
-SYSCTL_INT(_net_inet_ip_dummynet, OID_AUTO, expire,
+SYSCTL_UINT(_net_inet_ip_dummynet, OID_AUTO, expire,
     CTLFLAG_RW, DC(expire), 0, "Expire empty queues/pipes");
-SYSCTL_INT(_net_inet_ip_dummynet, OID_AUTO, expire_cycle,
+SYSCTL_UINT(_net_inet_ip_dummynet, OID_AUTO, expire_cycle,
     CTLFLAG_RD, DC(expire_cycle), 0, "Expire cycle for queues/pipes");
 
 /* statistics */

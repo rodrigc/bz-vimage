@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/mem.c,v 1.23 2009/12/29 21:51:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/mem.c,v 1.24 2011/01/17 23:06:47 jkim Exp $");
 
 /*
  * Memory special file
@@ -167,9 +167,4 @@ memmmap(struct cdev *dev, vm_ooffset_t offset, vm_paddr_t *paddr,
 		return (-1);
 	*paddr = IA64_PHYS_TO_RR7(offset);
 	return (0);
-}
-
-void
-dev_mem_md_init(void)
-{
 }

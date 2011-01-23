@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.360 2010/04/23 14:32:58 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.361 2011/01/04 10:59:38 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -3434,11 +3434,14 @@ fildesc_drvinit(void *unused)
 {
 	struct cdev *dev;
 
-	dev = make_dev(&fildesc_cdevsw, 0, UID_ROOT, GID_WHEEL, 0666, "fd/0");
+	dev = make_dev_credf(MAKEDEV_ETERNAL, &fildesc_cdevsw, 0, NULL,
+	    UID_ROOT, GID_WHEEL, 0666, "fd/0");
 	make_dev_alias(dev, "stdin");
-	dev = make_dev(&fildesc_cdevsw, 1, UID_ROOT, GID_WHEEL, 0666, "fd/1");
+	dev = make_dev_credf(MAKEDEV_ETERNAL, &fildesc_cdevsw, 1, NULL,
+	    UID_ROOT, GID_WHEEL, 0666, "fd/1");
 	make_dev_alias(dev, "stdout");
-	dev = make_dev(&fildesc_cdevsw, 2, UID_ROOT, GID_WHEEL, 0666, "fd/2");
+	dev = make_dev_credf(MAKEDEV_ETERNAL, &fildesc_cdevsw, 2, NULL,
+	    UID_ROOT, GID_WHEEL, 0666, "fd/2");
 	make_dev_alias(dev, "stderr");
 }
 

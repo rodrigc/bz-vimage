@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD$");
+__FBSDID("$FreeBSD: src/sys/netinet/raw_ip.c,v 1.232 2011/01/18 21:14:13 mdf Exp $");
 
 #include "opt_inet6.h"
 #include "opt_ipsec.h"
@@ -1086,7 +1086,8 @@ rip_pcblist(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_net_inet_raw, OID_AUTO/*XXX*/, pcblist, CTLFLAG_RD, 0, 0,
+SYSCTL_PROC(_net_inet_raw, OID_AUTO/*XXX*/, pcblist,
+    CTLTYPE_OPAQUE | CTLFLAG_RD, NULL, 0,
     rip_pcblist, "S,xinpcb", "List of active raw IP sockets");
 
 struct pr_usrreqs rip_usrreqs = {

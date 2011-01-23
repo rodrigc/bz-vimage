@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/jme/if_jmevar.h,v 1.5 2010/12/18 23:52:50 yongari Exp $
+ * $FreeBSD: src/sys/dev/jme/if_jmevar.h,v 1.6 2011/01/13 14:42:43 jhb Exp $
  */
 
 #ifndef	_IF_JMEVAR_H
@@ -221,7 +221,6 @@ struct jme_softc {
 	volatile int		jme_morework;
 
 	struct task		jme_int_task;
-	struct task		jme_tx_task;
 	struct task		jme_link_task;
 	struct taskqueue	*jme_tq;
 	struct mtx		jme_mtx;

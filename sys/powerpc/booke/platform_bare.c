@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/platform_bare.c,v 1.6 2010/09/11 04:45:51 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/platform_bare.c,v 1.7 2011/01/17 23:54:50 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -58,6 +58,8 @@ extern void *ap_pcpu;
 extern uint8_t __boot_page[];		/* Boot page body */
 extern uint32_t kernload;		/* Kernel physical load address */
 #endif
+
+extern uint32_t *bootinfo;
 
 static int cpu, maxcpu;
 
@@ -160,9 +162,12 @@ bare_mem_regions(platform_t plat, struct mem_region **phys, int *physsz,
 static u_long
 bare_timebase_freq(platform_t plat, struct cpuref *cpuref)
 {
-	u_long ticks = -1;
+	u_long ticks;
 	phandle_t cpus, child;
 	pcell_t freq;
+
+	/* Backward compatibility. See 8-STABLE. */
+	ticks = bootinfo[3] >> 3;
 
 	if ((cpus = OF_finddevice("/cpus")) == 0)
 		goto out;
@@ -170,14 +175,18 @@ bare_timebase_freq(platform_t plat, struct cpuref *cpuref)
 	if ((child = OF_child(cpus)) == 0)
 		goto out;
 
+	freq = 0;
 	if (OF_getprop(child, "bus-frequency", (void *)&freq,
 	    sizeof(freq)) <= 0)
 		goto out;
+
 	/*
 	 * Time Base and Decrementer are updated every 8 CCB bus clocks.
 	 * HID0[SEL_TBCLK] = 0
 	 */
-	ticks = freq / 8;
+	if (freq != 0)
+		ticks = freq / 8;
+
 out:
 	if (ticks <= 0)
 		panic("Unable to determine timebase frequency!");

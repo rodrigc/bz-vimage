@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.41 2010/10/29 09:35:36 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_sig.c,v 1.42 2011/01/11 01:57:02 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -321,7 +321,7 @@ check_deferred_signal(struct pthread *curthread)
 	if (__predict_true(curthread->deferred_siginfo.si_signo == 0))
 		return;
 	getcontext(&uc);
-	if (curthread->deferred_siginfo.si_signo == 0) {
+	if (curthread->deferred_siginfo.si_signo != 0) {
 		act = curthread->deferred_sigact;
 		uc.uc_sigmask = curthread->deferred_sigmask;
 		memcpy(&info, &curthread->deferred_siginfo, sizeof(siginfo_t));

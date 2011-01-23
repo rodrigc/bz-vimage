@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis_usb.c,v 1.23 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis_usb.c,v 1.24 2011/01/22 21:33:18 thompsa Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -107,7 +107,6 @@ static driver_t ndis_driver = {
 static devclass_t ndis_devclass;
 
 DRIVER_MODULE(ndis, uhub, ndis_driver, ndis_devclass, ndisdrv_modevent, 0);
-MODULE_VERSION(ndis, 1);
 
 static int
 ndisusb_devcompare(interface_type bustype, struct ndis_usb_type *t, device_t dev)

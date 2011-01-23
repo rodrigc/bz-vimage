@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iscsi/initiator/isc_sm.c,v 1.5 2010/08/09 12:36:36 des Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iscsi/initiator/isc_sm.c,v 1.6 2011/01/18 21:14:23 mdf Exp $");
 
 #include "opt_iscsi_initiator.h"
 
@@ -666,7 +666,7 @@ isc_add_sysctls(isc_session_t *sp)
 		     SYSCTL_CHILDREN(sp->oid),
 		     OID_AUTO,
 		     "targetname",
-		     CTLFLAG_RD,
+		     CTLTYPE_STRING | CTLFLAG_RD,
 		     (void *)&sp->opt.targetName, 0,
 		     isc_sysctl_targetName, "A", "target name");
 
@@ -674,7 +674,7 @@ isc_add_sysctls(isc_session_t *sp)
 		     SYSCTL_CHILDREN(sp->oid),
 		     OID_AUTO,
 		     "targeaddress",
-		     CTLFLAG_RD,
+		     CTLTYPE_STRING | CTLFLAG_RD,
 		     (void *)&sp->opt.targetAddress, 0,
 		     isc_sysctl_targetAddress, "A", "target address");
 
@@ -682,7 +682,7 @@ isc_add_sysctls(isc_session_t *sp)
 		     SYSCTL_CHILDREN(sp->oid),
 		     OID_AUTO,
 		     "stats",
-		     CTLFLAG_RD,
+		     CTLTYPE_STRING | CTLFLAG_RD,
 		     (void *)sp, 0,
 		     isc_dump_stats, "A", "statistics");
 

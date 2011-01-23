@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_common.h,v 1.9 2010/11/26 22:46:32 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_common.h,v 1.10 2011/01/19 19:36:27 jfv Exp $*/
 
 #ifndef _IXGBE_COMMON_H_
 #define _IXGBE_COMMON_H_
@@ -119,4 +119,6 @@ s32 ixgbe_get_wwn_prefix_generic(struct ixgbe_hw *hw, u16 *wwnn_prefix,
 s32 ixgbe_get_fcoe_boot_status_generic(struct ixgbe_hw *hw, u16 *bs);
 void ixgbe_set_mac_anti_spoofing(struct ixgbe_hw *hw, bool enable, int pf);
 void ixgbe_set_vlan_anti_spoofing(struct ixgbe_hw *hw, bool enable, int vf);
+s32 ixgbe_get_device_caps_generic(struct ixgbe_hw *hw, u16 *device_caps);
+void ixgbe_enable_relaxed_ordering_gen2(struct ixgbe_hw *hw);
 #endif /* IXGBE_COMMON */

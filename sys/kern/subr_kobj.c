@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_kobj.c,v 1.12 2009/02/03 07:54:42 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_kobj.c,v 1.13 2011/01/12 19:54:19 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -73,7 +73,7 @@ static int kobj_next_id = 1;
 #define KOBJ_UNLOCK()	if (kobj_mutex_inited) mtx_unlock(&kobj_mtx);
 #define KOBJ_ASSERT(what) if (kobj_mutex_inited) mtx_assert(&kobj_mtx,what);
 
-SYSCTL_UINT(_kern, OID_AUTO, kobj_methodcount, CTLFLAG_RD,
+SYSCTL_INT(_kern, OID_AUTO, kobj_methodcount, CTLFLAG_RD,
 	   &kobj_next_id, 0, "");
 
 static void

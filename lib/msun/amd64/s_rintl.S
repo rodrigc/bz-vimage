@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/msun/amd64/s_rintl.S,v 1.1 2008/01/14 02:12:07 das Exp $
+ * $FreeBSD: src/lib/msun/amd64/s_rintl.S,v 1.2 2011/01/07 16:13:12 kib Exp $
  */
 
 /*
@@ -41,3 +41,5 @@ ENTRY(rintl)
 	fldt	8(%rsp)
 	frndint
 	ret
+
+	.section .note.GNU-stack,"",%progbits

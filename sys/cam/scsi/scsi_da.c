@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_da.c,v 1.253 2010/10/24 18:53:16 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/scsi/scsi_da.c,v 1.255 2011/01/19 17:04:07 mdf Exp $");
 
 #include <sys/param.h>
 
@@ -1127,9 +1127,9 @@ dasysctlinit(void *context, int pending)
 		struct ccb_trans_settings_fc *fc = &cts.xport_specific.fc;
 		if (fc->valid & CTS_FC_VALID_WWPN) {
 			softc->wwpn = fc->wwpn;
-			SYSCTL_ADD_XLONG(&softc->sysctl_ctx,
+			SYSCTL_ADD_UQUAD(&softc->sysctl_ctx,
 			    SYSCTL_CHILDREN(softc->sysctl_tree),
-			    OID_AUTO, "wwpn", CTLTYPE_QUAD | CTLFLAG_RD,
+			    OID_AUTO, "wwpn", CTLFLAG_RD,
 			    &softc->wwpn, "World Wide Port Name");
 		}
 	}

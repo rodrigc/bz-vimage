@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.82 2010/11/22 16:43:05 gallatin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mxge/if_mxge.c,v 1.83 2011/01/07 16:07:29 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -4647,9 +4647,8 @@ mxge_attach(device_t dev)
 	mxge_fetch_tunables(sc);
 
 	TASK_INIT(&sc->watchdog_task, 1, mxge_watchdog_task, sc);
-	sc->tq = taskqueue_create_fast("mxge_taskq", M_WAITOK,
-				       taskqueue_thread_enqueue,
-				       &sc->tq);
+	sc->tq = taskqueue_create("mxge_taskq", M_WAITOK,
+				  taskqueue_thread_enqueue, &sc->tq);
 	if (sc->tq == NULL) {
 		err = ENOMEM;
 		goto abort_with_nothing;

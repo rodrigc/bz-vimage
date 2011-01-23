@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_hub.c,v 1.44 2010/10/27 17:38:05 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_hub.c,v 1.45 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -38,7 +38,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

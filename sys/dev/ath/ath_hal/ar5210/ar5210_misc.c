@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_misc.c,v 1.3 2009/02/24 00:12:16 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_misc.c,v 1.4 2011/01/21 05:21:00 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -561,8 +561,13 @@ ar5210AniControl(struct ath_hal *ah, HAL_ANI_CMD cmd, int param)
 }
 
 void
-ar5210AniPoll(struct ath_hal *ah, const HAL_NODE_STATS *stats,
+ar5210RxMonitor(struct ath_hal *ah, const HAL_NODE_STATS *stats,
 	const struct ieee80211_channel *chan)
+{
+}
+
+void
+ar5210AniPoll(struct ath_hal *ah, const struct ieee80211_channel *chan)
 {
 }
 

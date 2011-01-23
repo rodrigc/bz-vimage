@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/vm_machdep.c,v 1.45 2010/03/11 21:16:54 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/vm_machdep.c,v 1.46 2011/01/18 21:57:02 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -175,7 +175,7 @@ sf_buf_free(struct sf_buf *sf)
 		 sf->m = NULL;
 		 LIST_REMOVE(sf, list_entry);
 		 if (sf_buf_alloc_want > 0)
-			 wakeup_one(&sf_buf_freelist);
+			 wakeup(&sf_buf_freelist);
 	 }
 	 mtx_unlock(&sf_buf_lock);				 
 #endif

@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/tsb.c,v 1.42 2010/12/29 16:59:33 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/tsb.c,v 1.44 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_pmap.h"
@@ -37,7 +37,6 @@ __FBSDID("$FreeBSD: src/sys/sparc64/sparc64/tsb.c,v 1.42 2010/12/29 16:59:33 mar
 #include <sys/param.h>
 #include <sys/queue.h>
 #include <sys/ktr.h>
-#include <sys/linker_set.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
 #include <sys/proc.h>
@@ -80,7 +79,6 @@ struct tte *tsb_kernel;
 vm_size_t tsb_kernel_mask;
 vm_size_t tsb_kernel_size;
 vm_paddr_t tsb_kernel_phys;
-vm_paddr_t tsb_kernel_phys_end;
 u_int tsb_kernel_ldd_phys;
 
 struct tte *

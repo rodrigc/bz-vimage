@@ -25,12 +25,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/db_trace.c,v 1.28 2008/10/27 21:31:14 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/db_trace.c,v 1.29 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/kdb.h>
-#include <sys/linker_set.h>
 #include <sys/proc.h>
 #include <sys/stack.h>
 #include <sys/sysent.h>

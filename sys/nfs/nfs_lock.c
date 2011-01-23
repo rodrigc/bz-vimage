@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfs/nfs_lock.c,v 1.16 2010/10/19 00:20:00 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nfs/nfs_lock.c,v 1.17 2011/01/03 20:37:31 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -251,7 +251,7 @@ nfs_dolock(struct vop_advlock_args *ap)
 	ASSERT_VOP_LOCKED(vp, "nfs_dolock");
 
 	nmp->nm_getinfo(vp, msg.lm_fh, &msg.lm_fh_len, &msg.lm_addr,
-	    &msg.lm_nfsv3, NULL);
+	    &msg.lm_nfsv3, NULL, NULL);
 	VOP_UNLOCK(vp, 0);
 
 	/*

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/i386/rtld_start.S,v 1.4 2005/05/19 07:32:42 dfr Exp $
+ * $FreeBSD: src/libexec/rtld-elf/i386/rtld_start.S,v 1.5 2011/01/07 16:07:05 kib Exp $
  */
 
 	.text
@@ -89,3 +89,5 @@ _rtld_bind_start:
 	popf				# Restore eflags
 	leal	4(%esp),%esp		# Discard reloff, do not change eflags
 	ret				# "Return" to target address
+
+	.section .note.GNU-stack,"",%progbits

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/geom/class/raid3/geom_raid3.c,v 1.23 2010/10/09 20:20:27 ae Exp $");
+__FBSDID("$FreeBSD: src/sbin/geom/class/raid3/geom_raid3.c,v 1.24 2011/01/12 13:55:01 ae Exp $");
 
 #include <sys/param.h>
 #include <errno.h>
@@ -212,6 +212,11 @@ raid3_label(struct gctl_req *req)
 	md.md_mediasize = mediasize * (nargs - 2);
 	md.md_sectorsize = sectorsize * (nargs - 2);
 	md.md_mediasize -= (md.md_mediasize % md.md_sectorsize);
+
+	if (md.md_sectorsize > MAXPHYS) {
+		gctl_error(req, "The blocksize is too big.");
+		return;
+	}
 
 	/*
 	 * Clear last sector first, to spoil all components if device exists.

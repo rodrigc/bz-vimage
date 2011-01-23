@@ -1,5 +1,5 @@
-# $FreeBSD: src/sys/boot/powerpc/Makefile,v 1.4 2008/10/14 03:32:41 nwhitehorn Exp $
+# $FreeBSD: src/sys/boot/powerpc/Makefile,v 1.5 2011/01/06 04:12:29 nwhitehorn Exp $
 
-SUBDIR=		boot1.chrp ofw uboot
+SUBDIR=		boot1.chrp ofw ps3 uboot
 
 .include <bsd.subdir.mk>

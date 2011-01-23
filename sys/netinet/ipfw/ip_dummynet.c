@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dummynet.c,v 1.33 2010/09/29 09:40:20 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dummynet.c,v 1.35 2011/01/13 17:02:39 jhb Exp $");
 
 /*
  * Configuration and internal object management for dummynet.
@@ -2157,7 +2157,7 @@ ip_dn_init(void)
 	DN_LOCK_INIT();
 
 	TASK_INIT(&dn_task, 0, dummynet_task, curvnet);
-	dn_tq = taskqueue_create_fast("dummynet", M_NOWAIT,
+	dn_tq = taskqueue_create("dummynet", M_WAITOK,
 	    taskqueue_thread_enqueue, &dn_tq);
 	taskqueue_start_threads(&dn_tq, 1, PI_NET, "dummynet");
 

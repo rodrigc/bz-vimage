@@ -17,7 +17,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.17 2010/11/06 18:17:20 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/wlan/if_run.c,v 1.18 2011/01/17 20:15:15 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2700U/RT2800U/RT3000U chipset driver.
@@ -2376,7 +2376,6 @@ run_newassoc(struct ieee80211_node *ni, int isnew)
 	DPRINTF("new assoc isnew=%d associd=%x addr=%s\n",
 	    isnew, ni->ni_associd, ether_sprintf(ni->ni_macaddr));
 
-	ieee80211_ratectl_node_init(ni);
 	sc->sc_ni[wcid] = ni;
 
 	for (i = 0; i < rs->rs_nrates; i++) {

@@ -22,11 +22,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.3 2010/12/09 21:31:21 dim Exp $
+ * $FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.5 2011/01/13 23:00:22 kib Exp $
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.3 2010/12/09 21:31:21 dim Exp $");
+__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crt1_s.S,v 1.5 2011/01/13 23:00:22 kib Exp $");
 
 	.text
 	.align	4
@@ -42,6 +42,7 @@ _start:
 	.cfi_def_cfa_register %ebp
 	andl	$0xfffffff0,%esp # align stack
 	leal	8(%ebp),%eax
+	subl	$4,%esp
 	pushl	%eax		# argv
 	pushl	4(%ebp)		# argc
 	pushl	%edx		# rtld cleanup
@@ -49,3 +50,5 @@ _start:
 	int3
 	.cfi_endproc
 	.size	_start, . - _start
+
+	.section .note.GNU-stack,"",%progbits

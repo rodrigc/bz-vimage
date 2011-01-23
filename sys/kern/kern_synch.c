@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_synch.c,v 1.320 2009/07/14 22:52:46 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_synch.c,v 1.321 2011/01/06 22:19:15 jhb Exp $");
 
 #include "opt_ktrace.h"
 #include "opt_sched.h"
@@ -546,7 +546,8 @@ yield(struct thread *td, struct yield_args *uap)
 {
 
 	thread_lock(td);
-	sched_prio(td, PRI_MAX_TIMESHARE);
+	if (PRI_BASE(td->td_pri_class) == PRI_TIMESHARE)
+		sched_prio(td, PRI_MAX_TIMESHARE);
 	mi_switch(SW_VOL | SWT_RELINQUISH, NULL);
 	thread_unlock(td);
 	td->td_retval[0] = 0;

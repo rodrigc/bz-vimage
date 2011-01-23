@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/psycho.c,v 1.90 2010/11/15 21:58:10 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/psycho.c,v 1.91 2011/01/04 16:11:32 marius Exp $");
 
 /*
  * Support for `Hummingbird' (UltraSPARC IIe), `Psycho' and `Psycho+'
@@ -716,7 +716,7 @@ psycho_set_intr(struct psycho_softc *sc, u_int index, bus_addr_t intrmap,
 	    INTVEC(PSYCHO_READ8(sc, intrmap)) != vec ||
 	    intr_vectors[vec].iv_ic != &psycho_ic ||
 	    bus_setup_intr(sc->sc_dev, sc->sc_irq_res[index],
-	    INTR_TYPE_MISC | INTR_FAST, filt, intr, sc,
+	    INTR_TYPE_MISC | INTR_BRIDGE, filt, intr, sc,
 	    &sc->sc_ihand[index]) != 0)
 		panic("%s: failed to set up interrupt %d", __func__, index);
 }

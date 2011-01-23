@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdcache.c,v 1.3 2010/02/13 23:56:19 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdcache.c,v 1.4 2011/01/12 23:34:09 zack Exp $");
 
 /*
  * Here is the basic algorithm:
@@ -727,9 +727,8 @@ nfsrc_freecache(struct nfsrvcache *rp)
 	newnfsstats.srvcache_size--;
 }
 
-#ifdef notdef
 /*
- * Clean out the cache. Called when the last nfsd terminates.
+ * Clean out the cache. Called when nfsserver module is unloaded.
  */
 APPLESTATIC void
 nfsrvd_cleancache(void)
@@ -752,7 +751,6 @@ nfsrvd_cleancache(void)
 	nfsrc_tcpsavedreplies = 0;
 	NFSUNLOCKCACHE();
 }
-#endif	/* notdef */
 
 /*
  * The basic rule is to get rid of entries that are expired.

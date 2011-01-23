@@ -4,7 +4,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/msun/amd64/s_scalbnl.S,v 1.2 2009/05/25 14:37:10 attilio Exp $")
+__FBSDID("$FreeBSD: src/lib/msun/amd64/s_scalbnl.S,v 1.3 2011/01/07 16:13:12 kib Exp $")
 /* RCSID("$NetBSD: s_scalbnf.S,v 1.4 1999/01/02 05:15:40 kristerw Exp $") */
 
 ENTRY(scalbnl)
@@ -18,3 +18,5 @@ END(scalbnl)
 
 .globl	CNAME(ldexpl)
 .set	CNAME(ldexpl),CNAME(scalbnl)
+
+	.section .note.GNU-stack,"",%progbits

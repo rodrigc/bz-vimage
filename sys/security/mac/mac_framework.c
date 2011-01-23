@@ -70,7 +70,7 @@
 #include "opt_mac.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/security/mac/mac_framework.c,v 1.148 2010/08/22 11:18:57 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/security/mac/mac_framework.c,v 1.149 2011/01/12 19:54:14 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/condvar.h>
@@ -151,7 +151,7 @@ static int	mac_late = 0;
  * for an object type at run-time.
  */
 uint64_t	mac_labeled;
-SYSCTL_QUAD(_security_mac, OID_AUTO, labeled, CTLFLAG_RD, &mac_labeled, 0,
+SYSCTL_UQUAD(_security_mac, OID_AUTO, labeled, CTLFLAG_RD, &mac_labeled, 0,
     "Mask of object types being labeled");
 
 MALLOC_DEFINE(M_MACTEMP, "mactemp", "MAC temporary label storage");

@@ -15,14 +15,13 @@
 # If you are in doubt as to the purpose or necessity of a line, check first 
 # in NOTES.
 #
-# $FreeBSD: src/sys/mips/conf/MALTA64,v 1.7 2010/11/13 22:34:12 imp Exp $
+# $FreeBSD: src/sys/mips/conf/MALTA64,v 1.8 2011/01/20 08:15:11 jchandra Exp $
 
 ident		MALTA
 
 machine		mips mips64el	# Malta supports both, so it isn't in std.malta
 
 makeoptions	ARCH_FLAGS="-march=mips64 -mabi=64"
-makeoptions	LDSCRIPT_NAME=	ldscript.mips.mips64
 
 options 	YAMON
 

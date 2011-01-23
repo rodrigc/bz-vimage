@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/send-logs.sh,v 1.2 2010/06/27 16:46:11 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/send-logs.sh,v 1.3 2011/01/08 23:03:24 jpaetzel Exp $
 
 # Script which creates a gzipped log and optionally mails it to the specified address
 ############################################################################
@@ -50,7 +50,7 @@ if [ -e "/tmp/sys-install.cfg" ]
 then
   echo "" >>${TMPLOG}
   echo "# PC-SYSINSTALL CFG " >>${TMPLOG}
-  cat /tmp/sys-install.cfg >> ${TMPLOG}
+  cat /tmp/sys-install.cfg | grep -vE 'rootPass|userPass' >> ${TMPLOG}
 fi
 
 # Save dmesg output
@@ -59,7 +59,7 @@ echo "# DMESG OUTPUT " >>${TMPLOG}
 dmesg >> ${TMPLOG}
 
 # Get gpart info on all disks
-for i in `${PROGDIR}/pc-sysinstall disk-list | cut -d ':' -f 1`
+for i in `pc-sysinstall disk-list | cut -d ':' -f 1`
 do
   echo "" >>${TMPLOG}
   echo "# DISK INFO $i " >>${TMPLOG}

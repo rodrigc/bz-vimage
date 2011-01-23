@@ -24,7 +24,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crti.S,v 1.8 2010/12/09 21:31:21 dim Exp $");
+__FBSDID("$FreeBSD: src/lib/csu/i386-elf/crti.S,v 1.9 2011/01/07 16:07:51 kib Exp $");
 
 	.section .init,"ax",@progbits
 	.align	4
@@ -39,3 +39,5 @@ _init:
 	.type	_fini,@function
 _fini:
 	sub	$12,%esp	/* re-align stack pointer */
+
+	.section .note.GNU-stack,"",%progbits

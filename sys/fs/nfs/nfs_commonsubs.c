@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonsubs.c,v 1.7 2010/12/25 21:56:25 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfs/nfs_commonsubs.c,v 1.9 2011/01/18 14:34:45 rmacklem Exp $");
 
 /*
  * These functions support the macros and help fiddle mbuf chains for
@@ -109,7 +109,7 @@ struct nfsv4_opflag nfsv4_opflag[NFSV4OP_NOPS] = {
 	{ 1, 0, 0, 0, LK_EXCLUSIVE },		/* PutFH */
 	{ 1, 0, 0, 0, LK_EXCLUSIVE },		/* PutPubFH */
 	{ 1, 0, 0, 0, LK_EXCLUSIVE },		/* PutRootFH */
-	{ 0, 1, 0, 0, LK_EXCLUSIVE },		/* Read */
+	{ 0, 1, 0, 0, LK_SHARED },		/* Read */
 	{ 0, 1, 0, 0, LK_SHARED },		/* Readdir */
 	{ 0, 1, 0, 0, LK_SHARED },		/* ReadLink */
 	{ 0, 2, 1, 1, LK_EXCLUSIVE },		/* Remove */
@@ -1983,7 +1983,7 @@ nfsv4_fillattr(struct nfsrv_descript *nd, vnode_t vp, NFSACL_T *saclp,
 			NFSCLRBIT_ATTRBIT(retbitp, NFSATTRBIT_ACL);
 		} else if (naclp != NULL) {
 			if (vn_lock(vp, LK_SHARED) == 0) {
-				error = VOP_ACCESS(vp, VREAD_ACL, cred, p);
+				error = VOP_ACCESSX(vp, VREAD_ACL, cred, p);
 				if (error == 0)
 					error = VOP_GETACL(vp, ACL_TYPE_NFS4,
 					    naclp, cred, p);

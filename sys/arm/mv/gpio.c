@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/mv/gpio.c,v 1.5 2010/06/13 13:28:53 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/mv/gpio.c,v 1.6 2011/01/06 21:03:55 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -74,7 +74,7 @@ static uint32_t	gpio_setup[MV_GPIO_MAX_NPINS];
 
 static int	mv_gpio_probe(device_t);
 static int	mv_gpio_attach(device_t);
-static void	mv_gpio_intr(void *);
+static int	mv_gpio_intr(void *);
 
 static void	mv_gpio_intr_handler(int pin);
 static uint32_t	mv_gpio_reg_read(uint32_t reg);
@@ -193,8 +193,7 @@ mv_gpio_attach(device_t dev)
 
 	for (i = 0; i < sc->irq_num; i++) {
 		if (bus_setup_intr(dev, sc->res[1 + i],
-		    INTR_TYPE_MISC | INTR_FAST,
-		    (driver_filter_t *)mv_gpio_intr, NULL,
+		    INTR_TYPE_MISC, mv_gpio_intr, NULL,
 		    sc, &sc->ih_cookie[i]) != 0) {
 			bus_release_resources(dev, mv_gpio_res, sc->res);
 			device_printf(dev, "could not set up intr %d\n", i);
@@ -208,7 +207,7 @@ mv_gpio_attach(device_t dev)
 	return (0);
 }
 
-static void
+static int
 mv_gpio_intr(void *arg)
 {
 	uint32_t int_cause, gpio_val;
@@ -241,6 +240,8 @@ mv_gpio_intr(void *arg)
 			i++;
 		}
 	}
+
+	return (FILTER_HANDLED);
 }
 
 /*

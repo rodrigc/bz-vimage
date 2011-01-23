@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.72 2010/09/16 16:13:12 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.73 2011/01/14 17:06:54 jhb Exp $");
 
 #include "opt_sleepqueue_profiling.h"
 #include "opt_ddb.h"
@@ -745,7 +745,8 @@ sleepq_resume_thread(struct sleepqueue *sq, struct thread *td, int pri)
 
 	/* Adjust priority if requested. */
 	MPASS(pri == 0 || (pri >= PRI_MIN && pri <= PRI_MAX));
-	if (pri != 0 && td->td_priority > pri)
+	if (pri != 0 && td->td_priority > pri &&
+	    PRI_BASE(td->td_pri_class) == PRI_TIMESHARE)
 		sched_prio(td, pri);
 
 	/*

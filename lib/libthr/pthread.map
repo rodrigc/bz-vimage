@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/libthr/pthread.map,v 1.40 2010/10/20 02:34:02 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/pthread.map,v 1.41 2011/01/09 12:38:40 kib Exp $
  */
 
 /*
@@ -382,6 +382,8 @@ FBSDprivate_1.0 {
 	_thread_size_key;
 	_thread_state_running;
 	_thread_state_zoombie;
+
+	__pthread_map_stacks_exec;
 };
 
 FBSD_1.1 {

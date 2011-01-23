@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/sade/Makefile,v 1.149 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/usr.sbin/sade/Makefile,v 1.150 2011/01/12 14:55:02 nwhitehorn Exp $
 
 .if ${MACHINE_CPUARCH} != "ia64"
 _wizard=	wizard.c
@@ -19,9 +19,9 @@ WARNS?=	3
 .if ${MACHINE} == "pc98"
 CFLAGS+= -DPC98
 .endif
-CFLAGS+= -I${.CURDIR}/../../gnu/lib/libdialog -I.
+CFLAGS+= -I${.CURDIR}/../../gnu/lib/libodialog -I.
 
-DPADD=	${LIBDIALOG} ${LIBNCURSES} ${LIBUTIL} ${LIBDISK}
-LDADD=	-ldialog -lncurses -lutil -ldisk
+DPADD=	${LIBODIALOG} ${LIBNCURSES} ${LIBUTIL} ${LIBDISK}
+LDADD=	-lodialog -lncurses -lutil -ldisk
 
 .include <bsd.prog.mk>

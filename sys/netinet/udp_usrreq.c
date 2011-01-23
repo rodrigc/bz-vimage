@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/udp_usrreq.c,v 1.270 2010/11/22 19:32:54 dim Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/udp_usrreq.c,v 1.273 2011/01/19 20:57:08 rrs Exp $");
 
 #include "opt_ipfw.h"
 #include "opt_inet6.h"
@@ -480,11 +480,13 @@ udp_input(struct mbuf *m, int off)
 			 * and source-specific multicast. [RFC3678]
 			 */
 			imo = inp->inp_moptions;
-			if (IN_MULTICAST(ntohl(ip->ip_dst.s_addr)) &&
-			    imo != NULL) {
+			if (IN_MULTICAST(ntohl(ip->ip_dst.s_addr))) {
 				struct sockaddr_in	 group;
 				int			 blocked;
-
+				if (imo == NULL) {
+					INP_RUNLOCK(inp);
+					continue;
+				}
 				bzero(&group, sizeof(struct sockaddr_in));
 				group.sin_len = sizeof(struct sockaddr_in);
 				group.sin_family = AF_INET;
@@ -801,7 +803,8 @@ udp_pcblist(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_net_inet_udp, UDPCTL_PCBLIST, pcblist, CTLFLAG_RD, 0, 0,
+SYSCTL_PROC(_net_inet_udp, UDPCTL_PCBLIST, pcblist,
+    CTLTYPE_OPAQUE | CTLFLAG_RD, NULL, 0,
     udp_pcblist, "S,xinpcb", "List of active UDP sockets");
 
 static int

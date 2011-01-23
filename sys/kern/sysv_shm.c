@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sysv_shm.c,v 1.131 2010/12/02 01:14:45 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sysv_shm.c,v 1.132 2011/01/18 21:14:18 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_sysvipc.h"
@@ -177,7 +177,7 @@ SYSCTL_INT(_kern_ipc, OID_AUTO, shm_use_phys, CTLFLAG_RW,
 SYSCTL_INT(_kern_ipc, OID_AUTO, shm_allow_removed, CTLFLAG_RW,
     &shm_allow_removed, 0,
     "Enable/Disable attachment to attached segments marked for removal");
-SYSCTL_PROC(_kern_ipc, OID_AUTO, shmsegs, CTLFLAG_RD,
+SYSCTL_PROC(_kern_ipc, OID_AUTO, shmsegs, CTLTYPE_OPAQUE | CTLFLAG_RD,
     NULL, 0, sysctl_shmsegs, "",
     "Current number of shared memory segments allocated");
 

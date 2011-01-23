@@ -43,7 +43,7 @@
 
 #ifdef _KERNEL
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/adlink/adlink.c,v 1.18 2009/12/29 21:51:28 rnoland Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/adlink/adlink.c,v 1.19 2011/01/06 21:02:14 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -375,9 +375,7 @@ adlink_attach(device_t self)
 	if (error)
 		return (error);
 
-	/* XXX why do we need INTR_MPSAFE if INTR_FAST was declared too?!?!? */
-	i = bus_setup_intr(self, sc->res[2],
-	    INTR_MPSAFE | INTR_TYPE_MISC,
+	i = bus_setup_intr(self, sc->res[2], INTR_TYPE_MISC,
 	    adlink_intr, NULL, sc, &sc->intrhand);
 	if (i) {
 		printf("adlink: Couldn't get FAST intr\n");

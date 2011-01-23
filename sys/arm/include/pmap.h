@@ -44,7 +44,7 @@
  *      from: @(#)pmap.h        7.4 (Berkeley) 5/12/91
  * 	from: FreeBSD: src/sys/i386/include/pmap.h,v 1.70 2000/11/30
  *
- * $FreeBSD: src/sys/arm/include/pmap.h,v 1.35 2010/08/11 23:22:53 jhb Exp $
+ * $FreeBSD: src/sys/arm/include/pmap.h,v 1.36 2011/01/05 22:15:57 imp Exp $
  */
 
 #ifndef _MACHINE_PMAP_H_
@@ -336,10 +336,6 @@ extern int pmap_needs_pte_sync;
 
 #endif /* ARM_NMMUS > 1 */
 
-#ifdef SKYEYE_WORKAROUNDS
-#define PMAP_NEEDS_PTE_SYNC     1
-#define PMAP_INCLUDE_PTE_SYNC
-#else
 #if (ARM_MMU_SA1 == 1) && (ARM_NMMUS == 1)
 #define	PMAP_NEEDS_PTE_SYNC	1
 #define	PMAP_INCLUDE_PTE_SYNC
@@ -348,7 +344,6 @@ extern int pmap_needs_pte_sync;
 #define PMAP_INCLUDE_PTE_SYNC
 #elif (ARM_MMU_SA1 == 0)
 #define	PMAP_NEEDS_PTE_SYNC	0
-#endif
 #endif
 
 /*

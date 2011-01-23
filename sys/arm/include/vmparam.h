@@ -28,7 +28,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/vmparam.h,v 1.15 2010/07/27 20:33:50 jhb Exp $
+ * $FreeBSD: src/sys/arm/include/vmparam.h,v 1.16 2011/01/09 12:50:44 kib Exp $
  */
 
 #ifndef	_MACHINE_VMPARAM_H_
@@ -146,7 +146,6 @@
 #define DFLSSIZ         (2*1024*1024)
 #define MAXSSIZ         (8*1024*1024)
 #define SGROWSIZ        (128*1024)
-#define MAXSLP		20
 
 #ifdef ARM_USE_SMALL_ALLOC
 #define UMA_MD_SMALL_ALLOC

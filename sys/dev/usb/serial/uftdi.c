@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.30 2010/11/29 08:17:44 gavin Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.31 2011/01/11 13:59:06 jhb Exp $");
 
 /*
  * NOTE: all function names beginning like "uftdi_cfg_" can only
@@ -49,7 +49,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/uftdi.c,v 1.30 2010/11/29 08:17:44 ga
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

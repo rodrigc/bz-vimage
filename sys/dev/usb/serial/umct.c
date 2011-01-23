@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umct.c,v 1.19 2010/11/05 19:12:48 n_hibma Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/umct.c,v 1.20 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 2003 Scott Long
@@ -52,7 +52,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/umct.c,v 1.19 2010/11/05 19:12:48 n_h
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

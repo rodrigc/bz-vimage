@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_debug.c,v 1.8 2009/11/22 21:21:22 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_debug.c,v 1.9 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -32,7 +32,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

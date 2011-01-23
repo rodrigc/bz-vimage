@@ -30,7 +30,7 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-$FreeBSD: src/sys/netinet/tcp_lro.c,v 1.2 2008/08/24 02:31:09 kmacy Exp $ 
+$FreeBSD: src/sys/netinet/tcp_lro.c,v 1.3 2011/01/07 21:40:34 jhb Exp $ 
 ***************************************************************************/
 
 #include <sys/param.h>
@@ -108,7 +108,7 @@ tcp_lro_free(struct lro_ctrl *cntl)
 
 	while (!SLIST_EMPTY(&cntl->lro_free)) {
 		entry = SLIST_FIRST(&cntl->lro_free);
-               	SLIST_REMOVE_HEAD(&cntl->lro_free, next);
+		SLIST_REMOVE_HEAD(&cntl->lro_free, next);
 		free(entry, M_DEVBUF);
 	}
 }

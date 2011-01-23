@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_cond.c,v 1.29 2010/12/22 05:01:52 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_cond.c,v 1.30 2011/01/04 05:35:19 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -246,11 +246,6 @@ cond_wait_user(struct pthread_cond *cvp, struct pthread_mutex *mp,
 			error = _thr_sleep(curthread, cvp->__clock_id, abstime);
 		}
 
-		if (curthread->wchan == NULL) {
-			error = 0;
-			goto out;
-		}
-
 		_sleepq_lock(cvp);
 		if (curthread->wchan == NULL) {
 			error = 0;
@@ -274,7 +269,6 @@ cond_wait_user(struct pthread_cond *cvp, struct pthread_mutex *mp,
 		}
 	}
 	_sleepq_unlock(cvp);
-out:
 	curthread->mutex_obj = NULL;
 	_mutex_cv_lock(mp, recurse);
 	return (error);

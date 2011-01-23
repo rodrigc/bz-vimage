@@ -1,5 +1,5 @@
 #	from: @(#)bsd.lib.mk	5.26 (Berkeley) 5/2/91
-# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.194 2010/09/10 16:21:09 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.lib.mk,v 1.195 2011/01/07 14:32:29 kib Exp $
 #
 
 .include <bsd.init.mk>
@@ -120,26 +120,27 @@ PO_FLAG=-pg
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})
 
 .asm.po:
-	${CC} -x assembler-with-cpp -DPROF ${PO_CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
+	${CC} -x assembler-with-cpp -DPROF ${PO_CFLAGS} ${ACFLAGS} \
+		-c ${.IMPSRC} -o ${.TARGET}
 	@[ -z "${CTFCONVERT}" -o -n "${NO_CTF}" ] || \
 		(${ECHO} ${CTFCONVERT} ${CTFFLAGS} ${.TARGET} && \
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})
 
 .asm.So:
-	${CC} -x assembler-with-cpp ${PICFLAG} -DPIC ${CFLAGS} \
+	${CC} -x assembler-with-cpp ${PICFLAG} -DPIC ${CFLAGS} ${ACFLAGS} \
 	    -c ${.IMPSRC} -o ${.TARGET}
 	@[ -z "${CTFCONVERT}" -o -n "${NO_CTF}" ] || \
 		(${ECHO} ${CTFCONVERT} ${CTFFLAGS} ${.TARGET} && \
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})
 
 .S.po:
-	${CC} -DPROF ${PO_CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
+	${CC} -DPROF ${PO_CFLAGS} ${ACFLAGS} -c ${.IMPSRC} -o ${.TARGET}
 	@[ -z "${CTFCONVERT}" -o -n "${NO_CTF}" ] || \
 		(${ECHO} ${CTFCONVERT} ${CTFFLAGS} ${.TARGET} && \
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})
 
 .S.So:
-	${CC} ${PICFLAG} -DPIC ${CFLAGS} -c ${.IMPSRC} -o ${.TARGET}
+	${CC} ${PICFLAG} -DPIC ${CFLAGS} ${ACFLAGS} -c ${.IMPSRC} -o ${.TARGET}
 	@[ -z "${CTFCONVERT}" -o -n "${NO_CTF}" ] || \
 		(${ECHO} ${CTFCONVERT} ${CTFFLAGS} ${.TARGET} && \
 		${CTFCONVERT} ${CTFFLAGS} ${.TARGET})

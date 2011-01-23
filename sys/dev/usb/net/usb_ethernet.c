@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/net/usb_ethernet.c,v 1.12 2010/10/15 15:00:30 marius Exp $ */
+/* $FreeBSD: src/sys/dev/usb/net/usb_ethernet.c,v 1.14 2011/01/18 21:14:23 mdf Exp $ */
 /*-
  * Copyright (c) 2009 Andrew Thompson (thompsa@FreeBSD.org)
  *
@@ -32,7 +32,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
@@ -241,7 +240,7 @@ ue_attach_post_task(struct usb_proc_msg *_task)
 	    OID_AUTO, num, CTLFLAG_RD, NULL, "");
 	SYSCTL_ADD_PROC(&ue->ue_sysctl_ctx,
 	    SYSCTL_CHILDREN(ue->ue_sysctl_oid), OID_AUTO,
-	    "%parent", CTLFLAG_RD, ue, 0,
+	    "%parent", CTLTYPE_STRING | CTLFLAG_RD, ue, 0,
 	    ue_sysctl_parent, "A", "parent device");
 
 	UE_LOCK(ue);

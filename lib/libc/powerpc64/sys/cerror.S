@@ -26,7 +26,7 @@
 /*      $NetBSD: cerror.S,v 1.5 2000/01/27 14:58:48 kleink Exp $        */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/cerror.S,v 1.2 2010/12/11 17:57:42 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc64/sys/cerror.S,v 1.3 2011/01/14 11:33:40 kib Exp $");
 	
 #include "SYS.h"
 
@@ -57,4 +57,4 @@ ENTRY(HIDENAME(cerror))
 	li	%r4,-1
 	blr
 
-
+	.section .note.GNU-stack,"",%progbits

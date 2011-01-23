@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ste/if_ste.c,v 1.34 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ste/if_ste.c,v 1.35 2011/01/12 19:53:56 mdf Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -2180,7 +2180,7 @@ ste_resume(device_t dev)
 #define	STE_SYSCTL_STAT_ADD32(c, h, n, p, d)	\
 	    SYSCTL_ADD_UINT(c, h, OID_AUTO, n, CTLFLAG_RD, p, 0, d)
 #define	STE_SYSCTL_STAT_ADD64(c, h, n, p, d)	\
-	    SYSCTL_ADD_QUAD(c, h, OID_AUTO, n, CTLFLAG_RD, p, d)
+	    SYSCTL_ADD_UQUAD(c, h, OID_AUTO, n, CTLFLAG_RD, p, d)
 
 static void
 ste_sysctl_node(struct ste_softc *sc)

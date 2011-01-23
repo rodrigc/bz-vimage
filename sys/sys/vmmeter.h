@@ -27,11 +27,17 @@
  * SUCH DAMAGE.
  *
  *	@(#)vmmeter.h	8.2 (Berkeley) 7/10/94
- * $FreeBSD: src/sys/sys/vmmeter.h,v 1.37 2010/05/08 20:34:01 alc Exp $
+ * $FreeBSD: src/sys/sys/vmmeter.h,v 1.38 2011/01/09 12:50:44 kib Exp $
  */
 
 #ifndef _SYS_VMMETER_H_
 #define _SYS_VMMETER_H_
+
+/*
+ * This value is used by ps(1) to change sleep state flag from 'S' to
+ * 'I' and by the sched process to set the alarm clock.
+ */
+#define	MAXSLP			20
 
 /*
  * System wide statistics counters.

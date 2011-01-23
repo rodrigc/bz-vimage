@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis.c,v 1.177 2010/10/19 19:11:36 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/if_ndis/if_ndis.c,v 1.178 2011/01/07 18:41:59 bschmidt Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -1176,11 +1176,8 @@ ndis_rxeof_eth(adapter, ctx, addr, hdr, hdrlen, lookahead, lookaheadlen, pktlen)
 	block = adapter;
 
 	m = m_getcl(M_DONTWAIT, MT_DATA, M_PKTHDR);
-
-	if (m == NULL) {
-		NdisFreePacket(p);
+	if (m == NULL)
 		return;
-	}
 
 	/* Save the data provided to us so far. */
 

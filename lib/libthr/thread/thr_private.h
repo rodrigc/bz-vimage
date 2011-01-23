@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.119 2010/12/22 05:01:52 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_private.h,v 1.120 2011/01/09 12:38:40 kib Exp $
  */
 
 #ifndef _THR_PRIVATE_H
@@ -898,6 +898,7 @@ struct dl_phdr_info;
 void __pthread_cxa_finalize(struct dl_phdr_info *phdr_info);
 void _thr_tsd_unload(struct dl_phdr_info *phdr_info) __hidden;
 void _thr_sigact_unload(struct dl_phdr_info *phdr_info) __hidden;
+void _thr_stack_fix_protection(struct pthread *thrd);
 
 __END_DECLS
 

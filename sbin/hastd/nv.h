@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/nv.h,v 1.3 2010/10/24 17:24:08 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/nv.h,v 1.4 2011/01/22 22:38:18 pjd Exp $
  */
 
 #ifndef	_NV_H_
@@ -127,6 +127,7 @@ const char *nv_get_string(struct nv *nv, const char *namefmt, ...)
     __printflike(2, 3);
 
 bool nv_exists(struct nv *nv, const char *namefmt, ...) __printflike(2, 3);
+void nv_assert(struct nv *nv, const char *namefmt, ...) __printflike(2, 3);
 void nv_dump(struct nv *nv);
 
 #endif	/* !_NV_H_ */

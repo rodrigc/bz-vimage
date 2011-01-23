@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.65 2010/10/08 10:27:52 pho Exp $
+# $FreeBSD: src/sys/boot/i386/gptboot/Makefile,v 1.66 2011/01/05 21:46:08 dim Exp $
 
 .PATH:		${.CURDIR}/../boot2 ${.CURDIR}/../common ${.CURDIR}/../../common
 
@@ -26,7 +26,6 @@ CFLAGS=	-DBOOTPROG=\"gptboot\" \
 	-fno-unit-at-a-time \
 	-mno-align-long-strings \
 	-mrtd \
-	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
 	-DGPT \
 	-D${GPTBOOT_UFS} \
 	-DSIOPRT=${BOOT_COMCONSOLE_PORT} \

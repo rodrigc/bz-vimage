@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/dfs.c,v 1.1 2009/05/31 09:01:23 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/dfs.c,v 1.2 2011/01/06 20:19:01 andreast Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -165,12 +165,10 @@ dfs_settings(device_t dev, struct cf_setting *sets, int *count)
 static int
 dfs_set(device_t dev, const struct cf_setting *set)
 {
-	struct dfs_softc *sc;
 	register_t hid1;
 	
 	if (set == NULL)
 		return (EINVAL);
-	sc = device_get_softc(dev);
 
 	hid1 = mfspr(SPR_HID1);
 	hid1 &= ~(HID1_DFS2 | HID1_DFS4);

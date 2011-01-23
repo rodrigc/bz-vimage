@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/mii_physubr.c,v 1.35 2010/11/14 13:26:10 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/mii_physubr.c,v 1.36 2011/01/14 19:33:58 marius Exp $");
 
 /*
  * Subroutines common to all PHYs.
@@ -135,8 +135,9 @@ mii_phy_setmedia(struct mii_softc *sc)
 			gtcr |= GTCR_ADV_MS;
 	}
 
-	if ((ife->ifm_media & IFM_GMASK) == (IFM_FDX | IFM_FLOW) ||
-	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0) {
+	if ((ife->ifm_media & IFM_FDX) != 0 &&
+	    ((ife->ifm_media & IFM_FLOW) != 0 ||
+	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0)) {
 		if ((sc->mii_flags & MIIF_IS_1000X) != 0)
 			anar |= ANAR_X_PAUSE_TOWARDS;
 		else {
@@ -184,7 +185,8 @@ mii_phy_auto(struct mii_softc *sc)
 		    ANAR_CSMA;
 		if ((ife->ifm_media & IFM_FLOW) != 0 ||
 		    (sc->mii_flags & MIIF_FORCEPAUSE) != 0) {
-			if ((sc->mii_capabilities & BMSR_100TXFDX) != 0)
+			if ((sc->mii_capabilities &
+			    (BMSR_10TFDX | BMSR_100TXFDX)) != 0)
 				anar |= ANAR_FC;
 			/* XXX Only 1000BASE-T has PAUSE_ASYM? */
 			if (((sc->mii_flags & MIIF_HAVE_GTCR) != 0) &&

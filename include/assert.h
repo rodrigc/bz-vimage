@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)assert.h	8.2 (Berkeley) 1/21/94
- * $FreeBSD: src/include/assert.h,v 1.7 2010/02/16 19:39:50 imp Exp $
+ * $FreeBSD: src/include/assert.h,v 1.8 2011/01/09 21:39:46 ed Exp $
  */
 
 #include <sys/cdefs.h>
@@ -58,6 +58,6 @@
 #ifndef _ASSERT_H_
 #define _ASSERT_H_
 __BEGIN_DECLS
-void __assert(const char *, const char *, int, const char *);
+void __assert(const char *, const char *, int, const char *) __dead2;
 __END_DECLS
 #endif /* !_ASSERT_H_ */

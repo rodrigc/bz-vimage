@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.17 2010/11/05 19:12:48 n_hibma Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/ugensa.c,v 1.18 2011/01/11 13:59:06 jhb Exp $ */
 /*	$NetBSD: ugensa.c,v 1.9.2.1 2007/03/24 14:55:50 yamt Exp $	*/
 
 /*
@@ -43,7 +43,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

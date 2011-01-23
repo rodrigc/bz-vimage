@@ -1,28 +1,26 @@
-# $FreeBSD: src/tools/tools/ath/athstats/Makefile,v 1.11 2009/02/13 05:42:25 sam Exp $
+# $FreeBSD: src/tools/tools/ath/athstats/Makefile,v 1.12 2011/01/22 23:37:42 adrian Exp $
+
+.PATH:	${.CURDIR}/../../../../sys/dev/ath/ath_hal
 
 PROG=	athstats
 
-SRCS=	main.c statfoo.c athstats.c
+SRCS=	main.c statfoo.c athstats.c opt_ah.h ah_osdep.h
 
-.include <bsd.prog.mk>
+CLEANFILES+=	opt_ah.h
 
-SRCDIR=	${.CURDIR}/../../../..
-
-CLEANFILES+= opt_ah.h ah_osdep.h
+.include <../Makefile.inc>
 
 CFLAGS+=-DATH_SUPPORT_ANI
 CFLAGS+=-DATH_SUPPORT_TDMA
 
-CFLAGS+=-I${.CURDIR}
-CFLAGS+=-I${SRCDIR}/sys/net80211
-
-.include <../Makefile.inc>
-
-athstats.o: opt_ah.h ah_osdep.h
-
 opt_ah.h:
-	touch opt_ah.h
+	echo "#define AH_DEBUG 1" > opt_ah.h
+	echo "#define AH_DEBUG_COUNTRY 1" >> opt_ah.h
+	echo "#define AH_SUPPORT_AR5416 1" >> opt_ah.h
+
 ah_osdep.h:
 	echo 'typedef void *HAL_SOFTC;' >ah_osdep.h
 	echo 'typedef int HAL_BUS_TAG;' >>ah_osdep.h
 	echo 'typedef void *HAL_BUS_HANDLE;' >>ah_osdep.h
+
+.include <bsd.prog.mk>

@@ -5,7 +5,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/amd64/string/memcmp.S,v 1.2 2008/11/02 01:10:54 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/amd64/string/memcmp.S,v 1.3 2011/01/07 16:08:40 kib Exp $");
 
 #if 0
 	RCSID("$NetBSD: memcmp.S,v 1.2 2003/07/26 19:24:39 salo Exp $")
@@ -40,3 +40,5 @@ L6:	xorl	%eax,%eax		/* Perform unsigned comparison	*/
 	subl    %edx,%eax
 	ret
 END(memcmp)
+
+	.section .note.GNU-stack,"",%progbits

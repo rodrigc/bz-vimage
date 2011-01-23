@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_subr.c,v 1.372 2010/12/28 12:13:30 lstewart Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_subr.c,v 1.374 2011/01/18 21:14:13 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_inet.h"
@@ -192,7 +192,7 @@ static int	do_tcpdrain = 1;
 SYSCTL_INT(_net_inet_tcp, OID_AUTO, do_tcpdrain, CTLFLAG_RW, &do_tcpdrain, 0,
     "Enable tcp_drain routine for extra help when low on mbufs");
 
-SYSCTL_VNET_INT(_net_inet_tcp, OID_AUTO, pcbcount, CTLFLAG_RD,
+SYSCTL_VNET_UINT(_net_inet_tcp, OID_AUTO, pcbcount, CTLFLAG_RD,
     &VNET_NAME(tcbinfo.ipi_count), 0, "Number of active PCBs");
 
 static VNET_DEFINE(int, icmp_may_rst) = 1;
@@ -1192,7 +1192,8 @@ tcp_pcblist(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_net_inet_tcp, TCPCTL_PCBLIST, pcblist, CTLFLAG_RD, 0, 0,
+SYSCTL_PROC(_net_inet_tcp, TCPCTL_PCBLIST, pcblist,
+    CTLTYPE_OPAQUE | CTLFLAG_RD, NULL, 0,
     tcp_pcblist, "S,xtcpcb", "List of active TCP connections");
 
 static int

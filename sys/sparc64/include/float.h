@@ -32,7 +32,7 @@
  *
  *	@(#)float.h	8.1 (Berkeley) 6/11/93
  *	from: NetBSD: float.h,v 1.3 2001/09/21 20:48:02 eeh Exp
- * $FreeBSD: src/sys/sparc64/include/float.h,v 1.6 2005/01/07 02:29:22 imp Exp $
+ * $FreeBSD: src/sys/sparc64/include/float.h,v 1.7 2011/01/09 06:05:48 das Exp $
  */
 
 #ifndef _MACHINE_FLOAT_H_
@@ -48,7 +48,7 @@ __END_DECLS
 #define FLT_ROUNDS	__flt_rounds()
 #if __ISO_C_VISIBLE >= 1999
 #define	FLT_EVAL_METHOD	0		/* no promotion */
-#define	DECIMAL_DIG	35		/* max precision in decimal digits */
+#define	DECIMAL_DIG	36		/* max precision in decimal digits */
 #endif
 
 #define FLT_MANT_DIG	24		/* p */

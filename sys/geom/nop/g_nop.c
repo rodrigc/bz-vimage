@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/nop/g_nop.c,v 1.19 2006/09/08 13:46:18 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/nop/g_nop.c,v 1.22 2011/01/12 12:26:10 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -176,6 +176,11 @@ g_nop_create(struct gctl_req *req, struct g_class *mp, struct g_provider *pp,
 		gctl_error(req, "Invalid secsize for provider %s.", pp->name);
 		return (EINVAL);
 	}
+	if (secsize > MAXPHYS) {
+		gctl_error(req, "secsize is too big.");
+		return (EINVAL);
+	}
+	size -= size % secsize;
 	snprintf(name, sizeof(name), "%s%s", pp->name, G_NOP_SUFFIX);
 	LIST_FOREACH(gp, &mp->geom, geom) {
 		if (strcmp(gp->name, name) == 0) {

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_process.h,v 1.10 2009/08/24 05:05:38 alfred Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_process.h,v 1.11 2011/01/13 14:15:36 jhb Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -27,11 +27,13 @@
 #ifndef _USB_PROCESS_H_
 #define	_USB_PROCESS_H_
 
+#include <sys/interrupt.h>
 #include <sys/priority.h>
+#include <sys/runq.h>
 
 /* defines */
-#define	USB_PRI_HIGH PI_NET
-#define	USB_PRI_MED PI_DISK
+#define	USB_PRI_HIGH	PI_SWI(SWI_NET)
+#define	USB_PRI_MED	PI_SWI(SWI_CAMBIO)
 
 #define	USB_PROC_WAIT_TIMEOUT 2
 #define	USB_PROC_WAIT_DRAIN   1

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5211/ar5211_xmit.c,v 1.2 2009/01/28 18:00:22 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5211/ar5211_xmit.c,v 1.3 2011/01/20 05:49:15 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -660,3 +660,13 @@ ar5211GetTxIntrQueue(struct ath_hal *ah, uint32_t *txqs)
 {
 	return;
 }
+
+/*
+ * Retrieve the rate table from the given TX completion descriptor
+ */
+HAL_BOOL
+ar5211GetTxCompletionRates(struct ath_hal *ah, const struct ath_desc *ds0, int *rates, int *tries)
+{
+	return AH_FALSE;
+}
+

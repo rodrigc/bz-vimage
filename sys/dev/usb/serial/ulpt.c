@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.16 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.17 2011/01/11 13:59:06 jhb Exp $");
 
 /*	$NetBSD: ulpt.c,v 1.60 2003/10/04 21:19:50 augustss Exp $	*/
 
@@ -46,7 +46,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/ulpt.c,v 1.16 2010/09/01 23:47:53 tho
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

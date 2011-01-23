@@ -35,7 +35,7 @@ static char *sccsid = "@(#)clnt_tcp.c	2.2 88/08/01 4.0 RPCSRC";
 static char sccsid3[] = "@(#)clnt_vc.c 1.19 89/03/16 Copyr 1988 Sun Micro";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/clnt_vc.c,v 1.11 2010/10/13 00:57:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/clnt_vc.c,v 1.12 2011/01/10 21:35:10 rmacklem Exp $");
  
 /*
  * clnt_tcp.c, Implements a TCP/IP based, client side RPC.
@@ -913,7 +913,7 @@ clnt_vc_soupcall(struct socket *so, void *arg, int waitflag)
 				mtx_unlock(&ct->ct_lock);
 				break;
 			}
-			bcopy(mtod(m, uint32_t *), &header, sizeof(uint32_t));
+			m_copydata(m, 0, sizeof(uint32_t), (char *)&header);
 			header = ntohl(header);
 			ct->ct_record = NULL;
 			ct->ct_record_resid = header & 0x7fffffff;
@@ -972,14 +972,11 @@ clnt_vc_soupcall(struct socket *so, void *arg, int waitflag)
 				 * The XID is in the first uint32_t of
 				 * the reply.
 				 */
-				if (ct->ct_record->m_len < sizeof(xid))
-					ct->ct_record =
-						m_pullup(ct->ct_record,
-						    sizeof(xid));
-				if (!ct->ct_record)
+				if (ct->ct_record->m_len < sizeof(xid) &&
+				    m_length(ct->ct_record, NULL) < sizeof(xid))
 					break;
-				bcopy(mtod(ct->ct_record, uint32_t *),
-				    &xid, sizeof(uint32_t));
+				m_copydata(ct->ct_record, 0, sizeof(xid),
+				    (char *)&xid);
 				xid = ntohl(xid);
 
 				mtx_lock(&ct->ct_lock);

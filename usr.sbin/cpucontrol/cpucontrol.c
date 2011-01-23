@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2008 Stanislav Sedov <stas@FreeBSD.org>.
+ * Copyright (c) 2008-2011 Stanislav Sedov <stas@FreeBSD.org>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/cpucontrol.c,v 1.5 2009/12/29 22:53:27 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/cpucontrol/cpucontrol.c,v 1.7 2011/01/07 18:52:08 stas Exp $");
 
 #include <assert.h>
 #include <stdio.h>
@@ -177,6 +177,7 @@ do_msr(const char *cmdarg, const char *dev)
 	unsigned long command;
 	int do_invert = 0, op;
 	int fd, error;
+	const char *command_name;
 	char *endptr;
 	char *p;
 
@@ -245,15 +246,19 @@ do_msr(const char *cmdarg, const char *dev)
 	switch (op) {
 	case OP_READ:
 		command = CPUCTL_RDMSR;
+		command_name = "RDMSR";
 		break;
 	case OP_WRITE:
 		command = CPUCTL_WRMSR;
+		command_name = "WRMSR";
 		break;
 	case OP_OR:
 		command = CPUCTL_MSRSBIT;
+		command_name = "MSRSBIT";
 		break;
 	case OP_AND:
 		command = CPUCTL_MSRCBIT;
+		command_name = "MSRCBIT";
 		break;
 	default:
 		abort();
@@ -266,7 +271,7 @@ do_msr(const char *cmdarg, const char *dev)
 	}
 	error = ioctl(fd, command, &args);
 	if (error < 0) {
-		WARN(0, "ioctl(%s, %lu)", dev, command);
+		WARN(0, "ioctl(%s, CPUCTL_%s (%lu))", dev, command_name, command);
 		close(fd);
 		return (1);
 	}

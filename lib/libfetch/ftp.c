@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libfetch/ftp.c,v 1.103 2009/11/25 14:57:07 attilio Exp $");
+__FBSDID("$FreeBSD: src/lib/libfetch/ftp.c,v 1.104 2011/01/17 17:25:46 des Exp $");
 
 /*
  * Portions of this code were taken from or based on ftpio.c:
@@ -1132,6 +1132,7 @@ ftp_request(struct url *url, const char *op, struct url_stat *us,
 
 	/* just a stat */
 	if (strcmp(op, "STAT") == 0) {
+		--conn->ref;
 		ftp_disconnect(conn);
 		return (FILE *)1; /* bogus return value */
 	}

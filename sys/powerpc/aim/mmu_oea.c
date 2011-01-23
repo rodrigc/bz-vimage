@@ -91,7 +91,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.158 2010/12/19 16:07:53 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/mmu_oea.c,v 1.159 2011/01/21 10:26:26 pluknet Exp $");
 
 /*
  * Manages physical address maps.
@@ -921,10 +921,10 @@ moea_bootstrap(mmu_t mmup, vm_offset_t kernelstart, vm_offset_t kernelend)
 	/*
 	 * Allocate virtual address space for the message buffer.
 	 */
-	pa = msgbuf_phys = moea_bootstrap_alloc(MSGBUF_SIZE, PAGE_SIZE);
+	pa = msgbuf_phys = moea_bootstrap_alloc(msgbufsize, PAGE_SIZE);
 	msgbufp = (struct msgbuf *)virtual_avail;
 	va = virtual_avail;
-	virtual_avail += round_page(MSGBUF_SIZE);
+	virtual_avail += round_page(msgbufsize);
 	while (va < virtual_avail) {
 		moea_kenter(mmup, va, pa);
 		pa += PAGE_SIZE;

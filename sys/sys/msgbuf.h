@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)msgbuf.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/sys/sys/msgbuf.h,v 1.29 2009/11/03 21:06:19 ed Exp $
+ * $FreeBSD: src/sys/sys/msgbuf.h,v 1.30 2011/01/21 10:26:26 pluknet Exp $
  */
 
 #ifndef _SYS_MSGBUF_H_
@@ -52,6 +52,7 @@ struct msgbuf {
 #define	MSGBUF_SEQSUB(mbp, seq1, seq2)	(MSGBUF_SEQNORM((mbp), (seq1) - (seq2)))
 
 #ifdef _KERNEL
+extern int	msgbufsize;
 extern int	msgbuftrigger;
 extern struct	msgbuf *msgbufp;
 extern struct	mtx msgbuf_lock;

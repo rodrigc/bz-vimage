@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/gptzfsboot/Makefile,v 1.5 2010/09/24 19:49:12 pjd Exp $
+# $FreeBSD: src/sys/boot/i386/gptzfsboot/Makefile,v 1.6 2011/01/05 21:46:08 dim Exp $
 
 .PATH:		${.CURDIR}/../boot2 ${.CURDIR}/../gptboot \
 		${.CURDIR}/../zfsboot ${.CURDIR}/../common \
@@ -23,7 +23,6 @@ CFLAGS=	-DBOOTPROG=\"gptzfsboot\" \
 	-fno-unit-at-a-time \
 	-mno-align-long-strings \
 	-mrtd \
-	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
 	-DGPT -DBOOT2 \
 	-DSIOPRT=${BOOT_COMCONSOLE_PORT} \
 	-DSIOFMT=${B2SIOFMT} \

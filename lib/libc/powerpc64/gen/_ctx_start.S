@@ -26,7 +26,7 @@
 
  #include <machine/asm.h>
 
- __FBSDID("$FreeBSD: src/lib/libc/powerpc64/gen/_ctx_start.S,v 1.1 2010/07/10 14:45:03 nwhitehorn Exp $");
+ __FBSDID("$FreeBSD: src/lib/libc/powerpc64/gen/_ctx_start.S,v 1.2 2011/01/14 11:33:40 kib Exp $");
 
 	.globl  CNAME(_ctx_done)
 	.globl  CNAME(abort)
@@ -45,3 +45,5 @@
 	 */
 	nop
 	bl	PIC_PLT(CNAME(abort))	/* abort */
+
+	.section .note.GNU-stack,"",%progbits

@@ -55,7 +55,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/exec_machdep.c,v 1.4 2010/10/30 23:07:30 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powerpc/exec_machdep.c,v 1.5 2011/01/14 11:36:44 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -290,8 +290,7 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	mtx_unlock(&psp->ps_mtx);
 	PROC_UNLOCK(p);
 
-	tf->srr0 = (register_t)(p->p_sysent->sv_psstrings -
-	    *(p->p_sysent->sv_szsigcode));
+	tf->srr0 = (register_t)p->p_sysent->sv_sigcode_base;
 
 	/*
 	 * copy the frame out to userland.

@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/ath/if_athioctl.h,v 1.25 2010/08/14 14:01:12 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/if_athioctl.h,v 1.26 2011/01/21 05:21:00 adrian Exp $
  */
 
 /*
@@ -119,7 +119,8 @@ struct ath_stats {
 	u_int32_t	ast_tx_raw_fail;/* raw tx failed 'cuz h/w down */
 	u_int32_t	ast_tx_nofrag;	/* tx dropped 'cuz no ath frag buffer */
 	u_int32_t	ast_be_missed;	/* missed beacons */
-	u_int32_t	ast_pad[13];
+	u_int32_t	ast_ani_cal;	/* ANI calibrations performed */
+	u_int32_t	ast_pad[12];
 };
 
 #define	SIOCGATHSTATS	_IOWR('i', 137, struct ifreq)

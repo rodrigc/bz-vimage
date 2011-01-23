@@ -35,7 +35,7 @@
  * For any questions regarding licensing please contact marketing@caviumnetworks.com
  *
  ***********************license end**************************************/
-/* $FreeBSD: src/sys/mips/cavium/cvmx_config.h,v 1.1 2010/07/20 19:25:11 jmallett Exp $ */
+/* $FreeBSD: src/sys/mips/cavium/cvmx_config.h,v 1.2 2011/01/10 03:48:41 jmallett Exp $ */
 
 #ifndef	_CVMX_CONFIG_H
 #define	_CVMX_CONFIG_H
@@ -45,6 +45,7 @@
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/systm.h>
+#include <sys/mbuf.h>
 
 #include <vm/vm.h>
 #include <vm/pmap.h>

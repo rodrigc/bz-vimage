@@ -27,7 +27,7 @@
 
 /*
  * $Id$
- * $FreeBSD: src/sys/geom/sched/g_sched.c,v 1.5 2010/08/03 11:21:17 ae Exp $
+ * $FreeBSD: src/sys/geom/sched/g_sched.c,v 1.6 2011/01/12 19:54:07 mdf Exp $
  *
  * Main control module for geom-based disk schedulers ('sched').
  *
@@ -189,10 +189,10 @@ SYSCTL_DECL(_kern_geom);
 SYSCTL_NODE(_kern_geom, OID_AUTO, sched, CTLFLAG_RW, 0,
     "GEOM_SCHED stuff");
 
-SYSCTL_INT(_kern_geom_sched, OID_AUTO, in_flight_wb, CTLFLAG_RD,
+SYSCTL_UINT(_kern_geom_sched, OID_AUTO, in_flight_wb, CTLFLAG_RD,
     &me.gs_write_bytes_in_flight, 0, "Write bytes in flight");
 
-SYSCTL_INT(_kern_geom_sched, OID_AUTO, in_flight_b, CTLFLAG_RD,
+SYSCTL_UINT(_kern_geom_sched, OID_AUTO, in_flight_b, CTLFLAG_RD,
     &me.gs_bytes_in_flight, 0, "Bytes in flight");
 
 SYSCTL_UINT(_kern_geom_sched, OID_AUTO, in_flight_w, CTLFLAG_RD,

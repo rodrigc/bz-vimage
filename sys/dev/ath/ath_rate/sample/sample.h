@@ -33,7 +33,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/ath/ath_rate/sample/sample.h,v 1.9 2008/11/30 19:06:35 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_rate/sample/sample.h,v 1.10 2011/01/20 08:19:23 adrian Exp $
  */
 
 /*
@@ -109,47 +109,6 @@ struct sample_node {
 
 #define WIFI_CW_MIN 31
 #define WIFI_CW_MAX 1023
-
-/*
- * Definitions for pulling the rate and trie counts from
- * a 5212 h/w descriptor.  These Don't belong here; the
- * driver should record this information so the rate control
- * code doesn't go groveling around in the descriptor bits.
- */
-#define	ds_ctl2		ds_hw[0]
-#define	ds_ctl3		ds_hw[1]
-
-/* TX ds_ctl2 */
-#define	AR_XmitDataTries0	0x000f0000	/* series 0 max attempts */
-#define	AR_XmitDataTries0_S	16
-#define	AR_XmitDataTries1	0x00f00000	/* series 1 max attempts */
-#define	AR_XmitDataTries1_S	20
-#define	AR_XmitDataTries2	0x0f000000	/* series 2 max attempts */
-#define	AR_XmitDataTries2_S	24
-#define	AR_XmitDataTries3	0xf0000000	/* series 3 max attempts */
-#define	AR_XmitDataTries3_S	28
-
-/* TX ds_ctl3 */
-#define	AR_XmitRate0		0x0000001f	/* series 0 tx rate */
-#define	AR_XmitRate0_S		0
-#define	AR_XmitRate1		0x000003e0	/* series 1 tx rate */
-#define	AR_XmitRate1_S		5
-#define	AR_XmitRate2		0x00007c00	/* series 2 tx rate */
-#define	AR_XmitRate2_S		10
-#define	AR_XmitRate3		0x000f8000	/* series 3 tx rate */
-#define	AR_XmitRate3_S		15
-
-/* TX ds_ctl3 for 5416 */
-#define	AR5416_XmitRate0	0x000000ff	/* series 0 tx rate */
-#define	AR5416_XmitRate0_S	0
-#define	AR5416_XmitRate1	0x0000ff00	/* series 1 tx rate */
-#define	AR5416_XmitRate1_S	8
-#define	AR5416_XmitRate2	0x00ff0000	/* series 2 tx rate */
-#define	AR5416_XmitRate2_S	16
-#define	AR5416_XmitRate3	0xff000000	/* series 3 tx rate */
-#define	AR5416_XmitRate3_S	24
-
-#define MS(_v, _f)	(((_v) & (_f)) >> _f##_S)
 
 /*
  * Calculate the transmit duration of a frame.

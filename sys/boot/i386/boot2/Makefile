@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.65 2010/09/21 21:41:45 dim Exp $
+# $FreeBSD: src/sys/boot/i386/boot2/Makefile,v 1.66 2011/01/05 21:46:08 dim Exp $
 
 .include <bsd.own.mk>
 
@@ -31,7 +31,6 @@ CFLAGS=	-Os \
 	-fno-unit-at-a-time \
 	-mno-align-long-strings \
 	-mrtd \
-	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
 	-D${BOOT2_UFS} \
 	-DFLAGS=${BOOT_BOOT1_FLAGS} \
 	-DSIOPRT=${BOOT_COMCONSOLE_PORT} \

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/kbdmap/kbdmap.c,v 1.7 2010/11/29 09:21:26 kevlo Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/kbdmap/kbdmap.c,v 1.8 2011/01/13 16:42:16 nwhitehorn Exp $");
 
 #include <sys/types.h>
 #include <sys/queue.h>
@@ -337,7 +337,7 @@ show_dialog(struct keymap **km_sorted, int num_keymaps)
 		exit(1);
 	}
 	asprintf(&dialog, "/usr/bin/dialog --clear --title \"Keyboard Menu\" "
-			  "--menu \"%s\" -1 -1 10", menu);
+			  "--menu \"%s\" 0 0 0", menu);
 
 	ext = extract_name(dir);
 

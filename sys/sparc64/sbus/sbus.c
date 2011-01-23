@@ -99,7 +99,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sbus/sbus.c,v 1.55 2010/03/31 22:19:00 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sbus/sbus.c,v 1.56 2011/01/04 16:11:32 marius Exp $");
 
 /*
  * SBus support.
@@ -459,7 +459,7 @@ sbus_attach(device_t dev)
 	    INTIGN(vec = rman_get_start(sc->sc_ot_ires)) != sc->sc_ign ||
 	    INTVEC(SYSIO_READ8(sc, SBR_THERM_INT_MAP)) != vec ||
 	    intr_vectors[vec].iv_ic != &sbus_ic ||
-	    bus_setup_intr(dev, sc->sc_ot_ires, INTR_TYPE_MISC | INTR_FAST,
+	    bus_setup_intr(dev, sc->sc_ot_ires, INTR_TYPE_MISC | INTR_BRIDGE,
 	    NULL, sbus_overtemp, sc, &sc->sc_ot_ihand) != 0)
 		panic("%s: failed to set up temperature interrupt", __func__);
 	i = 3;
@@ -469,7 +469,7 @@ sbus_attach(device_t dev)
 	    INTIGN(vec = rman_get_start(sc->sc_pf_ires)) != sc->sc_ign ||
 	    INTVEC(SYSIO_READ8(sc, SBR_POWER_INT_MAP)) != vec ||
 	    intr_vectors[vec].iv_ic != &sbus_ic ||
-	    bus_setup_intr(dev, sc->sc_pf_ires, INTR_TYPE_MISC | INTR_FAST,
+	    bus_setup_intr(dev, sc->sc_pf_ires, INTR_TYPE_MISC | INTR_BRIDGE,
 	    NULL, sbus_pwrfail, sc, &sc->sc_pf_ihand) != 0)
 		panic("%s: failed to set up power fail interrupt", __func__);
 

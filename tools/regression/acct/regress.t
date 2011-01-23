@@ -1,9 +1,14 @@
 #!/bin/sh
 #
-# $FreeBSD: src/tools/regression/acct/regress.t,v 1.3 2010/01/04 09:57:00 obrien Exp $
+# $FreeBSD: src/tools/regression/acct/regress.t,v 1.4 2011/01/06 20:05:24 keramida Exp $
 #
 
-DIR=`dirname $0`
+if test -z "${DIR}" ; then
+	DIR=$( make -V .OBJDIR )
+fi
+if test -z "${DIR}" ; then
+	DIR=$( dirname $0 )
+fi
 
 check()
 {

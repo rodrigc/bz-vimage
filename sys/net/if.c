@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.393 2010/11/22 19:32:54 dim Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.394 2011/01/12 19:53:50 mdf Exp $
  */
 
 #include "opt_compat.h"
@@ -100,7 +100,7 @@ SYSCTL_NODE(_net, PF_LINK, link, CTLFLAG_RW, 0, "Link layers");
 SYSCTL_NODE(_net_link, 0, generic, CTLFLAG_RW, 0, "Generic link-management");
 
 TUNABLE_INT("net.link.ifqmaxlen", &ifqmaxlen);
-SYSCTL_UINT(_net_link, OID_AUTO, ifqmaxlen, CTLFLAG_RDTUN,
+SYSCTL_INT(_net_link, OID_AUTO, ifqmaxlen, CTLFLAG_RDTUN,
     &ifqmaxlen, 0, "max send queue size");
 
 /* Log link state change events */

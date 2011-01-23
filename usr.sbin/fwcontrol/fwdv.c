@@ -31,7 +31,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/fwcontrol/fwdv.c,v 1.8 2009/02/02 21:05:12 sbruno Exp $
+ * $FreeBSD: src/usr.sbin/fwcontrol/fwdv.c,v 1.9 2011/01/04 02:52:22 emaste Exp $
  */
 #include <sys/param.h>
 #include <sys/ioctl.h>
@@ -110,7 +110,7 @@ dvrecv(int d, const char *filename, char ich, int count)
 	} else {
 		fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0660);
 		if (fd == -1)
-			err(EX_NOINPUT, filename);
+			err(EX_NOINPUT, "%s", filename);
 	}
 	buf = malloc(RBUFSIZE);
 	pad = malloc(DSIZE*MAXBLOCKS);
@@ -270,7 +270,7 @@ dvsend(int d, const char *filename, char ich, int count)
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-		err(EX_NOINPUT, filename);
+		err(EX_NOINPUT, "%s", filename);
 
 	pbuf = malloc(DSIZE * TNBUF);
 	bzero(wbuf, sizeof(wbuf));

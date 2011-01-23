@@ -28,7 +28,7 @@
 #include "opt_inet6.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nlm/nlm_prot_impl.c,v 1.24 2010/10/19 00:20:00 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nlm/nlm_prot_impl.c,v 1.26 2011/01/12 19:54:19 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/fail.h>
@@ -862,9 +862,9 @@ nlm_create_host(const char* caller_name)
 	    OID_AUTO, host->nh_sysid_string, CTLFLAG_RD, NULL, "");
 	SYSCTL_ADD_STRING(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
 	    "hostname", CTLFLAG_RD, host->nh_caller_name, 0, "");
-	SYSCTL_ADD_INT(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
+	SYSCTL_ADD_UINT(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
 	    "version", CTLFLAG_RD, &host->nh_vers, 0, "");
-	SYSCTL_ADD_INT(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
+	SYSCTL_ADD_UINT(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
 	    "monitored", CTLFLAG_RD, &host->nh_monstate, 0, "");
 	SYSCTL_ADD_PROC(&host->nh_sysctl, SYSCTL_CHILDREN(oid), OID_AUTO,
 	    "lock_count", CTLTYPE_INT | CTLFLAG_RD, host, 0,
@@ -2430,6 +2430,5 @@ DECLARE_MODULE(nfslockd, nfslockd_mod, SI_SUB_VFS, SI_ORDER_ANY);
 
 /* So that loader and kldload(2) can find us, wherever we are.. */
 MODULE_DEPEND(nfslockd, krpc, 1, 1, 1);
-MODULE_DEPEND(nfslockd, nfs, 1, 1, 1);
 MODULE_DEPEND(nfslockd, nfslock, 1, 1, 1);
 MODULE_VERSION(nfslockd, 1);

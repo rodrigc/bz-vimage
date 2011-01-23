@@ -22,7 +22,7 @@ along with GCC; see the file COPYING.  If not, write to
 the Free Software Foundation, 51 Franklin Street, Fifth Floor,
 Boston, MA 02110-1301, USA.  */
 
-/* $FreeBSD: src/contrib/gcc/config/i386/freebsd.h,v 1.76 2008/08/10 19:02:57 das Exp $ */
+/* $FreeBSD: src/contrib/gcc/config/i386/freebsd.h,v 1.77 2011/01/07 14:24:24 kib Exp $ */
 
 #undef  CC1_SPEC
 #define CC1_SPEC "%(cc1_cpu) %{profile:-p}"
@@ -239,3 +239,6 @@ Boston, MA 02110-1301, USA.  */
 		 XSTR (XEXP (DECL_RTL (current_function_decl), 0), 0));	\
     fprintf (asm_out_file, "\n");					\
   } while (0)
+
+#undef NEED_INDICATE_EXEC_STACK
+#define NEED_INDICATE_EXEC_STACK 1

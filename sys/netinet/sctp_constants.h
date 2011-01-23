@@ -31,7 +31,7 @@
 /* $KAME: sctp_constants.h,v 1.17 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.55 2010/12/30 21:32:35 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.56 2011/01/20 12:40:09 rrs Exp $");
 
 #ifndef __sctp_constants_h__
 #define __sctp_constants_h__
@@ -506,8 +506,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctp_constants.h,v 1.55 2010/12/30 21:32:35 
 #define SCTP_ADDR_UNCONFIRMED		0x200
 #define SCTP_ADDR_REQ_PRIMARY           0x400
 /* JRS 5/13/07 - Added potentially failed state for CMT PF */
-#define SCTP_ADDR_PF            0x800
-#define SCTP_REACHABLE_MASK		0x203
+#define SCTP_ADDR_PF                    0x800
 
 /* bound address types (e.g. valid address types to allow) */
 #define SCTP_BOUND_V6		0x01

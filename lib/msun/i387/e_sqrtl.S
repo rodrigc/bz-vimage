@@ -34,9 +34,11 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/msun/i387/e_sqrtl.S,v 1.2 2010/10/01 20:14:36 dim Exp $")
+__FBSDID("$FreeBSD: src/lib/msun/i387/e_sqrtl.S,v 1.3 2011/01/07 16:13:12 kib Exp $")
 
 ENTRY(sqrtl)
 	fldt	4(%esp)
 	fsqrt
 	ret
+
+	.section .note.GNU-stack,"",%progbits

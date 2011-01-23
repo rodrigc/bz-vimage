@@ -1,5 +1,5 @@
 /*	$NetBSD: uaudio.c,v 1.91 2004/11/05 17:46:14 kent Exp $	*/
-/*	$FreeBSD: src/sys/dev/sound/usb/uaudio.c,v 1.64 2010/06/22 21:16:18 thompsa Exp $ */
+/*	$FreeBSD: src/sys/dev/sound/usb/uaudio.c,v 1.65 2011/01/11 13:59:06 jhb Exp $ */
 
 /*-
  * Copyright (c) 1999 The NetBSD Foundation, Inc.
@@ -53,7 +53,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

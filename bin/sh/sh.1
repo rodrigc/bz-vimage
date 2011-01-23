@@ -30,9 +30,9 @@
 .\" SUCH DAMAGE.
 .\"
 .\"	from: @(#)sh.1	8.6 (Berkeley) 5/4/95
-.\" $FreeBSD: src/bin/sh/sh.1,v 1.154 2010/12/21 22:48:56 jilles Exp $
+.\" $FreeBSD: src/bin/sh/sh.1,v 1.155 2011/01/16 14:11:50 jilles Exp $
 .\"
-.Dd December 21, 2010
+.Dd January 16, 2011
 .Dt SH 1
 .Os
 .Sh NAME
@@ -1848,7 +1848,12 @@ If
 .Ar exitstatus
 is given
 it is used as the exit status of the shell;
-otherwise the exit status of the preceding command is used.
+otherwise, if the shell is executing an
+.Cm EXIT
+trap, the exit status of the last command before the trap is used;
+if the shell is executing a trap for a signal,
+the shell exits by resending the signal to itself;
+otherwise, the exit status of the preceding command is used.
 The exit status should be an integer between 0 and 255.
 .It Ic export Ar name ...
 .It Ic export Op Fl p

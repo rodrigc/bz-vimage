@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sysv_sem.c,v 1.102 2010/11/14 06:09:50 brucec Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sysv_sem.c,v 1.103 2011/01/18 21:14:18 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_sysvipc.h"
@@ -211,7 +211,7 @@ SYSCTL_INT(_kern_ipc, OID_AUTO, semvmx, CTLFLAG_RW, &seminfo.semvmx, 0,
     "Semaphore maximum value");
 SYSCTL_INT(_kern_ipc, OID_AUTO, semaem, CTLFLAG_RW, &seminfo.semaem, 0,
     "Adjust on exit max value");
-SYSCTL_PROC(_kern_ipc, OID_AUTO, sema, CTLFLAG_RD,
+SYSCTL_PROC(_kern_ipc, OID_AUTO, sema, CTLTYPE_OPAQUE | CTLFLAG_RD,
     NULL, 0, sysctl_sema, "", "Semaphore id pool");
 
 static struct syscall_helper_data sem_syscalls[] = {

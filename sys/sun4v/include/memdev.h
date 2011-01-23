@@ -23,8 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/include/memdev.h,v 1.2 2008/06/25 07:45:31 ed Exp $
+ * $FreeBSD: src/sys/sun4v/include/memdev.h,v 1.3 2011/01/17 22:58:28 jkim Exp $
  */
+
+#ifndef _MACHINE_MEMDEV_H_
+#define	_MACHINE_MEMDEV_H_
 
 #define	CDEV_MINOR_MEM	0
 #define	CDEV_MINOR_KMEM	1
@@ -34,4 +37,4 @@ d_read_t	memrw;
 #define		memioctl	(d_ioctl_t *)NULL
 #define		memmmap		(d_mmap_t *)NULL
 
-void		dev_mem_md_init(void);
+#endif /* _MACHINE_MEMDEV_H_ */

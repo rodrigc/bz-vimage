@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)netstat.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/usr.bin/netstat/netstat.h,v 1.66 2010/12/11 08:32:16 joel Exp $
+ * $FreeBSD: src/usr.bin/netstat/netstat.h,v 1.67 2011/01/20 15:22:01 ume Exp $
  */
 
 #include <sys/cdefs.h>
@@ -101,6 +101,7 @@ void	mrt6_stats(u_long);
 
 struct sockaddr_in6;
 struct in6_addr;
+void in6_fillscopeid(struct sockaddr_in6 *);
 char *routename6(struct sockaddr_in6 *);
 const char *netname6(struct sockaddr_in6 *, struct in6_addr *);
 void	inet6print(struct in6_addr *, int, const char *, int);

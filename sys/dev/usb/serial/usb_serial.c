@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.19 2010/11/07 15:36:07 n_hibma Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.20 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 1998, 2000 The NetBSD Foundation, Inc.
@@ -75,7 +75,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/usb_serial.c,v 1.19 2010/11/07 15:36:
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

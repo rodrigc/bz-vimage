@@ -64,7 +64,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_pager.c,v 1.111 2009/07/24 13:50:29 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_pager.c,v 1.112 2011/01/18 04:54:43 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -81,8 +81,6 @@ __FBSDID("$FreeBSD: src/sys/vm/vm_pager.c,v 1.111 2009/07/24 13:50:29 jhb Exp $"
 #include <vm/vm_page.h>
 #include <vm/vm_pager.h>
 #include <vm/vm_extern.h>
-
-MALLOC_DEFINE(M_VMPGDATA, "vm_pgdata", "XXX: VM pager private data");
 
 int cluster_pbuf_freecnt = -1;	/* unlimited to begin with */
 

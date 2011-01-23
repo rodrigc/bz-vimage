@@ -1,17 +1,13 @@
-# Makefile for dialog
-# $FreeBSD: src/gnu/usr.bin/dialog/Makefile,v 1.13 2006/03/17 18:54:23 ru Exp $
+# $FreeBSD: src/gnu/usr.bin/dialog/Makefile,v 1.15 2011/01/18 14:58:12 nwhitehorn Exp $
 
-.include <bsd.own.mk>
-
-.if ${MK_EXAMPLES} != "no"
-SUBDIR=	TESTS
-.endif
-
+DIALOG=	${.CURDIR}/../../../contrib/dialog
 PROG=   dialog
 
-CFLAGS+= -Wall -Wstrict-prototypes
+DPADD=	$(LIBDIALOG) $(LIBNCURSES) $(LIBM)
+LDADD=	-ldialog -lncursesw -lm
+CFLAGS+= -I${.CURDIR} -I${DIALOG}
+.PATH:	${DIALOG}
 
-DPADD=	$(LIBDIALOG) $(LIBNCURSES)
-LDADD=	-ldialog -lncurses
+WARNS?= 3
 
 .include <bsd.prog.mk>

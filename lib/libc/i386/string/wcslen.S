@@ -25,7 +25,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/i386/string/wcslen.S,v 1.2 2008/11/02 01:28:47 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/i386/string/wcslen.S,v 1.3 2011/01/07 16:08:40 kib Exp $");
 
 /*
  * size_t
@@ -67,3 +67,5 @@ found1:	incl	%eax
 found0:	popl	%ebx
 	ret
 END(wcslen)
+
+	.section .note.GNU-stack,"",%progbits

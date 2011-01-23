@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/pjdlog.c,v 1.8 2010/10/16 22:50:12 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/pjdlog.c,v 1.9 2011/01/22 22:35:08 pjd Exp $");
 
 #include <assert.h>
 #include <errno.h>
@@ -105,7 +105,7 @@ pjdlog_prefix_set(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	pjdlog_prefix_setv(fmt, ap);
+	pjdlogv_prefix_set(fmt, ap);
 	va_end(ap);
 }
 
@@ -114,7 +114,7 @@ pjdlog_prefix_set(const char *fmt, ...)
  * Setting prefix to NULL will remove it.
  */
 void
-pjdlog_prefix_setv(const char *fmt, va_list ap)
+pjdlogv_prefix_set(const char *fmt, va_list ap)
 {
 
 	assert(fmt != NULL);

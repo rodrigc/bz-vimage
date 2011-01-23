@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.68 2010/12/03 07:39:29 imp Exp $
+# $FreeBSD: src/tools/tools/nanobsd/nanobsd.sh,v 1.70 2011/01/03 19:32:54 imp Exp $
 #
 
 set -e
@@ -91,7 +91,7 @@ NANO_NEWFS="-b 4096 -f 512 -i 8192 -O1 -U"
 NANO_DRIVE=ad0
 
 # Target media size in 512 bytes sectors
-NANO_MEDIASIZE=1200000
+NANO_MEDIASIZE=1500000
 
 # Number of code images on media (1 or 2)
 NANO_IMAGES=2
@@ -245,7 +245,7 @@ make_conf_install ( ) (
 
 	echo "${CONF_WORLD}" > ${NANO_MAKE_CONF_INSTALL}
 	echo "${CONF_INSTALL}" >> ${NANO_MAKE_CONF_INSTALL}
-	echo "_WITHOUT_SRCCONF=t" >> ${NANO_MAKE_CONF_INSTALL}
+	echo "SRCCONF=/dev/null" >> ${NANO_MAKE_CONF_INSTALL}
 )
 
 install_world ( ) (

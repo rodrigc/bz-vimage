@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)memalloc.h	8.2 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/memalloc.h,v 1.17 2010/12/27 22:18:27 jilles Exp $
+ * $FreeBSD: src/bin/sh/memalloc.h,v 1.18 2011/01/09 22:47:58 jilles Exp $
  */
 
 #include <string.h>
@@ -55,7 +55,6 @@ pointer stalloc(int);
 void stunalloc(pointer);
 void setstackmark(struct stackmark *);
 void popstackmark(struct stackmark *);
-void grabstackblock(int);
 char *growstackstr(void);
 char *makestrspace(int, char *);
 char *stputbin(const char *data, int len, char *p);
@@ -65,6 +64,7 @@ char *stputs(const char *data, char *p);
 
 #define stackblock() stacknxt
 #define stackblocksize() stacknleft
+#define grabstackblock(n) stalloc(n)
 #define STARTSTACKSTR(p)	p = stackblock()
 #define STPUTC(c, p)	do { if (p == sstrend) p = growstackstr(); *p++ = (c); } while(0)
 #define CHECKSTRSPACE(n, p)	{ if (sstrend - p < n) p = makestrspace(n, p); }

@@ -30,11 +30,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * $FreeBSD: src/sys/i386/include/xen/xenpmap.h,v 1.6 2009/04/01 17:06:28 dfr Exp $
+ * $FreeBSD: src/sys/i386/include/xen/xenpmap.h,v 1.7 2011/01/04 14:49:54 rwatson Exp $
  */
 
 #ifndef _XEN_XENPMAP_H_
 #define _XEN_XENPMAP_H_
+
+#if defined(XEN)
 void _xen_queue_pt_update(vm_paddr_t, vm_paddr_t, char *, int);
 void xen_pt_switch(vm_paddr_t);
 void xen_set_ldt(vm_paddr_t, unsigned long);
@@ -230,5 +232,15 @@ phys_to_machine_mapping_valid(unsigned long pfn)
 	return xen_phys_machine[pfn] != INVALID_P2M_ENTRY;
 }
 
+#elif defined(XENHVM)
+
+#define	set_phys_to_machine(pfn, mfn)		((void)0)
+#define	phys_to_machine_mapping_valid(pfn)	(TRUE)
+
+#if !defined(PAE)
+#define	vtomach(va)	pmap_kextract((vm_offset_t) (va))
+#endif
+
+#endif /* !XEN && !XENHVM */
 
 #endif /* _XEN_XENPMAP_H_ */

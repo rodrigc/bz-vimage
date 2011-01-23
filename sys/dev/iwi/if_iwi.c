@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.77 2010/10/23 11:26:22 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/iwi/if_iwi.c,v 1.78 2011/01/12 19:53:56 mdf Exp $");
 
 /*-
  * Intel(R) PRO/Wireless 2200BG/2225BG/2915ABG driver
@@ -3515,14 +3515,14 @@ iwi_ledattach(struct iwi_softc *sc)
 	SYSCTL_ADD_PROC(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		"softled", CTLTYPE_INT | CTLFLAG_RW, sc, 0,
 		iwi_sysctl_softled, "I", "enable/disable software LED support");
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		"ledpin", CTLFLAG_RW, &sc->sc_ledpin, 0,
 		"pin setting to turn activity LED on");
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		"ledidle", CTLFLAG_RW, &sc->sc_ledidle, 0,
 		"idle time for inactivity LED (ticks)");
 	/* XXX for debugging */
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		"nictype", CTLFLAG_RD, &sc->sc_nictype, 0,
 		"NIC type from EEPROM");
 

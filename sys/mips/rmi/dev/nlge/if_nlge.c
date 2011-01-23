@@ -45,7 +45,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/nlge/if_nlge.c,v 1.18 2010/12/09 12:30:13 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/nlge/if_nlge.c,v 1.19 2011/01/06 21:08:06 jhb Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -1715,8 +1715,8 @@ nlge_irq_init(struct nlge_softc *sc)
 
 	irq_num = block_info->baseirq + sc->instance;
 	irq_res.__r_i = (struct resource_i *)(intptr_t) (irq_num);
-	ret = bus_setup_intr(sc->nlge_dev, &irq_res, (INTR_FAST |
-	    INTR_TYPE_NET | INTR_MPSAFE), NULL, nlge_intr, sc, NULL);
+	ret = bus_setup_intr(sc->nlge_dev, &irq_res,
+	    INTR_TYPE_NET | INTR_MPSAFE, NULL, nlge_intr, sc, NULL);
 	if (ret) {
 		nlge_detach(sc->nlge_dev);
 		device_printf(sc->nlge_dev, "couldn't set up irq: error=%d\n",

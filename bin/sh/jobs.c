@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)jobs.c	8.5 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/jobs.c,v 1.89 2010/12/21 22:47:34 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/jobs.c,v 1.90 2011/01/18 21:18:31 jilles Exp $");
 
 #include <sys/ioctl.h>
 #include <sys/param.h>
@@ -1062,6 +1062,7 @@ dowait(int block, struct job *job)
 			if (coredump)
 				out1str(" (core dumped)");
 			out1c('\n');
+			flushout(out1);
 		}
 	} else {
 		TRACE(("Not printing status, rootshell=%d, job=%p\n", rootshell, job));

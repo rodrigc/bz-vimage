@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/gracklevar.h,v 1.4 2009/01/03 19:38:47 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/gracklevar.h,v 1.5 2011/01/20 20:22:19 andreast Exp $
  */
 
 #ifndef	_POWERPC_POWERMAC_GRACKLEVAR_H_
@@ -45,7 +45,7 @@ struct grackle_softc {
 	vm_offset_t		sc_addr;
 	vm_offset_t		sc_data;
 	int			sc_bus;
-	struct			grackle_range sc_range[6];
+	struct			grackle_range sc_range[7];
 	int			sc_nrange;
 	int			sc_iostart;
 	struct			rman sc_io_rman;

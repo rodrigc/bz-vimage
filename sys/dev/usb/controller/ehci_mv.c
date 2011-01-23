@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_mv.c,v 1.1 2010/06/13 13:28:53 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_mv.c,v 1.3 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_bus.h"
 
@@ -46,7 +46,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_mv.c,v 1.1 2010/06/13 13:28:
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
@@ -225,7 +224,7 @@ mv_ehci_attach(device_t self)
 
 	sprintf(sc->sc_vendor, "Marvell");
 
-	err = bus_setup_intr(self, irq_err, INTR_FAST | INTR_TYPE_BIO,
+	err = bus_setup_intr(self, irq_err, INTR_TYPE_BIO,
 	    err_intr, NULL, sc, &ih_err);
 	if (err) {
 		device_printf(self, "Could not setup error irq, %d\n", err);

@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/hooks.c,v 1.8 2010/10/20 21:10:01 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/hooks.c,v 1.10 2011/01/12 16:16:54 pjd Exp $");
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -372,6 +372,11 @@ hook_execv(const char *path, va_list ap)
 		descriptors();
 		PJDLOG_VERIFY(sigemptyset(&mask) == 0);
 		PJDLOG_VERIFY(sigprocmask(SIG_SETMASK, &mask, NULL) == 0);
+		/*
+		 * Dummy handler set for SIGCHLD in the parent will be restored
+		 * to SIG_IGN on execv(3) below, so there is no need to do
+		 * anything with it.
+		 */
 		execv(path, args);
 		pjdlog_errno(LOG_ERR, "Unable to execute %s", path);
 		exit(EX_SOFTWARE);

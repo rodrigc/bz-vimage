@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  *
  *	JNPR: elf.h,v 1.4 2006/12/02 09:53:40 katta
- * $FreeBSD: src/sys/mips/include/elf.h,v 1.8 2010/08/17 08:55:45 kib Exp $
+ * $FreeBSD: src/sys/mips/include/elf.h,v 1.9 2011/01/07 14:22:34 kib Exp $
  *
  */
 
@@ -257,8 +257,9 @@ __ElfType(Auxinfo);
 #define	AT_NCPUS	19	/* Number of CPUs. */
 #define	AT_PAGESIZES	20	/* Pagesizes. */
 #define	AT_PAGESIZESLEN	21	/* Number of pagesizes. */
+#define	AT_STACKPROT	23	/* Initial stack protection. */
 
-#define	AT_COUNT	22	/* Count of defined aux entry types. */
+#define	AT_COUNT	24	/* Count of defined aux entry types. */
 
 #define	ET_DYN_LOAD_ADDR 0x0120000
 

@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.23 2010/10/13 22:04:55 hselasky Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.24 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -56,7 +56,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/net/if_cdce.c,v 1.23 2010/10/13 22:04:55 hse
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

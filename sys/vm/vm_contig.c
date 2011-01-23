@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_contig.c,v 1.85 2010/12/29 20:35:36 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_contig.c,v 1.86 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -70,7 +70,6 @@ __FBSDID("$FreeBSD: src/sys/vm/vm_contig.c,v 1.85 2010/12/29 20:35:36 alc Exp $"
 #include <sys/mutex.h>
 #include <sys/proc.h>
 #include <sys/kernel.h>
-#include <sys/linker_set.h>
 #include <sys/sysctl.h>
 #include <sys/vmmeter.h>
 #include <sys/vnode.h>

@@ -26,12 +26,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ia64/ia64/machdep.c,v 1.265 2010/11/09 20:41:10 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/ia64/ia64/machdep.c,v 1.266 2011/01/21 10:26:26 pluknet Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
 #include "opt_kstack_pages.h"
-#include "opt_msgbuf.h"
 #include "opt_sched.h"
 
 #include <sys/param.h>
@@ -888,8 +887,8 @@ ia64_init(void)
 	/*
 	 * Initialize error message buffer (at end of core).
 	 */
-	msgbufp = (struct msgbuf *)pmap_steal_memory(MSGBUF_SIZE);
-	msgbufinit(msgbufp, MSGBUF_SIZE);
+	msgbufp = (struct msgbuf *)pmap_steal_memory(msgbufsize);
+	msgbufinit(msgbufp, msgbufsize);
 
 	proc_linkup0(&proc0, &thread0);
 	/*

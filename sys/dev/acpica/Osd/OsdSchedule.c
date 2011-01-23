@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdSchedule.c,v 1.46 2010/01/21 21:14:28 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/Osd/OsdSchedule.c,v 1.47 2011/01/10 20:26:36 jkim Exp $");
 
 #include "opt_acpi.h"
 #include <sys/param.h>
@@ -245,8 +245,7 @@ AcpiOsGetTimer(void)
     UINT64 t;
 
     /* XXX During early boot there is no (decent) timer available yet. */
-    if (cold)
-	panic("acpi: timer op not yet supported during boot");
+    KASSERT(cold == 0, ("acpi: timer op not yet supported during boot"));
 
     binuptime(&bt);
     t = ((UINT64)10000000 * (uint32_t)(bt.frac >> 32)) >> 32;

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.18 2010/11/15 21:58:10 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/schizo.c,v 1.19 2011/01/04 16:11:32 marius Exp $");
 
 /*
  * Driver for `Schizo' Fireplane/Safari to PCI 2.1 and `Tomatillo' JBus to
@@ -745,7 +745,7 @@ schizo_set_intr(struct schizo_softc *sc, u_int index, u_int ino,
 	    INTIGN(vec) != sc->sc_ign ||
 	    intr_vectors[vec].iv_ic != &schizo_ic ||
 	    bus_setup_intr(sc->sc_dev, sc->sc_irq_res[index],
-	    INTR_TYPE_MISC | INTR_FAST, handler, NULL, sc,
+	    INTR_TYPE_MISC | INTR_BRIDGE, handler, NULL, sc,
 	    &sc->sc_ihand[index]) != 0)
 		panic("%s: failed to set up interrupt %d", __func__, index);
 }

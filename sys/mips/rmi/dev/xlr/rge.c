@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.20 2010/12/13 14:30:35 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/dev/xlr/rge.c,v 1.21 2011/01/06 21:08:06 jhb Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -1841,7 +1841,7 @@ rge_attach(device_t dev)
 	 */
 	sc->rge_irq.__r_i = (struct resource_i *)(intptr_t)sc->irq;
 
-	ret = bus_setup_intr(dev, &sc->rge_irq, INTR_FAST | INTR_TYPE_NET | INTR_MPSAFE,
+	ret = bus_setup_intr(dev, &sc->rge_irq, INTR_TYPE_NET | INTR_MPSAFE,
 	    NULL, rge_intr, sc, &sc->rge_intrhand);
 
 	if (ret) {

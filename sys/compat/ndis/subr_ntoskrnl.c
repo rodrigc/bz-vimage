@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/ndis/subr_ntoskrnl.c,v 1.112 2010/12/06 20:54:53 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/ndis/subr_ntoskrnl.c,v 1.113 2011/01/19 00:57:58 mdf Exp $");
 
 #include <sys/ctype.h>
 #include <sys/unistd.h>
@@ -80,8 +80,9 @@ __FBSDID("$FreeBSD: src/sys/compat/ndis/subr_ntoskrnl.c,v 1.112 2010/12/06 20:54
 #ifdef NTOSKRNL_DEBUG_TIMERS
 static int sysctl_show_timers(SYSCTL_HANDLER_ARGS);
 
-SYSCTL_PROC(_debug, OID_AUTO, ntoskrnl_timers, CTLFLAG_RW, 0, 0,
-	sysctl_show_timers, "I", "Show ntoskrnl timer stats");
+SYSCTL_PROC(_debug, OID_AUTO, ntoskrnl_timers, CTLTYPE_INT | CTLFLAG_RW,
+    NULL, 0, sysctl_show_timers, "I",
+    "Show ntoskrnl timer stats");
 #endif
 
 struct kdpc_queue {

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/amd64_mem.c,v 1.37 2010/11/16 23:26:02 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/amd64_mem.c,v 1.38 2011/01/17 17:30:35 jkim Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -311,6 +311,8 @@ amd64_mrstoreone(void *arg)
 
 	mrd = sc->mr_desc;
 
+	critical_enter();
+
 	/* Disable PGE. */
 	cr4 = rcr4();
 	load_cr4(cr4 & ~CR4_PGE);
@@ -399,6 +401,8 @@ amd64_mrstoreone(void *arg)
 	/* Restore caches and PGE. */
 	load_cr0(cr0);
 	load_cr4(cr4);
+
+	critical_exit();
 }
 
 /*

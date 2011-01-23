@@ -26,8 +26,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athstats/athstats.c,v 1.15 2009/02/13 05:45:23 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athstats/athstats.c,v 1.17 2011/01/22 23:37:42 adrian Exp $
  */
+
+#include "opt_ah.h"
 
 /*
  * ath statistics class.
@@ -47,10 +49,18 @@
 #include <unistd.h>
 #include <err.h>
 
+/* Use the system net80211 headers, rather than the kernel tree */
+/*
+ * XXX this means that if you build a separate net80211 stack
+ * XXX with your kernel and don't install the new/changed headers,
+ * XXX this tool may break.
+ * XXX -adrian
+ */
+#include <net80211/ieee80211_ioctl.h>
+#include <net80211/ieee80211_radiotap.h>
+
 #include "ah.h"
 #include "ah_desc.h"
-#include "ieee80211_ioctl.h"
-#include "ieee80211_radiotap.h"
 #include "if_athioctl.h"
 
 #include "athstats.h"

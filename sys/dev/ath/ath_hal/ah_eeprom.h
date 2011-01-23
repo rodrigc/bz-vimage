@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom.h,v 1.2 2010/03/03 17:32:32 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom.h,v 1.3 2011/01/20 07:42:39 adrian Exp $
  */
 #ifndef _ATH_AH_EEPROM_H_
 #define _ATH_AH_EEPROM_H_
@@ -94,6 +94,7 @@ enum {
 	AR_EEP_RXMASK,		/* uint8_t* */
 	AR_EEP_RXGAIN_TYPE,	/* uint8_t* */
 	AR_EEP_TXGAIN_TYPE,	/* uint8_t* */
+	AR_EEP_DAC_HPWR_5G,	/* uint8_t* */
 	AR_EEP_OL_PWRCTRL,	/* use ath_hal_eepromGetFlag */
 	AR_EEP_FSTCLK_5G,	/* use ath_hal_eepromGetFlag */
 	AR_EEP_ANTGAINMAX_5,	/* int8_t* */

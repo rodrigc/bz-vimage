@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.c,v 1.2 2010/06/01 15:33:10 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.c,v 1.3 2011/01/21 06:42:25 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -137,8 +137,8 @@ v4kEepromDiag(struct ath_hal *ah, int request,
 
 	switch (request) {
 	case HAL_DIAG_EEPROM:
-		*result = &ee->ee_base;
-		*resultsize = sizeof(ee->ee_base);
+		*result = ee;
+		*resultsize = sizeof(HAL_EEPROM_v4k);
 		return AH_TRUE;
 	}
 	return AH_FALSE;

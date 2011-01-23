@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/28/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.42 2010/11/20 14:14:52 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/main.c,v 1.43 2011/01/08 23:08:13 jilles Exp $");
 
 #include <stdio.h>
 #include <signal.h>
@@ -341,10 +341,7 @@ exitcmd(int argc, char **argv)
 	if (stoppedjobs())
 		return 0;
 	if (argc > 1)
-		exitstatus = number(argv[1]);
+		exitshell(number(argv[1]));
 	else
-		exitstatus = oexitstatus;
-	exitshell(exitstatus);
-	/*NOTREACHED*/
-	return 0;
+		exitshell_savedstatus();
 }

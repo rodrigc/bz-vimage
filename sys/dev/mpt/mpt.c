@@ -96,7 +96,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt.c,v 1.54 2010/09/24 16:40:46 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt.c,v 1.55 2011/01/12 19:53:56 mdf Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_cam.h> /* XXX For static handler registration */
@@ -2126,10 +2126,10 @@ mpt_sysctl_attach(struct mpt_softc *mpt)
 	struct sysctl_ctx_list *ctx = device_get_sysctl_ctx(mpt->dev);
 	struct sysctl_oid *tree = device_get_sysctl_tree(mpt->dev);
 
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		       "debug", CTLFLAG_RW, &mpt->verbose, 0,
 		       "Debugging/Verbose level");
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 		       "role", CTLFLAG_RD, &mpt->role, 0,
 		       "HBA role");
 #ifdef	MPT_TEST_MULTIPATH

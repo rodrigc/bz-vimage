@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/atmegadci_atmelarm.c,v 1.8 2009/06/23 02:19:59 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/atmegadci_atmelarm.c,v 1.9 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 2009 Hans Petter Selasky. All rights reserved.
@@ -34,7 +34,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/atmegadci_atmelarm.c,v 1.8 2009/0
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

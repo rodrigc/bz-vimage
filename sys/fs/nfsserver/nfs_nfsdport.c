@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.32 2010/12/28 23:50:13 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.41 2011/01/14 23:30:35 rmacklem Exp $");
 
 /*
  * Functions that perform the vfs operations required by the routines in
@@ -47,7 +47,6 @@ __FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.32 2010/12/28 23:50:
 #include <nlm/nlm.h>
 
 extern u_int32_t newnfs_true, newnfs_false, newnfs_xdrneg1;
-extern int nfsv4root_set;
 extern int nfsrv_useacl;
 extern int newnfs_numnfsd;
 extern struct mount nfsv4root_mnt;
@@ -59,6 +58,10 @@ struct mtx nfs_cache_mutex;
 struct mtx nfs_v4root_mutex;
 struct nfsrvfh nfs_rootfh, nfs_pubfh;
 int nfs_pubfhset = 0, nfs_rootfhset = 0;
+struct proc *nfsd_master_proc = NULL;
+static pid_t nfsd_master_pid = (pid_t)-1;
+static char nfsd_master_comm[MAXCOMLEN + 1];
+static struct timeval nfsd_master_start;
 static uint32_t nfsv4_sysid = 0;
 
 static int nfssvc_srvcall(struct thread *, struct nfssvc_args *,
@@ -153,6 +156,10 @@ nfsvno_accchk(struct vnode *vp, accmode_t accmode, struct ucred *cred,
 	struct vattr vattr;
 	int error = 0, getret = 0;
 
+	if (vpislocked == 0) {
+		if (vn_lock(vp, LK_SHARED) != 0)
+			return (EPERM);
+	}
 	if (accmode & VWRITE) {
 		/* Just vn_writechk() changed to check rdonly */
 		/*
@@ -166,7 +173,7 @@ nfsvno_accchk(struct vnode *vp, accmode_t accmode, struct ucred *cred,
 			case VREG:
 			case VDIR:
 			case VLNK:
-				return (EROFS);
+				error = EROFS;
 			default:
 				break;
 			}
@@ -176,11 +183,14 @@ nfsvno_accchk(struct vnode *vp, accmode_t accmode, struct ucred *cred,
 		 * the inode, try to free it up once.  If
 		 * we fail, we can't allow writing.
 		 */
-		if (vp->v_vflag & VV_TEXT)
-			return (ETXTBSY);
+		if ((vp->v_vflag & VV_TEXT) != 0 && error == 0)
+			error = ETXTBSY;
 	}
-	if (vpislocked == 0)
-		vn_lock(vp, LK_SHARED | LK_RETRY);
+	if (error != 0) {
+		if (vpislocked == 0)
+			VOP_UNLOCK(vp, 0);
+		return (error);
+	}
 
 	/*
 	 * Should the override still be applied when ACLs are enabled?
@@ -326,18 +336,7 @@ nfsvno_namei(struct nfsrv_descript *nd, struct nameidata *ndp,
 		 * In either case ni_startdir will be dereferenced and NULLed
 		 * out.
 		 */
-		if (exp->nes_vfslocked)
-			ndp->ni_cnd.cn_flags |= GIANTHELD;
 		error = lookup(ndp);
-		/*
-		 * The Giant lock should only change when
-		 * crossing mount points.
-		 */
-		if (crossmnt) {
-			exp->nes_vfslocked =
-			    (ndp->ni_cnd.cn_flags & GIANTHELD) != 0;
-			ndp->ni_cnd.cn_flags &= ~GIANTHELD;
-		}
 		if (error)
 			break;
 
@@ -851,8 +850,7 @@ nfsvno_mknod(struct nameidata *ndp, struct nfsvattr *nvap, struct ucred *cred,
 		    &ndp->ni_cnd, &nvap->na_vattr);
 		vput(ndp->ni_dvp);
 		nfsvno_relpathbuf(ndp);
-		if (error)
-			vrele(ndp->ni_startdir);
+		vrele(ndp->ni_startdir);
 		/*
 		 * Since VOP_MKNOD returns the ni_vp, I can't
 		 * see any reason to do the lookup.
@@ -1097,9 +1095,11 @@ nfsvno_rename(struct nameidata *fromndp, struct nameidata *tondp,
 		goto out;
 	}
 	if (ndflag & ND_NFSV4) {
-		NFSVOPLOCK(fvp, LK_EXCLUSIVE | LK_RETRY, p);
-		error = nfsrv_checkremove(fvp, 0, p);
-		NFSVOPUNLOCK(fvp, 0, p);
+		if (vn_lock(fvp, LK_EXCLUSIVE) == 0) {
+			error = nfsrv_checkremove(fvp, 0, p);
+			VOP_UNLOCK(fvp, 0);
+		} else
+			error = EPERM;
 		if (tvp && !error)
 			error = nfsrv_checkremove(tvp, 1, p);
 	} else {
@@ -1156,13 +1156,16 @@ nfsvno_link(struct nameidata *ndp, struct vnode *vp, struct ucred *cred,
 			error = EXDEV;
 	}
 	if (!error) {
-		NFSVOPLOCK(vp, LK_EXCLUSIVE | LK_RETRY, p);
-		error = VOP_LINK(ndp->ni_dvp, vp, &ndp->ni_cnd);
+		vn_lock(vp, LK_EXCLUSIVE | LK_RETRY);
+		if ((vp->v_iflag & VI_DOOMED) == 0)
+			error = VOP_LINK(ndp->ni_dvp, vp, &ndp->ni_cnd);
+		else
+			error = EPERM;
 		if (ndp->ni_dvp == vp)
 			vrele(ndp->ni_dvp);
 		else
 			vput(ndp->ni_dvp);
-		NFSVOPUNLOCK(vp, 0, p);
+		VOP_UNLOCK(vp, 0);
 	} else {
 		if (ndp->ni_dvp == ndp->ni_vp)
 			vrele(ndp->ni_dvp);
@@ -1686,6 +1689,7 @@ nfsrvd_readdirplus(struct nfsrv_descript *nd, int isdgram,
 	struct iovec iv;
 	struct componentname cn;
 	int not_zfs;
+	struct mount *mp;
 
 	if (nd->nd_repstat) {
 		nfsrv_postopattr(nd, getret, &at);
@@ -1855,7 +1859,24 @@ again:
 		toff = off;
 		goto again;
 	}
+
+	/*
+	 * Busy the file system so that the mount point won't go away
+	 * and, as such, VFS_VGET() can be used safely.
+	 */
+	mp = vp->v_mount;
+	vfs_ref(mp);
 	VOP_UNLOCK(vp, 0);
+	nd->nd_repstat = vfs_busy(mp, 0);
+	vfs_rel(mp);
+	if (nd->nd_repstat != 0) {
+		vrele(vp);
+		free(cookies, M_TEMP);
+		free(rbuf, M_TEMP);
+		if (nd->nd_flag & ND_NFSV3)
+			nfsrv_postopattr(nd, getret, &at);
+		return (0);
+	}
 
 	/*
 	 * Save this position, in case there is an error before one entry
@@ -1915,9 +1936,8 @@ again:
 					    vp, dp->d_fileno);
 				if (refp == NULL) {
 					if (usevget)
-						r = VFS_VGET(vp->v_mount,
-						    dp->d_fileno, LK_SHARED,
-						    &nvp);
+						r = VFS_VGET(mp, dp->d_fileno,
+						    LK_SHARED, &nvp);
 					else
 						r = EOPNOTSUPP;
 					if (r == EOPNOTSUPP) {
@@ -2036,6 +2056,7 @@ again:
 		ncookies--;
 	}
 	vrele(vp);
+	vfs_unbusy(mp);
 
 	/*
 	 * If dirlen > cnt, we must strip off the last entry. If that
@@ -2461,7 +2482,10 @@ nfsvno_fhtovp(struct mount *mp, fhandle_t *fhp, struct sockaddr *nam,
 
 	*credp = NULL;
 	exp->nes_numsecflavor = 0;
-	error = VFS_FHTOVP(mp, &fhp->fh_fid, vpp);
+	if (VFS_NEEDSGIANT(mp))
+		error = ESTALE;
+	else
+		error = VFS_FHTOVP(mp, &fhp->fh_fid, vpp);
 	if (error != 0)
 		/* Make sure the server replies ESTALE to the client. */
 		error = ESTALE;
@@ -2511,19 +2535,8 @@ nfsvno_pathconf(struct vnode *vp, int flag, register_t *retf,
  *	- get vp and export rights by calling nfsvno_fhtovp()
  *	- if cred->cr_uid == 0 or MNT_EXPORTANON set it to credanon
  *	  for AUTH_SYS
- * Also handle getting the Giant lock for the file system,
- * as required:
- * - if same mount point as *mpp
- *       do nothing
- *   else if *mpp == NULL
- *       if already locked
- *           leave it locked
- *       else
- *           call VFS_LOCK_GIANT()
- *   else
- *       if already locked
- *            unlock Giant
- *       call VFS_LOCK_GIANT()
+ *	- if mpp != NULL, return the mount point so that it can
+ *	  be used for vn_finished_write() by the caller
  */
 void
 nfsd_fhtovp(struct nfsrv_descript *nd, struct nfsrvfh *nfp, int lktype,
@@ -2538,33 +2551,21 @@ nfsd_fhtovp(struct nfsrv_descript *nd, struct nfsrvfh *nfp, int lktype,
 	/*
 	 * Check for the special case of the nfsv4root_fh.
 	 */
-	mp = vfs_getvfs(&fhp->fh_fsid);
-	if (!mp) {
+	mp = vfs_busyfs(&fhp->fh_fsid);
+	if (mpp != NULL)
+		*mpp = mp;
+	if (mp == NULL) {
 		*vpp = NULL;
 		nd->nd_repstat = ESTALE;
-		if (*mpp && exp->nes_vfslocked)
-			VFS_UNLOCK_GIANT(*mpp);
-		*mpp = NULL;
-		exp->nes_vfslocked = 0;
 		return;
 	}
 
-	/*
-	 * Now, handle Giant for the file system.
-	 */
-	if (*mpp != NULL && *mpp != mp && exp->nes_vfslocked) {
-		VFS_UNLOCK_GIANT(*mpp);
-		exp->nes_vfslocked = 0;
-	}
-	if (!exp->nes_vfslocked && *mpp != mp)
-		exp->nes_vfslocked = VFS_LOCK_GIANT(mp);
-
-	*mpp = mp;
 	if (startwrite)
 		vn_start_write(NULL, mpp, V_WAIT);
 
 	nd->nd_repstat = nfsvno_fhtovp(mp, fhp, nd->nd_nam, lktype, vpp, exp,
 	    &credanon);
+	vfs_unbusy(mp);
 
 	/*
 	 * For NFSv4 without a pseudo root fs, unexported file handles
@@ -2622,15 +2623,9 @@ nfsd_fhtovp(struct nfsrv_descript *nd, struct nfsrvfh *nfp, int lktype,
 	if (nd->nd_repstat) {
 		if (startwrite)
 			vn_finished_write(mp);
-		if (exp->nes_vfslocked) {
-			VFS_UNLOCK_GIANT(mp);
-			exp->nes_vfslocked = 0;
-		}
-		vfs_rel(mp);
 		*vpp = NULL;
-		*mpp = NULL;
-	} else {
-		vfs_rel(mp);
+		if (mpp != NULL)
+			*mpp = NULL;
 	}
 }
 
@@ -2665,10 +2660,9 @@ nfsrv_v4rootexport(void *argp, struct ucred *cred, struct thread *p)
 	fhandle_t fh;
 
 	error = vfs_export(&nfsv4root_mnt, &nfsexargp->export);
-	if ((nfsexargp->export.ex_flags & MNT_DELEXPORT)) {
+	if ((nfsexargp->export.ex_flags & MNT_DELEXPORT) != 0)
 		nfs_rootfhset = 0;
-		nfsv4root_set = 0;
-	} else if (error == 0) {
+	else if (error == 0) {
 		if (nfsexargp->fspec == NULL)
 			return (EPERM);
 		/*
@@ -2771,10 +2765,11 @@ nfsvno_getvp(fhandle_t *fhp)
 	struct vnode *vp;
 	int error;
 
-	mp = vfs_getvfs(&fhp->fh_fsid);
+	mp = vfs_busyfs(&fhp->fh_fsid);
 	if (mp == NULL)
 		return (NULL);
 	error = VFS_FHTOVP(mp, &fhp->fh_fid, &vp);
+	vfs_unbusy(mp);
 	if (error)
 		return (NULL);
 	return (vp);
@@ -2793,6 +2788,11 @@ nfsvno_advlock(struct vnode *vp, int ftype, u_int64_t first,
 
 	if (nfsrv_dolocallocks == 0)
 		return (0);
+
+	/* Check for VI_DOOMED here, so that VOP_ADVLOCK() isn't performed. */
+	if ((vp->v_iflag & VI_DOOMED) != 0)
+		return (EPERM);
+
 	fl.l_whence = SEEK_SET;
 	fl.l_type = ftype;
 	fl.l_start = (off_t)first;
@@ -2824,29 +2824,6 @@ nfsvno_advlock(struct vnode *vp, int ftype, u_int64_t first,
 		    (F_POSIX | F_REMOTE));
 	NFSVOPLOCK(vp, LK_EXCLUSIVE | LK_RETRY, td);
 	return (error);
-}
-
-/*
- * Unlock an underlying local file system.
- */
-void
-nfsvno_unlockvfs(struct mount *mp)
-{
-
-	VFS_UNLOCK_GIANT(mp);
-}
-
-/*
- * Lock an underlying file system, as required, and return
- * whether or not it is locked.
- */
-int
-nfsvno_lockvfs(struct mount *mp)
-{
-	int ret;
-
-	ret = VFS_LOCK_GIANT(mp);
-	return (ret);
 }
 
 /*
@@ -2932,6 +2909,7 @@ nfssvc_srvcall(struct thread *p, struct nfssvc_args *uap, struct ucred *cred)
 	struct nameidata nd;
 	vnode_t vp;
 	int error = EINVAL;
+	struct proc *procp;
 
 	if (uap->flag & NFSSVC_PUBLICFH) {
 		NFSBZERO((caddr_t)&nfs_pubfh.nfsrvfh_data,
@@ -3002,6 +2980,14 @@ nfssvc_srvcall(struct thread *p, struct nfssvc_args *uap, struct ucred *cred)
 			    CAST_USER_ADDR_T(dumplocklist.ndllck_list), len);
 			free((caddr_t)dumplocks, M_TEMP);
 		}
+	} else if (uap->flag & NFSSVC_BACKUPSTABLE) {
+		procp = p->td_proc;
+		PROC_LOCK(procp);
+		nfsd_master_pid = procp->p_pid;
+		bcopy(procp->p_comm, nfsd_master_comm, MAXCOMLEN + 1);
+		nfsd_master_start = procp->p_stats->p_start;
+		nfsd_master_proc = procp;
+		PROC_UNLOCK(procp);
 	}
 	return (error);
 }
@@ -3057,6 +3043,32 @@ nfsrv_hashfh(fhandle_t *fhp)
 	return (hashval);
 }
 
+/*
+ * Signal the userland master nfsd to backup the stable restart file.
+ */
+void
+nfsrv_backupstable(void)
+{
+	struct proc *procp;
+
+	if (nfsd_master_proc != NULL) {
+		procp = pfind(nfsd_master_pid);
+		/* Try to make sure it is the correct process. */
+		if (procp == nfsd_master_proc &&
+		    procp->p_stats->p_start.tv_sec ==
+		    nfsd_master_start.tv_sec &&
+		    procp->p_stats->p_start.tv_usec ==
+		    nfsd_master_start.tv_usec &&
+		    strcmp(procp->p_comm, nfsd_master_comm) == 0)
+			psignal(procp, SIGUSR2);
+		else
+			nfsd_master_proc = NULL;
+
+		if (procp != NULL)
+			PROC_UNLOCK(procp);
+	}
+}
+
 extern int (*nfsd_call_nfsd)(struct thread *, struct nfssvc_args *);
 
 /*
@@ -3105,6 +3117,10 @@ nfsd_modevent(module_t mod, int type, void *data)
 #endif
 		nfsd_call_servertimer = NULL;
 		nfsd_call_nfsd = NULL;
+
+		/* Clean the NFS server reply cache */
+		nfsrvd_cleancache();
+
 		/* and get rid of the locks */
 		mtx_destroy(&nfs_cache_mutex);
 		mtx_destroy(&nfs_v4root_mutex);
@@ -3128,6 +3144,7 @@ DECLARE_MODULE(nfsd, nfsd_mod, SI_SUB_VFS, SI_ORDER_ANY);
 /* So that loader and kldload(2) can find us, wherever we are.. */
 MODULE_VERSION(nfsd, 1);
 MODULE_DEPEND(nfsd, nfscommon, 1, 1, 1);
+MODULE_DEPEND(nfsd, nfslock, 1, 1, 1);
 MODULE_DEPEND(nfsd, nfslockd, 1, 1, 1);
 MODULE_DEPEND(nfsd, krpc, 1, 1, 1);
 MODULE_DEPEND(nfsd, nfssvc, 1, 1, 1);

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/x86/x86/local_apic.c,v 1.18 2010/11/23 14:36:14 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/x86/x86/local_apic.c,v 1.19 2011/01/13 17:00:22 jhb Exp $");
 
 #include "opt_hwpmc_hooks.h"
 #include "opt_kdtrace.h"
@@ -780,8 +780,6 @@ lapic_handle_intr(int vector, struct trapframe *frame)
 {
 	struct intsrc *isrc;
 
-	if (vector == -1)
-		panic("Couldn't get vector from ISR!");
 	isrc = intr_lookup_source(apic_idt_to_irq(PCPU_GET(apic_id),
 	    vector));
 	intr_execute_handlers(isrc, frame);

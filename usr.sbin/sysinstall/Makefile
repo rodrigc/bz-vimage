@@ -1,4 +1,4 @@
-# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.153 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/usr.sbin/sysinstall/Makefile,v 1.154 2011/01/12 14:55:02 nwhitehorn Exp $
 
 .if ${MACHINE_CPUARCH} != "ia64"
 _wizard=	wizard.c
@@ -18,12 +18,12 @@ CFLAGS+= -DUSE_GZIP=1
 .if ${MACHINE} == "pc98"
 CFLAGS+= -DPC98
 .endif
-CFLAGS+= -I${.CURDIR}/../../gnu/lib/libdialog -I.
+CFLAGS+= -I${.CURDIR}/../../gnu/lib/libodialog -I.
 
 WARNS?=  2	
 
-DPADD=	${LIBDIALOG} ${LIBNCURSES} ${LIBUTIL} ${LIBDISK} ${LIBFTPIO}
-LDADD=	-ldialog -lncurses -lutil -ldisk -lftpio
+DPADD=	${LIBODIALOG} ${LIBNCURSES} ${LIBUTIL} ${LIBDISK} ${LIBFTPIO}
+LDADD=	-lodialog -lncurses -lutil -ldisk -lftpio
 
 CLEANFILES=	makedevs.c rtermcap
 CLEANFILES+=	keymap.tmp keymap.h countries.tmp countries.h

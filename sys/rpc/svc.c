@@ -34,7 +34,7 @@ static char *sccsid2 = "@(#)svc.c 1.44 88/02/08 Copyr 1984 Sun Micro";
 static char *sccsid = "@(#)svc.c	2.4 88/08/11 4.0 RPCSRC";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/svc.c,v 1.8 2010/03/23 23:03:30 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/svc.c,v 1.9 2011/01/12 19:54:19 mdf Exp $");
 
 /*
  * svc.c, Server-side remote procedure call interface.
@@ -138,12 +138,12 @@ svcpool_create(const char *name, struct sysctl_oid_list *sysctl_base)
 		    &pool->sp_space_low, 0,
 		    "Low water mark for request space.");
 
-		SYSCTL_ADD_UINT(&pool->sp_sysctl, sysctl_base, OID_AUTO,
+		SYSCTL_ADD_INT(&pool->sp_sysctl, sysctl_base, OID_AUTO,
 		    "request_space_throttled", CTLFLAG_RD,
 		    &pool->sp_space_throttled, 0,
 		    "Whether nfs requests are currently throttled");
 
-		SYSCTL_ADD_UINT(&pool->sp_sysctl, sysctl_base, OID_AUTO,
+		SYSCTL_ADD_INT(&pool->sp_sysctl, sysctl_base, OID_AUTO,
 		    "request_space_throttle_count", CTLFLAG_RD,
 		    &pool->sp_space_throttle_count, 0,
 		    "Count of times throttling based on request space has occurred");

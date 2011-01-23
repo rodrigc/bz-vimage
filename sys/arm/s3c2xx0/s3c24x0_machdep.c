@@ -43,11 +43,10 @@
  * Created      : 17/09/94
  */
 
-#include "opt_msgbuf.h"
 #include "opt_ddb.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c24x0_machdep.c,v 1.2 2010/07/22 23:12:19 andrew Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c24x0_machdep.c,v 1.3 2011/01/21 10:26:26 pluknet Exp $");
 
 #define _ARM32_BUS_DMA_PRIVATE
 #include <sys/param.h>
@@ -298,7 +297,7 @@ initarm(void *arg, void *arg2)
 	valloc_pages(abtstack, ABT_STACK_SIZE);
 	valloc_pages(undstack, UND_STACK_SIZE);
 	valloc_pages(kernelstack, KSTACK_PAGES);
-	valloc_pages(msgbufpv, round_page(MSGBUF_SIZE) / PAGE_SIZE);
+	valloc_pages(msgbufpv, round_page(msgbufsize) / PAGE_SIZE);
 	/*
 	 * Now we start construction of the L1 page table
 	 * We start by mapping the L2 page tables into the L1.
@@ -338,7 +337,7 @@ initarm(void *arg, void *arg2)
 	pmap_map_chunk(l1pagetable, kernel_l1pt.pv_va, kernel_l1pt.pv_pa,
 	    L1_TABLE_SIZE, VM_PROT_READ|VM_PROT_WRITE, PTE_PAGETABLE);
 	pmap_map_chunk(l1pagetable, msgbufpv.pv_va, msgbufpv.pv_pa,
-	    MSGBUF_SIZE, VM_PROT_READ|VM_PROT_WRITE, PTE_CACHE);
+	    msgbufsize, VM_PROT_READ|VM_PROT_WRITE, PTE_CACHE);
 
 
 	for (loop = 0; loop < NUM_KERNEL_PTS; ++loop) {
@@ -429,7 +428,7 @@ initarm(void *arg, void *arg2)
 	    KERNVIRTADDR + 3 * memsize,
 	    &kernel_l1pt);
 	msgbufp = (void*)msgbufpv.pv_va;
-	msgbufinit(msgbufp, MSGBUF_SIZE);
+	msgbufinit(msgbufp, msgbufsize);
 	mutex_init();
 
 	physmem = memsize / PAGE_SIZE;

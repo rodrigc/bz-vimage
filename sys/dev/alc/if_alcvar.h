@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/alc/if_alcvar.h,v 1.3 2010/08/09 17:28:08 yongari Exp $
+ * $FreeBSD: src/sys/dev/alc/if_alcvar.h,v 1.5 2011/01/13 21:49:14 jhb Exp $
  */
 
 #ifndef	_IF_ALCVAR_H
@@ -230,7 +230,6 @@ struct alc_softc {
 #define	ALC_FLAG_L0S		0x0400
 #define	ALC_FLAG_L1S		0x0800
 #define	ALC_FLAG_APS		0x1000
-#define	ALC_FLAG_DETACH		0x4000
 #define	ALC_FLAG_LINK		0x8000
 
 	struct callout		alc_tick_ch;
@@ -246,7 +245,6 @@ struct alc_softc {
 	int			alc_buf_size;
 
 	struct task		alc_int_task;
-	struct task		alc_tx_task;
 	struct taskqueue	*alc_tq;
 	struct mtx		alc_mtx;
 };

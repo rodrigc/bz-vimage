@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sparc64/include/intr_machdep.h,v 1.24 2010/09/13 07:25:35 mav Exp $
+ * $FreeBSD: src/sys/sparc64/include/intr_machdep.h,v 1.25 2011/01/04 16:11:32 marius Exp $
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
@@ -48,10 +48,12 @@
 #define	PIL_PREEMPT	6	/* preempt idle thread cpu ipi */
 #define	PIL_HARDCLOCK	7	/* hardclock broadcast */
 #define	PIL_FILTER	12	/* filter interrupts */
-#define	PIL_FAST	13	/* fast interrupts */
+#define	PIL_BRIDGE	13	/* bridge interrupts */
 #define	PIL_TICK	14	/* tick interrupts */
 
 #ifndef LOCORE
+
+#define	INTR_BRIDGE	INTR_MD1
 
 struct trapframe;
 

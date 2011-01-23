@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  * $Id$
- * $FreeBSD: src/sys/netgraph/bluetooth/drivers/ubt/ng_ubt.c,v 1.44 2009/06/23 06:00:31 thompsa Exp $
+ * $FreeBSD: src/sys/netgraph/bluetooth/drivers/ubt/ng_ubt.c,v 1.45 2011/01/11 13:59:06 jhb Exp $
  */
 
 /*
@@ -100,7 +100,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

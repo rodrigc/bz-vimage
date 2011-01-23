@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)nfsmount.h	8.3 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/nfsclient/nfsmount.h,v 1.40 2010/10/19 00:20:00 rmacklem Exp $
+ * $FreeBSD: src/sys/nfsclient/nfsmount.h,v 1.41 2011/01/03 20:37:31 rmacklem Exp $
  */
 
 #ifndef _NFSCLIENT_NFSMOUNT_H_
@@ -100,6 +100,7 @@ struct	nfsmount {
 #define	nm_retry	nm_com.nmcom_retry
 #define	nm_hostname	nm_com.nmcom_hostname
 #define	nm_getinfo	nm_com.nmcom_getinfo
+#define	nm_vinvalbuf	nm_com.nmcom_vinvalbuf
 
 #if defined(_KERNEL)
 /*

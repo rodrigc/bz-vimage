@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/powerpc64/reloc.c,v 1.3 2010/12/25 08:51:20 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/powerpc64/reloc.c,v 1.4 2011/01/03 23:11:52 nwhitehorn Exp $
  */
 
 #include <sys/param.h>
@@ -165,7 +165,8 @@ reloc_nonplt_object(Obj_Entry *obj_rtld, Obj_Entry *obj, const Elf_Rela *rela,
 	case R_PPC_NONE:
 		break;
 
-        case R_PPC64_ADDR64:    /* doubleword64 S + A */
+        case R_PPC64_UADDR64:    /* doubleword64 S + A */
+        case R_PPC64_ADDR64:
         case R_PPC_GLOB_DAT:
 		def = find_symdef(ELF_R_SYM(rela->r_info), obj, &defobj,
 		    false, cache, lockstate);

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.255 2010/11/30 22:39:46 ken Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/cam_xpt.c,v 1.256 2011/01/13 18:20:27 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -197,11 +197,11 @@ u_int32_t cam_dflags = CAM_DEBUG_FLAGS;
 u_int32_t cam_dflags = CAM_DEBUG_NONE;
 #endif
 TUNABLE_INT("kern.cam.dflags", &cam_dflags);
-SYSCTL_INT(_kern_cam, OID_AUTO, dflags, CTLFLAG_RW,
+SYSCTL_UINT(_kern_cam, OID_AUTO, dflags, CTLFLAG_RW,
 	&cam_dflags, 0, "Cam Debug Flags");
 u_int32_t cam_debug_delay;
 TUNABLE_INT("kern.cam.debug_delay", &cam_debug_delay);
-SYSCTL_INT(_kern_cam, OID_AUTO, debug_delay, CTLFLAG_RW,
+SYSCTL_UINT(_kern_cam, OID_AUTO, debug_delay, CTLFLAG_RW,
 	&cam_debug_delay, 0, "Cam Debug Flags");
 #endif
 

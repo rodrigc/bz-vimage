@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-part.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend-query/disk-part.sh,v 1.4 2011/01/08 20:25:00 jpaetzel Exp $
 
 # Query a disk for partitions and display them
 #############################
@@ -60,14 +60,8 @@ if [ "$?" != "0" ] ; then
 fi
 
 # Display if this is GPT or MBR formatted
-gpart show ${1} | grep "GPT" >/dev/null 2>/dev/null
-if [ "$?" = "0" ] ; then
-  echo "${1}-format: GPT"
-  TYPE="GPT"
-else
-  echo "${1}-format: MBR"
-  TYPE="MBR"
-fi
+TYPE=`gpart show ${1} | awk '/^=>/ { printf("%s",$5); }'`
+echo "${1}-format: $TYPE"
 
 # Set some search flags
 PART="0"

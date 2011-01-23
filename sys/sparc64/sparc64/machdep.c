@@ -36,12 +36,11 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/machdep.c,v 1.171 2010/11/05 13:42:58 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/machdep.c,v 1.172 2011/01/21 10:26:26 pluknet Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
 #include "opt_kstack_pages.h"
-#include "opt_msgbuf.h"
 
 #include <sys/param.h>
 #include <sys/malloc.h>
@@ -581,7 +580,7 @@ sparc64_init(caddr_t mdp, u_long o1, u_long o2, u_long o3, ofw_vec_t *vec)
 	 * buffer (after setting the trap table).
 	 */
 	dpcpu_init(dpcpu0, 0);
-	msgbufinit(msgbufp, MSGBUF_SIZE);
+	msgbufinit(msgbufp, msgbufsize);
 
 	/*
 	 * Initialize mutexes.

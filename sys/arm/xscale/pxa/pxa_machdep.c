@@ -45,11 +45,10 @@
  * Created      : 17/09/94
  */
 
-#include "opt_msgbuf.h"
 #include "opt_ddb.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/pxa/pxa_machdep.c,v 1.5 2009/06/23 22:42:39 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/pxa/pxa_machdep.c,v 1.6 2011/01/21 10:26:26 pluknet Exp $");
 
 #define _ARM32_BUS_DMA_PRIVATE
 #include <sys/param.h>
@@ -229,7 +228,7 @@ initarm(void *arg, void *arg2)
 	valloc_pages(undstack, UND_STACK_SIZE);
 	valloc_pages(kernelstack, KSTACK_PAGES);
 	alloc_pages(minidataclean.pv_pa, 1);
-	valloc_pages(msgbufpv, round_page(MSGBUF_SIZE) / PAGE_SIZE);
+	valloc_pages(msgbufpv, round_page(msgbufsize) / PAGE_SIZE);
 #ifdef ARM_USE_SMALL_ALLOC
 	freemempos -= PAGE_SIZE;
 	freemem_pt = trunc_page(freemem_pt);
@@ -393,7 +392,7 @@ initarm(void *arg, void *arg2)
 	dump_avail[i] = 0;
 	pmap_bootstrap(pmap_curmaxkvaddr, 0xd0000000, &kernel_l1pt);
 	msgbufp = (void*)msgbufpv.pv_va;
-	msgbufinit(msgbufp, MSGBUF_SIZE);
+	msgbufinit(msgbufp, msgbufsize);
 	mutex_init();
 
 	i = 0;

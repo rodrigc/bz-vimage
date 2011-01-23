@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/clock.c,v 1.15 2010/12/11 22:33:33 cperciva Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/clock.c,v 1.16 2011/01/06 21:08:06 jhb Exp $");
 
 /* #define DELAYDEBUG */
 /*
@@ -777,7 +777,7 @@ cpu_initclocks(void)
 	
         error = bind_virq_to_irqhandler(VIRQ_TIMER, 0, "clk", 
 	    clkintr, NULL, NULL,
-	    INTR_TYPE_CLK | INTR_FAST, &time_irq);
+	    INTR_TYPE_CLK, &time_irq);
 	if (error)
 		panic("failed to register clock interrupt\n");
 	/* should fast clock be enabled ? */
@@ -796,7 +796,7 @@ ap_cpu_initclocks(int cpu)
 			   &xen_set_periodic_tick);
         error = bind_virq_to_irqhandler(VIRQ_TIMER, 0, "clk", 
 	    clkintr, NULL, NULL,
-	    INTR_TYPE_CLK | INTR_FAST, &time_irq);
+	    INTR_TYPE_CLK, &time_irq);
 	if (error)
 		panic("failed to register clock interrupt\n");
 

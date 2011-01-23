@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/powerpc/rtld_start.S,v 1.3 2010/02/22 16:49:45 nwhitehorn Exp $
+ * $FreeBSD: src/libexec/rtld-elf/powerpc/rtld_start.S,v 1.4 2011/01/14 11:32:31 kib Exp $
  */
 
 #include <machine/asm.h>
@@ -197,4 +197,4 @@ _ENTRY(_rtld_powerpc_pltcall)
         mtctr   %r11
         bctr				# (*jmptab[index])()
 
-
+	.section .note.GNU-stack,"",%progbits

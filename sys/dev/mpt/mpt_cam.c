@@ -94,7 +94,7 @@
  * OWNER OR CONTRIBUTOR IS ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_cam.c,v 1.74 2010/06/29 22:07:53 ken Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_cam.c,v 1.75 2011/01/05 14:33:48 marius Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_cam.h>
@@ -2971,7 +2971,7 @@ mpt_fc_els_reply_handler(struct mpt_softc *mpt, request_t *req,
 		}
 		if (tgt_req) {
 			mpt_tgt_state_t *tgt = MPT_TGT_STATE(mpt, tgt_req);
-			union ccb *ccb = tgt->ccb;
+			union ccb *ccb;
 			uint32_t ct_id;
 
 			/*

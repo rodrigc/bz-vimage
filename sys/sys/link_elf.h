@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/link_elf.h,v 1.31 2010/08/23 15:27:03 kib Exp $
+ * $FreeBSD: src/sys/sys/link_elf.h,v 1.32 2011/01/08 17:11:49 kib Exp $
  */
 
 /*
@@ -93,6 +93,7 @@ __BEGIN_DECLS
 typedef int (*__dl_iterate_hdr_callback)(struct dl_phdr_info *, size_t, void *);
 extern int dl_iterate_phdr(__dl_iterate_hdr_callback, void *);
 int _rtld_addr_phdr(const void *, struct dl_phdr_info *);
+int _rtld_get_stack_prot(void);
 
 __END_DECLS
 

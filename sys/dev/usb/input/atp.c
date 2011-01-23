@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/input/atp.c,v 1.7 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/input/atp.c,v 1.8 2011/01/12 19:53:56 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -129,11 +129,11 @@ SYSCTL_INT(_hw_usb_atp, OID_AUTO, debug, CTLFLAG_RW,
 #endif /* USB_DEBUG */
 
 static u_int atp_touch_timeout = ATP_TOUCH_TIMEOUT;
-SYSCTL_INT(_hw_usb_atp, OID_AUTO, touch_timeout, CTLFLAG_RW, &atp_touch_timeout,
-    125000, "age threshold (in micros) for a touch");
+SYSCTL_UINT(_hw_usb_atp, OID_AUTO, touch_timeout, CTLFLAG_RW,
+    &atp_touch_timeout, 125000, "age threshold (in micros) for a touch");
 
 static u_int atp_double_tap_threshold = ATP_DOUBLE_TAP_N_DRAG_THRESHOLD;
-SYSCTL_INT(_hw_usb_atp, OID_AUTO, double_tap_threshold, CTLFLAG_RW,
+SYSCTL_UINT(_hw_usb_atp, OID_AUTO, double_tap_threshold, CTLFLAG_RW,
     &atp_double_tap_threshold, ATP_DOUBLE_TAP_N_DRAG_THRESHOLD,
     "maximum time (in micros) between a double-tap");
 

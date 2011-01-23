@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pci.c,v 1.37 2010/10/20 16:47:09 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpica/acpi_pci.c,v 1.38 2011/01/18 14:58:44 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -281,8 +281,6 @@ static int
 acpi_pci_probe(device_t dev)
 {
 
-	if (pcib_get_bus(dev) < 0)
-		return (ENXIO);
 	if (acpi_get_handle(dev) == NULL)
 		return (ENXIO);
 	device_set_desc(dev, "ACPI PCI bus");

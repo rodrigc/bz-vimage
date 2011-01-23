@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.89 2010/11/03 16:21:47 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.90 2011/01/13 04:37:48 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/kdb.h>
@@ -523,7 +523,9 @@ trap_pfault(struct trapframe *frame, int user)
 	p = td->td_proc;
 	if (frame->exc == EXC_ISI) {
 		eva = frame->srr0;
-		ftype = VM_PROT_READ | VM_PROT_EXECUTE;
+		ftype = VM_PROT_EXECUTE;
+		if (frame->srr1 & SRR1_ISI_PFAULT)
+			ftype |= VM_PROT_READ;
 	} else {
 		eva = frame->cpu.aim.dar;
 		if (frame->cpu.aim.dsisr & DSISR_STORE)

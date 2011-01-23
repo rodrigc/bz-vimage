@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpi_support/atk0110.c,v 1.1 2010/06/25 15:32:46 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpi_support/atk0110.c,v 1.2 2011/01/19 00:57:58 mdf Exp $");
 
 #include <machine/_inttypes.h>
 #include <sys/param.h>
@@ -258,7 +258,7 @@ aibs_attach_sif(struct aibs_softc *sc, enum aibs_type st)
 #endif
 		snprintf(si, sizeof(si), "%i", i);
 		SYSCTL_ADD_PROC(device_get_sysctl_ctx(sc->sc_dev),
-		    SYSCTL_CHILDREN(so), i, si, CTLTYPE_OPAQUE | CTLFLAG_RD,
+		    SYSCTL_CHILDREN(so), i, si, CTLTYPE_INT | CTLFLAG_RD,
 		    sc, st, aibs_sysctl, st == AIBS_TEMP ? "IK" : "I", desc);
 	}
 

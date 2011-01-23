@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/mp_machdep.c,v 1.338 2010/11/23 16:12:35 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/mp_machdep.c,v 1.339 2011/01/13 18:20:27 mdf Exp $");
 
 #include "opt_cpu.h"
 #include "opt_kstack_pages.h"
@@ -1045,23 +1045,23 @@ u_int ipi_global;
 u_int ipi_page;
 u_int ipi_range;
 u_int ipi_range_size;
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_global, CTLFLAG_RW, &ipi_global, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_page, CTLFLAG_RW, &ipi_page, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_range, CTLFLAG_RW, &ipi_range, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_range_size, CTLFLAG_RW, &ipi_range_size,
-    0, "");
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_global, CTLFLAG_RW, &ipi_global, 0, "");
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_page, CTLFLAG_RW, &ipi_page, 0, "");
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_range, CTLFLAG_RW, &ipi_range, 0, "");
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_range_size, CTLFLAG_RW,
+    &ipi_range_size, 0, "");
 
 u_int ipi_masked_global;
 u_int ipi_masked_page;
 u_int ipi_masked_range;
 u_int ipi_masked_range_size;
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_masked_global, CTLFLAG_RW,
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_masked_global, CTLFLAG_RW,
     &ipi_masked_global, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_masked_page, CTLFLAG_RW,
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_masked_page, CTLFLAG_RW,
     &ipi_masked_page, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_masked_range, CTLFLAG_RW,
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_masked_range, CTLFLAG_RW,
     &ipi_masked_range, 0, "");
-SYSCTL_INT(_debug_xhits, OID_AUTO, ipi_masked_range_size, CTLFLAG_RW,
+SYSCTL_UINT(_debug_xhits, OID_AUTO, ipi_masked_range_size, CTLFLAG_RW,
     &ipi_masked_range_size, 0, "");
 #endif /* COUNT_XINVLTLB_HITS */
 

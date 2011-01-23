@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/xen/mp_machdep.c,v 1.28 2010/11/20 20:04:29 cperciva Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/xen/mp_machdep.c,v 1.29 2011/01/06 21:08:06 jhb Exp $");
 
 #include "opt_apic.h"
 #include "opt_cpu.h"
@@ -470,7 +470,7 @@ xen_smp_intr_init(unsigned int cpu)
 				    cpu,
 				    resched_name[cpu],
 				    smp_reschedule_interrupt,
-	    INTR_FAST|INTR_TYPE_TTY|INTR_MPSAFE, &irq);
+	    INTR_TYPE_TTY, &irq);
 
 	printf("[XEN] IPI cpu=%d irq=%d vector=RESCHEDULE_VECTOR (%d)\n",
 	    cpu, irq, RESCHEDULE_VECTOR);
@@ -482,7 +482,7 @@ xen_smp_intr_init(unsigned int cpu)
 				    cpu,
 				    callfunc_name[cpu],
 				    smp_call_function_interrupt,
-	    INTR_FAST|INTR_TYPE_TTY|INTR_MPSAFE, &irq);
+	    INTR_TYPE_TTY, &irq);
 	if (rc < 0)
 		goto fail;
 	per_cpu(callfunc_irq, cpu) = irq;

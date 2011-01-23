@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/elf.h,v 1.12 2010/08/17 08:55:45 kib Exp $
+ * $FreeBSD: src/sys/arm/include/elf.h,v 1.13 2011/01/07 14:22:34 kib Exp $
  */
 
 #ifndef _MACHINE_ELF_H_
@@ -82,8 +82,9 @@ __ElfType(Auxinfo);
 #define	AT_NCPUS	19	/* Number of CPUs. */
 #define	AT_PAGESIZES	20	/* Pagesizes. */
 #define	AT_PAGESIZESLEN	21	/* Number of pagesizes. */
+#define	AT_STACKPROT	23	/* Initial stack protection. */
 
-#define AT_COUNT        22      /* Count of defined aux entry types. */
+#define AT_COUNT        24      /* Count of defined aux entry types. */
 
 #define	R_ARM_COUNT		33	/* Count of defined relocation types. */
 

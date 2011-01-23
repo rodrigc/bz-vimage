@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/gdb/Makefile.inc,v 1.17 2010/11/14 11:09:16 nyan Exp $
+# $FreeBSD: src/gnu/usr.bin/gdb/Makefile.inc,v 1.18 2011/01/07 20:26:33 imp Exp $
 
 VERSION= "6.1.1 [FreeBSD]"
 VENDOR= marcel
@@ -20,7 +20,7 @@ OBJ_GDB= ${OBJ_ROOT}/gdb
 # MACHINE_CPUARCH, but there's no easy way to export make functions...
 
 .if defined(TARGET_ARCH)
-TARGET_CPUARCH=${TARGET_ARCH:C/mipse[bl]/mips/:C/armeb/arm/:C/powerpc64/powerpc/}
+TARGET_CPUARCH=${TARGET_ARCH:C/mips.*e[bl]/mips/:C/armeb/arm/:C/powerpc64/powerpc/}
 .else
 TARGET_CPUARCH=${MACHINE_CPUARCH}
 .endif

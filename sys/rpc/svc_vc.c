@@ -34,7 +34,7 @@ static char *sccsid2 = "@(#)svc_tcp.c 1.21 87/08/11 Copyr 1984 Sun Micro";
 static char *sccsid = "@(#)svc_tcp.c	2.2 88/08/01 4.0 RPCSRC";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/svc_vc.c,v 1.10 2009/08/24 10:09:30 zec Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/svc_vc.c,v 1.11 2011/01/10 21:35:10 rmacklem Exp $");
 
 /*
  * svc_vc.c, Server side for Connection Oriented based RPC. 
@@ -552,11 +552,8 @@ svc_vc_recv(SVCXPRT *xprt, struct rpc_msg *msg,
 				}
 				if (n < sizeof(uint32_t))
 					goto readmore;
-				if (cd->mpending->m_len < sizeof(uint32_t))
-					cd->mpending = m_pullup(cd->mpending,
-					    sizeof(uint32_t));
-				memcpy(&header, mtod(cd->mpending, uint32_t *),
-				    sizeof(header));
+				m_copydata(cd->mpending, 0, sizeof(header),
+				    (char *)&header);
 				header = ntohl(header);
 				cd->eor = (header & 0x80000000) != 0;
 				cd->resid = header & 0x7fffffff;

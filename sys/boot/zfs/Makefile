@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/zfs/Makefile,v 1.5 2010/09/24 19:49:12 pjd Exp $
+# $FreeBSD: src/sys/boot/zfs/Makefile,v 1.7 2011/01/05 22:24:33 dim Exp $
 
 LIB=		zfsboot
 INTERNALLIB=
@@ -13,10 +13,7 @@ CFLAGS+=	-I${.CURDIR}/../../cddl/boot/zfs
 CFLAGS+=	-ffreestanding
 .if ${MACHINE_CPUARCH} == "i386" || ${MACHINE_CPUARCH} == "amd64"
 CFLAGS+=	-mpreferred-stack-boundary=2
-CFLAGS+=	-mno-mmx -mno-3dnow -mno-sse -mno-sse2
-.endif
-.if ${MACHINE_CPUARCH} == "i386"
-CFLAGS+=	-mno-sse3
+CFLAGS+=	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 -msoft-float
 .endif
 .if ${MACHINE_CPUARCH} == "powerpc" || ${MACHINE_CPUARCH} == "arm"
 CFLAGS+=	-msoft-float

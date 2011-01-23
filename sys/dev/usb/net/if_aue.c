@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_aue.c,v 1.17 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_aue.c,v 1.18 2011/01/11 13:59:06 jhb Exp $");
 
 /*
  * ADMtek AN986 Pegasus and AN8511 Pegasus II USB to ethernet driver.
@@ -76,7 +76,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/net/if_aue.c,v 1.17 2010/09/01 23:47:53 thom
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

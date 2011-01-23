@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.12 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.13 2011/01/11 13:59:06 jhb Exp $");
 
 /* Driver for arbitrary double bulk pipe devices.
  * The driver assumes that there will be the same driver on the other side.
@@ -65,7 +65,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/misc/udbp.c,v 1.12 2010/09/01 23:47:53 thomp
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

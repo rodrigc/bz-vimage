@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libcompiler_rt/Makefile,v 1.4 2010/12/29 17:12:05 kan Exp $
+# $FreeBSD: src/lib/libcompiler_rt/Makefile,v 1.7 2011/01/14 11:23:39 kib Exp $
 
 .include <bsd.own.mk>
 
@@ -155,5 +155,12 @@ SYMLINKS+=libcompiler_rt.a ${LIBDIR}/libgcc.a
 SYMLINKS+=libcompiler_rt_p.a ${LIBDIR}/libgcc_p.a
 . endif
 .endif
+
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386" || \
+    ${MACHINE_CPUARCH} == "powerpc"
+AFLAGS+=--noexecstack
+ACFLAGS+=-Wa,--noexecstack
+.endif
+
 
 .include <bsd.lib.mk>

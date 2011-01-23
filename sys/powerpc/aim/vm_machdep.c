@@ -38,7 +38,7 @@
  *
  *	from: @(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
- * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.130 2010/10/30 23:07:30 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/vm_machdep.c,v 1.132 2011/01/18 21:57:02 kib Exp $
  */
 /*-
  * Copyright (c) 1994, 1995, 1996 Carnegie-Mellon University.
@@ -143,7 +143,6 @@ extern uintptr_t tocbase;
 void
 cpu_fork(struct thread *td1, struct proc *p2, struct thread *td2, int flags)
 {
-	struct	proc *p1;
 	struct	trapframe *tf;
 	struct	callframe *cf;
 	struct	pcb *pcb;
@@ -155,8 +154,6 @@ cpu_fork(struct thread *td1, struct proc *p2, struct thread *td2, int flags)
 
 	if ((flags & RFPROC) == 0)
 		return;
-
-	p1 = td1->td_proc;
 
 	pcb = (struct pcb *)((td2->td_kstack +
 	    td2->td_kstack_pages * PAGE_SIZE - sizeof(struct pcb)) & ~0x2fUL);
@@ -350,7 +347,7 @@ sf_buf_free(struct sf_buf *sf)
                 nsfbufsused--;
 
                 if (sf_buf_alloc_want > 0)
-                        wakeup_one(&sf_buf_freelist);
+                        wakeup(&sf_buf_freelist);
         }
         mtx_unlock(&sf_buf_lock);
 }

@@ -26,7 +26,7 @@
 /*      $NetBSD: sigsetjmp.S,v 1.4 1998/10/03 12:30:38 tsubai Exp $     */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/powerpc/gen/sigsetjmp.S,v 1.1 2002/12/04 07:25:14 grehan Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/powerpc/gen/sigsetjmp.S,v 1.2 2011/01/14 11:33:40 kib Exp $");
 
 /*
  * C library -- sigsetjmp, siglongjmp
@@ -95,3 +95,5 @@ ENTRY(siglongjmp)
 	bnelr
 	li	%r3,1
 	blr
+
+	.section .note.GNU-stack,"",%progbits

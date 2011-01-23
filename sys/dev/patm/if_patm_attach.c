@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/patm/if_patm_attach.c,v 1.15 2009/11/06 14:55:01 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/patm/if_patm_attach.c,v 1.17 2011/01/19 00:57:58 mdf Exp $");
 
 #include "opt_inet.h"
 #include "opt_natm.h"
@@ -254,13 +254,13 @@ patm_attach(device_t dev)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "istats", CTLFLAG_RD, sc, 0, patm_sysctl_istats,
-	    "S", "internal statistics") == NULL)
+	    OID_AUTO, "istats", CTLTYPE_OPAQUE | CTLFLAG_RD, sc, 0,
+	    patm_sysctl_istats, "S", "internal statistics") == NULL)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "eeprom", CTLFLAG_RD, sc, 0, patm_sysctl_eeprom,
-	    "S", "EEPROM contents") == NULL)
+	    OID_AUTO, "eeprom", CTLTYPE_OPAQUE | CTLFLAG_RD, sc, 0,
+	    patm_sysctl_eeprom, "S", "EEPROM contents") == NULL)
 		goto fail;
 
 	if (SYSCTL_ADD_UINT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
@@ -284,13 +284,13 @@ patm_attach(device_t dev)
 	patm_env_getuint(sc, &sc->debug, "debug");
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "regs", CTLFLAG_RD, sc, 0, patm_sysctl_regs,
-	    "S", "registers") == NULL)
+	    OID_AUTO, "regs", CTLTYPE_OPAQUE | CTLFLAG_RD, sc, 0,
+	    patm_sysctl_regs, "S", "registers") == NULL)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "tsq", CTLFLAG_RD, sc, 0, patm_sysctl_tsq,
-	    "S", "TSQ") == NULL)
+	    OID_AUTO, "tsq", CTLTYPE_OPAQUE | CTLFLAG_RD, sc, 0,
+	    patm_sysctl_tsq, "S", "TSQ") == NULL)
 		goto fail;
 #endif
 

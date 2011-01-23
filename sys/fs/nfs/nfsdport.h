@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsdport.h,v 1.4 2010/10/22 21:38:56 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsdport.h,v 1.5 2011/01/06 19:50:11 rmacklem Exp $
  */
 
 /*
@@ -52,7 +52,6 @@
  * needs to be returned by nfsd_fhtovp().
  */
 struct nfsexstuff {
-	int	nes_vfslocked;			/* required for all ports */
 	int	nes_exflag;			/* export flags */
 	int	nes_numsecflavor;		/* # of security flavors */
 	int	nes_secflavors[MAXSECFLAVORS];	/* and the flavors */

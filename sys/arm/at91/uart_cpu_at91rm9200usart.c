@@ -29,7 +29,7 @@
 #include "opt_uart.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/at91/uart_cpu_at91rm9200usart.c,v 1.8 2010/10/06 22:25:21 cognet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/at91/uart_cpu_at91rm9200usart.c,v 1.9 2011/01/05 23:45:07 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -73,13 +73,8 @@ uart_cpu_getdev(int devtype, struct uart_devinfo *di)
 	 * XXX: Not pretty, but will work because we map the needed addresses
 	 * early.
 	 */
-#ifdef SKYEYE_WORKAROUNDS
-	di->bas.bsh = AT91RM92_BASE + AT91RM92_USART0_BASE;
-	di->baudrate = 38400;
-#else
 	di->bas.bsh = AT91RM92_BASE + AT91RM92_DBGU_BASE;
 	di->baudrate = 115200;
-#endif
 	di->bas.regshft = 0;
 	di->bas.rclk = 0;
 	di->databits = 8;

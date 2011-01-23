@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/raid3/g_raid3.c,v 1.88 2010/01/05 10:52:21 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/raid3/g_raid3.c,v 1.89 2011/01/12 13:55:01 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -2912,6 +2912,10 @@ g_raid3_read_metadata(struct g_consumer *cp, struct g_raid3_metadata *md)
 		G_RAID3_DEBUG(1, "MD5 metadata hash mismatch for provider %s.",
 		    cp->provider->name);
 		return (error);
+	}
+	if (md->md_sectorsize > MAXPHYS) {
+		G_RAID3_DEBUG(0, "The blocksize is too big.");
+		return (EINVAL);
 	}
 
 	return (0);

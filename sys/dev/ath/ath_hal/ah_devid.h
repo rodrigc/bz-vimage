@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_devid.h,v 1.2 2010/03/03 17:32:32 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_devid.h,v 1.3 2011/01/20 09:37:53 adrian Exp $
  */
 
 #ifndef _DEV_ATH_DEVID_H_
@@ -78,6 +78,7 @@
 #define AR9280_DEVID_PCI	0x0029          /* AR9280 PCI Merlin */
 #define AR9280_DEVID_PCIE	0x002a          /* AR9280 PCI-E Merlin */
 #define AR9285_DEVID_PCIE	0x002b          /* AR9285 PCI-E Kite */
+#define	AR2427_DEVID_PCIE	0x002c		/* AR2427 PCI-E w/ 802.11n bonded out */
 
 #define	AR_SUBVENDOR_ID_NOG	0x0e11		/* No 11G subvendor ID */
 #define AR_SUBVENDOR_ID_NEW_A	0x7065		/* Update device to new RD */

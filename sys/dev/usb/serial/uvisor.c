@@ -1,5 +1,5 @@
 /*	$NetBSD: uvisor.c,v 1.9 2001/01/23 14:04:14 augustss Exp $	*/
-/*      $FreeBSD: src/sys/dev/usb/serial/uvisor.c,v 1.20 2010/11/05 19:12:48 n_hibma Exp $ */
+/*      $FreeBSD: src/sys/dev/usb/serial/uvisor.c,v 1.21 2011/01/11 13:59:06 jhb Exp $ */
 
 /* Also already merged from NetBSD:
  *	$NetBSD: uvisor.c,v 1.12 2001/11/13 06:24:57 lukem Exp $
@@ -55,7 +55,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

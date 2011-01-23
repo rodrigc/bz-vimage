@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.62 2010/11/11 12:13:41 ae Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.63 2011/01/06 03:36:04 nwhitehorn Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -1868,6 +1868,8 @@ g_part_dumpconf(struct sbuf *sb, const char *indent, struct g_geom *gp,
 		    table->gpt_heads);
 		sbuf_printf(sb, "%s<state>%s</state>\n", indent,
 		    table->gpt_corrupt ? "CORRUPT": "OK");
+		sbuf_printf(sb, "%s<modified>%s</modified>\n", indent,
+		    table->gpt_opened ? "true": "false");
 		G_PART_DUMPCONF(table, NULL, sb, indent);
 	}
 }

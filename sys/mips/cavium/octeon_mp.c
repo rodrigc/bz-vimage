@@ -23,10 +23,10 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.4 2010/09/15 05:10:50 neel Exp $
+ * $FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.5 2011/01/04 02:11:03 jmallett Exp $
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.4 2010/09/15 05:10:50 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octeon_mp.c,v 1.5 2011/01/04 02:11:03 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -74,12 +74,12 @@ platform_ipi_intrnum(void)
 void
 platform_init_ap(int cpuid)
 {
-	unsigned ipi_int_mask, clock_int_mask;
+	unsigned ciu_int_mask, clock_int_mask, ipi_int_mask;
 
 	/*
 	 * Set the exception base.
 	 */
-	mips_wr_ebase(0x80000000 | cpuid);
+	mips_wr_ebase(0x80000000);
 
 	/*
 	 * Clear any pending IPIs.
@@ -92,11 +92,12 @@ platform_init_ap(int cpuid)
 	octeon_ciu_reset();
 
 	/*
-	 * Unmask the clock and ipi interrupts.
+	 * Unmask the clock, ipi and ciu interrupts.
 	 */
+	ciu_int_mask = hard_int_mask(0);
 	clock_int_mask = hard_int_mask(5);
 	ipi_int_mask = hard_int_mask(platform_ipi_intrnum());
-	set_intr_mask(ipi_int_mask | clock_int_mask);
+	set_intr_mask(ciu_int_mask | clock_int_mask | ipi_int_mask);
 
 	mips_wbflush();
 }

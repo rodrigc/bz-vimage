@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v14.h,v 1.2 2010/02/08 20:12:01 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v14.h,v 1.3 2011/01/20 07:42:39 adrian Exp $
  */
 #ifndef _AH_EEPROM_V14_H_
 #define _AH_EEPROM_V14_H_
@@ -52,6 +52,9 @@
 #define AR5416_EEP_MINOR_VER_16		0x10
 #define AR5416_EEP_MINOR_VER_17		0x11
 #define AR5416_EEP_MINOR_VER_19		0x13
+#define AR5416_EEP_MINOR_VER_20		0x14
+#define AR5416_EEP_MINOR_VER_21		0x15
+#define	AR5416_EEP_MINOR_VER_22		0x16
 
 // 16-bit offset location start of calibration struct
 #define AR5416_EEP_START_LOC         	256

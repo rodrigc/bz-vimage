@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/at91dci.c,v 1.24 2010/10/13 20:37:19 hselasky Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/at91dci.c,v 1.25 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 2007-2008 Hans Petter Selasky. All rights reserved.
@@ -52,7 +52,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/at91dci.c,v 1.24 2010/10/13 20:37
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

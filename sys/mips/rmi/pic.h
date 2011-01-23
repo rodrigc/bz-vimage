@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  * RMI_BSD
- * $FreeBSD: src/sys/mips/rmi/pic.h,v 1.12 2010/09/27 14:50:51 jchandra Exp $
+ * $FreeBSD: src/sys/mips/rmi/pic.h,v 1.13 2011/01/20 08:08:19 jchandra Exp $
  */
 #ifndef _RMI_PIC_H_
 #define	_RMI_PIC_H_
@@ -163,7 +163,7 @@ pic_read_control(void)
 	uint32_t reg;
 
 	mtx_lock_spin(&xlr_pic_lock);
-	xlr_read_reg(mmio, PIC_CTRL);
+	reg = xlr_read_reg(mmio, PIC_CTRL);
 	mtx_unlock_spin(&xlr_pic_lock);
 	return (reg);
 }
@@ -179,7 +179,7 @@ pic_write_control(uint32_t control)
 }
 
 static __inline void 
-pic_update_control(__uint32_t control)
+pic_update_control(uint32_t control)
 {
 	xlr_reg_t *mmio = xlr_io_mmio(XLR_IO_PIC_OFFSET);
 

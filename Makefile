@@ -1,10 +1,12 @@
 #
-# $FreeBSD: src/Makefile,v 1.371 2010/12/24 04:55:56 imp Exp $
+# $FreeBSD: src/Makefile,v 1.380 2011/01/22 23:16:44 bz Exp $
 #
 # The user-driven targets are:
 #
 # universe            - *Really* build *everything* (buildworld and
 #                       all kernels on all architectures).
+# tinderbox           - Same as universe, but presents a list of failed build
+#                       targets and exits with an error if there were any.
 # buildworld          - Rebuild *everything*, including glue to help do
 #                       upgrades.
 # installworld        - Install everything built by "buildworld".
@@ -26,6 +28,7 @@
 # delete-old-dirs     - Delete obsolete directories.
 # delete-old-files    - Delete obsolete files.
 # delete-old-libs     - Delete obsolete libraries.
+# targets             - Print a list of supported TARGET/TARGET_ARCH pairs.
 #
 # This makefile is simple by design. The FreeBSD make automatically reads
 # the /usr/share/mk/sys.mk unless the -m argument is specified on the
@@ -34,10 +37,12 @@
 # tree. This makefile executes a child make process, forcing it to use
 # the mk files from the source tree which are supposed to DTRT.
 #
-# The user-driven targets (as listed above) are implemented in Makefile.inc1.
+# Most of the user-driven targets (as listed above) are implemented in
+# Makefile.inc1.  The exceptions are universe, tinderbox and targets.
 #
 # If you want to build your system from source be sure that /usr/obj has
-# at least 800MB of diskspace available.
+# at least 1GB of diskspace available.  A complete 'universe' build requires
+# about 15GB of space.
 #
 # For individuals wanting to build from the sources currently on their
 # system, the simple instructions are:
@@ -284,10 +289,10 @@ tinderbox:
 # with a reasonable chance of success, regardless of how old your
 # existing system is.
 #
-.if make(universe) || make(universe_kernels) || make(tinderbox)
+.if make(universe) || make(universe_kernels) || make(tinderbox) || make(targets)
 TARGETS?=amd64 arm i386 ia64 mips pc98 powerpc sparc64 sun4v
 TARGET_ARCHES_arm?=	arm armeb
-TARGET_ARCHES_mips?=	mipsel mipseb
+TARGET_ARCHES_mips?=	mipsel mipseb mips64el mips64eb
 TARGET_ARCHES_powerpc?=	powerpc powerpc64
 TARGET_ARCHES_pc98?=	i386
 TARGET_ARCHES_sun4v?=	sparc64
@@ -295,8 +300,16 @@ TARGET_ARCHES_sun4v?=	sparc64
 TARGET_ARCHES_${target}?= ${target}
 .endfor
 
+targets:
+	@echo "Supported TARGETS/TARGET_ARCH pairs"
+.for target in ${TARGETS}
+.for target_arch in ${TARGET_ARCHES_${target}}
+	@echo "    ${target}/${target_arch}"
+.endfor
+.endfor
+
 .if defined(DOING_TINDERBOX)
-FAILFILE=tinderbox.failed
+FAILFILE=${.CURDIR}/_.tinderbox.failed
 MAKEFAIL=tee -a ${FAILFILE}
 .else
 MAKEFAIL=cat
@@ -355,7 +368,10 @@ universe_kernconfs:
 .for kernel in ${KERNCONFS}
 TARGET_ARCH_${kernel}!=	cd ${.CURDIR}/sys/${TARGET}/conf && \
 	config -m ${.CURDIR}/sys/${TARGET}/conf/${kernel} 2> /dev/null | \
-	cut -f 2
+	grep -v WARNING: | cut -f 2
+.if empty(TARGET_ARCH_${kernel})
+.error "Target architecture for ${TARGET}/conf/${kernel} unknown.  config(8) likely too old."
+.endif
 universe_kernconfs: universe_kernconf_${TARGET}_${kernel}
 universe_kernconf_${TARGET}_${kernel}:
 	@(cd ${.CURDIR} && env __MAKE_CONF=/dev/null \

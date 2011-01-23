@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c24x0_clk.c,v 1.1 2010/03/20 03:39:35 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/s3c2xx0/s3c24x0_clk.c,v 1.2 2011/01/06 21:08:06 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -200,7 +200,7 @@ cpu_initclocks(void)
 	if (!irq)
 		panic("Unable to allocate the clock irq handler.\n");
 
-	err = bus_setup_intr(dev, irq, INTR_TYPE_CLK | INTR_FAST,
+	err = bus_setup_intr(dev, irq, INTR_TYPE_CLK,
 	    clock_intr, NULL, NULL, &ihl);
 	if (err != 0)
 		panic("Unable to setup the clock irq handler.\n");

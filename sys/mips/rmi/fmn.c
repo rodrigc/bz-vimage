@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/fmn.c,v 1.7 2010/10/06 08:09:39 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/fmn.c,v 1.8 2011/01/06 21:08:06 jhb Exp $");
 #include <sys/types.h>
 #include <sys/systm.h>
 #include <sys/param.h>
@@ -437,7 +437,7 @@ register_msgring_handler(int startb, int endb, msgring_handler action,
 			msgring_maxthreads = xlr_threads_per_core;
 		cpu_establish_hardintr("msgring", msgring_process_fast_intr,
 			NULL, NULL, IRQ_MSGRING, 
-			INTR_TYPE_NET | INTR_FAST, &cookie);
+			INTR_TYPE_NET, &cookie);
 	}
 	return (0);
 }

@@ -26,13 +26,15 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/imgact.h,v 1.52 2010/08/17 08:55:45 kib Exp $
+ * $FreeBSD: src/sys/sys/imgact.h,v 1.53 2011/01/08 16:13:44 kib Exp $
  */
 
 #ifndef _SYS_IMGACT_H_
 #define	_SYS_IMGACT_H_
 
 #include <sys/uio.h>
+
+#include <vm/vm.h>
 
 #define MAXSHELLCMDLEN	PAGE_SIZE
 
@@ -75,6 +77,7 @@ struct image_params {
 	int canarylen;
 	unsigned long pagesizes;
 	int pagesizeslen;
+	vm_prot_t stack_prot;
 };
 
 #ifdef _KERNEL

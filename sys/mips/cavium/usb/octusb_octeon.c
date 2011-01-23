@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/usb/octusb_octeon.c,v 1.1 2010/07/20 19:32:25 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/usb/octusb_octeon.c,v 1.2 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 2007-2008 Hans Petter Selasky. All rights reserved.
@@ -34,7 +34,6 @@ __FBSDID("$FreeBSD: src/sys/mips/cavium/usb/octusb_octeon.c,v 1.1 2010/07/20 19:
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

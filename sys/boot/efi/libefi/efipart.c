@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/efi/libefi/efipart.c,v 1.1 2010/01/09 22:54:29 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/efi/libefi/efipart.c,v 1.2 2011/01/06 20:50:16 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/time.h>
@@ -69,6 +69,7 @@ efipart_init(void)
 	int err;
 
 	sz = 0;
+	hin = NULL;
 	status = BS->LocateHandle(ByProtocol, &blkio_guid, 0, &sz, 0);
 	if (status == EFI_BUFFER_TOO_SMALL) {
 		hin = (EFI_HANDLE *)malloc(sz * 2);

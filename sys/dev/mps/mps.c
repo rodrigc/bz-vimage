@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mps/mps.c,v 1.9 2010/12/10 21:45:10 ken Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mps/mps.c,v 1.10 2011/01/12 19:53:56 mdf Exp $");
 
 /* Communications core for LSI MPT2 */
 
@@ -846,11 +846,11 @@ mps_attach(struct mps_softc *sc)
 	if (sc->sysctl_tree == NULL)
 		return (ENOMEM);
 
-	SYSCTL_ADD_INT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
+	SYSCTL_ADD_UINT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
 	    OID_AUTO, "debug_level", CTLFLAG_RW, &sc->mps_debug, 0,
 	    "mps debug level");
 
-	SYSCTL_ADD_INT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
+	SYSCTL_ADD_UINT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
 	    OID_AUTO, "allow_multiple_tm_cmds", CTLFLAG_RW,
 	    &sc->allow_multiple_tm_cmds, 0,
 	    "allow multiple simultaneous task management cmds");

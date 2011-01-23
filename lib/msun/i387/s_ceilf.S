@@ -5,7 +5,7 @@
 
 #include <machine/asm.h>
 
-__FBSDID("$FreeBSD: src/lib/msun/i387/s_ceilf.S,v 1.3 2009/05/25 14:37:10 attilio Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/i387/s_ceilf.S,v 1.4 2011/01/07 16:13:12 kib Exp $");
 /* RCSID("$NetBSD: s_ceilf.S,v 1.3 1995/05/08 23:52:44 jtc Exp $") */
 
 ENTRY(ceilf)
@@ -28,3 +28,5 @@ ENTRY(ceilf)
 	leave
 	ret
 END(ceilf)
+
+	.section .note.GNU-stack,"",%progbits

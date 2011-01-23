@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfsclient/nfsmount.h,v 1.4 2010/10/19 00:20:00 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfsclient/nfsmount.h,v 1.5 2011/01/03 20:37:31 rmacklem Exp $
  */
 
 #ifndef _NFSCLIENT_NFSMOUNT_H_
@@ -94,6 +94,7 @@ struct	nfsmount {
 #define	nm_retry	nm_com.nmcom_retry
 #define	nm_hostname	nm_com.nmcom_hostname
 #define	nm_getinfo	nm_com.nmcom_getinfo
+#define	nm_vinvalbuf	nm_com.nmcom_vinvalbuf
 
 #define	NFSMNT_DIRPATH(m)	(&((m)->nm_name[(m)->nm_krbnamelen + 1]))
 #define	NFSMNT_SRVKRBNAME(m)						\

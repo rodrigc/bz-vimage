@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.15 2010/11/05 19:12:48 n_hibma Exp $ */
+/* $FreeBSD: src/sys/dev/usb/serial/umoscom.c,v 1.16 2011/01/11 13:59:06 jhb Exp $ */
 /*	$OpenBSD: umoscom.c,v 1.2 2006/10/26 06:02:43 jsg Exp $	*/
 
 /*
@@ -25,7 +25,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	from: vector.s, 386BSD 0.1 unknown origin
- * $FreeBSD: src/sys/i386/i386/apic_vector.s,v 1.118 2010/11/01 18:18:46 jhb Exp $
+ * $FreeBSD: src/sys/i386/i386/apic_vector.s,v 1.119 2011/01/13 17:00:22 jhb Exp $
  */
 
 /*
@@ -60,18 +60,16 @@ IDTVEC(vec_name) ;							\
 	FAKE_MCOUNT(TF_EIP(%esp)) ;					\
 	movl	lapic, %edx ;	/* pointer to local APIC */		\
 	movl	LA_ISR + 16 * (index)(%edx), %eax ;	/* load ISR */	\
-	bsrl	%eax, %eax ;	/* index of highset set bit in ISR */	\
-	jz	2f ;							\
+	bsrl	%eax, %eax ;	/* index of highest set bit in ISR */	\
+	jz	1f ;							\
 	addl	$(32 * index),%eax ;					\
-1: ;									\
 	pushl	%esp		;                                       \
 	pushl	%eax ;		/* pass the IRQ */			\
 	call	lapic_handle_intr ;					\
 	addl	$8, %esp ;	/* discard parameter */			\
+1: ;									\
 	MEXITCOUNT ;							\
-	jmp	doreti ;						\
-2:	movl	$-1, %eax ;	/* send a vector of -1 */		\
-	jmp	1b
+	jmp	doreti
 
 /*
  * Handle "spurious INTerrupts".

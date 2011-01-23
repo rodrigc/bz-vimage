@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/macgpio.c,v 1.5 2010/06/18 14:06:27 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/macgpio.c,v 1.6 2011/01/06 20:19:01 andreast Exp $
  */
 
 /*
@@ -264,10 +264,8 @@ static struct resource *
 macgpio_alloc_resource(device_t bus, device_t child, int type, int *rid,
 		     u_long start, u_long end, u_long count, u_int flags)
 {
-	struct macgpio_softc *sc;
 	struct macgpio_devinfo *dinfo;
 
-	sc = device_get_softc(bus);
 	dinfo = device_get_ivars(child);
 
 	if (type != SYS_RES_IRQ)

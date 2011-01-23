@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/mips/cavium/files.octeon1,v 1.10 2010/11/28 08:18:16 jmallett Exp $
+# $FreeBSD: src/sys/mips/cavium/files.octeon1,v 1.11 2011/01/10 03:48:41 jmallett Exp $
 # Octeon Support Files
 #
 mips/cavium/asm_octeon.S			optional smp
@@ -36,6 +36,10 @@ mips/cavium/octe/ethernet-xaui.c		optional octe
 mips/cavium/octe/mv88e61xxphy.c			optional octe mv88e61xxphy
 mips/cavium/octe/octe.c				optional octe
 mips/cavium/octe/octebus.c			optional octe
+
+mips/cavium/if_octm.c				optional octm
+
+contrib/octeon-sdk/cvmx-mgmt-port.c		optional octm
 
 mips/cavium/octopci.c				optional pci
 mips/cavium/octopci_bus_space.c			optional pci

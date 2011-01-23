@@ -28,14 +28,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cam/cam_periph.c,v 1.92 2010/12/10 21:38:51 ken Exp $");
+__FBSDID("$FreeBSD: src/sys/cam/cam_periph.c,v 1.93 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/types.h>
 #include <sys/malloc.h>
 #include <sys/kernel.h>
-#include <sys/linker_set.h>
 #include <sys/bio.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

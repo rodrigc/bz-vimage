@@ -34,7 +34,7 @@
  * tmpfs vnode interface.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.44 2010/10/12 17:16:51 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_vnops.c,v 1.45 2011/01/20 09:39:16 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -1349,7 +1349,7 @@ outok:
 	MPASS(error >= -1);
 
 	if (error == -1)
-		error = 0;
+		error = (cnt != 0) ? 0 : EINVAL;
 
 	if (eofflag != NULL)
 		*eofflag =

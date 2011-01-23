@@ -26,10 +26,9 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.61 2010/08/11 23:22:53 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/pmap.c,v 1.62 2011/01/21 10:26:26 pluknet Exp $");
 
 #include "opt_kstack_pages.h"
-#include "opt_msgbuf.h"
 #include "opt_pmap.h"
 #include "opt_trap_trace.h"
 
@@ -782,7 +781,7 @@ skipshuffle:
 	/*
 	 * Allocate and map the message buffer.
 	 */
-	msgbuf_phys = pmap_bootstrap_alloc(MSGBUF_SIZE);
+	msgbuf_phys = pmap_bootstrap_alloc(msgbufsize);
 	msgbufp = (struct msgbuf *)TLB_PHYS_TO_DIRECT(msgbuf_phys);
 
 	/*

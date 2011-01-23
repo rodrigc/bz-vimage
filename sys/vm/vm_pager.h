@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)vm_pager.h	8.4 (Berkeley) 1/12/94
- * $FreeBSD: src/sys/vm/vm_pager.h,v 1.54 2010/07/04 11:26:56 kib Exp $
+ * $FreeBSD: src/sys/vm/vm_pager.h,v 1.55 2011/01/18 04:54:43 alc Exp $
  */
 
 /*
@@ -93,9 +93,6 @@ extern struct pagerops sgpagerops;
 #define VM_PAGER_CLUSTER_OK		0x0008
 
 #ifdef _KERNEL
-#ifdef MALLOC_DECLARE
-MALLOC_DECLARE(M_VMPGDATA);
-#endif
 
 extern vm_map_t pager_map;
 extern struct pagerops *pagertab[];

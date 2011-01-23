@@ -1,11 +1,9 @@
-/* $FreeBSD: src/sys/conf/ldscript.powerpc,v 1.8 2008/02/27 00:03:22 marcel Exp $ */
+/* $FreeBSD: src/sys/conf/ldscript.powerpc,v 1.9 2011/01/20 19:24:50 imp Exp $ */
 
 OUTPUT_FORMAT("elf32-powerpc", "elf32-powerpc", "elf32-powerpc")
 OUTPUT_ARCH(powerpc)
 ENTRY(__start)
 SEARCH_DIR(/usr/lib);
-/* Do we need any of these for elf?
-   __DYNAMIC = 0;    */
 PROVIDE (__stack = 0);
 SECTIONS
 {

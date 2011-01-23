@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_machdep.c,v 1.27 2010/11/10 18:50:12 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/acpica/acpi_machdep.c,v 1.28 2011/01/12 19:54:19 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -68,7 +68,7 @@ acpi_machdep_init(device_t dev)
 	if (intr_model != ACPI_INTR_PIC)
 		acpi_SetIntrModel(intr_model);
 
-	SYSCTL_ADD_UINT(&sc->acpi_sysctl_ctx,
+	SYSCTL_ADD_INT(&sc->acpi_sysctl_ctx,
 	    SYSCTL_CHILDREN(sc->acpi_sysctl_tree), OID_AUTO,
 	    "reset_video", CTLFLAG_RW, &acpi_reset_video, 0,
 	    "Call the VESA reset BIOS vector on the resume path");

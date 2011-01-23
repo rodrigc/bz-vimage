@@ -52,7 +52,7 @@
  *
  * 	from: FreeBSD: src/sys/i386/i386/nexus.c,v 1.43 2001/02/09
  *
- * $FreeBSD: src/sys/powerpc/aim/nexus.c,v 1.25 2010/11/09 23:53:47 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/aim/nexus.c,v 1.26 2011/01/06 20:19:01 andreast Exp $
  */
 
 #include <sys/param.h>
@@ -340,7 +340,6 @@ static int
 nexus_setup_intr(device_t dev, device_t child, struct resource *res, int flags,
     driver_filter_t *filter, driver_intr_t *ihand, void *arg, void **cookiep)
 {
-	driver_t	*driver;
 	int		error;
 
 	/* somebody tried to setup an irq that failed to allocate! */
@@ -350,8 +349,6 @@ nexus_setup_intr(device_t dev, device_t child, struct resource *res, int flags,
 	*cookiep = 0;
 	if ((rman_get_flags(res) & RF_SHAREABLE) == 0)
 		flags |= INTR_EXCL;
-
-	driver = device_get_driver(child);
 
 	/*
 	 * We depend here on rman_activate_resource() being idempotent.

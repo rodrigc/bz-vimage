@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.382 2010/12/06 15:19:03 jhb Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.384 2011/01/19 17:04:07 mdf Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -173,6 +173,7 @@ MAN=	accept_filter.9 \
 	mutex.9 \
 	namei.9 \
 	netisr.9 \
+	osd.9 \
 	panic.9 \
 	pbuf.9 \
 	p_candebug.9 \
@@ -1193,8 +1194,7 @@ MLINKS+=sysctl.9 SYSCTL_DECL.9 \
 	sysctl.9 SYSCTL_STRUCT.9 \
 	sysctl.9 SYSCTL_UINT.9 \
 	sysctl.9 SYSCTL_ULONG.9 \
-	sysctl.9 SYSCTL_XINT.9 \
-	sysctl.9 SYSCTL_XLONG.9
+	sysctl.9 SYSCTL_QUAD.9
 MLINKS+=sysctl_add_oid.9 SYSCTL_ADD_INT.9 \
 	sysctl_add_oid.9 SYSCTL_ADD_LONG.9 \
 	sysctl_add_oid.9 SYSCTL_ADD_NODE.9 \
@@ -1205,6 +1205,7 @@ MLINKS+=sysctl_add_oid.9 SYSCTL_ADD_INT.9 \
 	sysctl_add_oid.9 SYSCTL_ADD_STRUCT.9 \
 	sysctl_add_oid.9 SYSCTL_ADD_UINT.9 \
 	sysctl_add_oid.9 SYSCTL_ADD_ULONG.9 \
+	sysctl_add_oid.9 SYSCTL_ADD_QUAD.9 \
 	sysctl_add_oid.9 SYSCTL_CHILDREN.9 \
 	sysctl_add_oid.9 sysctl_move_oid.9 \
 	sysctl_add_oid.9 sysctl_remove_oid.9 \

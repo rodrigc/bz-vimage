@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorthvar.h,v 1.8 2010/05/16 15:18:25 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorthvar.h,v 1.9 2011/01/20 20:22:19 andreast Exp $
  */
 
 #ifndef	_POWERPC_POWERMAC_UNINORTHVAR_H_
@@ -53,7 +53,7 @@ struct uninorth_softc {
 	vm_offset_t		sc_addr;
 	vm_offset_t		sc_data;
 	int			sc_bus;
-	struct			uninorth_range sc_range[6];
+	struct			uninorth_range sc_range[7];
 	int			sc_nrange;
 	int			sc_iostart;
 	struct			rman sc_io_rman;

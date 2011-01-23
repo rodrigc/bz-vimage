@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ffs_alloc.c	8.8 (Berkeley) 2/21/94
- * $FreeBSD: src/sys/fs/ext2fs/ext2_alloc.c,v 1.2 2010/09/01 05:34:17 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_alloc.c,v 1.3 2011/01/19 16:55:32 jhb Exp $
  */
 
 #include <sys/param.h>
@@ -76,7 +76,6 @@ static daddr_t  ext2_mapsearch(struct m_ext2fs *, char *, daddr_t);
  *   2) quadradically rehash into other cylinder groups, until an
  *        available block is located.
  */
-
 int
 ext2_alloc(ip, lbn, bpref, size, cred, bnp)
 	struct inode *ip;
@@ -222,7 +221,7 @@ return ENOSPC;
 	/*
 	 * Find the preferred location for the cluster.
 	 */
-	EXT2_LOCK(ump); 
+	EXT2_LOCK(ump);
 	pref = ext2_blkpref(ip, start_lbn, soff, sbap, blkno);
 	/*
 	 * If the block range spans two block maps, get the second map.

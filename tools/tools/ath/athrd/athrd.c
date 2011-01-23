@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athrd/athrd.c,v 1.2 2009/01/29 23:24:21 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athrd/athrd.c,v 1.3 2011/01/21 02:53:32 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -43,6 +43,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 
 int		ath_hal_debug = 0;
 HAL_CTRY_CODE	cc = CTRY_DEFAULT;

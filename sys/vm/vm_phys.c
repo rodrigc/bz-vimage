@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_phys.c,v 1.19 2010/10/30 18:00:53 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_phys.c,v 1.20 2011/01/17 19:17:26 alc Exp $");
 
 #include "opt_ddb.h"
 
@@ -385,6 +385,7 @@ vm_phys_add_page(vm_paddr_t pa)
 	cnt.v_page_count++;
 	m = vm_phys_paddr_to_vm_page(pa);
 	m->phys_addr = pa;
+	m->queue = PQ_NONE;
 	m->segind = vm_phys_paddr_to_segind(pa);
 	m->flags = PG_FREE;
 	KASSERT(m->order == VM_NFREEORDER,

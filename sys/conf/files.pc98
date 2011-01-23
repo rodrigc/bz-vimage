@@ -3,7 +3,7 @@
 #
 # modified for PC-9801/PC-9821
 #
-# $FreeBSD: src/sys/conf/files.pc98,v 1.394 2010/12/09 06:41:50 cperciva Exp $
+# $FreeBSD: src/sys/conf/files.pc98,v 1.395 2011/01/17 22:58:28 jkim Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -110,7 +110,6 @@ dev/kbd/kbd.c			optional pckbd | sc | ukbd
 dev/le/if_le_cbus.c		optional le isa
 dev/lindev/full.c		optional lindev
 dev/lindev/lindev.c		optional lindev
-dev/mem/memutil.c		optional mem
 dev/mse/mse.c			optional mse
 dev/mse/mse_cbus.c		optional mse isa
 dev/sbni/if_sbni.c		optional sbni

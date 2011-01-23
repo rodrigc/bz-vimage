@@ -26,7 +26,7 @@
 #include "opt_uart.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/at91/uart_bus_at91usart.c,v 1.5 2009/01/22 21:56:41 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/at91/uart_bus_at91usart.c,v 1.6 2011/01/05 23:45:07 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -76,11 +76,7 @@ usart_at91rm92_probe(device_t dev)
 	switch (device_get_unit(dev))
 	{
 	case 0:
-#ifdef SKYEYE_WORKAROUNDS
-		device_set_desc(dev, "USART0");
-#else
 		device_set_desc(dev, "DBGU");
-#endif
 		/*
 		 * Setting sc_sysdev makes this device a 'system device' and
 		 * indirectly makes it the system console.

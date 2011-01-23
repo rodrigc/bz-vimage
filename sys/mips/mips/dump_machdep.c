@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/dump_machdep.c,v 1.3 2010/11/07 03:09:02 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/dump_machdep.c,v 1.4 2011/01/13 15:17:29 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -182,7 +182,7 @@ cb_dumpdata(struct md_pa *mdp, int seqnr, void *arg)
 			counter &= (1<<24) - 1;
 		}
 
-		error = dump_write(di, (void *)(pa),0, dumplo, sz);
+		error = dump_write(di, (void *)(intptr_t)(pa),0, dumplo, sz); /* XXX fix PA */
 		if (error)
 			break;
 		dumplo += sz;

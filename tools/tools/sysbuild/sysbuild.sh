@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/tools/sysbuild/sysbuild.sh,v 1.9 2010/11/23 21:21:56 phk Exp $
+# $FreeBSD: src/tools/tools/sysbuild/sysbuild.sh,v 1.10 2011/01/18 21:36:51 phk Exp $
 #
 
 set -e
@@ -229,6 +229,7 @@ ports_build() (
 				if make install ${PORTS_OPTS} ; then
 					if [ "x${PKG_DIR}" != "x" ] ; then
 						make package ${PORTS_OPTS}
+						mkdir -p ${PKG_DIR}
 						mv *.tbz ${PKG_DIR}
 					fi
 				else

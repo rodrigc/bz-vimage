@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fatm/if_fatm.c,v 1.27 2010/01/07 21:01:37 mbr Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fatm/if_fatm.c,v 1.28 2011/01/18 21:14:23 mdf Exp $");
 
 #include "opt_inet.h"
 #include "opt_natm.h"
@@ -2794,13 +2794,13 @@ fatm_attach(device_t dev)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "istats", CTLFLAG_RD, sc, 0, fatm_sysctl_istats,
-	    "LU", "internal statistics") == NULL)
+	    OID_AUTO, "istats", CTLTYPE_ULONG | CTLFLAG_RD, sc, 0,
+	    fatm_sysctl_istats, "LU", "internal statistics") == NULL)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "stats", CTLFLAG_RD, sc, 0, fatm_sysctl_stats,
-	    "LU", "card statistics") == NULL)
+	    OID_AUTO, "stats", CTLTYPE_ULONG | CTLFLAG_RD, sc, 0,
+	    fatm_sysctl_stats, "LU", "card statistics") == NULL)
 		goto fail;
 
 	if (SYSCTL_ADD_INT(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),

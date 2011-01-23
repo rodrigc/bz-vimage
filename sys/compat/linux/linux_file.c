@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linux/linux_file.c,v 1.121 2010/03/21 20:43:23 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linux/linux_file.c,v 1.122 2011/01/19 12:19:25 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -369,7 +369,6 @@ getdents_common(struct thread *td, struct linux_getdents64_args *args,
 	lbuf = malloc(LINUX_MAXRECLEN, M_TEMP, M_WAITOK | M_ZERO);
 	vn_lock(vp, LK_SHARED | LK_RETRY);
 
-again:
 	aiov.iov_base = buf;
 	aiov.iov_len = buflen;
 	auio.uio_iov = &aiov;
@@ -506,8 +505,10 @@ again:
 			break;
 	}
 
-	if (outp == (caddr_t)args->dirent)
-		goto again;
+	if (outp == (caddr_t)args->dirent) {
+		nbytes = resid;
+		goto eof;
+	}
 
 	fp->f_offset = off;
 	if (justone)

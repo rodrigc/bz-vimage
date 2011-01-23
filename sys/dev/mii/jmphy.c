@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/jmphy.c,v 1.6 2010/12/18 23:52:50 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/jmphy.c,v 1.7 2011/01/14 19:33:58 marius Exp $");
 
 /*
  * Driver for the JMicron JMP211 10/100/1000, JMP202 10/100 PHY.
@@ -373,10 +373,10 @@ jmphy_setmedia(struct mii_softc *sc, struct ifmedia_entry *ife)
 		bmcr |= BMCR_LOOP;
 
 	anar = jmphy_anar(ife);
-	if (((IFM_SUBTYPE(ife->ifm_media) == IFM_AUTO ||
+	if ((IFM_SUBTYPE(ife->ifm_media) == IFM_AUTO ||
 	    (ife->ifm_media & IFM_FDX) != 0) &&
-	    (ife->ifm_media & IFM_FLOW) != 0) ||
-	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0)
+	    ((ife->ifm_media & IFM_FLOW) != 0 ||
+	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0))
 		anar |= ANAR_PAUSE_TOWARDS;
 
 	if ((sc->mii_flags & MIIF_HAVE_GTCR) != 0) {

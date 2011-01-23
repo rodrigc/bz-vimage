@@ -31,7 +31,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 
-$FreeBSD: src/sys/netinet/tcp_lro.h,v 1.1 2008/06/11 22:12:50 jfv Exp $
+$FreeBSD: src/sys/netinet/tcp_lro.h,v 1.2 2011/01/07 21:40:34 jhb Exp $
 
 ***************************************************************************/
 #ifndef _TCP_LRO_H_
@@ -41,7 +41,7 @@ struct lro_entry;
 struct lro_entry
 {
 	SLIST_ENTRY(lro_entry) next;
-	struct mbuf  	*m_head;
+	struct mbuf	*m_head;
 	struct mbuf	*m_tail;
 	int		timestamp;
 	struct ip	*ip;

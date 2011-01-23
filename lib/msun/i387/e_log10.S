@@ -34,7 +34,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/msun/i387/e_log10.S,v 1.9 2010/10/01 20:14:36 dim Exp $")
+__FBSDID("$FreeBSD: src/lib/msun/i387/e_log10.S,v 1.10 2011/01/07 16:13:12 kib Exp $")
 
 ENTRY(log10)
 	fldlg2
@@ -42,3 +42,5 @@ ENTRY(log10)
 	fyl2x
 	ret
 END(log10)
+
+	.section .note.GNU-stack,"",%progbits

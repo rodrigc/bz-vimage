@@ -38,7 +38,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mem.c,v 1.21 2010/08/08 00:01:08 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/mem.c,v 1.22 2011/01/17 23:06:47 jkim Exp $");
 
 /*
  * Memory special file
@@ -187,10 +187,4 @@ memrw(struct cdev *dev, struct uio *uio, int flags)
 	if (ova != 0)
 		kmem_free_wakeup(kernel_map, ova, PAGE_SIZE * colors);
 	return (error);
-}
-
-void
-dev_mem_md_init(void)
-{
-
 }

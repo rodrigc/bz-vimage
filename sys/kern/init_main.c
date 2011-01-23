@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.318 2010/12/09 02:42:02 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/init_main.c,v 1.319 2011/01/06 22:26:00 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_init_path.h"
@@ -462,7 +462,7 @@ proc0_init(void *dummy __unused)
 	td->td_base_user_pri = PUSER;
 	td->td_lend_user_pri = PRI_MAX;
 	td->td_priority = PVM;
-	td->td_base_pri = PUSER;
+	td->td_base_pri = PVM;
 	td->td_oncpu = 0;
 	td->td_flags = TDF_INMEM|TDP_KTHREAD;
 	td->td_cpuset = cpuset_thread0();

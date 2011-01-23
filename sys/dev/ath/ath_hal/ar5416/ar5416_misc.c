@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_misc.c,v 1.4 2010/02/10 11:11:37 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_misc.c,v 1.5 2011/01/20 09:46:18 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -40,14 +40,18 @@ u_int
 ar5416GetWirelessModes(struct ath_hal *ah)
 {
 	u_int mode;
+	struct ath_hal_private *ahpriv = AH_PRIVATE(ah);
+	HAL_CAPABILITIES *pCap = &ahpriv->ah_caps;
 
 	mode = ar5212GetWirelessModes(ah);
-	if (mode & HAL_MODE_11A)
+
+	/* Only enable HT modes if the NIC supports HT */
+	if (pCap->halHTSupport == AH_TRUE && (mode & HAL_MODE_11A))
 		mode |= HAL_MODE_11NA_HT20
 		     |  HAL_MODE_11NA_HT40PLUS
 		     |  HAL_MODE_11NA_HT40MINUS
 		     ;
-	if (mode & HAL_MODE_11G)
+	if (pCap->halHTSupport == AH_TRUE && (mode & HAL_MODE_11G))
 		mode |= HAL_MODE_11NG_HT20
 		     |  HAL_MODE_11NG_HT40PLUS
 		     |  HAL_MODE_11NG_HT40MINUS

@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.mk,v 1.67 2010/09/13 07:27:03 imp Exp $
+# $FreeBSD: src/sys/conf/kern.mk,v 1.69 2011/01/05 22:24:33 dim Exp $
 
 #
 # Warning flags for compiling the kernel and components of the kernel.
@@ -33,7 +33,7 @@ CWARNFLAGS?=	-Wall -Wredundant-decls -Wnested-externs -Wstrict-prototypes \
 .if ${CC:T:Mclang} != "clang"
 CFLAGS+=	-mno-align-long-strings -mpreferred-stack-boundary=2
 .endif
-CFLAGS+=	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3
+CFLAGS+=	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 -msoft-float
 INLINE_LIMIT?=	8000
 .endif
 
@@ -66,7 +66,7 @@ INLINE_LIMIT?=	15000
 #
 .if ${MACHINE_CPUARCH} == "amd64"
 CFLAGS+=	-mcmodel=kernel -mno-red-zone \
-		-mfpmath=387 -mno-sse -mno-sse2 -mno-sse3 -mno-mmx -mno-3dnow \
+		-mfpmath=387 -mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
 		-msoft-float -fno-asynchronous-unwind-tables
 INLINE_LIMIT?=	8000
 .endif

@@ -2,7 +2,7 @@
 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/usb_hid.c,v 1.20 2010/05/12 22:50:23 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/usb_hid.c,v 1.21 2011/01/11 13:59:06 jhb Exp $");
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
  * All rights reserved.
@@ -41,7 +41,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/usb_hid.c,v 1.20 2010/05/12 22:50:23 thompsa
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

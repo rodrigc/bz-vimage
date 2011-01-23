@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.3 2010/07/13 05:32:19 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/cpufreq/pcr.c,v 1.4 2011/01/06 20:19:01 andreast Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -305,12 +305,10 @@ pcr_set(device_t dev, const struct cf_setting *set)
 static int
 pcr_get(device_t dev, struct cf_setting *set)
 {
-	struct pcr_softc *sc;
 	uint64_t psr;
 
 	if (set == NULL)
 		return (EINVAL);
-	sc = device_get_softc(dev);
 
 	memset(set, CPUFREQ_VAL_UNKNOWN, sizeof(*set));
 

@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_raid.c,v 1.27 2010/06/29 22:07:53 ken Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mpt/mpt_raid.c,v 1.28 2011/01/12 19:53:56 mdf Exp $");
 
 #include <dev/mpt/mpt.h>
 #include <dev/mpt/mpt_raid.h>
@@ -1824,7 +1824,7 @@ mpt_raid_sysctl_attach(struct mpt_softc *mpt)
 			"vol_resync_rate", CTLTYPE_INT | CTLFLAG_RW, mpt, 0,
 			mpt_raid_sysctl_vol_resync_rate, "I",
 			"volume resync priority (0 == NC, 1 - 255)");
-	SYSCTL_ADD_INT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
+	SYSCTL_ADD_UINT(ctx, SYSCTL_CHILDREN(tree), OID_AUTO,
 			"nonoptimal_volumes", CTLFLAG_RD,
 			&mpt->raid_nonopt_volumes, 0,
 			"number of nonoptimal volumes");

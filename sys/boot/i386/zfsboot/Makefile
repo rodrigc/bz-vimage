@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/boot/i386/zfsboot/Makefile,v 1.4 2010/09/24 19:49:12 pjd Exp $
+# $FreeBSD: src/sys/boot/i386/zfsboot/Makefile,v 1.5 2011/01/05 21:46:08 dim Exp $
 
 .PATH:		${.CURDIR}/../boot2 ${.CURDIR}/../common ${.CURDIR}/../../common
 
@@ -24,7 +24,6 @@ CFLAGS=	-DBOOTPROG=\"zfsboot\" \
 	-fno-unit-at-a-time \
 	-mno-align-long-strings \
 	-mrtd \
-	-mno-mmx -mno-3dnow -mno-sse -mno-sse2 -mno-sse3 \
 	-DBOOT2 \
 	-DFLAGS=${BOOT_BOOT1_FLAGS} \
 	-DSIOPRT=${BOOT_COMCONSOLE_PORT} \

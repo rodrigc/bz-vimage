@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_syncache.c,v 1.183 2010/11/22 19:32:54 dim Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_syncache.c,v 1.184 2011/01/12 19:53:50 mdf Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -148,23 +148,23 @@ static VNET_DEFINE(struct tcp_syncache, tcp_syncache);
 
 SYSCTL_NODE(_net_inet_tcp, OID_AUTO, syncache, CTLFLAG_RW, 0, "TCP SYN cache");
 
-SYSCTL_VNET_INT(_net_inet_tcp_syncache, OID_AUTO, bucketlimit, CTLFLAG_RDTUN,
+SYSCTL_VNET_UINT(_net_inet_tcp_syncache, OID_AUTO, bucketlimit, CTLFLAG_RDTUN,
     &VNET_NAME(tcp_syncache.bucket_limit), 0,
     "Per-bucket hash limit for syncache");
 
-SYSCTL_VNET_INT(_net_inet_tcp_syncache, OID_AUTO, cachelimit, CTLFLAG_RDTUN,
+SYSCTL_VNET_UINT(_net_inet_tcp_syncache, OID_AUTO, cachelimit, CTLFLAG_RDTUN,
     &VNET_NAME(tcp_syncache.cache_limit), 0,
     "Overall entry limit for syncache");
 
-SYSCTL_VNET_INT(_net_inet_tcp_syncache, OID_AUTO, count, CTLFLAG_RD,
+SYSCTL_VNET_UINT(_net_inet_tcp_syncache, OID_AUTO, count, CTLFLAG_RD,
     &VNET_NAME(tcp_syncache.cache_count), 0,
     "Current number of entries in syncache");
 
-SYSCTL_VNET_INT(_net_inet_tcp_syncache, OID_AUTO, hashsize, CTLFLAG_RDTUN,
+SYSCTL_VNET_UINT(_net_inet_tcp_syncache, OID_AUTO, hashsize, CTLFLAG_RDTUN,
     &VNET_NAME(tcp_syncache.hashsize), 0,
     "Size of TCP syncache hashtable");
 
-SYSCTL_VNET_INT(_net_inet_tcp_syncache, OID_AUTO, rexmtlimit, CTLFLAG_RW,
+SYSCTL_VNET_UINT(_net_inet_tcp_syncache, OID_AUTO, rexmtlimit, CTLFLAG_RW,
     &VNET_NAME(tcp_syncache.rexmt_limit), 0,
     "Limit on SYN/ACK retransmissions");
 

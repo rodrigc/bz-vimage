@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/controller/xhci.h,v 1.1 2010/10/03 08:12:17 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/controller/xhci.h,v 1.2 2011/01/13 20:03:55 hselasky Exp $ */
 
 /*-
  * Copyright (c) 2010 Hans Petter Selasky. All rights reserved.
@@ -476,6 +476,9 @@ struct xhci_softc {
 	/* root HUB device configuration */
 	uint8_t			sc_conf;
 	uint8_t			sc_hub_idata[2];
+
+	/* size of context */
+	uint8_t			sc_ctx_is_64_byte;
 
 	/* vendor string for root HUB */
 	char			sc_vendor[16];

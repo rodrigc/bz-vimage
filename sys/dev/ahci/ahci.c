@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ahci/ahci.c,v 1.48 2010/12/08 20:35:20 mav Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ahci/ahci.c,v 1.49 2011/01/10 22:27:52 mav Exp $");
 
 #include <sys/param.h>
 #include <sys/module.h>
@@ -176,6 +176,8 @@ static struct {
 	{0x06201b4b, 0x00, "HighPoint RocketRAID 620",	AHCI_Q_NOBSYRES},
 	{0x06221103, 0x00, "HighPoint RocketRAID 622",	AHCI_Q_NOBSYRES},
 	{0x06221b4b, 0x00, "HighPoint RocketRAID 622",	AHCI_Q_NOBSYRES},
+	{0x06401103, 0x00, "HighPoint RocketRAID 640",	AHCI_Q_NOBSYRES},
+	{0x06441103, 0x00, "HighPoint RocketRAID 644",	AHCI_Q_NOBSYRES},
 	{0x044c10de, 0x00, "NVIDIA MCP65",	AHCI_Q_NOAA},
 	{0x044d10de, 0x00, "NVIDIA MCP65",	AHCI_Q_NOAA},
 	{0x044e10de, 0x00, "NVIDIA MCP65",	AHCI_Q_NOAA},

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_ntptime.c,v 1.69 2010/09/30 17:05:23 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_ntptime.c,v 1.70 2011/01/13 18:20:27 mdf Exp $");
 
 #include "opt_ntp.h"
 
@@ -299,7 +299,8 @@ SYSCTL_PROC(_kern_ntp_pll, OID_AUTO, gettime, CTLTYPE_OPAQUE|CTLFLAG_RD,
 #ifdef PPS_SYNC
 SYSCTL_INT(_kern_ntp_pll, OID_AUTO, pps_shiftmax, CTLFLAG_RW, &pps_shiftmax, 0, "");
 SYSCTL_INT(_kern_ntp_pll, OID_AUTO, pps_shift, CTLFLAG_RW, &pps_shift, 0, "");
-SYSCTL_INT(_kern_ntp_pll, OID_AUTO, time_monitor, CTLFLAG_RD, &time_monitor, 0, "");
+SYSCTL_LONG(_kern_ntp_pll, OID_AUTO, time_monitor, CTLFLAG_RD,
+    &time_monitor, 0, "");
 
 SYSCTL_OPAQUE(_kern_ntp_pll, OID_AUTO, pps_freq, CTLFLAG_RD, &pps_freq, sizeof(pps_freq), "I", "");
 SYSCTL_OPAQUE(_kern_ntp_pll, OID_AUTO, time_freq, CTLFLAG_RD, &time_freq, sizeof(time_freq), "I", "");

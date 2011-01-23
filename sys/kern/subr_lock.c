@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.32 2010/11/09 10:59:09 brucec Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.33 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_mprof.h"
@@ -42,7 +42,6 @@ __FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.32 2010/11/09 10:59:09 brucec E
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/ktr.h>
-#include <sys/linker_set.h>
 #include <sys/lock.h>
 #include <sys/lock_profile.h>
 #include <sys/malloc.h>

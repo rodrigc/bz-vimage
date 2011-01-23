@@ -37,7 +37,7 @@
 	.asciz "$Id$"
 #endif /* LIBC_SCCS and not lint */
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/amd64/gen/sigsetjmp.S,v 1.30 2008/11/02 01:10:54 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/amd64/gen/sigsetjmp.S,v 1.31 2011/01/07 16:08:40 kib Exp $");
 
 #include "SYS.h"
 
@@ -111,3 +111,5 @@ ENTRY(__siglongjmp)
 1:	movq	%rcx,0(%rsp)
 	ret
 END(__siglongjmp)
+
+	.section .note.GNU-stack,"",%progbits

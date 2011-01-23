@@ -17,6 +17,8 @@
  *
  */
 
+__FBSDID("$FreeBSD: src/sys/contrib/pf/net/pf_osfp.c,v 1.7 2011/01/14 04:24:53 csjp Exp $");
+
 #include <sys/param.h>
 #include <sys/socket.h>
 #ifdef _KERNEL
@@ -660,7 +662,7 @@ pf_osfp_validate(void)
 		if (find.fp_mss == 0)
 			find.fp_mss = 128;
 		if (f->fp_flags & PF_OSFP_WSIZE_MSS)
-			find.fp_wsize *= find.fp_mss, 1;
+			find.fp_wsize *= find.fp_mss;
 		else if (f->fp_flags & PF_OSFP_WSIZE_MTU)
 			find.fp_wsize *= (find.fp_mss + 40);
 		else if (f->fp_flags & PF_OSFP_WSIZE_MOD)

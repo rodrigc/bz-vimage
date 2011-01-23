@@ -37,7 +37,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/mem.c,v 1.6 2010/04/17 01:49:50 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/mem.c,v 1.7 2011/01/17 23:06:47 jkim Exp $");
 
 /*
  * Memory special file
@@ -164,9 +164,4 @@ memmmap(struct cdev *dev, vm_ooffset_t offset, vm_paddr_t *paddr,
 	*paddr = offset;
 
 	return (0);
-}
-
-void
-dev_mem_md_init(void)
-{
 }

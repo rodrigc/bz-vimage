@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_meter.c,v 1.101 2009/07/24 13:50:29 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_meter.c,v 1.102 2011/01/09 12:50:44 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -53,8 +53,6 @@ __FBSDID("$FreeBSD: src/sys/vm/vm_meter.c,v 1.101 2009/07/24 13:50:29 jhb Exp $"
 #include <sys/sysctl.h>
 
 struct vmmeter cnt;
-
-int maxslp = MAXSLP;
 
 SYSCTL_UINT(_vm, VM_V_FREE_MIN, v_free_min,
 	CTLFLAG_RW, &cnt.v_free_min, 0, "");

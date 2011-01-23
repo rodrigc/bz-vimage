@@ -1,0 +1,11 @@
+# $FreeBSD: src/tools/tools/ath/ath_ee_v14_print/Makefile,v 1.1 2011/01/21 03:14:08 adrian Exp $
+
+.PATH:  ${.CURDIR}/../../../../sys/dev/ath/ath_hal
+
+PROG=	ath_ee_v14_print
+NOMAN=	yes
+NO_MAN=	yes
+
+.include <../Makefile.inc>
+
+.include <bsd.prog.mk>

@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/include/pthread.h,v 1.46 2010/10/18 05:09:22 davidxu Exp $
+ * $FreeBSD: src/include/pthread.h,v 1.47 2011/01/06 03:30:16 davidxu Exp $
  */
 #ifndef _PTHREAD_H_
 #define _PTHREAD_H_
@@ -134,15 +134,6 @@ enum pthread_mutextype {
 };
 
 #define PTHREAD_MUTEX_DEFAULT		PTHREAD_MUTEX_ERRORCHECK
-
-enum pthread_rwlocktype_np
-{
-	PTHREAD_RWLOCK_PREFER_READER_NP,
-	PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP,
-	PTHREAD_RWLOCK_PREFER_WRITER_NP,
-	PTHREAD_RWLOCK_DEFAULT_NP =
-		PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP
-};
 
 struct _pthread_cleanup_info {
 	__uintptr_t	pthread_cleanup_pad[8];

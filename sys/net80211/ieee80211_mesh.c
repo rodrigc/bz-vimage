@@ -28,7 +28,7 @@
  */ 
 #include <sys/cdefs.h>
 #ifdef __FreeBSD__
-__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_mesh.c,v 1.15 2010/03/18 11:06:38 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/net80211/ieee80211_mesh.c,v 1.16 2011/01/19 17:40:58 bschmidt Exp $");
 #endif
 
 /*
@@ -1463,7 +1463,7 @@ mesh_recv_mgmt(struct ieee80211_node *ni, struct mbuf *m0, int subtype,
 				meshid = frm;
 				break;
 			}
-			frm += frm[2] + 2;
+			frm += frm[1] + 2;
 		}
 		IEEE80211_VERIFY_ELEMENT(ssid, IEEE80211_NWID_LEN, return);
 		IEEE80211_VERIFY_ELEMENT(rates, IEEE80211_RATE_MAXSIZE, return);

@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.19 2010/05/08 14:50:12 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.20 2011/01/06 20:31:33 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSPORT_H_
@@ -594,13 +594,6 @@ int nfsmsleep(void *, void *, int, const char *, struct timespec *);
  */
 #define	PDIRUNLOCK	0x0
 #define	MAX_COMMIT_COUNT	(1024 * 1024)
-
-/*
- * These macros are called at the start and end of operations that
- * might modify the underlying file system.
- */
-#define	NFS_STARTWRITE(v, m)	vn_start_write((v), (m), V_WAIT)
-#define	NFS_ENDWRITE(m)		vn_finished_write(m)
 
 /*
  * Define these to handle the type of va_rdev.

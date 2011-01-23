@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.121 2010/12/22 20:27:20 jhb Exp $
+ * $FreeBSD: src/sys/dev/acpica/acpivar.h,v 1.122 2011/01/10 20:56:59 jkim Exp $
  */
 
 #ifndef _ACPIVAR_H_
@@ -50,10 +50,6 @@ struct apm_clone_data;
 struct acpi_softc {
     device_t		acpi_dev;
     struct cdev		*acpi_dev_t;
-
-    struct resource	*acpi_irq;
-    int			acpi_irq_rid;
-    void		*acpi_irq_handle;
 
     int			acpi_enabled;
     int			acpi_sstate;

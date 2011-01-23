@@ -34,7 +34,7 @@
  * Efficient memory file system supporting functions.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_subr.c,v 1.27 2010/08/22 05:36:06 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/tmpfs/tmpfs_subr.c,v 1.28 2011/01/20 09:39:16 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/namei.h>
@@ -827,9 +827,10 @@ tmpfs_dir_getdents(struct tmpfs_node *node, struct uio *uio, off_t *cntp)
 		/* Copy the new dirent structure into the output buffer and
 		 * advance pointers. */
 		error = uiomove(&d, d.d_reclen, uio);
-
-		(*cntp)++;
-		de = TAILQ_NEXT(de, td_entries);
+		if (error == 0) {
+			(*cntp)++;
+			de = TAILQ_NEXT(de, td_entries);
+		}
 	} while (error == 0 && uio->uio_resid > 0 && de != NULL);
 
 	/* Update the offset and cache. */

@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/template/usb_template_mtp.c,v 1.6 2010/03/11 21:45:31 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/template/usb_template_mtp.c,v 1.7 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 2008 Hans Petter Selasky <hselasky@FreeBSD.org>
@@ -46,7 +46,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/template/usb_template_mtp.c,v 1.6 2010/03/11
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/nfs/nfssvc.h,v 1.1 2009/04/07 19:06:51 rmacklem Exp $
+ * $FreeBSD: src/sys/nfs/nfssvc.h,v 1.2 2011/01/14 23:30:35 rmacklem Exp $
  */
 
 #ifndef _NFS_NFSSVC_H_
@@ -63,5 +63,6 @@
 #define	NFSSVC_NFSCBD		0x00100000
 #define	NFSSVC_CBADDSOCK	0x00200000
 #define	NFSSVC_GETSTATS		0x00400000
+#define	NFSSVC_BACKUPSTABLE	0x00800000
 
 #endif /* _NFS_NFSSVC_H */

@@ -29,7 +29,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/i386/string/memcmp.S,v 1.9 2008/11/02 01:28:47 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/i386/string/memcmp.S,v 1.10 2011/01/07 16:08:40 kib Exp $");
 
 /*
  * memcmp (void *b1, void *b2, size_t len)
@@ -74,3 +74,5 @@ L6:	movzbl  -1(%edi),%eax		/* Perform unsigned comparison	*/
 	popl	%edi
 	ret
 END(memcmp)
+
+	.section .note.GNU-stack,"",%progbits

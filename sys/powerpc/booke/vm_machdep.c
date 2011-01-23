@@ -26,7 +26,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- *	from: $FreeBSD: src/sys/powerpc/booke/vm_machdep.c,v 1.12 2010/07/13 05:32:19 nwhitehorn Exp $
+ *	from: $FreeBSD: src/sys/powerpc/booke/vm_machdep.c,v 1.13 2011/01/18 21:57:02 kib Exp $
  */
 /*-
  * Copyright (c) 1982, 1986 The Regents of the University of California.
@@ -97,7 +97,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/vm_machdep.c,v 1.12 2010/07/13 05:32:19 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/vm_machdep.c,v 1.13 2011/01/18 21:57:02 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -346,7 +346,7 @@ sf_buf_free(struct sf_buf *sf)
 		nsfbufsused--;
 
 		if (sf_buf_alloc_want > 0)
-			wakeup_one(&sf_buf_freelist);
+			wakeup(&sf_buf_freelist);
 	}
 	mtx_unlock(&sf_buf_lock);
 }

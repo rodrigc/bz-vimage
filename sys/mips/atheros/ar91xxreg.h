@@ -24,7 +24,7 @@
  * SUCH DAMAGE.
  */
 
-/* $FreeBSD: src/sys/mips/atheros/ar91xxreg.h,v 1.2 2010/08/18 08:22:58 adrian Exp $ */
+/* $FreeBSD: src/sys/mips/atheros/ar91xxreg.h,v 1.3 2011/01/09 06:17:46 adrian Exp $ */
 
 #ifndef	__AR91XX_REG_H__
 #define	__AR91XX_REG_H__
@@ -35,6 +35,7 @@
 #define	AR91XX_RESET_REG_RESET_MODULE	AR71XX_RST_BLOCK_BASE + 0x1c
 
 #define	AR91XX_RST_RESET_MODULE_USBSUS_OVERRIDE	(1 << 10)
+#define	AR91XX_RST_RESET_MODULE_AMBA2WMAC	(1 << 22)
 
 /* PLL block */
 #define	AR91XX_PLL_REG_CPU_CONFIG       AR71XX_PLL_CPU_BASE + 0x00

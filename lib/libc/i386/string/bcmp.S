@@ -29,7 +29,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/i386/string/bcmp.S,v 1.10 2008/11/02 01:28:47 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/i386/string/bcmp.S,v 1.11 2011/01/07 16:08:40 kib Exp $");
 
 /*
  * bcmp (void *b1, void *b2, size_t len)
@@ -62,3 +62,5 @@ L1:
 	popl	%edi
 	ret
 END(bcmp)
+
+	.section .note.GNU-stack,"",%progbits

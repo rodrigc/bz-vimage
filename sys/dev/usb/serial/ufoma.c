@@ -1,7 +1,7 @@
 /*	$NetBSD: umodem.c,v 1.45 2002/09/23 05:51:23 simonb Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ufoma.c,v 1.19 2010/11/05 19:12:48 n_hibma Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/serial/ufoma.c,v 1.20 2011/01/11 13:59:06 jhb Exp $");
 #define UFOMA_HANDSFREE
 /*-
  * Copyright (c) 2005, Takanori Watanabe
@@ -90,7 +90,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/serial/ufoma.c,v 1.19 2010/11/05 19:12:48 n_
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

@@ -30,7 +30,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_mutex.c,v 1.81 2010/12/24 07:41:39 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_mutex.c,v 1.82 2011/01/06 08:13:30 davidxu Exp $
  */
 
 #include "namespace.h"
@@ -492,11 +492,10 @@ int
 _mutex_cv_attach(struct pthread_mutex *m, int count)
 {
 	struct pthread *curthread = _get_curthread();
-	int     error;
 
 	ENQUEUE_MUTEX(curthread, m);
 	m->m_count = count;
-        return (error);
+	return (0);
 }
 
 int

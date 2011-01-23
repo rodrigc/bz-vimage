@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.116 2010/11/23 13:49:15 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/freebsd32/freebsd32_misc.c,v 1.117 2011/01/08 16:13:44 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_inet.h"
@@ -2546,7 +2546,10 @@ freebsd32_copyout_strings(struct image_params *imgp)
 		execpath_len = 0;
 	arginfo = (struct freebsd32_ps_strings *)curproc->p_sysent->
 	    sv_psstrings;
-	szsigcode = *(imgp->proc->p_sysent->sv_szsigcode);
+	if (imgp->proc->p_sysent->sv_sigcode_base == 0)
+		szsigcode = *(imgp->proc->p_sysent->sv_szsigcode);
+	else
+		szsigcode = 0;
 	destp =	(caddr_t)arginfo - szsigcode - SPARE_USRSPACE -
 	    roundup(execpath_len, sizeof(char *)) -
 	    roundup(sizeof(canary), sizeof(char *)) -
@@ -2556,7 +2559,7 @@ freebsd32_copyout_strings(struct image_params *imgp)
 	/*
 	 * install sigcode
 	 */
-	if (szsigcode)
+	if (szsigcode != 0)
 		copyout(imgp->proc->p_sysent->sv_sigcode,
 			((caddr_t)arginfo - szsigcode), szsigcode);
 

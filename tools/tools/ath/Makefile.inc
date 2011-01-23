@@ -1,4 +1,4 @@
-#	$FreeBSD: src/tools/tools/ath/Makefile.inc,v 1.3 2009/02/27 05:22:11 sam Exp $
+#	$FreeBSD: src/tools/tools/ath/Makefile.inc,v 1.5 2011/01/21 02:56:59 adrian Exp $
 
 BINDIR=	/usr/local/bin
 NO_MAN=
@@ -11,3 +11,4 @@ CFLAGS+=-I${.CURDIR}/../common
 CFLAGS+=-I${.CURDIR}/../../../../sys
 CFLAGS+=-I${.CURDIR}/../../../../sys/dev/ath
 CFLAGS+=-I${.CURDIR}/../../../../sys/dev/ath/ath_hal
+CFLAGS+=-I${.OBJDIR}

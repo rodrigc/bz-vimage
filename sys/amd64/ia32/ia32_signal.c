@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.34 2010/12/22 00:18:42 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/ia32/ia32_signal.c,v 1.36 2011/01/14 21:09:01 jkim Exp $");
 
 #include "opt_compat.h"
 
@@ -393,7 +393,8 @@ freebsd4_ia32_sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	}
 
 	regs->tf_rsp = (uintptr_t)sfp;
-	regs->tf_rip = p->p_sysent->sv_psstrings - sz_freebsd4_ia32_sigcode;
+	regs->tf_rip = p->p_sysent->sv_sigcode_base + sz_ia32_sigcode -
+	    sz_freebsd4_ia32_sigcode;
 	regs->tf_rflags &= ~(PSL_T | PSL_D);
 	regs->tf_cs = _ucode32sel;
 	regs->tf_ss = _udatasel;
@@ -514,7 +515,7 @@ ia32_sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	}
 
 	regs->tf_rsp = (uintptr_t)sfp;
-	regs->tf_rip = p->p_sysent->sv_psstrings - *(p->p_sysent->sv_szsigcode);
+	regs->tf_rip = p->p_sysent->sv_sigcode_base;
 	regs->tf_rflags &= ~(PSL_T | PSL_D);
 	regs->tf_cs = _ucode32sel;
 	regs->tf_ss = _udatasel;
@@ -740,7 +741,6 @@ ia32_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 	regs->tf_gs = _ugssel;
 	regs->tf_flags = TF_HASSEGS;
 
-	load_cr0(rcr0() | CR0_MP | CR0_TS);
 	fpstate_drop(td);
 
 	/* Return via doreti so that we can change to a different %cs */

@@ -34,7 +34,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/msun/i387/s_significand.S,v 1.9 2010/10/01 20:14:36 dim Exp $")
+__FBSDID("$FreeBSD: src/lib/msun/i387/s_significand.S,v 1.10 2011/01/07 16:13:12 kib Exp $")
 
 ENTRY(significand)
 	fldl	4(%esp)
@@ -42,3 +42,5 @@ ENTRY(significand)
 	fstp	%st(1)
 	ret
 END(significand)
+
+	.section .note.GNU-stack,"",%progbits

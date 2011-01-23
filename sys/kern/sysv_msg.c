@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sysv_msg.c,v 1.79 2010/12/02 01:14:45 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sysv_msg.c,v 1.80 2011/01/18 21:14:18 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_sysvipc.h"
@@ -1284,7 +1284,7 @@ SYSCTL_INT(_kern_ipc, OID_AUTO, msgssz, CTLFLAG_RDTUN, &msginfo.msgssz, 0,
     "Size of a message segment");
 SYSCTL_INT(_kern_ipc, OID_AUTO, msgseg, CTLFLAG_RDTUN, &msginfo.msgseg, 0,
     "Number of message segments");
-SYSCTL_PROC(_kern_ipc, OID_AUTO, msqids, CTLFLAG_RD,
+SYSCTL_PROC(_kern_ipc, OID_AUTO, msqids, CTLTYPE_OPAQUE | CTLFLAG_RD,
     NULL, 0, sysctl_msqids, "", "Message queue IDs");
 
 #ifdef COMPAT_FREEBSD32

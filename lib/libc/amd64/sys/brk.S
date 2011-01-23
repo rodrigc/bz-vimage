@@ -34,7 +34,7 @@
 	.asciz "@(#)brk.s	5.2 (Berkeley) 12/17/90"
 #endif /* SYSLIBC_SCCS and not lint */
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/amd64/sys/brk.S,v 1.15 2008/11/02 01:10:54 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/amd64/sys/brk.S,v 1.16 2011/01/07 16:08:40 kib Exp $");
 
 #include "SYS.h"
 
@@ -83,3 +83,5 @@ err:
 	jmp	HIDENAME(cerror)
 #endif
 END(brk)
+
+	.section .note.GNU-stack,"",%progbits

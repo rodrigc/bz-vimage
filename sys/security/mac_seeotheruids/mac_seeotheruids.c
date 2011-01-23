@@ -35,7 +35,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/security/mac_seeotheruids/mac_seeotheruids.c,v 1.21 2009/01/10 10:58:41 rwatson Exp $
+ * $FreeBSD: src/sys/security/mac_seeotheruids/mac_seeotheruids.c,v 1.22 2011/01/12 19:54:14 mdf Exp $
  */
 
 /*
@@ -98,7 +98,7 @@ SYSCTL_INT(_security_mac_seeotheruids, OID_AUTO, specificgid_enabled,
     "with a specific gid as their real primary group id or group set");
 
 static gid_t	specificgid = 0;
-SYSCTL_INT(_security_mac_seeotheruids, OID_AUTO, specificgid, CTLFLAG_RW,
+SYSCTL_UINT(_security_mac_seeotheruids, OID_AUTO, specificgid, CTLFLAG_RW,
     &specificgid, 0, "Specific gid to be exempt from seeotheruids policy");
 
 static int

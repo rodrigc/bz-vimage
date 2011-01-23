@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sun4v/sun4v/db_interface.c,v 1.1 2006/10/05 06:14:28 kmacy Exp $
+ * $FreeBSD: src/sys/sun4v/sun4v/db_interface.c,v 1.2 2011/01/11 13:59:06 jhb Exp $
  */
 
 #include <sys/param.h> 
@@ -32,7 +32,6 @@
 #include <sys/cons.h>
 #include <sys/kdb.h>
 #include <sys/ktr.h>
-#include <sys/linker_set.h>
 #include <sys/lock.h>
 #include <sys/pcpu.h>
 #include <sys/proc.h>

@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/atphy.c,v 1.9 2010/11/18 17:58:59 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/atphy.c,v 1.10 2011/01/14 19:16:59 marius Exp $");
 
 /*
  * Driver for the Attansic/Atheros F1 10/100/1000 PHY.
@@ -187,9 +187,9 @@ atphy_service(struct mii_softc *sc, struct mii_data *mii, int cmd)
 		}
 
 		anar = atphy_anar(ife);
-		if (((ife->ifm_media & IFM_GMASK) & IFM_FDX) != 0) {
+		if ((ife->ifm_media & IFM_FDX) != 0) {
 			bmcr |= BMCR_FDX;
-			if (((ife->ifm_media & IFM_GMASK) & IFM_FLOW) != 0 ||
+			if ((ife->ifm_media & IFM_FLOW) != 0 ||
 			    (sc->mii_flags & MIIF_FORCEPAUSE) != 0)
 				anar |= ANAR_PAUSE_TOWARDS;
 		}
@@ -371,7 +371,7 @@ atphy_anar(struct ifmedia_entry *ife)
 		return (0);
 	}
 
-	if (((ife->ifm_media & IFM_GMASK) & IFM_FDX) != 0) {
+	if ((ife->ifm_media & IFM_FDX) != 0) {
 		if (IFM_SUBTYPE(ife->ifm_media) == IFM_100_TX)
 			anar |= ANAR_TX_FD;
 		else
@@ -387,13 +387,13 @@ atphy_setmedia(struct mii_softc *sc, int media)
 	uint16_t anar;
 
 	anar = BMSR_MEDIA_TO_ANAR(sc->mii_capabilities) | ANAR_CSMA;
-	if (((IFM_SUBTYPE(media) == IFM_AUTO ||
-	    ((media & IFM_GMASK) & IFM_FDX) != 0) &&
-	    ((media & IFM_GMASK) & IFM_FLOW) != 0) ||
-	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0)
+	if ((IFM_SUBTYPE(media) == IFM_AUTO || (media & IFM_FDX) != 0) &&
+	    ((media & IFM_FLOW) != 0 ||
+	    (sc->mii_flags & MIIF_FORCEPAUSE) != 0))
 		anar |= ANAR_PAUSE_TOWARDS;
 	PHY_WRITE(sc, MII_ANAR, anar);
-	if ((sc->mii_extcapabilities & (EXTSR_1000TFDX | EXTSR_1000THDX)) != 0)
+	if ((sc->mii_extcapabilities &
+	     (EXTSR_1000TFDX | EXTSR_1000THDX)) != 0)
 		PHY_WRITE(sc, MII_100T2CR, GTCR_ADV_1000TFDX |
 		    GTCR_ADV_1000THDX);
 	PHY_WRITE(sc, MII_BMCR, BMCR_RESET | BMCR_AUTOEN | BMCR_STARTNEG);

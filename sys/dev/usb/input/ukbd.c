@@ -1,5 +1,5 @@
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/input/ukbd.c,v 1.31 2010/09/02 03:42:26 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/input/ukbd.c,v 1.32 2011/01/11 13:59:06 jhb Exp $");
 
 
 /*-
@@ -49,7 +49,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/input/ukbd.c,v 1.31 2010/09/02 03:42:26 thom
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

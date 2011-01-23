@@ -26,7 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGES.
 #
-# $FreeBSD: src/sys/modules/ath/Makefile,v 1.13 2010/03/03 20:01:31 rpaulo Exp $
+# $FreeBSD: src/sys/modules/ath/Makefile,v 1.14 2011/01/20 09:03:40 adrian Exp $
 #
 
 ATH_RATE?=	sample		# tx rate control algorithm
@@ -88,10 +88,15 @@ SRCS+=	ah_eeprom_v14.c ah_eeprom_v4k.c \
 	ar5416_eeprom.c ar5416_gpio.c ar5416_interrupts.c ar5416_keycache.c \
 	ar5416_misc.c ar5416_phy.c ar5416_power.c ar5416_recv.c \
 	ar5416_reset.c ar5416_xmit.c
-SRCS+=	ar9160_attach.c
-SRCS+=	ar9280.c ar9280_attach.c
+
 # RF backend for 5416 and 9160
 SRCS+=	ar2133.c
+
+.PATH:	${.CURDIR}/../../dev/ath/ath_hal/ar9001
+SRCS+=	ar9160_attach.c
+
+.PATH:	${.CURDIR}/../../dev/ath/ath_hal/ar9002
+SRCS+=	ar9280.c ar9280_attach.c
 SRCS+=	ar9285.c ar9285_reset.c ar9285_attach.c
 
 # NB: rate control is bound to the driver by symbol names so only pick one

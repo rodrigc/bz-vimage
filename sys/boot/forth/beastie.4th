@@ -23,7 +23,7 @@
 \ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 \ SUCH DAMAGE.
 \
-\ $FreeBSD: src/sys/boot/forth/beastie.4th,v 1.15 2010/11/15 19:55:19 jhb Exp $
+\ $FreeBSD: src/sys/boot/forth/beastie.4th,v 1.16 2011/01/20 16:03:28 jhb Exp $
 
 marker task-beastie.4th
 
@@ -193,7 +193,7 @@ at-xy ."         `--{__________) [0m"
 			then
 		else
 			menuidx @
-			1+ dup
+			1+
 			menuidx !
 			-2 bootacpikey !
 		then

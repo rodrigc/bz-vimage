@@ -57,7 +57,7 @@
  *	from: @(#)isa.c	7.2 (Berkeley) 5/13/91
  *	form: src/sys/i386/isa/intr_machdep.c,v 1.57 2001/07/20
  *
- * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.33 2010/09/11 04:45:51 mav Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/intr_machdep.c,v 1.34 2011/01/06 21:08:06 jhb Exp $
  */
 
 #include <sys/param.h>
@@ -352,7 +352,7 @@ powerpc_enable_intr(void)
 		error = powerpc_setup_intr("IPI",
 		    INTR_VEC(piclist[n].pic_id, piclist[n].ipi_irq),
 		    powerpc_ipi_handler, NULL, NULL,
-		    INTR_TYPE_MISC | INTR_EXCL | INTR_FAST, &ipi_cookie);
+		    INTR_TYPE_MISC | INTR_EXCL, &ipi_cookie);
 		if (error) {
 			printf("unable to setup IPI handler\n");
 			return (error);

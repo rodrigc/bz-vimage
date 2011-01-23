@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/txp/if_txp.c,v 1.59 2009/08/31 22:09:48 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/txp/if_txp.c,v 1.60 2011/01/12 19:53:56 mdf Exp $");
 
 /*
  * Driver for 3c990 (Typhoon) Ethernet ASIC
@@ -2859,7 +2859,10 @@ txp_stats_update(struct txp_softc *sc, struct txp_rsp_desc *rsp)
 #define	TXP_SYSCTL_STAT_ADD32(c, h, n, p, d)	\
 	    SYSCTL_ADD_UINT(c, h, OID_AUTO, n, CTLFLAG_RD, p, 0, d)
 
-#if __FreeBSD_version > 800000
+#if __FreeBSD_version >= 900030
+#define	TXP_SYSCTL_STAT_ADD64(c, h, n, p, d)	\
+	    SYSCTL_ADD_UQUAD(c, h, OID_AUTO, n, CTLFLAG_RD, p, d)
+#elif __FreeBSD_version > 800000
 #define	TXP_SYSCTL_STAT_ADD64(c, h, n, p, d)	\
 	    SYSCTL_ADD_QUAD(c, h, OID_AUTO, n, CTLFLAG_RD, p, d)
 #else

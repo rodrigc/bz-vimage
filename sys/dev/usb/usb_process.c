@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_process.c,v 1.15 2010/06/11 19:27:21 avg Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_process.c,v 1.16 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -34,7 +34,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

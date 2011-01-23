@@ -46,14 +46,13 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.22 2010/11/22 19:32:54 dim Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_pcpu.c,v 1.23 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_ddb.h"
 
 #include <sys/param.h>
 #include <sys/systm.h>
 #include <sys/sysctl.h>
-#include <sys/linker_set.h>
 #include <sys/lock.h>
 #include <sys/malloc.h>
 #include <sys/pcpu.h>

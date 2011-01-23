@@ -23,11 +23,11 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/cavium/ciu.c,v 1.3 2010/12/01 05:24:29 jmallett Exp $
+ * $FreeBSD: src/sys/mips/cavium/ciu.c,v 1.4 2011/01/10 03:48:41 jmallett Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/ciu.c,v 1.3 2010/12/01 05:24:29 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/ciu.c,v 1.4 2011/01/10 03:48:41 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -58,7 +58,7 @@ __FBSDID("$FreeBSD: src/sys/mips/cavium/ciu.c,v 1.3 2010/12/01 05:24:29 jmallett
 #define	CIU_IRQ_EN0_COUNT	((CIU_IRQ_EN0_END - CIU_IRQ_EN0_BEGIN) + 1)
 
 #define	CIU_IRQ_EN1_BEGIN	CVMX_IRQ_WDOG0
-#define	CIU_IRQ_EN1_END		CVMX_IRQ_WDOG15
+#define	CIU_IRQ_EN1_END		CVMX_IRQ_DFM
 #define	CIU_IRQ_EN1_COUNT	((CIU_IRQ_EN1_END - CIU_IRQ_EN1_BEGIN) + 1)
 
 struct ciu_softc {

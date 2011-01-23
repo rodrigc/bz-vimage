@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athprom/athprom.c,v 1.1 2008/12/07 19:17:33 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athprom/athprom.c,v 1.2 2011/01/21 02:53:32 adrian Exp $
  */
 #include "diag.h"
 
@@ -43,6 +43,7 @@
 #include <err.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #ifndef DIR_TEMPLATE
 #define	DIR_TEMPLATE	"/usr/local/libdata/athprom"

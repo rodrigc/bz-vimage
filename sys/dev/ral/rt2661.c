@@ -1,4 +1,4 @@
-/*	$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.37 2010/11/06 18:17:20 bschmidt Exp $	*/
+/*	$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.38 2011/01/17 20:15:15 bschmidt Exp $	*/
 
 /*-
  * Copyright (c) 2006
@@ -18,7 +18,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.37 2010/11/06 18:17:20 bschmidt Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ral/rt2661.c,v 1.38 2011/01/17 20:15:15 bschmidt Exp $");
 
 /*-
  * Ralink Technology RT2561, RT2561S and RT2661 chipset driver
@@ -100,7 +100,6 @@ static void		rt2661_reset_rx_ring(struct rt2661_softc *,
 			    struct rt2661_rx_ring *);
 static void		rt2661_free_rx_ring(struct rt2661_softc *,
 			    struct rt2661_rx_ring *);
-static void		rt2661_newassoc(struct ieee80211_node *, int);
 static int		rt2661_newstate(struct ieee80211vap *,
 			    enum ieee80211_state, int);
 static uint16_t		rt2661_eeprom_read(struct rt2661_softc *, uint8_t);
@@ -304,7 +303,6 @@ rt2661_attach(device_t dev, int id)
 	ieee80211_init_channels(ic, NULL, &bands);
 
 	ieee80211_ifattach(ic, macaddr);
-	ic->ic_newassoc = rt2661_newassoc;
 #if 0
 	ic->ic_wme.wme_update = rt2661_wme_update;
 #endif
@@ -762,13 +760,6 @@ rt2661_free_rx_ring(struct rt2661_softc *sc, struct rt2661_rx_ring *ring)
 
 	if (ring->data_dmat != NULL)
 		bus_dma_tag_destroy(ring->data_dmat);
-}
-
-static void
-rt2661_newassoc(struct ieee80211_node *ni, int isnew)
-{
-	/* XXX move */
-	ieee80211_ratectl_node_init(ni);
 }
 
 static int

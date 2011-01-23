@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)udp_var.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/netinet/udp_var.h,v 1.43 2010/04/29 11:52:42 bz Exp $
+ * $FreeBSD: src/sys/netinet/udp_var.h,v 1.44 2011/01/07 21:40:34 jhb Exp $
  */
 
 #ifndef _NETINET_UDP_VAR_H_
@@ -146,7 +146,7 @@ int		 udp_newudpcb(struct inpcb *);
 void		 udp_discardcb(struct udpcb *);
 
 void		 udp_ctlinput(int, struct sockaddr *, void *);
-int	 	 udp_ctloutput(struct socket *, struct sockopt *);
+int		 udp_ctloutput(struct socket *, struct sockopt *);
 void		 udp_init(void);
 void		 udp_input(struct mbuf *, int);
 struct inpcb	*udp_notify(struct inpcb *inp, int errno);

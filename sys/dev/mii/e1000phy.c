@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/e1000phy.c,v 1.43 2010/11/27 01:26:59 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/e1000phy.c,v 1.44 2011/01/14 19:16:59 marius Exp $");
 
 /*
  * driver for the Marvell 88E1000 series external 1000/100/10-BT PHY.
@@ -358,7 +358,7 @@ e1000phy_service(struct mii_softc *sc, struct mii_data *mii, int cmd)
 			return (EINVAL);
 		}
 
-		if (((ife->ifm_media & IFM_GMASK) & IFM_FDX) != 0) {
+		if ((ife->ifm_media & IFM_FDX) != 0) {
 			speed |= E1000_CR_FULL_DUPLEX;
 			gig = E1000_1GCR_1000T_FD;
 		} else
@@ -372,10 +372,10 @@ e1000phy_service(struct mii_softc *sc, struct mii_data *mii, int cmd)
 			gig |= E1000_1GCR_MS_ENABLE;
 			if ((ife->ifm_media & IFM_ETH_MASTER) != 0)	
 				gig |= E1000_1GCR_MS_VALUE;
-			PHY_WRITE(sc, E1000_1GCR, gig);
 		} else if ((sc->mii_extcapabilities &
 		    (EXTSR_1000TFDX | EXTSR_1000THDX)) != 0)
-			PHY_WRITE(sc, E1000_1GCR, 0);
+			gig = 0;
+		PHY_WRITE(sc, E1000_1GCR, gig);
 		PHY_WRITE(sc, E1000_AR, E1000_AR_SELECTOR_FIELD);
 		PHY_WRITE(sc, E1000_CR, speed | E1000_CR_RESET);
 done:

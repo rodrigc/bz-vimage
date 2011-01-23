@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/linux32/linux32_sysvec.c,v 1.62 2010/12/22 00:18:42 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/linux32/linux32_sysvec.c,v 1.63 2011/01/14 21:09:01 jkim Exp $");
 #include "opt_compat.h"
 
 #ifndef COMPAT_FREEBSD32
@@ -865,7 +865,7 @@ exec_linux_setregs(struct thread *td, struct image_params *imgp, u_long stack)
 	regs->tf_flags = TF_HASSEGS;
 	regs->tf_cs = _ucode32sel;
 	regs->tf_rbx = imgp->ps_strings;
-	load_cr0(rcr0() | CR0_MP | CR0_TS);
+
 	fpstate_drop(td);
 
 	/* Do full restore on return so that we can change to a different %cs */

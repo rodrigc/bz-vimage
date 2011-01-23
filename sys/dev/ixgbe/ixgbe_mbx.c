@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_mbx.c,v 1.1 2010/11/26 22:46:32 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/ixgbe/ixgbe_mbx.c,v 1.2 2011/01/19 19:36:27 jfv Exp $*/
 
 #include "ixgbe_type.h"
 #include "ixgbe_mbx.h"
@@ -592,8 +592,14 @@ static s32 ixgbe_check_for_rst_pf(struct ixgbe_hw *hw, u16 vf_number)
 
 	DEBUGFUNC("ixgbe_check_for_rst_pf");
 
-	if (hw->mac.type == ixgbe_mac_82599EB)
+	switch (hw->mac.type) {
+	case ixgbe_mac_82599EB:
 		vflre = IXGBE_READ_REG(hw, IXGBE_VFLRE(reg_offset));
+		break;
+	default:
+		goto out;
+		break;
+	}
 
 	if (vflre & (1 << vf_shift)) {
 		ret_val = IXGBE_SUCCESS;
@@ -601,6 +607,7 @@ static s32 ixgbe_check_for_rst_pf(struct ixgbe_hw *hw, u16 vf_number)
 		hw->mbx.stats.rsts++;
 	}
 
+out:
 	return ret_val;
 }
 

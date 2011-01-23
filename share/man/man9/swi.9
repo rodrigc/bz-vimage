@@ -22,7 +22,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/swi.9,v 1.14 2004/12/29 04:29:06 jkoshy Exp $
+.\" $FreeBSD: src/share/man/man9/swi.9,v 1.15 2011/01/06 21:14:34 jhb Exp $
 .\"
 .Dd October 30, 2000
 .Dt SWI 9
@@ -179,10 +179,8 @@ MIB variable
 .It Bq Er EINVAL
 The
 .Fa flags
-argument specifies either
-.Dv INTR_ENTROPY
-or
-.Dv INTR_FAST .
+argument specifies
+.Dv INTR_ENTROPY .
 .It Bq Er EINVAL
 The
 .Fa ithdp

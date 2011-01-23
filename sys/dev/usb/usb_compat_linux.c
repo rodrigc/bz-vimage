@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.22 2010/09/01 23:47:53 thompsa Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_compat_linux.c,v 1.23 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 2007 Luigi Rizzo - Universita` di Pisa. All rights reserved.
  * Copyright (c) 2007 Hans Petter Selasky. All rights reserved.
@@ -33,7 +33,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cs/if_cs.c,v 1.58 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cs/if_cs.c,v 1.59 2011/01/18 15:23:16 jhb Exp $");
 
 /*
  *
@@ -364,7 +364,7 @@ cs_cs89x0_probe(device_t dev)
 
 	if (!error && !(sc->flags & CS_NO_IRQ)) {
 		if (chip_type == CS8900) {
-			if (irq >= 0 || irq < 16)
+			if (irq < 16)
 				irq = cs8900_irq2eeint[irq];
 			else
 				irq = 255;

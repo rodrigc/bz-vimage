@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)var.h	8.2 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/var.h,v 1.18 2010/06/02 19:16:58 jilles Exp $
+ * $FreeBSD: src/bin/sh/var.h,v 1.19 2011/01/01 13:26:18 jilles Exp $
  */
 
 /*
@@ -45,6 +45,7 @@
 #define VSTACK		0x10	/* text is allocated on the stack */
 #define VUNSET		0x20	/* the variable is not set */
 #define VNOFUNC		0x40	/* don't call the callback function */
+#define VNOSET		0x80	/* do not set variable - just readonly test */
 
 
 struct var {
@@ -106,7 +107,7 @@ void initvar(void);
 void setvar(const char *, const char *, int);
 void setvareq(char *, int);
 struct strlist;
-void listsetvar(struct strlist *);
+void listsetvar(struct strlist *, int);
 char *lookupvar(const char *);
 char *bltinlookup(const char *, int);
 void bltinsetlocale(void);

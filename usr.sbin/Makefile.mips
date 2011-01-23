@@ -1,6 +1,6 @@
-# $FreeBSD: src/usr.sbin/Makefile.mips,v 1.1 2010/09/13 02:21:07 imp Exp $
+# $FreeBSD: src/usr.sbin/Makefile.mips,v 1.2 2011/01/07 20:26:33 imp Exp $
 
 SUBDIR:=	${SUBDIR:Nsysinstall}
-.if defined(TARGET_ABI) && ${TARGET_ABI} == "n64"
+.if ${MACHINE_ARCH:Mmips64*} != ""
 SUBDIR:=	${SUBDIR:Nuathload}
 .endif

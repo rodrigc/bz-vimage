@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/xen/blkfront/blkfront.c,v 1.18 2010/12/06 20:40:15 cperciva Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/xen/blkfront/blkfront.c,v 1.19 2011/01/04 14:49:54 rwatson Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -51,6 +51,7 @@ __FBSDID("$FreeBSD: src/sys/dev/xen/blkfront/blkfront.c,v 1.18 2010/12/06 20:40:
 
 #include <machine/_inttypes.h>
 #include <machine/xen/xen-os.h>
+#include <machine/xen/xenvar.h>
 #include <machine/xen/xenfunc.h>
 
 #include <xen/hypervisor.h>

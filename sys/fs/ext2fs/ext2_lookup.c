@@ -38,7 +38,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ufs_lookup.c	8.6 (Berkeley) 4/1/94
- * $FreeBSD: src/sys/fs/ext2fs/ext2_lookup.c,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_lookup.c,v 1.2 2011/01/19 16:52:22 jhb Exp $
  */
 
 #include <sys/param.h>
@@ -325,6 +325,8 @@ ext2_lookup(ap)
 	*vpp = NULL;
 	vdp = ap->a_dvp;
 	dp = VTOI(vdp);
+	bmask = VFSTOEXT2(vdp->v_mount)->um_mountp->mnt_stat.f_iosize - 1;
+
 	/*
 	 * We now have a segment name to search for, and a directory to search.
 	 */
@@ -359,7 +361,6 @@ ext2_lookup(ap)
 	 * profiling time and hence has been removed in the interest
 	 * of simplicity.
 	 */
-	bmask = VFSTOEXT2(vdp->v_mount)->um_mountp->mnt_stat.f_iosize - 1;
 	if (nameiop != LOOKUP || i_diroff == 0 ||
 	    i_diroff > dp->i_size) {
 		entryoffsetinblock = 0;

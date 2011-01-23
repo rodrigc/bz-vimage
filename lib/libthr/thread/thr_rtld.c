@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libthr/thread/thr_rtld.c,v 1.15 2010/09/01 02:18:33 davidxu Exp $
+ * $FreeBSD: src/lib/libthr/thread/thr_rtld.c,v 1.16 2011/01/09 12:38:40 kib Exp $
  *
  */
 
@@ -31,6 +31,8 @@
   * A lockless rwlock for rtld.
   */
 #include <sys/cdefs.h>
+#include <sys/mman.h>
+#include <link.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -193,6 +195,9 @@ _thr_rtld_init(void)
 
 	/* force to resolve memcpy PLT */
 	memcpy(&dummy, &dummy, sizeof(dummy));
+
+	mprotect(NULL, 0, 0);
+	_rtld_get_stack_prot();
 
 	li.lock_create  = _thr_rtld_lock_create;
 	li.lock_destroy = _thr_rtld_lock_destroy;

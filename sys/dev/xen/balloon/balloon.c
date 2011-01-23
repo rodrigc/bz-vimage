@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/xen/balloon/balloon.c,v 1.4 2010/10/19 20:53:30 gibbs Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/xen/balloon/balloon.c,v 1.5 2011/01/04 14:49:54 rwatson Exp $");
 
 #include <sys/param.h>
 #include <sys/lock.h>
@@ -41,8 +41,8 @@ __FBSDID("$FreeBSD: src/sys/dev/xen/balloon/balloon.c,v 1.4 2010/10/19 20:53:30 
 #include <sys/sysctl.h>
 
 #include <machine/xen/xen-os.h>
-#include <machine/xen/xenfunc.h>
 #include <machine/xen/xenvar.h>
+#include <machine/xen/xenfunc.h>
 #include <xen/hypervisor.h>
 #include <xen/xenstore/xenstorevar.h>
 

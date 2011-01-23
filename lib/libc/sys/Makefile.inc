@@ -1,5 +1,5 @@
 #	@(#)Makefile.inc	8.3 (Berkeley) 10/24/94
-# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.147 2010/09/10 01:47:37 davidxu Exp $
+# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.148 2011/01/07 14:28:54 kib Exp $
 
 # sys sources
 .PATH: ${.CURDIR}/${LIBC_ARCH}/sys ${.CURDIR}/sys
@@ -56,11 +56,13 @@ CLEANFILES+=	${SASM} ${SPSEUDO}
 ${SASM}:
 	printf '#include "compat.h"\n' > ${.TARGET}
 	printf '#include "SYS.h"\nRSYSCALL(${.PREFIX})\n' >> ${.TARGET}
+	printf '\t.section .note.GNU-stack,"",%%progbits\n' >>${.TARGET}
 
 ${SPSEUDO}:
 	printf '#include "compat.h"\n' > ${.TARGET}
 	printf '#include "SYS.h"\nPSEUDO(${.PREFIX:S/_//})\n' \
 	    >> ${.TARGET}
+	printf '\t.section .note.GNU-stack,"",%%progbits\n' >>${.TARGET}
 
 MAN+=	abort2.2 accept.2 access.2 acct.2 adjtime.2 \
 	aio_cancel.2 aio_error.2 aio_read.2 aio_return.2 \

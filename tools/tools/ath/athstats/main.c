@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athstats/main.c,v 1.8 2009/03/02 05:07:05 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athstats/main.c,v 1.9 2011/01/21 02:53:32 adrian Exp $
  */
 
 /*
@@ -45,6 +45,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <unistd.h>
+#include <string.h>
 #include <err.h>
 
 #include "athstats.h"

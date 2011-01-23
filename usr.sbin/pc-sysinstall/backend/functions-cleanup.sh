@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.5 2010/10/21 17:14:44 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-cleanup.sh,v 1.7 2011/01/10 19:57:18 jpaetzel Exp $
 
 # Functions which perform the final cleanup after an install
 
@@ -233,7 +233,6 @@ setup_fstab()
   then
     echo "procfs			/proc			procfs		rw		0	0" >> ${FSTAB}
     echo "linprocfs		/compat/linux/proc	linprocfs	rw		0	0" >> ${FSTAB}
-    echo "tmpfs				/tmp			tmpfs		rw,mode=1777	0	0" >> ${FSTAB}
   fi
 
   # If we have a dedicated /boot, run the post-install setup of it now
@@ -372,19 +371,32 @@ setup_gjournal()
 # Function which sets the root password from the install config
 set_root_pw()
 {
+  # Get the plaintext string
   get_value_from_cfg_with_spaces rootPass
-  PW="${VAL}"
+  local PW="${VAL}"
+
+  # Get the encrypted string
+  get_value_from_cfg_with_spaces rootEncPass
+  local ENCPW="${VAL}"
 
   # If we don't have a root pass, return
-  if [ -z "${PW}" ]
-  then
-    return 0
-  fi
+  if [ -z "${PW}" -a -z "${ENCPW}" ] ; then return 0 ; fi
 
   echo_log "Setting root password"
-  echo "${PW}" > ${FSMNT}/.rootpw
-  run_chroot_cmd "cat /.rootpw | pw usermod root -h 0"
-  rc_halt "rm ${FSMNT}/.rootpw"
+
+  # Check if setting plaintext password
+  if [ ! -z "${PW}" ] ; then
+    echo "${PW}" > ${FSMNT}/.rootpw
+    run_chroot_cmd "cat /.rootpw | pw usermod root -h 0"
+    rc_halt "rm ${FSMNT}/.rootpw"
+  fi
+
+  # Check if setting encrypted password
+  if [ ! -z "${ENCPW}" ] ; then
+    echo "${ENCPW}" > ${FSMNT}/.rootpw
+    run_chroot_cmd "cat /.rootpw | pw usermod root -H 0"
+    rc_halt "rm ${FSMNT}/.rootpw"
+  fi
 
 };
 

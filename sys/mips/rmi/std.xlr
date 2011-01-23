@@ -1,7 +1,5 @@
-# $FreeBSD: src/sys/mips/rmi/std.xlr,v 1.2 2010/08/13 12:56:00 jchandra Exp $
+# $FreeBSD: src/sys/mips/rmi/std.xlr,v 1.3 2011/01/20 12:45:29 jchandra Exp $
 files	"../rmi/files.xlr"
 
-#
-# XXXMIPS: It's a stub, isn't it?
-#
+cpu	CPU_RMI
 option	NOFPU

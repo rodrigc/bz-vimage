@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.304 2010/08/11 23:22:53 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.305 2011/01/18 21:57:02 kib Exp $");
 
 #include "opt_isa.h"
 #include "opt_npx.h"
@@ -916,7 +916,7 @@ sf_buf_free(struct sf_buf *sf)
 		LIST_REMOVE(sf, list_entry);
 #endif
 		if (sf_buf_alloc_want > 0)
-			wakeup_one(&sf_buf_freelist);
+			wakeup(&sf_buf_freelist);
 	}
 	mtx_unlock(&sf_buf_lock);
 }

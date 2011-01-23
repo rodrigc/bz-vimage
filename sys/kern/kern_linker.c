@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_linker.c,v 1.180 2010/09/22 06:45:07 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_linker.c,v 1.182 2011/01/18 21:14:18 mdf Exp $");
 
 #include "opt_ddb.h"
 #include "opt_hwpmc_hooks.h"
@@ -1612,6 +1612,12 @@ restart:
 				modname = mp->md_cval;
 				verinfo = mp->md_data;
 				mod = modlist_lookup2(modname, verinfo);
+				if (mod == NULL) {
+					printf("KLD file %s - cannot find "
+					    "dependency \"%s\"\n",
+					    lf->filename, modname);
+					goto fail;
+				}
 				/* Don't count self-dependencies */
 				if (lf == mod->container)
 					continue;
@@ -1628,11 +1634,9 @@ restart:
 		 */
 		error = LINKER_LINK_PRELOAD_FINISH(lf);
 		if (error) {
-			TAILQ_REMOVE(&depended_files, lf, loaded);
 			printf("KLD file %s - could not finalize loading\n",
 			    lf->filename);
-			linker_file_unload(lf, LINKER_UNLOAD_FORCE);
-			continue;
+			goto fail;
 		}
 		linker_file_register_modules(lf);
 		if (linker_file_lookup_set(lf, "sysinit_set", &si_start,
@@ -1640,6 +1644,10 @@ restart:
 			sysinit_add(si_start, si_stop);
 		linker_file_register_sysctls(lf);
 		lf->flags |= LINKER_FILE_LINKED;
+		continue;
+fail:
+		TAILQ_REMOVE(&depended_files, lf, loaded);
+		linker_file_unload(lf, LINKER_UNLOAD_FORCE);
 	}
 	/* woohoo! we made it! */
 }
@@ -2165,5 +2173,5 @@ sysctl_kern_function_list(SYSCTL_HANDLER_ARGS)
 	return (SYSCTL_OUT(req, "", 1));
 }
 
-SYSCTL_PROC(_kern, OID_AUTO, function_list, CTLFLAG_RD,
+SYSCTL_PROC(_kern, OID_AUTO, function_list, CTLTYPE_OPAQUE | CTLFLAG_RD,
     NULL, 0, sysctl_kern_function_list, "", "kernel function list");

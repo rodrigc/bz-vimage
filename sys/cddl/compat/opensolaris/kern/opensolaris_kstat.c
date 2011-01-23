@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_kstat.c,v 1.3 2008/03/28 22:16:05 jb Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_kstat.c,v 1.4 2011/01/19 23:00:25 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -102,7 +102,7 @@ kstat_sysctl(SYSCTL_HANDLER_ARGS)
 	uint64_t val;
 
 	val = ksent->value.ui64;
-	return sysctl_handle_quad(oidp, &val, 0, req);
+	return sysctl_handle_64(oidp, &val, 0, req);
 }
 
 void
@@ -117,7 +117,7 @@ kstat_install(kstat_t *ksp)
 		    ("data_type=%d", ksent->data_type));
 		SYSCTL_ADD_PROC(&ksp->ks_sysctl_ctx,
 		    SYSCTL_CHILDREN(ksp->ks_sysctl_root), OID_AUTO, ksent->name,
-		    CTLTYPE_QUAD | CTLFLAG_RD, ksent, sizeof(*ksent),
+		    CTLTYPE_U64 | CTLFLAG_RD, ksent, sizeof(*ksent),
 		    kstat_sysctl, "QU", "");
 	}
 }

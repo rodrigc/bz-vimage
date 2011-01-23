@@ -34,7 +34,7 @@
 	.asciz "@(#)exect.s	5.1 (Berkeley) 4/23/90"
 #endif /* SYSLIBC_SCCS and not lint */
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/amd64/sys/exect.S,v 1.13 2008/11/02 01:10:54 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/amd64/sys/exect.S,v 1.14 2011/01/07 16:08:40 kib Exp $");
 
 #include "SYS.h"
 #include <machine/psl.h>
@@ -54,3 +54,5 @@ ENTRY(exect)
 	jmp	HIDENAME(cerror)
 #endif
 END(exect)
+
+	.section .note.GNU-stack,"",%progbits

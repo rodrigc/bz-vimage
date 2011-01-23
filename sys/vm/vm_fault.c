@@ -72,7 +72,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_fault.c,v 1.287 2010/12/28 20:02:30 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_fault.c,v 1.288 2011/01/15 19:21:28 alc Exp $");
 
 #include "opt_vm.h"
 
@@ -383,11 +383,8 @@ RetryFault:;
 			 * found the page ).
 			 */
 			vm_page_busy(fs.m);
-			if (fs.m->valid != VM_PAGE_BITS_ALL &&
-				fs.m->object != kernel_object && fs.m->object != kmem_object) {
+			if (fs.m->valid != VM_PAGE_BITS_ALL)
 				goto readrest;
-			}
-
 			break;
 		}
 

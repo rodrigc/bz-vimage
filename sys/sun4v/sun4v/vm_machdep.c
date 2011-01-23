@@ -40,7 +40,7 @@
  *	from: @(#)vm_machdep.c	7.3 (Berkeley) 5/13/91
  *	Utah $Hdr: vm_machdep.c 1.16.1.1 89/06/23$
  * 	from: FreeBSD: src/sys/i386/i386/vm_machdep.c,v 1.167 2001/07/12
- * $FreeBSD: src/sys/sun4v/sun4v/vm_machdep.c,v 1.9 2009/11/10 11:43:07 kib Exp $
+ * $FreeBSD: src/sys/sun4v/sun4v/vm_machdep.c,v 1.10 2011/01/11 13:59:06 jhb Exp $
  */
 
 #include "opt_pmap.h"
@@ -52,7 +52,6 @@
 #include <sys/bio.h>
 #include <sys/buf.h>
 #include <sys/kernel.h>
-#include <sys/linker_set.h>
 #include <sys/mbuf.h>
 #include <sys/mutex.h>
 #include <sys/sf_buf.h>

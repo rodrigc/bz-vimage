@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/sed/main.c,v 1.44 2010/03/31 17:40:13 imp Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/sed/main.c,v 1.45 2011/01/08 00:03:18 jilles Exp $");
 
 #ifndef lint
 static const char copyright[] =
@@ -338,18 +338,35 @@ mf_fgets(SPACE *sp, enum e_spflag spflag)
 		if (infile != NULL) {
 			fclose(infile);
 			if (*oldfname != '\0') {
-				if (rename(fname, oldfname) != 0) {
+				/* if there was a backup file, remove it */
+				unlink(oldfname);
+				/*
+				 * Backup the original.  Note that hard links
+				 * are not supported on all filesystems.
+				 */
+				if ((link(fname, oldfname) != 0) &&
+				   (rename(fname, oldfname) != 0)) {
 					warn("rename()");
-					unlink(tmpfname);
+					if (*tmpfname)
+						unlink(tmpfname);
 					exit(1);
 				}
 				*oldfname = '\0';
 			}
 			if (*tmpfname != '\0') {
 				if (outfile != NULL && outfile != stdout)
-					fclose(outfile);
+					if (fclose(outfile) != 0) {
+						warn("fclose()");
+						unlink(tmpfname);
+						exit(1);
+					}
 				outfile = NULL;
-				rename(tmpfname, fname);
+				if (rename(tmpfname, fname) != 0) {
+					/* this should not happen really! */
+					warn("rename()");
+					unlink(tmpfname);
+					exit(1);
+				}
 				*tmpfname = '\0';
 			}
 			outfname = NULL;

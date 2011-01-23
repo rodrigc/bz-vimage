@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_cal.c,v 1.14 2010/08/15 11:40:53 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_cal.c,v 1.15 2011/01/20 08:40:22 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -39,6 +39,23 @@ static int16_t ar5416GetNf(struct ath_hal *, struct ieee80211_channel *);
 
 /*
  * Determine if calibration is supported by device and channel flags
+ */
+
+/*
+ * ADC GAIN/DC offset calibration is for calibrating two ADCs that
+ * are acting as one by interleaving incoming symbols. This isn't
+ * relevant for 2.4GHz 20MHz wide modes because, as far as I can tell,
+ * the secondary ADC is never enabled. It is enabled however for
+ * 5GHz modes.
+ *
+ * It hasn't been confirmed whether doing this calibration is needed
+ * at all in the above modes and/or whether it's actually harmful.
+ * So for now, let's leave it enabled and just remember to get
+ * confirmation that it needs to be clarified.
+ *
+ * See US Patent No: US 7,541,952 B1:
+ *  " Method and Apparatus for Offset and Gain Compensation for
+ *    Analog-to-Digital Converters."
  */
 static OS_INLINE HAL_BOOL
 ar5416IsCalSupp(struct ath_hal *ah, const struct ieee80211_channel *chan,

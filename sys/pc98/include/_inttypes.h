@@ -1,6 +1,6 @@
 /*-
  * This file is in the public domain.
  */
-/* $FreeBSD: src/sys/pc98/include/_inttypes.h,v 1.1 2005/04/01 23:19:42 imp Exp $ */
+/* $FreeBSD: src/sys/pc98/include/_inttypes.h,v 1.2 2011/01/08 18:09:48 tijl Exp $ */
 
-#include <i386/_inttypes.h>
+#include <x86/_inttypes.h>

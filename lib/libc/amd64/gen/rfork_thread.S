@@ -26,7 +26,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/amd64/gen/rfork_thread.S,v 1.2 2008/11/02 01:10:54 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/amd64/gen/rfork_thread.S,v 1.3 2011/01/07 16:08:40 kib Exp $");
 
 /*
  * With thanks to John Dyson for the original version of this.
@@ -100,3 +100,5 @@ ENTRY(rfork_thread)
 	jmp	HIDENAME(cerror)
 #endif
 END(rfork_thread)
+
+	.section .note.GNU-stack,"",%progbits

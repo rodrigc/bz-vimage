@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)trap.h	8.3 (Berkeley) 6/5/95
- * $FreeBSD: src/bin/sh/trap.h,v 1.14 2009/12/24 20:55:14 jilles Exp $
+ * $FreeBSD: src/bin/sh/trap.h,v 1.15 2011/01/08 23:08:13 jilles Exp $
  */
 
 extern int pendingsigs;
@@ -46,3 +46,4 @@ void onsig(int);
 void dotrap(void);
 void setinteractive(int);
 void exitshell(int) __dead2;
+void exitshell_savedstatus(void) __dead2;

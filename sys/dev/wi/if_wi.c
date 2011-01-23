@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/wi/if_wi.c,v 1.234 2010/05/03 07:32:50 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/wi/if_wi.c,v 1.235 2011/01/19 17:04:07 mdf Exp $");
 
 #define WI_HERMES_STATS_WAR	/* Work around stats counter bug. */
 
@@ -295,7 +295,7 @@ wi_attach(device_t dev)
 		SYSCTL_ADD_INT(sctx, SYSCTL_CHILDREN(soid), OID_AUTO,
 		    "pri_version", CTLFLAG_RD, &sc->sc_pri_firmware_ver, 0,
 		    "Primary Firmware version");
-	SYSCTL_ADD_XINT(sctx, SYSCTL_CHILDREN(soid), OID_AUTO, "nic_id",
+	SYSCTL_ADD_UINT(sctx, SYSCTL_CHILDREN(soid), OID_AUTO, "nic_id",
 	    CTLFLAG_RD, &sc->sc_nic_id, 0, "NIC id");
 	SYSCTL_ADD_STRING(sctx, SYSCTL_CHILDREN(soid), OID_AUTO, "nic_name",
 	    CTLFLAG_RD, sc->sc_nic_name, 0, "NIC name");

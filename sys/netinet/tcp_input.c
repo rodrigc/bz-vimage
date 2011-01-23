@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_input.c,v 1.422 2010/12/28 12:13:30 lstewart Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_input.c,v 1.424 2011/01/10 06:12:01 lstewart Exp $");
 
 #include "opt_ipfw.h"		/* for ipfw_fwd	*/
 #include "opt_inet.h"
@@ -1086,7 +1086,7 @@ relocked:
 				    "SYN|FIN segment ignored (based on "
 				    "sysctl setting)\n", s, __func__);
 			TCPSTAT_INC(tcps_badsyn);
-                	goto dropunlock;
+			goto dropunlock;
 		}
 		/*
 		 * Segment's flags are (SYN) or (SYN|FIN).
@@ -1291,6 +1291,7 @@ tcp_do_segment(struct mbuf *m, struct tcphdr *th, struct socket *so,
 	short ostate = 0;
 #endif
 	thflags = th->th_flags;
+	tp->sackhint.last_sack_ack = 0;
 
 	/*
 	 * If this is either a state-changing packet or current state isn't
@@ -2271,7 +2272,7 @@ tcp_do_segment(struct mbuf *m, struct tcphdr *th, struct socket *so,
 						/*
 						 * Compute the amount of data in flight first.
 						 * We can inject new data into the pipe iff 
-						 * we have less than 1/2 the original window's 	
+						 * we have less than 1/2 the original window's
 						 * worth of data in flight.
 						 */
 						awnd = (tp->snd_nxt - tp->snd_fack) +

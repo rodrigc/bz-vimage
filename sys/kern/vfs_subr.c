@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.799 2010/12/27 12:06:38 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.802 2011/01/18 21:14:18 mdf Exp $");
 
 #include "opt_ddb.h"
 
@@ -65,6 +65,7 @@ __FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.799 2010/12/27 12:06:38 kib Exp 
 #include <sys/namei.h>
 #include <sys/priv.h>
 #include <sys/reboot.h>
+#include <sys/sched.h>
 #include <sys/sleepqueue.h>
 #include <sys/stat.h>
 #include <sys/sysctl.h>
@@ -121,7 +122,7 @@ static void	destroy_vpollinfo(struct vpollinfo *vi);
  */
 static unsigned long	numvnodes;
 
-SYSCTL_LONG(_vfs, OID_AUTO, numvnodes, CTLFLAG_RD, &numvnodes, 0,
+SYSCTL_ULONG(_vfs, OID_AUTO, numvnodes, CTLFLAG_RD, &numvnodes, 0,
     "Number of vnodes in existence");
 
 /*
@@ -148,10 +149,10 @@ static TAILQ_HEAD(freelst, vnode) vnode_free_list;
  * should be kept to avoid recreation costs.
  */
 static u_long wantfreevnodes;
-SYSCTL_LONG(_vfs, OID_AUTO, wantfreevnodes, CTLFLAG_RW, &wantfreevnodes, 0, "");
+SYSCTL_ULONG(_vfs, OID_AUTO, wantfreevnodes, CTLFLAG_RW, &wantfreevnodes, 0, "");
 /* Number of vnodes in the free list. */
 static u_long freevnodes;
-SYSCTL_LONG(_vfs, OID_AUTO, freevnodes, CTLFLAG_RD, &freevnodes, 0,
+SYSCTL_ULONG(_vfs, OID_AUTO, freevnodes, CTLFLAG_RD, &freevnodes, 0,
     "Number of vnodes in the free list");
 
 static int vlru_allow_cache_src;
@@ -269,7 +270,7 @@ static enum { SYNCER_RUNNING, SYNCER_SHUTTING_DOWN, SYNCER_FINAL_DELAY }
 int desiredvnodes;
 SYSCTL_INT(_kern, KERN_MAXVNODES, maxvnodes, CTLFLAG_RW,
     &desiredvnodes, 0, "Maximum number of vnodes");
-SYSCTL_INT(_kern, OID_AUTO, minvnodes, CTLFLAG_RW,
+SYSCTL_ULONG(_kern, OID_AUTO, minvnodes, CTLFLAG_RW,
     &wantfreevnodes, 0, "Minimum number of vnodes (legacy)");
 static int vnlru_nowhere;
 SYSCTL_INT(_debug, OID_AUTO, vnlru_nowhere, CTLFLAG_RW,
@@ -1880,6 +1881,12 @@ sched_sync(void)
 		 * matter as we are just trying to generally pace the
 		 * filesystem activity.
 		 */
+		if (syncer_state != SYNCER_RUNNING ||
+		    time_uptime == starttime) {
+			thread_lock(td);
+			sched_prio(td, PPAUSE);
+			thread_unlock(td);
+		}
 		if (syncer_state != SYNCER_RUNNING)
 			cv_timedwait(&sync_wakeup, &sync_mtx,
 			    hz / SYNCER_SHUTDOWN_SPEEDUP);
@@ -2991,7 +2998,8 @@ sysctl_vfs_conflist(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_vfs, OID_AUTO, conflist, CTLFLAG_RD, NULL, 0, sysctl_vfs_conflist,
+SYSCTL_PROC(_vfs, OID_AUTO, conflist, CTLTYPE_OPAQUE | CTLFLAG_RD,
+    NULL, 0, sysctl_vfs_conflist,
     "S,xvfsconf", "List of all configured filesystems");
 
 #ifndef BURN_BRIDGES
@@ -4153,7 +4161,8 @@ sysctl_vfs_ctl(SYSCTL_HANDLER_ARGS)
 	return (error);
 }
 
-SYSCTL_PROC(_vfs, OID_AUTO, ctl, CTLFLAG_WR, NULL, 0, sysctl_vfs_ctl, "",
+SYSCTL_PROC(_vfs, OID_AUTO, ctl, CTLTYPE_OPAQUE | CTLFLAG_WR,
+    NULL, 0, sysctl_vfs_ctl, "",
     "Sysctl by fsid");
 
 /*

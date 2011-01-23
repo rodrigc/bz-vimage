@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)tcp_var.h	8.4 (Berkeley) 5/24/95
- * $FreeBSD: src/sys/netinet/tcp_syncache.h,v 1.9 2009/07/13 11:51:02 lstewart Exp $
+ * $FreeBSD: src/sys/netinet/tcp_syncache.h,v 1.10 2011/01/07 21:40:34 jhb Exp $
  */
 
 #ifndef _NETINET_TCP_SYNCACHE_H_
@@ -77,7 +77,7 @@ struct syncache {
 	u_int16_t	sc_flags;
 #ifndef TCP_OFFLOAD_DISABLE
 	struct toe_usrreqs *sc_tu;		/* TOE operations */
-	void 		*sc_toepcb;		/* TOE protocol block */
+	void		*sc_toepcb;		/* TOE protocol block */
 #endif			
 	struct label	*sc_label;		/* MAC label reference */
 	struct ucred	*sc_cred;		/* cred cache for jail checks */

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah.h,v 1.14 2010/06/01 15:33:10 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah.h,v 1.17 2011/01/21 05:21:00 adrian Exp $
  */
 
 #ifndef _ATH_AH_H_
@@ -619,6 +619,8 @@ struct ath_hal {
 	uint16_t	ah_analog5GhzRev;/* 5GHz radio revision */
 	uint16_t	ah_analog2GhzRev;/* 2GHz radio revision */
 
+	uint16_t	*ah_eepromdata;	/* eeprom buffer, if needed */
+
 	const HAL_RATE_TABLE *__ahdecl(*ah_getRateTable)(struct ath_hal *,
 				u_int mode);
 	void	  __ahdecl(*ah_detach)(struct ath_hal*);
@@ -680,6 +682,8 @@ struct ath_hal {
 				struct ath_desc *, struct ath_tx_status *);
 	void	   __ahdecl(*ah_getTxIntrQueue)(struct ath_hal *, uint32_t *);
 	void	   __ahdecl(*ah_reqTxIntrDesc)(struct ath_hal *, struct ath_desc*);
+	HAL_BOOL	__ahdecl(*ah_getTxCompletionRates)(struct ath_hal *,
+				const struct ath_desc *ds, int *rates, int *tries);
 
 	/* Receive Functions */
 	uint32_t __ahdecl(*ah_getRxDP)(struct ath_hal*);
@@ -704,6 +708,8 @@ struct ath_hal {
 				struct ath_rx_status *);
 	void	  __ahdecl(*ah_rxMonitor)(struct ath_hal *,
 				const HAL_NODE_STATS *,
+				const struct ieee80211_channel *);
+	void      __ahdecl(*ah_aniPoll)(struct ath_hal *,
 				const struct ieee80211_channel *);
 	void	  __ahdecl(*ah_procMibEvent)(struct ath_hal *,
 				const HAL_NODE_STATS *);
@@ -815,7 +821,7 @@ extern	const char *__ahdecl ath_hal_probe(uint16_t vendorid, uint16_t devid);
  * be returned if the status parameter is non-zero.
  */
 extern	struct ath_hal * __ahdecl ath_hal_attach(uint16_t devid, HAL_SOFTC,
-		HAL_BUS_TAG, HAL_BUS_HANDLE, HAL_STATUS* status);
+		HAL_BUS_TAG, HAL_BUS_HANDLE, uint16_t *eepromdata, HAL_STATUS* status);
 
 extern	const char *ath_hal_mac_name(struct ath_hal *);
 extern	const char *ath_hal_rf_name(struct ath_hal *);

@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athdecode/main.c,v 1.2 2010/01/12 17:59:58 gavin Exp $
+ * $FreeBSD: src/tools/tools/ath/athdecode/main.c,v 1.3 2011/01/21 02:53:32 adrian Exp $
  */
 #include "diag.h"
 
@@ -37,6 +37,8 @@
 #include "dumpregs.h"
 
 #include <stdlib.h>
+#include <string.h>
+#include <err.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/mman.h>

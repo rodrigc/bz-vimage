@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athdebug/athdebug.c,v 1.6 2009/01/08 17:12:47 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athdebug/athdebug.c,v 1.7 2011/01/21 02:53:32 adrian Exp $
  */
 
 /*
@@ -37,11 +37,15 @@
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <sys/sysctl.h>
 
 #include <stdio.h>
 #include <ctype.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <err.h>
 
 #define	N(a)	(sizeof(a)/sizeof(a[0]))
 

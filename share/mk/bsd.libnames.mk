@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.libnames.mk,v 1.119 2010/08/21 17:53:16 rpaulo Exp $
+# $FreeBSD: src/share/mk/bsd.libnames.mk,v 1.120 2011/01/12 14:55:02 nwhitehorn Exp $
 
 # The include file <bsd.libnames.mk> define library names.
 # Other include files (e.g. bsd.prog.mk, bsd.lib.mk) include this
@@ -101,6 +101,7 @@ LIBNETGRAPH?=	${DESTDIR}${LIBDIR}/libnetgraph.a
 LIBNGATM?=	${DESTDIR}${LIBDIR}/libngatm.a
 LIBNVPAIR?=	${DESTDIR}${LIBDIR}/libnvpair.a
 LIBOBJC?=	${DESTDIR}${LIBDIR}/libobjc.a
+LIBODIALOG?=	${DESTDIR}${LIBDIR}/libodialog.a
 LIBOPIE?=	${DESTDIR}${LIBDIR}/libopie.a
 
 # The static PAM library doesn't know its secondary dependencies,

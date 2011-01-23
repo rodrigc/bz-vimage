@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/csu/amd64/Makefile,v 1.20 2009/12/02 16:34:20 kib Exp $
+# $FreeBSD: src/lib/csu/amd64/Makefile,v 1.21 2011/01/13 20:44:31 dim Exp $
 
 .PATH: ${.CURDIR}/../common
 
@@ -12,12 +12,31 @@ CFLAGS+=	-fno-omit-frame-pointer
 all: ${OBJS}
 
 CLEANFILES=	${OBJS}
+CLEANFILES+=	crt1.s gcrt1.s Scrt1.s
 
-gcrt1.o: crt1.c
-	${CC} ${CFLAGS} -DGCRT -c -o gcrt1.o ${.CURDIR}/crt1.c
+# See the comment in lib/csu/common/crtbrand.c for the reason crt1.c is not
+# directly compiled to .o files.
 
-Scrt1.o: crt1.c
-	${CC} ${CFLAGS} -fPIC -DPIC -c -o Scrt1.o ${.CURDIR}/crt1.c
+crt1.s: crt1.c
+	${CC} ${CFLAGS} -S -o ${.TARGET} ${.CURDIR}/crt1.c
+	sed -i "" -e '/\.note\.ABI-tag/s/progbits/note/' ${.TARGET}
+
+crt1.o: crt1.s
+	${CC} ${CFLAGS} -c -o ${.TARGET} crt1.s
+
+gcrt1.s: crt1.c
+	${CC} ${CFLAGS} -DGCRT -S -o ${.TARGET} ${.CURDIR}/crt1.c
+	sed -i "" -e '/\.note\.ABI-tag/s/progbits/note/' ${.TARGET}
+
+gcrt1.o: gcrt1.s
+	${CC} ${CFLAGS} -c -o ${.TARGET} gcrt1.s
+
+Scrt1.s: crt1.c
+	${CC} ${CFLAGS} -fPIC -DPIC -S -o ${.TARGET} ${.CURDIR}/crt1.c
+	sed -i "" -e '/\.note\.ABI-tag/s/progbits/note/' ${.TARGET}
+
+Scrt1.o: Scrt1.s
+	${CC} ${CFLAGS} -c -o ${.TARGET} Scrt1.s
 
 realinstall:
 	${INSTALL} -o ${LIBOWN} -g ${LIBGRP} -m ${LIBMODE} \

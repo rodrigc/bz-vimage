@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.340 2010/09/19 16:35:42 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/tty.c,v 1.341 2011/01/04 10:59:38 kib Exp $");
 
 #include "opt_compat.h"
 
@@ -1946,8 +1946,8 @@ static void
 ttyconsdev_init(void *unused)
 {
 
-	dev_console = make_dev(&ttyconsdev_cdevsw, 0, UID_ROOT, GID_WHEEL,
-	    0600, "console");
+	dev_console = make_dev_credf(MAKEDEV_ETERNAL, &ttyconsdev_cdevsw, 0,
+	    NULL, UID_ROOT, GID_WHEEL, 0600, "console");
 }
 
 SYSINIT(tty, SI_SUB_DRIVERS, SI_ORDER_FIRST, ttyconsdev_init, NULL);

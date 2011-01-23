@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.28 2010/06/18 14:16:24 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.29 2011/01/06 20:19:01 andreast Exp $
  */
 
 #include <sys/param.h>
@@ -530,10 +530,7 @@ static int
 unin_chip_activate_resource(device_t bus, device_t child, int type, int rid,
 			    struct resource *res)
 {
-	struct unin_chip_softc *sc;
 	void    *p;
-
-	sc = device_get_softc(bus);
 
 	if (type == SYS_RES_IRQ)
                 return (bus_activate_resource(bus, type, rid, res));

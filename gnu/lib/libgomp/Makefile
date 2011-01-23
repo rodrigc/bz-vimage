@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libgomp/Makefile,v 1.7 2010/08/28 15:03:11 nwhitehorn Exp $
+# $FreeBSD: src/gnu/lib/libgomp/Makefile,v 1.8 2011/01/07 20:26:33 imp Exp $
 
 GCCDIR=	${.CURDIR}/../../../contrib/gcc
 GCCLIB=	${.CURDIR}/../../../contrib/gcclibs
@@ -25,8 +25,7 @@ VERSION_MAP=	${SRCDIR}/libgomp.map
 # Target-specific OpenMP configuration
 .if ${MACHINE_CPUARCH} == arm || ${MACHINE_CPUARCH} == i386 || \
     ${MACHINE_ARCH} == powerpc || \
-    (${MACHINE_CPUARCH} == mips && \
-	(!defined(TARGET_ABI) || ${TARGET_ABI} != "n64"))
+    ${MACHINE_ARCH} == mipsel || ${MACHINE_ARCH} == mipseb
 OMP_LOCK_ALIGN	=	4
 OMP_LOCK_KIND=		4
 OMP_LOCK_SIZE=		4

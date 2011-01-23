@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nlm/nlm_advlock.c,v 1.10 2010/10/19 00:20:00 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/nlm/nlm_advlock.c,v 1.11 2011/01/03 20:37:31 rmacklem Exp $");
 
 #include <sys/param.h>
 #include <sys/fcntl.h>
@@ -217,20 +217,18 @@ nlm_advlock_internal(struct vnode *vp, void *id, int op, struct flock *fl,
 
 	ASSERT_VOP_LOCKED(vp, "nlm_advlock_1");
 
+	nmp = VFSTONFS(vp->v_mount);
 	/*
 	 * Push any pending writes to the server and flush our cache
 	 * so that if we are contending with another machine for a
 	 * file, we get whatever they wrote and vice-versa.
 	 */
 	if (op == F_SETLK || op == F_UNLCK)
-		nfs_vinvalbuf(vp, V_SAVE, td, 1);
+		nmp->nm_vinvalbuf(vp, V_SAVE, td, 1);
 
-	nmp = VFSTONFS(vp->v_mount);
 	strcpy(servername, nmp->nm_hostname);
-	nmp->nm_getinfo(vp, fh.fh_bytes, &fhlen, &ss, &is_v3, &size);
+	nmp->nm_getinfo(vp, fh.fh_bytes, &fhlen, &ss, &is_v3, &size, &timo);
 	sa = (struct sockaddr *) &ss;
-	timo.tv_sec = nmp->nm_timeo / NFS_HZ;
-	timo.tv_usec = (nmp->nm_timeo % NFS_HZ) * (1000000 / NFS_HZ);
 	if (is_v3 != 0)
 		vers = NLM_VERS4;
 	else

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/brgphy.c,v 1.100 2010/11/15 23:38:52 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/brgphy.c,v 1.101 2011/01/14 19:29:53 marius Exp $");
 
 /*
  * Driver for the Broadcom BCM54xx/57xx 1000baseTX PHY.
@@ -453,7 +453,7 @@ brgphy_setmedia(struct mii_softc *sc, int media)
 		break;
 	}
 
-	if ((media & IFM_GMASK) == IFM_FDX) {
+	if ((media & IFM_FDX) != 0) {
 		bmcr |= BRGPHY_BMCR_FDX;
 		gig = BRGPHY_1000CTL_AFD;
 	} else {

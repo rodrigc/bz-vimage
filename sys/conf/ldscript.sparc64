@@ -1,11 +1,9 @@
-/* $FreeBSD: src/sys/conf/ldscript.sparc64,v 1.4 2003/06/07 18:23:50 jake Exp $ */
+/* $FreeBSD: src/sys/conf/ldscript.sparc64,v 1.5 2011/01/20 19:24:50 imp Exp $ */
 OUTPUT_FORMAT("elf64-sparc", "elf64-sparc",
 	      "elf64-sparc")
 OUTPUT_ARCH(sparc:v9)
 ENTRY(_start)
 SEARCH_DIR(/usr/lib);
-/* Do we need any of these for elf?
-   __DYNAMIC = 0;    */
 SECTIONS
 {
   /* Read-only sections, merged into text segment: */

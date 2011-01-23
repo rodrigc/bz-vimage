@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/cc/Makefile.inc,v 1.72 2010/11/10 06:39:49 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/cc/Makefile.inc,v 1.74 2011/01/07 22:57:31 tijl Exp $
 
 .include "../Makefile.inc"
 
@@ -22,12 +22,6 @@ CFLAGS+=	-DPREFIX=\"${TOOLS_PREFIX}/usr\"
 #CFLAGS+=	-DWANT_COMPILER_INVARIANTS
 CSTD?=	gnu89
 
-# If building 64-bit longs for the i386, "_LARGE_LONG" should also be defined
-# to get the proper sizes in limits.h
-.if defined(LONG_TYPE_SIZE)
-CFLAGS+=	-DLONG_TYPE_SIZE=${LONG_TYPE_SIZE}
-.endif
-
 .if ${TARGET_ARCH} != ${MACHINE_ARCH}
 CFLAGS+=	-DCROSS_COMPILE
 .endif
@@ -36,21 +30,18 @@ CFLAGS+=	-DCROSS_COMPILE
 CFLAGS += -DTARGET_ENDIAN_DEFAULT=MASK_BIG_END
 .endif
 
-
 .if ${TARGET_CPUARCH} == "mips"
-.if ${TARGET_ARCH} == "mipsel"
+.if ${TARGET_ARCH:Mmips*el} != ""
 CFLAGS += -DTARGET_ENDIAN_DEFAULT=0
 .endif
 
-.if defined(TARGET_ABI) && ${TARGET_ABI} != "o32"
-.if ${TARGET_ABI} == "n32"
-MIPS_ABI_DEFAULT=ABI_N32
-.elif ${TARGET_ABI} == "n64"
+.if ${TARGET_ARCH:Mmips64*} != ""
 MIPS_ABI_DEFAULT=ABI_64
+.elif ${TARGET_ARCH:Mmipsn32*} != ""
+MIPS_ABI_DEFAULT=ABI_N32
+.else
+MIPS_ABI_DEFAULT=ABI_32
 .endif
-.endif
-
-MIPS_ABI_DEFAULT?=ABI_32
 CFLAGS += -DMIPS_ABI_DEFAULT=${MIPS_ABI_DEFAULT}
 
 # If we are compiling for the O32 ABI, we need to default to MIPS-III rather

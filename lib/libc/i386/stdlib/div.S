@@ -26,7 +26,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/i386/stdlib/div.S,v 1.13 2009/06/22 10:56:08 ed Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/i386/stdlib/div.S,v 1.14 2011/01/07 16:08:40 kib Exp $");
 
 ENTRY(div)
         movl    4(%esp),%eax
@@ -35,3 +35,5 @@ ENTRY(div)
         idiv    %ecx
         ret
 END(div)
+
+	.section .note.GNU-stack,"",%progbits

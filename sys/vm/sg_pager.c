@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/sg_pager.c,v 1.5 2010/05/06 18:58:32 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/sg_pager.c,v 1.6 2011/01/17 19:17:26 alc Exp $");
 
 /*
  * This pager manages OBJT_SG objects.  These objects are backed by
@@ -242,6 +242,7 @@ sg_pager_getfake(vm_paddr_t paddr, vm_memattr_t memattr)
 
 	m = uma_zalloc(fakepg_zone, M_WAITOK | M_ZERO);
 	m->phys_addr = paddr;
+	m->queue = PQ_NONE;
 	/* Fictitious pages don't use "segind". */
 	m->flags = PG_FICTITIOUS;
 	/* Fictitious pages don't use "order" or "pool". */

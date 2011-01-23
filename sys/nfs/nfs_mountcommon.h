@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/nfs/nfs_mountcommon.h,v 1.2 2010/10/19 11:55:58 rmacklem Exp $
+ * $FreeBSD: src/sys/nfs/nfs_mountcommon.h,v 1.3 2011/01/03 20:37:31 rmacklem Exp $
  */
 
 #ifndef _NFS_MOUNTCOMMON_H_
@@ -35,7 +35,9 @@
  * a mechanism for getting the client specific info for an nfs vnode.
  */
 typedef void	nfs_getinfofromvp_ftype(struct vnode *, uint8_t *, size_t *,
-		    struct sockaddr_storage *, int *, off_t *);
+		    struct sockaddr_storage *, int *, off_t *,
+		    struct timeval *);
+typedef int	nfs_vinvalbuf_ftype(struct vnode *, int, struct thread *, int);
 
 struct	nfsmount_common {
 	struct mtx	nmcom_mtx;
@@ -46,6 +48,7 @@ struct	nfsmount_common {
 	int	nmcom_retry;		/* Max retries */
 	char	nmcom_hostname[MNAMELEN];	/* server's name */
 	nfs_getinfofromvp_ftype	*nmcom_getinfo;	/* Get info from nfsnode */
+	nfs_vinvalbuf_ftype	*nmcom_vinvalbuf; /* Invalidate buffers */
 };
 
 #endif	/* _NFS_MOUNTCOMMON_H_ */

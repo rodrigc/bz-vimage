@@ -40,7 +40,7 @@ static char sccsid[] = "@(#)syslogd.c	8.3 (Berkeley) 4/4/94";
 #endif /* not lint */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/syslogd/syslogd.c,v 1.167 2010/08/07 16:20:12 olli Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/syslogd/syslogd.c,v 1.168 2011/01/19 17:17:37 dwmalone Exp $");
 
 /*
  *  syslogd -- log system messages
@@ -1093,8 +1093,9 @@ fprintlog(struct filed *f, int flags, const char *msg)
 		v->iov_len = snprintf(greetings, sizeof greetings,
 		    "\r\n\7Message from syslogd@%s at %.24s ...\r\n",
 		    f->f_prevhost, f->f_lasttime);
-		if (v->iov_len > 0)
-			v++;
+		if (v->iov_len >= sizeof greetings)
+			v->iov_len = sizeof greetings - 1;
+		v++;
 		v->iov_base = nul;
 		v->iov_len = 0;
 		v++;

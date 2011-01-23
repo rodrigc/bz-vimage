@@ -37,7 +37,7 @@
 #define SND_USE_FXDIV
 #include "snd_fxdiv_gen.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/buffer.c,v 1.40 2010/05/04 16:56:59 jkim Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pcm/buffer.c,v 1.41 2011/01/13 18:20:27 mdf Exp $");
 
 struct snd_dbuf *
 sndbuf_create(device_t dev, char *drv, char *desc, struct pcm_channel *channel)
@@ -666,11 +666,11 @@ sndbuf_dispose(struct snd_dbuf *b, u_int8_t *to, unsigned int count)
 
 #ifdef SND_DIAGNOSTIC
 static uint32_t snd_feeder_maxfeed = 0;
-SYSCTL_INT(_hw_snd, OID_AUTO, feeder_maxfeed, CTLFLAG_RD,
+SYSCTL_UINT(_hw_snd, OID_AUTO, feeder_maxfeed, CTLFLAG_RD,
     &snd_feeder_maxfeed, 0, "maximum feeder count request");
 
 static uint32_t snd_feeder_maxcycle = 0;
-SYSCTL_INT(_hw_snd, OID_AUTO, feeder_maxcycle, CTLFLAG_RD,
+SYSCTL_UINT(_hw_snd, OID_AUTO, feeder_maxcycle, CTLFLAG_RD,
     &snd_feeder_maxcycle, 0, "maximum feeder cycle");
 #endif
 

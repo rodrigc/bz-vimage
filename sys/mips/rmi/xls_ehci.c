@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xls_ehci.c,v 1.4 2010/03/03 17:55:51 joel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xls_ehci.c,v 1.5 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_bus.h"
 
@@ -41,7 +41,6 @@ __FBSDID("$FreeBSD: src/sys/mips/rmi/xls_ehci.c,v 1.4 2010/03/03 17:55:51 joel E
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

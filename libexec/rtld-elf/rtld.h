@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.48 2010/12/25 08:51:20 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.49 2011/01/08 17:11:49 kib Exp $
  */
 
 #ifndef RTLD_H /* { */
@@ -157,6 +157,7 @@ typedef struct Struct_Obj_Entry {
     const Elf_Phdr *phdr;	/* Program header if it is mapped, else NULL */
     size_t phsize;		/* Size of program header in bytes */
     const char *interp;		/* Pathname of the interpreter, if any */
+    Elf_Word stack_flags;
 
     /* TLS information */
     int tlsindex;		/* Index in DTV for this module */

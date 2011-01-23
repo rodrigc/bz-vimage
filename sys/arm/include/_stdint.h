@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/arm/include/_stdint.h,v 1.3 2010/02/16 21:59:17 imp Exp $
+ * $FreeBSD: src/sys/arm/include/_stdint.h,v 1.4 2011/01/08 12:43:05 tijl Exp $
  */
 
 #ifndef _MACHINE__STDINT_H_
@@ -45,8 +45,8 @@
 #define	UINT32_C(c)		(c ## U)
 #define	UINT64_C(c)		(c ## ULL)
 
-#define	INTMAX_C(c)		(c ## LL)
-#define	UINTMAX_C(c)		(c ## ULL)
+#define	INTMAX_C(c)		INT64_C(c)
+#define	UINTMAX_C(c)		UINT64_C(c)
 
 #endif /* !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS) */
 

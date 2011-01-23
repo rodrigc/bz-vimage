@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_ibm.c,v 1.24 2010/06/11 19:53:42 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/acpi_support/acpi_ibm.c,v 1.26 2011/01/19 00:57:58 mdf Exp $");
 
 /*
  * Driver for extra ACPI-controlled gadgets found on IBM ThinkPad laptops.
@@ -367,7 +367,7 @@ acpi_ibm_attach(device_t dev)
 	    IBM_NAME_EVENTS_MASK_GET, &sc->events_initialmask));
 
 	if (sc->events_mask_supported) {
-		SYSCTL_ADD_INT(sc->sysctl_ctx,
+		SYSCTL_ADD_UINT(sc->sysctl_ctx,
 		    SYSCTL_CHILDREN(sc->sysctl_tree), OID_AUTO,
 		    "initialmask", CTLFLAG_RD,
 		    &sc->events_initialmask, 0, "Initial eventmask");
@@ -377,7 +377,7 @@ acpi_ibm_attach(device_t dev)
 		    IBM_NAME_EVENTS_AVAILMASK, &sc->events_availmask)))
 			sc->events_availmask = 0xffffffff;
 
-		SYSCTL_ADD_INT(sc->sysctl_ctx,
+		SYSCTL_ADD_UINT(sc->sysctl_ctx,
 		    SYSCTL_CHILDREN(sc->sysctl_tree), OID_AUTO,
 		    "availmask", CTLFLAG_RD,
 		    &sc->events_availmask, 0, "Mask of supported events");
@@ -399,7 +399,7 @@ acpi_ibm_attach(device_t dev)
 	if (acpi_ibm_sysctl_init(sc, ACPI_IBM_METHOD_THERMAL)) {
 		SYSCTL_ADD_PROC(sc->sysctl_ctx,
 		    SYSCTL_CHILDREN(sc->sysctl_tree), OID_AUTO,
-		    "thermal", CTLTYPE_STRING | CTLFLAG_RD,
+		    "thermal", CTLTYPE_INT | CTLFLAG_RD,
 		    sc, 0, acpi_ibm_thermal_sysctl, "I",
 		    "Thermal zones");
 	}

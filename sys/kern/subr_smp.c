@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.222 2010/10/12 17:40:45 avg Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.223 2011/01/12 19:54:19 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -73,7 +73,7 @@ u_int mp_maxid;
 
 SYSCTL_NODE(_kern, OID_AUTO, smp, CTLFLAG_RD, NULL, "Kernel SMP");
 
-SYSCTL_INT(_kern_smp, OID_AUTO, maxid, CTLFLAG_RD, &mp_maxid, 0,
+SYSCTL_UINT(_kern_smp, OID_AUTO, maxid, CTLFLAG_RD, &mp_maxid, 0,
     "Max CPU ID.");
 
 SYSCTL_INT(_kern_smp, OID_AUTO, maxcpus, CTLFLAG_RD, &mp_maxcpus, 0,

@@ -49,7 +49,7 @@
   */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.37 2010/11/11 13:35:23 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/booke/pmap.c,v 1.38 2011/01/21 10:26:26 pluknet Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -979,7 +979,7 @@ mmu_booke_bootstrap(mmu_t mmu, vm_offset_t start, vm_offset_t kernelend)
 
 	/* Allocate space for the message buffer. */
 	msgbufp = (struct msgbuf *)data_end;
-	data_end += MSGBUF_SIZE;
+	data_end += msgbufsize;
 	debugf(" msgbufp at 0x%08x end = 0x%08x\n", (uint32_t)msgbufp,
 	    data_end);
 

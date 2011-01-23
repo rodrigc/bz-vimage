@@ -23,7 +23,7 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man9/sleep.9,v 1.65 2010/04/14 19:08:06 uqs Exp $
+.\" $FreeBSD: src/share/man/man9/sleep.9,v 1.66 2011/01/19 22:16:42 jmg Exp $
 .\"
 .Dd December 12, 2009
 .Dt SLEEP 9
@@ -255,6 +255,14 @@ pay particular attention to ensure that no other threads wait on the
 same
 .Fa chan .
 .Sh RETURN VALUES
+When awakened by a call to
+.Fn wakeup
+or
+.Fn wakeup_one ,
+if a signal is pending and
+.Dv PCATCH
+is specified,
+a non-zero error code is returned.
 If the thread is awakened by a call to
 .Fn wakeup
 or

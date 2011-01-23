@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ddb/db_capture.c,v 1.6 2008/04/25 13:23:36 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/ddb/db_capture.c,v 1.7 2011/01/12 19:54:19 mdf Exp $");
 
 #include "opt_ddb.h"
 
@@ -90,7 +90,7 @@ SYSCTL_UINT(_debug_ddb_capture, OID_AUTO, maxbufsize, CTLFLAG_RD,
     &db_capture_maxbufsize, 0,
     "Maximum value for debug.ddb.capture.bufsize");
 
-SYSCTL_UINT(_debug_ddb_capture, OID_AUTO, inprogress, CTLFLAG_RD,
+SYSCTL_INT(_debug_ddb_capture, OID_AUTO, inprogress, CTLFLAG_RD,
     &db_capture_inprogress, 0, "DDB output capture in progress");
 
 /*

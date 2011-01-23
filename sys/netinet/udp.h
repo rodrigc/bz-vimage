@@ -28,7 +28,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)udp.h	8.1 (Berkeley) 6/10/93
- * $FreeBSD: src/sys/netinet/udp.h,v 1.11 2009/06/12 15:44:35 vanhu Exp $
+ * $FreeBSD: src/sys/netinet/udp.h,v 1.12 2011/01/07 21:40:34 jhb Exp $
  */
 
 #ifndef _NETINET_UDP_H_
@@ -55,7 +55,7 @@ struct udphdr {
  * UDP Encapsulation of IPsec Packets options.
  */
 /* Encapsulation types. */
-#define	UDP_ENCAP_ESPINUDP_NON_IKE 	1 /* draft-ietf-ipsec-nat-t-ike-00/01 */
+#define	UDP_ENCAP_ESPINUDP_NON_IKE	1 /* draft-ietf-ipsec-nat-t-ike-00/01 */
 #define	UDP_ENCAP_ESPINUDP		2 /* draft-ietf-ipsec-udp-encaps-02+ */
 
 /* Default ESP in UDP encapsulation port. */

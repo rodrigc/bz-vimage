@@ -32,7 +32,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/en/midway.c,v 1.75 2008/11/06 09:41:31 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/en/midway.c,v 1.76 2011/01/18 21:14:23 mdf Exp $");
 
 /*
  *
@@ -2908,8 +2908,8 @@ en_attach(struct en_softc *sc)
 		goto fail;
 
 	if (SYSCTL_ADD_PROC(&sc->sysctl_ctx, SYSCTL_CHILDREN(sc->sysctl_tree),
-	    OID_AUTO, "istats", CTLFLAG_RD, sc, 0, en_sysctl_istats,
-	    "S", "internal statistics") == NULL)
+	    OID_AUTO, "istats", CTLTYPE_OPAQUE | CTLFLAG_RD, sc, 0,
+	    en_sysctl_istats, "S", "internal statistics") == NULL)
 		goto fail;
 
 #ifdef EN_DEBUG

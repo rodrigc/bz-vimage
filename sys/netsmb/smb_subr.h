@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netsmb/smb_subr.h,v 1.14 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/netsmb/smb_subr.h,v 1.15 2011/01/08 23:06:54 csjp Exp $
  */
 #ifndef _NETSMB_SMB_SUBR_H_
 #define _NETSMB_SMB_SUBR_H_
@@ -101,19 +101,19 @@ void smb_makescred(struct smb_cred *scred, struct thread *td, struct ucred *cred
 int  smb_td_intr(struct thread *);
 char *smb_strdup(const char *s);
 void *smb_memdup(const void *umem, int len);
-char *smb_strdupin(char *s, int maxlen);
-void *smb_memdupin(void *umem, int len);
+char *smb_strdupin(char *s, size_t maxlen);
+void *smb_memdupin(void *umem, size_t len);
 void smb_strtouni(u_int16_t *dst, const char *src);
 void smb_strfree(char *s);
 void smb_memfree(void *s);
-void *smb_zmalloc(unsigned long size, struct malloc_type *type, int flags);
+void *smb_zmalloc(size_t size, struct malloc_type *type, int flags);
 
 int  smb_calcmackey(struct smb_vc *vcp);
 int  smb_encrypt(const u_char *apwd, u_char *C8, u_char *RN);
 int  smb_ntencrypt(const u_char *apwd, u_char *C8, u_char *RN);
 int  smb_maperror(int eclass, int eno);
 int  smb_put_dmem(struct mbchain *mbp, struct smb_vc *vcp,
-	const char *src, int len, int caseopt);
+	const char *src, size_t len, int caseopt);
 int  smb_put_dstring(struct mbchain *mbp, struct smb_vc *vcp,
 	const char *src, int caseopt);
 int  smb_put_string(struct smb_rq *rqp, const char *src);

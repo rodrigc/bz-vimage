@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/netsmb/smb_dev.h,v 1.6 2010/04/07 16:50:38 joel Exp $
+ * $FreeBSD: src/sys/netsmb/smb_dev.h,v 1.7 2011/01/08 23:06:54 csjp Exp $
  */
 #ifndef _NETSMB_DEV_H_
 #define _NETSMB_DEV_H_
@@ -58,9 +58,9 @@
 
 struct smbioc_ossn {
 	int		ioc_opt;
-	int		ioc_svlen;	/* size of ioc_server address */
+	uint32_t	ioc_svlen;	/* size of ioc_server address */
 	struct sockaddr*ioc_server;
-	int		ioc_lolen;	/* size of ioc_local address */
+	uint32_t	ioc_lolen;	/* size of ioc_local address */
 	struct sockaddr*ioc_local;
 	char		ioc_srvname[SMB_MAXSRVNAMELEN + 1];
 	int		ioc_timeout;

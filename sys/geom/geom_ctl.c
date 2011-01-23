@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_ctl.c,v 1.40 2008/08/09 11:14:05 des Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_ctl.c,v 1.41 2011/01/04 10:59:38 kib Exp $");
 
 #include "opt_geom.h"
 
@@ -75,7 +75,7 @@ void
 g_ctl_init(void)
 {
 
-	make_dev(&g_ctl_cdevsw, 0,
+	make_dev_credf(MAKEDEV_ETERNAL, &g_ctl_cdevsw, 0, NULL,
 	    UID_ROOT, GID_OPERATOR, 0640, PATH_GEOM_CTL);
 	KASSERT(GCTL_PARAM_RD == VM_PROT_READ,
 		("GCTL_PARAM_RD != VM_PROT_READ"));

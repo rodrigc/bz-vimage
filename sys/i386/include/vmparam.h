@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)vmparam.h	5.9 (Berkeley) 5/12/91
- * $FreeBSD: src/sys/i386/include/vmparam.h,v 1.50 2010/07/27 20:33:50 jhb Exp $
+ * $FreeBSD: src/sys/i386/include/vmparam.h,v 1.51 2011/01/09 12:50:44 kib Exp $
  */
 
 
@@ -62,18 +62,6 @@
 #ifndef SGROWSIZ
 #define SGROWSIZ	(128UL*1024)		/* amount to grow stack */
 #endif
-
-/*
- * The time for a process to be blocked before being very swappable.
- * This is a number of seconds which the system takes as being a non-trivial
- * amount of real time.  You probably shouldn't change this;
- * it is used in subtle ways (fractions and multiples of it are, that is, like
- * half of a ``long time'', almost a long time, etc.)
- * It is related to human patience and other factors which don't really
- * change over time.
- */
-#define	MAXSLP 		20
-
 
 /*
  * The physical address space is densely populated.

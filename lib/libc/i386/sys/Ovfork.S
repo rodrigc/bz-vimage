@@ -34,7 +34,7 @@
 	.asciz "@(#)Ovfork.s	5.1 (Berkeley) 4/23/90"
 #endif /* SYSLIBC_SCCS and not lint */
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/libc/i386/sys/Ovfork.S,v 1.21 2008/11/02 01:28:47 peter Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/i386/sys/Ovfork.S,v 1.22 2011/01/07 16:08:40 kib Exp $");
 
 #include "SYS.h"
 
@@ -53,3 +53,5 @@ ENTRY(__sys_vfork)
 	PIC_PROLOGUE
 	jmp     PIC_PLT(HIDENAME(cerror))
 END(__sys_vfork)
+
+	.section .note.GNU-stack,"",%progbits

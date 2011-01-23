@@ -28,7 +28,7 @@
  *
  * RMI_BSD */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.14 2010/12/09 12:30:13 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_pci.c,v 1.15 2011/01/20 08:08:19 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -426,7 +426,7 @@ static void
 bridge_pcix_ack(int irq)
 {
 
-	xlr_read_reg(xlr_io_mmio(XLR_IO_PCIX_OFFSET), 0x140 >> 2);
+	(void)xlr_read_reg(xlr_io_mmio(XLR_IO_PCIX_OFFSET), 0x140 >> 2);
 }
 
 static void

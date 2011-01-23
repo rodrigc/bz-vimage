@@ -23,13 +23,30 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/ext2fs/ext2_dinode.h,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_dinode.h,v 1.3 2011/01/21 22:00:40 jhb Exp $
  */
 
 #ifndef _FS_EXT2FS_EXT2_DINODE_H_
 #define _FS_EXT2FS_EXT2_DINODE_H_
 
 #define e2di_size_high	e2di_dacl
+
+/*
+ * Special inode numbers
+ * The root inode is the root of the file system.  Inode 0 can't be used for
+ * normal purposes and bad blocks are normally linked to inode 1, thus
+ * the root inode is 2.
+ * Inode 3 to 10 are reserved in ext2fs.
+ */
+#define	EXT2_BADBLKINO		((ino_t)1)
+#define	EXT2_ROOTINO		((ino_t)2)
+#define	EXT2_ACLIDXINO		((ino_t)3)
+#define	EXT2_ACLDATAINO		((ino_t)4)
+#define	EXT2_BOOTLOADERINO	((ino_t)5)
+#define	EXT2_UNDELDIRINO	((ino_t)6)
+#define	EXT2_RESIZEINO		((ino_t)7)
+#define	EXT2_JOURNALINO		((ino_t)8)
+#define	EXT2_FIRSTINO		((ino_t)11)
 
 /*
  * Inode flags
@@ -74,5 +91,5 @@ struct ext2fs_dinode {
 	u_int32_t	e2di_linux_reserved3; /* 124 */
 };
 
-#endif /* _FS_EXT2FS_EXT2_DINODE_H_ */
+#endif /* !_FS_EXT2FS_EXT2_DINODE_H_ */
 

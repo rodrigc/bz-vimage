@@ -33,7 +33,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ffs_subr.c	8.2 (Berkeley) 9/21/93
- * $FreeBSD: src/sys/fs/ext2fs/ext2_subr.c,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_subr.c,v 1.3 2011/01/19 19:49:48 jhb Exp $
  */
 
 #include <sys/param.h>
@@ -52,6 +52,8 @@
 #include <fs/ext2fs/fs.h>
 
 #ifdef KDB
+#include <fs/ext2fs/ext2_mount.h>
+
 void	ext2_checkoverlap(struct buf *, struct inode *);
 #endif
 
@@ -105,7 +107,7 @@ ext2_checkoverlap(bp, ip)
 	for (ep = buf; ep < ebp; ep++) {
 		if (ep == bp || (ep->b_flags & B_INVAL))
 			continue;
-		vp = ip->i_devvp;
+		vp = ip->i_ump->um_devvp;
 		/* look for overlap */
 		if (ep->b_bcount == 0 || ep->b_blkno > last ||
 		    ep->b_blkno + btodb(ep->b_bcount) <= start)

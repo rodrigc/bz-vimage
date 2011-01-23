@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_request.c,v 1.34 2010/12/07 08:20:20 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_request.c,v 1.35 2011/01/11 13:59:06 jhb Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -34,7 +34,6 @@
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

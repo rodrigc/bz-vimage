@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_ani.c,v 1.4 2009/02/10 19:23:25 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_ani.c,v 1.5 2011/01/21 05:21:00 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -912,20 +912,25 @@ updateMIBStats(struct ath_hal *ah, struct ar5212AniState *aniState)
 	aniState->cckPhyErrCount = cckPhyErrCnt;
 }
 
+void
+ar5212RxMonitor(struct ath_hal *ah, const HAL_NODE_STATS *stats,
+		const struct ieee80211_channel *chan)
+{
+	struct ath_hal_5212 *ahp = AH5212(ah);
+	ahp->ah_stats.ast_nodestats.ns_avgbrssi = stats->ns_avgbrssi;
+}
+
 /*
  * Do periodic processing.  This routine is called from the
  * driver's rx interrupt handler after processing frames.
  */
 void
-ar5212AniPoll(struct ath_hal *ah, const HAL_NODE_STATS *stats,
-		const struct ieee80211_channel *chan)
+ar5212AniPoll(struct ath_hal *ah, const struct ieee80211_channel *chan)
 {
 	struct ath_hal_5212 *ahp = AH5212(ah);
 	struct ar5212AniState *aniState = ahp->ah_curani;
 	const struct ar5212AniParams *params;
 	int32_t listenTime;
-
-	ahp->ah_stats.ast_nodestats.ns_avgbrssi = stats->ns_avgbrssi;
 
 	/* XXX can aniState be null? */
 	if (aniState == AH_NULL)

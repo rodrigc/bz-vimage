@@ -23,7 +23,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci_atmelarm.c,v 1.7 2009/10/15 20:07:08 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci_atmelarm.c,v 1.8 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -33,7 +33,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/ohci_atmelarm.c,v 1.7 2009/10/15 
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

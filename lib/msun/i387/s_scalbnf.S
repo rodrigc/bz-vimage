@@ -5,7 +5,7 @@
 
 #include <machine/asm.h>
 
-__FBSDID("$FreeBSD: src/lib/msun/i387/s_scalbnf.S,v 1.3 2009/05/25 14:37:10 attilio Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/i387/s_scalbnf.S,v 1.4 2011/01/07 16:13:12 kib Exp $");
 /* RCSID("$NetBSD: s_scalbnf.S,v 1.4 1999/01/02 05:15:40 kristerw Exp $") */
 
 ENTRY(scalbnf)
@@ -18,3 +18,5 @@ END(scalbnf)
 
 .globl CNAME(ldexpf)
 .set	CNAME(ldexpf),CNAME(scalbnf)
+
+	.section .note.GNU-stack,"",%progbits

@@ -37,7 +37,7 @@
 static char sccsid[] = "@(#)clnt_dg.c 1.19 89/03/16 Copyr 1988 Sun Micro";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/clnt_dg.c,v 1.10 2010/10/13 00:57:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/clnt_dg.c,v 1.11 2011/01/10 21:35:10 rmacklem Exp $");
 
 /*
  * Implements a connectionless client side RPC.
@@ -1086,15 +1086,14 @@ clnt_dg_soupcall(struct socket *so, void *arg, int waitflag)
 		/*
 		 * The XID is in the first uint32_t of the reply.
 		 */
-		if (m->m_len < sizeof(xid))
-			m = m_pullup(m, sizeof(xid));
-		if (!m)
+		if (m->m_len < sizeof(xid) && m_length(m, NULL) < sizeof(xid))
 			/*
 			 * Should never happen.
 			 */
 			continue;
 
-		xid = ntohl(*mtod(m, uint32_t *));
+		m_copydata(m, 0, sizeof(xid), (char *)&xid);
+		xid = ntohl(xid);
 
 		/*
 		 * Attempt to match this reply with a pending request.

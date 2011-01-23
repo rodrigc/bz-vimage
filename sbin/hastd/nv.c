@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastd/nv.c,v 1.4 2010/10/24 17:24:08 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastd/nv.c,v 1.5 2011/01/22 22:38:18 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/endian.h>
@@ -563,11 +563,10 @@ nv_get_string(struct nv *nv, const char *namefmt, ...)
 	return (str);
 }
 
-bool
-nv_exists(struct nv *nv, const char *namefmt, ...)
+static bool
+nv_vexists(struct nv *nv, const char *namefmt, va_list nameap)
 {
 	struct nvhdr *nvh;
-	va_list nameap;
 	int snverror, serrno;
 
 	if (nv == NULL)
@@ -576,14 +575,35 @@ nv_exists(struct nv *nv, const char *namefmt, ...)
 	serrno = errno;
 	snverror = nv->nv_error;
 
-	va_start(nameap, namefmt);
 	nvh = nv_find(nv, NV_TYPE_NONE, namefmt, nameap);
-	va_end(nameap);
 
 	errno = serrno;
 	nv->nv_error = snverror;
 
 	return (nvh != NULL);
+}
+
+bool
+nv_exists(struct nv *nv, const char *namefmt, ...)
+{
+	va_list nameap;
+	bool ret;
+
+	va_start(nameap, namefmt);
+	ret = nv_vexists(nv, namefmt, nameap);
+	va_end(nameap);
+
+	return (ret);
+}
+
+void
+nv_assert(struct nv *nv, const char *namefmt, ...)
+{
+	va_list nameap;
+
+	va_start(nameap, namefmt);
+	assert(nv_vexists(nv, namefmt, nameap));
+	va_end(nameap);
 }
 
 /*

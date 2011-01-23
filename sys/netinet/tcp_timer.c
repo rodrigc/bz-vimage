@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/tcp_timer.c,v 1.118 2010/12/21 19:30:24 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/tcp_timer.c,v 1.119 2011/01/07 21:40:34 jhb Exp $");
 
 #include "opt_inet6.h"
 #include "opt_tcpdebug.h"
@@ -486,15 +486,15 @@ tcp_timer_rexmt(void * xtp)
 		tp->t_rxtshift = TCP_MAXRXTSHIFT;
 		TCPSTAT_INC(tcps_timeoutdrop);
 		in_pcbref(inp);
- 		INP_INFO_RUNLOCK(&V_tcbinfo);
- 		INP_WUNLOCK(inp);
- 		INP_INFO_WLOCK(&V_tcbinfo);
- 		INP_WLOCK(inp);
- 		if (in_pcbrele(inp)) {
- 			INP_INFO_WUNLOCK(&V_tcbinfo);
- 			CURVNET_RESTORE();
- 			return;
- 		}
+		INP_INFO_RUNLOCK(&V_tcbinfo);
+		INP_WUNLOCK(inp);
+		INP_INFO_WLOCK(&V_tcbinfo);
+		INP_WLOCK(inp);
+		if (in_pcbrele(inp)) {
+			INP_INFO_WUNLOCK(&V_tcbinfo);
+			CURVNET_RESTORE();
+			return;
+		}
 		tp = tcp_drop(tp, tp->t_softerror ?
 			      tp->t_softerror : ETIMEDOUT);
 		headlocked = 1;

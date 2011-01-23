@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athregs/dumpregs.c,v 1.1 2008/12/07 19:17:33 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athregs/dumpregs.c,v 1.2 2011/01/21 02:53:32 adrian Exp $
  */
 #include "diag.h"
 
@@ -41,6 +41,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <err.h>
 
 typedef struct {
 	HAL_REVS revs;
@@ -353,7 +354,7 @@ register_range(u_int brange, u_int erange, int type,
 	    def_srev_min, def_srev_max, def_phy_min, def_phy_max);
 }
 
-static __inline
+static __inline int
 match(const struct dumpreg *dr, const HAL_REVS *revs)
 {
 	if (!MAC_MATCH(dr, revs->ah_macVersion, revs->ah_macRev))

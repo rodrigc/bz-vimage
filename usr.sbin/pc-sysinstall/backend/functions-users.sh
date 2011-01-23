@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-users.sh,v 1.3 2010/08/24 06:11:46 imp Exp $
+# $FreeBSD: src/usr.sbin/pc-sysinstall/backend/functions-users.sh,v 1.4 2011/01/10 19:57:18 jpaetzel Exp $
 
 # Functions which runs commands on the system
 
@@ -93,6 +93,13 @@ setup_users()
       USERPASS="$VAL"
     fi
 
+    echo $line | grep "^userEncPass=" >/dev/null 2>/dev/null
+    if [ "$?" = "0" ]
+    then
+      get_value_from_string "${line}"
+      USERENCPASS="$VAL"
+    fi
+
     echo $line | grep "^userShell=" >/dev/null 2>/dev/null
     if [ "$?" = "0" ]
     then
@@ -135,6 +142,10 @@ setup_users()
         then
           ARGS="${ARGS} -h 0"
           echo "${USERPASS}" >${FSMNT}/.tmpPass
+	elif [ ! -z "${USERENCPASS}" ] 
+	then
+          ARGS="${ARGS} -H 0"
+          echo "${USERENCPASS}" >${FSMNT}/.tmpPass
         else
           ARGS="${ARGS} -h -"
           rm ${FSMNT}/.tmpPass 2>/dev/null 2>/dev/null
@@ -160,7 +171,7 @@ setup_users()
         add_user "${ARGS}"
 
         # Unset our vars before looking for any more users
-        unset USERNAME USERCOMMENT USERPASS USERSHELL USERHOME USERGROUPS
+        unset USERNAME USERCOMMENT USERPASS USERENCPASS USERSHELL USERHOME USERGROUPS
       else
         exit_err "ERROR: commitUser was called without any userName= entry!!!" 
       fi

@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/vm_machdep.c,v 1.21 2010/12/09 06:54:06 jchandra Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/vm_machdep.c,v 1.22 2011/01/18 21:57:02 kib Exp $");
 
 #include "opt_cputype.h"
 #include "opt_ddb.h"
@@ -528,7 +528,7 @@ sf_buf_free(struct sf_buf *sf)
 	SLIST_INSERT_HEAD(&sf_freelist.sf_head, sf, free_list);
 	nsfbufsused--;
 	if (sf_buf_alloc_want > 0)
-		wakeup_one(&sf_freelist);
+		wakeup(&sf_freelist);
 	mtx_unlock(&sf_freelist.sf_lock);
 }
 

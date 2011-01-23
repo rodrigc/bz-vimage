@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)var.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.53 2010/11/20 14:14:52 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/var.c,v 1.54 2011/01/01 13:26:18 jilles Exp $");
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -333,6 +333,8 @@ setvareq(char *s, int flags)
 				len = strchr(s, '=') - s;
 				error("%.*s: is read only", len, s);
 			}
+			if (flags & VNOSET)
+				return;
 			INTOFF;
 
 			if (vp->func && (flags & VNOFUNC) == 0)
@@ -365,6 +367,8 @@ setvareq(char *s, int flags)
 		}
 	}
 	/* not found */
+	if (flags & VNOSET)
+		return;
 	vp = ckmalloc(sizeof (*vp));
 	vp->flags = flags;
 	vp->text = s;
@@ -386,13 +390,13 @@ setvareq(char *s, int flags)
  */
 
 void
-listsetvar(struct strlist *list)
+listsetvar(struct strlist *list, int flags)
 {
 	struct strlist *lp;
 
 	INTOFF;
 	for (lp = list ; lp ; lp = lp->next) {
-		setvareq(savestr(lp->text), 0);
+		setvareq(savestr(lp->text), flags);
 	}
 	INTON;
 }

@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/pci/fire.c,v 1.6 2010/06/18 14:06:27 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/pci/fire.c,v 1.7 2011/01/04 16:11:32 marius Exp $");
 
 /*
  * Driver for `Fire' JBus to PCI Express and `Oberon' Uranus to PCI Express
@@ -836,7 +836,7 @@ fire_set_intr(struct fire_softc *sc, u_int index, u_int ino,
 	    INTIGN(vec) != sc->sc_ign ||
 	    intr_vectors[vec].iv_ic != &fire_ic ||
 	    bus_setup_intr(sc->sc_dev, sc->sc_irq_res[index],
-	    INTR_TYPE_MISC | INTR_FAST, handler, NULL, arg,
+	    INTR_TYPE_MISC | INTR_BRIDGE, handler, NULL, arg,
 	    &sc->sc_ihand[index]) != 0)
 		panic("%s: failed to set up interrupt %d", __func__, index);
 }

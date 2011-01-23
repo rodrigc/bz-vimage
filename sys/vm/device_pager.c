@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/device_pager.c,v 1.96 2010/08/06 09:42:15 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/device_pager.c,v 1.97 2011/01/17 19:17:26 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -318,6 +318,7 @@ dev_pager_getfake(vm_paddr_t paddr, vm_memattr_t memattr)
 
 	m = uma_zalloc(fakepg_zone, M_WAITOK | M_ZERO);
 	m->phys_addr = paddr;
+	m->queue = PQ_NONE;
 	/* Fictitious pages don't use "segind". */
 	m->flags = PG_FICTITIOUS;
 	/* Fictitious pages don't use "order" or "pool". */

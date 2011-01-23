@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_mib.c,v 1.103 2010/07/22 09:13:49 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_mib.c,v 1.104 2011/01/12 19:54:19 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_posix.h"
@@ -203,7 +203,7 @@ sysctl_hw_usermem(SYSCTL_HANDLER_ARGS)
 SYSCTL_PROC(_hw, HW_USERMEM, usermem, CTLTYPE_ULONG | CTLFLAG_RD,
 	0, 0, sysctl_hw_usermem, "LU", "");
 
-SYSCTL_ULONG(_hw, OID_AUTO, availpages, CTLFLAG_RD, &physmem, 0, "");
+SYSCTL_LONG(_hw, OID_AUTO, availpages, CTLFLAG_RD, &physmem, 0, "");
 
 u_long pagesizes[MAXPAGESIZES] = { PAGE_SIZE };
 

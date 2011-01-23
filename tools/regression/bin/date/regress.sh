@@ -5,7 +5,7 @@
 #
 # Submitted by Edwin Groothuis <edwin@FreeBSD.org>
 #
-# $FreeBSD: src/tools/regression/bin/date/regress.sh,v 1.3 2010/01/03 12:17:51 obrien Exp $
+# $FreeBSD: src/tools/regression/bin/date/regress.sh,v 1.4 2011/01/09 22:05:09 keramida Exp $
 #
 
 #
@@ -19,7 +19,7 @@
 TEST1=3222243		# 1970-02-07 07:04:03
 TEST2=1005600000	# 2001-11-12 21:11:12
 
-export LANG=C
+export LC_ALL=C
 export TZ=UTC
 count=0
 

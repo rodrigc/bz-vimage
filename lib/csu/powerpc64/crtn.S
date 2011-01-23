@@ -24,7 +24,7 @@
  */
 
 #include <machine/asm.h>
-__FBSDID("$FreeBSD: src/lib/csu/powerpc64/crtn.S,v 1.2 2010/12/09 21:31:21 dim Exp $");
+__FBSDID("$FreeBSD: src/lib/csu/powerpc64/crtn.S,v 1.3 2011/01/14 11:34:58 kib Exp $");
 
 	.section .init,"ax",@progbits
 	ld %r1,0(%r1)
@@ -38,3 +38,5 @@ __FBSDID("$FreeBSD: src/lib/csu/powerpc64/crtn.S,v 1.2 2010/12/09 21:31:21 dim E
 	ld 0,16(%r1)
 	mtlr 0
 	blr
+
+	.section .note.GNU-stack,"",%progbits

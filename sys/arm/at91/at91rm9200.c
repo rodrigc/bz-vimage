@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/at91/at91rm9200.c,v 1.1 2010/10/06 22:25:21 cognet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/at91/at91rm9200.c,v 1.2 2011/01/05 23:45:07 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -121,15 +121,11 @@ static const struct cpu_devs at91_devs[] =
 	DEVICE("at91_ssc",   SSC2,   2),
 	DEVICE("spi",        SPI,    0),
 
-#ifndef SKYEYE_WORKAROUNDS
 	DEVICE("uart",       DBGU,   0),
 	DEVICE("uart",       USART0, 1),
 	DEVICE("uart",       USART1, 2),
 	DEVICE("uart",       USART2, 3),
 	DEVICE("uart",       USART3, 4),
-#else
-	DEVICE("uart",       USART0, 0),
-#endif
 	DEVICE("at91_aic",   AIC,    0),
 	DEVICE("at91_mc",    MC,     0),
 	DEVICE("at91_tc",    TC0,    0),

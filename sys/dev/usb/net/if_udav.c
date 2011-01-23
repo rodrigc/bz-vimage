@@ -1,6 +1,6 @@
 /*	$NetBSD: if_udav.c,v 1.2 2003/09/04 15:17:38 tsutsui Exp $	*/
 /*	$nabe: if_udav.c,v 1.3 2003/08/21 16:57:19 nabe Exp $	*/
-/*	$FreeBSD: src/sys/dev/usb/net/if_udav.c,v 1.14 2010/09/01 23:47:53 thompsa Exp $	*/
+/*	$FreeBSD: src/sys/dev/usb/net/if_udav.c,v 1.15 2011/01/11 13:59:06 jhb Exp $	*/
 /*-
  * Copyright (c) 2003
  *     Shingo WATANABE <nabe@nabechan.org>.  All rights reserved.
@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_udav.c,v 1.14 2010/09/01 23:47:53 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/net/if_udav.c,v 1.15 2011/01/11 13:59:06 jhb Exp $");
 
 #include <sys/stdint.h>
 #include <sys/stddef.h>
@@ -54,7 +54,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/net/if_udav.c,v 1.14 2010/09/01 23:47:53 tho
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

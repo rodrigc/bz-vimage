@@ -24,8 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	from: src/sys/alpha/include/memdev.h,v 1.2 2004/08/01 18:51:44 markm
- * $FreeBSD: src/sys/mips/include/memdev.h,v 1.3 2010/08/27 07:45:50 jchandra Exp $
+ * $FreeBSD: src/sys/mips/include/memdev.h,v 1.4 2011/01/17 22:58:28 jkim Exp $
  */
+
+#ifndef _MACHINE_MEMDEV_H_
+#define	_MACHINE_MEMDEV_H_
 
 #define	CDEV_MINOR_MEM	0
 #define	CDEV_MINOR_KMEM	1
@@ -35,4 +38,4 @@ d_read_t	memrw;
 #define		memioctl	(d_ioctl_t *)NULL
 d_mmap_t	memmmap;
 
-void		dev_mem_md_init(void);
+#endif /* _MACHINE_MEMDEV_H_ */

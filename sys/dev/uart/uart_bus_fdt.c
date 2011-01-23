@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_bus_fdt.c,v 1.2 2010/07/19 18:47:18 raj Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_bus_fdt.c,v 1.3 2011/01/17 23:34:36 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/bus.h>
@@ -140,6 +140,15 @@ uart_cpu_getdev(int devtype, struct uart_devinfo *di)
 	u_long start, size;
 	int err;
 
+	uart_bus_space_mem = fdtbus_bs_tag;
+	uart_bus_space_io = NULL;
+
+	/* Allow overriding the FDT uning the environment. */
+	class = &uart_ns8250_class;
+	err = uart_getenv(devtype, di, class);
+	if (!err)
+		return (0);
+
 	if (devtype != UART_DEV_CONSOLE)
 		return (ENXIO);
 
@@ -183,18 +192,12 @@ uart_cpu_getdev(int devtype, struct uart_devinfo *di)
 	di->databits = 8;
 	di->stopbits = 1;
 	di->parity = UART_PARITY_NONE;
-	di->bas.bst = fdtbus_bs_tag;
+	di->bas.bst = uart_bus_space_mem;
 
 	err = fdt_regsize(node, &start, &size);
 	if (err)
 		return (ENXIO);
 	start += fdt_immr_va;
 
-	uart_bus_space_mem = fdtbus_bs_tag;
-	uart_bus_space_io = NULL;
-
-	if (bus_space_map(di->bas.bst, start, size, 0, &di->bas.bsh) != 0)
-		return (ENXIO);
-
-	return (0);
+	return (bus_space_map(di->bas.bst, start, size, 0, &di->bas.bsh));
 }

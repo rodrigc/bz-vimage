@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/pty/pty.c,v 1.2 2009/09/06 10:27:45 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/pty/pty.c,v 1.3 2011/01/04 10:59:38 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -142,7 +142,8 @@ pty_modevent(module_t mod, int type, void *data)
         switch(type) {
         case MOD_LOAD: 
 		EVENTHANDLER_REGISTER(dev_clone, pty_clone, 0, 1000);
-		make_dev(&ptmx_cdevsw, 0, UID_ROOT, GID_WHEEL, 0666, "ptmx");
+		make_dev_credf(MAKEDEV_ETERNAL_KLD, &ptmx_cdevsw, 0, NULL,
+		    UID_ROOT, GID_WHEEL, 0666, "ptmx");
 		break;
 	case MOD_SHUTDOWN:
 		break;

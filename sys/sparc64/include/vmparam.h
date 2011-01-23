@@ -37,7 +37,7 @@
  *
  *	from: @(#)vmparam.h     5.9 (Berkeley) 5/12/91
  *	from: FreeBSD: src/sys/i386/include/vmparam.h,v 1.33 2000/03/30
- * $FreeBSD: src/sys/sparc64/include/vmparam.h,v 1.26 2010/12/21 21:32:17 marius Exp $
+ * $FreeBSD: src/sys/sparc64/include/vmparam.h,v 1.27 2011/01/09 12:50:44 kib Exp $
  */
 
 #ifndef	_MACHINE_VMPARAM_H_
@@ -64,17 +64,6 @@
 #ifndef	SGROWSIZ
 #define	SGROWSIZ	(128*1024)		/* amount to grow stack */
 #endif
-
-/*
- * The time for a process to be blocked before being very swappable.
- * This is a number of seconds which the system takes as being a non-trivial
- * amount of real time.  You probably shouldn't change this;
- * it is used in subtle ways (fractions and multiples of it are, that is, like
- * half of a ``long time'', almost a long time, etc.)
- * It is related to human patience and other factors which don't really
- * change over time.
- */
-#define	MAXSLP			20
 
 /*
  * The physical address space is sparsely populated.

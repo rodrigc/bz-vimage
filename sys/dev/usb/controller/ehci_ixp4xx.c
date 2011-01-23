@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_ixp4xx.c,v 1.9 2009/11/08 20:44:55 thompsa Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_ixp4xx.c,v 1.10 2011/01/11 13:59:06 jhb Exp $");
 
 #include "opt_bus.h"
 
@@ -39,7 +39,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/controller/ehci_ixp4xx.c,v 1.9 2009/11/08 20
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

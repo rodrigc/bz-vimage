@@ -25,11 +25,12 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libc/gen/dlfcn.c,v 1.18 2010/08/23 15:27:03 kib Exp $");
+__FBSDID("$FreeBSD: src/lib/libc/gen/dlfcn.c,v 1.19 2011/01/08 17:13:43 kib Exp $");
 
 /*
  * Linkage to services provided by the dynamic linker.
  */
+#include <sys/mman.h>
 #include <dlfcn.h>
 #include <link.h>
 #include <stddef.h>
@@ -165,3 +166,12 @@ _rtld_addr_phdr(const void *addr, struct dl_phdr_info *phdr_info)
 
 	return (0);
 }
+
+#pragma weak _rtld_get_stack_prot
+int
+_rtld_get_stack_prot(void)
+{
+
+	return (PROT_EXEC | PROT_READ | PROT_WRITE);
+}
+

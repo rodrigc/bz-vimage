@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/nfe/if_nfevar.h,v 1.8 2010/11/11 18:08:50 yongari Exp $
+ * $FreeBSD: src/sys/dev/nfe/if_nfevar.h,v 1.9 2011/01/03 18:28:30 jhb Exp $
  */
 
 struct nfe_tx_data {
@@ -139,7 +139,6 @@ struct nfe_softc {
 	struct nfe_hw_stats	nfe_stats;
 	struct taskqueue	*nfe_tq;
 	struct task		nfe_int_task;
-	struct task		nfe_tx_task;
 	int			nfe_link;
 	int			nfe_suspended;
 	int			nfe_framesize;

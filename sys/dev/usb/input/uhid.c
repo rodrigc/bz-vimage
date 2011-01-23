@@ -5,7 +5,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.17 2010/11/13 19:26:45 hselasky Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.18 2011/01/11 13:59:06 jhb Exp $");
 
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc.
@@ -49,7 +49,6 @@ __FBSDID("$FreeBSD: src/sys/dev/usb/input/uhid.c,v 1.17 2010/11/13 19:26:45 hsel
 #include <sys/systm.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
-#include <sys/linker_set.h>
 #include <sys/module.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>

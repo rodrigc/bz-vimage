@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfs/nfs_nfssvc.c,v 1.2 2009/06/27 13:58:44 rwatson Exp $");
+__FBSDID("$FreeBSD: src/sys/nfs/nfs_nfssvc.c,v 1.3 2011/01/14 23:30:35 rmacklem Exp $");
 
 #include "opt_nfs.h"
 
@@ -99,7 +99,7 @@ nfssvc(struct thread *td, struct nfssvc_args *uap)
 	else if ((uap->flag & (NFSSVC_NFSDNFSD | NFSSVC_NFSDADDSOCK |
 	    NFSSVC_PUBLICFH | NFSSVC_V4ROOTEXPORT | NFSSVC_NOPUBLICFH |
 	    NFSSVC_STABLERESTART | NFSSVC_ADMINREVOKE |
-	    NFSSVC_DUMPCLIENTS | NFSSVC_DUMPLOCKS)) &&
+	    NFSSVC_DUMPCLIENTS | NFSSVC_DUMPLOCKS | NFSSVC_BACKUPSTABLE)) &&
 	    nfsd_call_nfsd != NULL)
 		error = (*nfsd_call_nfsd)(td, uap);
 	if (error == EINTR || error == ERESTART)
