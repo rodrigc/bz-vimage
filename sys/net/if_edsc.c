@@ -204,6 +204,10 @@ edsc_ioctl(struct ifnet *ifp, u_long cmd, caddr_t data)
 	struct ifreq		*ifr = (struct ifreq *)data;
 
 	switch (cmd) {
+	case SIOCSIFFLAGS:
+	case SIOCADDMULTI:
+	case SIOCDELMULTI:
+		break;
 	case SIOCSIFCAP:
 #if 1
 		/*
