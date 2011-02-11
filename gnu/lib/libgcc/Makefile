@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/lib/libgcc/Makefile,v 1.78 2011/01/07 20:26:33 imp Exp $
+# $FreeBSD: src/gnu/lib/libgcc/Makefile,v 1.81 2011/02/02 03:24:52 imp Exp $
 
 GCCDIR=	${.CURDIR}/../../../contrib/gcc
 GCCLIB=	${.CURDIR}/../../../contrib/gcclibs
@@ -121,8 +121,8 @@ LIB2FUNCS_EXTRA = floatunsidf.c floatunsisf.c
 
 .if ${TARGET_CPUARCH} == mips
 LIB2FUNCS_EXTRA = floatunsidf.c floatunsisf.c
-# XXX do we need n32 here?
-.if ${TARGET_ARCH:Mmips64*} != ""
+# ABIs other than o32 need this
+.if ${TARGET_ARCH:Mmipse[lb]} == ""
 LIB2FUNCS_EXTRA+= floatdidf.c fixunsdfsi.c
 LIB2FUNCS_EXTRA+= floatdisf.c floatundidf.c
 LIB2FUNCS_EXTRA+= fixsfdi.c floatundisf.c

@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/sys_machdep.c,v 1.5 2007/02/14 01:25:41 kevlo Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/sys_machdep.c,v 1.6 2011/02/05 03:30:29 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -85,7 +85,7 @@ static int
 arm32_set_tp(struct thread *td, void *args)
 {
 
-	td->td_md.md_tp = args;
+	td->td_md.md_tp = (register_t)args;
 	return (0);
 }
 
@@ -93,7 +93,7 @@ static int
 arm32_get_tp(struct thread *td, void *args)
 {
 
-	td->td_retval[0] = (uint32_t)td->td_md.md_tp;
+	td->td_retval[0] = td->td_md.md_tp;
 	return (0);
 }
 

@@ -57,7 +57,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_turnstile.c,v 1.177 2010/01/09 01:46:38 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_turnstile.c,v 1.178 2011/02/04 14:16:41 jhb Exp $");
 
 #include "opt_ddb.h"
 #include "opt_turnstile_profiling.h"
@@ -685,8 +685,8 @@ turnstile_wait(struct turnstile *ts, struct thread *owner, int queue)
 	 * turnstile already in use by this lock.
 	 */
 	tc = TC_LOOKUP(ts->ts_lockobj);
+	mtx_assert(&tc->tc_lock, MA_OWNED);
 	if (ts == td->td_turnstile) {
-		mtx_assert(&tc->tc_lock, MA_OWNED);
 #ifdef TURNSTILE_PROFILING
 		tc->tc_depth++;
 		if (tc->tc_depth > tc->tc_max_depth) {
@@ -695,7 +695,6 @@ turnstile_wait(struct turnstile *ts, struct thread *owner, int queue)
 				turnstile_max_depth = tc->tc_max_depth;
 		}
 #endif
-		tc = TC_LOOKUP(ts->ts_lockobj);
 		LIST_INSERT_HEAD(&tc->tc_turnstiles, ts, ts_hash);
 		KASSERT(TAILQ_EMPTY(&ts->ts_pending),
 		    ("thread's turnstile has pending threads"));

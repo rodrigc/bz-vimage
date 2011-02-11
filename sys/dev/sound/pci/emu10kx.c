@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/sound/pci/emu10kx.c,v 1.16 2009/06/07 19:12:08 ariff Exp $
+ * $FreeBSD: src/sys/dev/sound/pci/emu10kx.c,v 1.17 2011/02/09 11:28:57 marius Exp $
  */
 
 #include <sys/param.h>
@@ -2700,7 +2700,7 @@ emu_init(struct emu_sc_info *sc)
 
 	if (bus_dma_tag_create( /* parent */ bus_get_dma_tag(sc->dev),
 	     /* alignment */ 2, /* boundary */ 0,
-	     /* lowaddr */ 1 << 31,	/* can only access 0-2gb */
+	     /* lowaddr */ (1U << 31) - 1,	/* can only access 0-2gb */
 	     /* highaddr */ BUS_SPACE_MAXADDR,
 	     /* filter */ NULL, /* filterarg */ NULL,
 	     /* maxsize */ EMU_MAX_BUFSZ, /* nsegments */ 1, /* maxsegz */ 0x3ffff,

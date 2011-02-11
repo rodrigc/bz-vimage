@@ -16,7 +16,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.51 2011/01/20 13:02:54 n_hibma Exp $
+ * $FreeBSD: src/sys/dev/usb/serial/u3g.c,v 1.52 2011/02/01 22:26:06 n_hibma Exp $
  */
 
 /*
@@ -302,6 +302,7 @@ static const struct usb_device_id u3g_devs[] = {
 	U3G_DEV(NOVATEL, EU740, 0),
 	U3G_DEV(NOVATEL, EU870D, 0),
 	U3G_DEV(NOVATEL, MC760, 0),
+	U3G_DEV(NOVATEL, MC547, 0),
 	U3G_DEV(NOVATEL, MC950D, 0),
 	U3G_DEV(NOVATEL, U720, 0),
 	U3G_DEV(NOVATEL, U727, 0),

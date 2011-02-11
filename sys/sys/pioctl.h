@@ -33,7 +33,7 @@
 /*
  * procfs ioctl definitions.
  *
- * $FreeBSD: src/sys/sys/pioctl.h,v 1.16 2010/03/10 20:30:51 imp Exp $
+ * $FreeBSD: src/sys/sys/pioctl.h,v 1.17 2011/01/23 12:44:17 kib Exp $
  */
 
 #ifndef _SYS_PIOCTL_H
@@ -69,7 +69,7 @@ struct procfs_status {
 
 /*
  * If PF_LINGER is set in procp->p_pfsflags, then the last close
- * of a /proc/<pid>/mem file will nto clear out the stops and continue
+ * of a /proc/<pid>/mem file will not clear out the stops and continue
  * the process.
  */
 

@@ -30,11 +30,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/csu/mips/crt1.c,v 1.4 2010/03/05 13:29:05 uqs Exp $
+ * $FreeBSD: src/lib/csu/mips/crt1.c,v 1.5 2011/02/01 22:50:23 imp Exp $
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/csu/mips/crt1.c,v 1.4 2010/03/05 13:29:05 uqs Exp $");
+__FBSDID("$FreeBSD: src/lib/csu/mips/crt1.c,v 1.5 2011/02/01 22:50:23 imp Exp $");
 
 #ifndef __GNUC__
 #error "GCC is needed to compile this file"
@@ -83,7 +83,7 @@ __start(char **ap,
 	argv = ap + 1;
 	env  = ap + 2 + argc;
 	environ = env;
-	if(argc > 0 && argv[0] != NULL) {
+	if (argc > 0 && argv[0] != NULL) {
 		const char *s;
 		__progname = argv[0];
 		for (s = __progname; *s != '\0'; s++)

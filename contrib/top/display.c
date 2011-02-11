@@ -8,7 +8,7 @@
  *  Copyright (c) 1984, 1989, William LeFebvre, Rice University
  *  Copyright (c) 1989, 1990, 1992, William LeFebvre, Northwestern University
  *
- * $FreeBSD: src/contrib/top/display.c,v 1.13 2010/11/06 03:59:21 delphij Exp $
+ * $FreeBSD: src/contrib/top/display.c,v 1.14 2011/02/01 15:48:27 jhb Exp $
  */
 
 /*
@@ -447,12 +447,14 @@ for (cpu = 0; cpu < num_cpus; cpu++) {
     /* print tag and bump lastline */
     if (num_cpus == 1)
 	printf("\nCPU: ");
-    else
-	printf("\nCPU %d: ", cpu);
+    else {
+	value = printf("\nCPU %d: ", cpu);
+	while (value++ <= cpustates_column)
+		printf(" ");
+    }
     lastline++;
 
     /* now walk thru the names and print the line */
-    Move_to(cpustates_column, y_cpustates + cpu);
     while ((thisname = *names++) != NULL)
     {
 	if (*thisname != '\0')
@@ -532,7 +534,7 @@ z_cpustates()
     register char **names;
     register char *thisname;
     register int *lp;
-    int cpu;
+    int cpu, value;
 
 for (cpu = 0; cpu < num_cpus; cpu++) {
     names = cpustate_names;
@@ -540,11 +542,13 @@ for (cpu = 0; cpu < num_cpus; cpu++) {
     /* show tag and bump lastline */
     if (num_cpus == 1)
 	printf("\nCPU: ");
-    else
-	printf("\nCPU %d: ", cpu);
+    else {
+	value = printf("\nCPU %d: ", cpu);
+	while (value++ <= cpustates_column)
+		printf(" ");
+    }
     lastline++;
 
-    Move_to(cpustates_column, y_cpustates + cpu);
     while ((thisname = *names++) != NULL)
     {
 	if (*thisname != '\0')

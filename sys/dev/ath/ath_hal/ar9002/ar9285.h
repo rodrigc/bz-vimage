@@ -13,7 +13,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9285.h,v 1.1 2011/01/20 09:03:40 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9285.h,v 1.2 2011/01/29 14:27:20 adrian Exp $
  */
 #ifndef _ATH_AR9285_H_
 #define _ATH_AR9285_H_
@@ -31,6 +31,9 @@ struct ath_hal_9285 {
 #define	AR9285_DEFAULT_RXCHAINMASK	1
 #define	AR9285_DEFAULT_TXCHAINMASK	1
 
+#define	AR_PHY_CCA_NOM_VAL_9285_2GHZ		-118
+#define	AR_PHY_CCA_MIN_GOOD_VAL_9285_2GHZ	-127
+#define	AR_PHY_CCA_MAX_GOOD_VAL_9285_2GHZ	-108
 
 HAL_BOOL ar9285SetAntennaSwitch(struct ath_hal *, HAL_ANT_SETTING);
 HAL_BOOL ar9285RfAttach(struct ath_hal *, HAL_STATUS *);

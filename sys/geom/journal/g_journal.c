@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/journal/g_journal.c,v 1.22 2009/06/30 14:34:06 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/journal/g_journal.c,v 1.23 2011/01/26 10:34:21 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -3033,6 +3033,7 @@ g_journal_switcher(void *arg)
 	int error;
 
 	mp = arg;
+	curthread->td_pflags |= TDP_NORUNNINGBUF;
 	for (;;) {
 		g_journal_switcher_wokenup = 0;
 		error = tsleep(&g_journal_switcher_state, PRIBIO, "jsw:wait",

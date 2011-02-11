@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm_getloadavg.c,v 1.10 2007/01/08 17:35:36 imp Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm_getloadavg.c,v 1.11 2011/01/23 11:08:28 uqs Exp $");
 
 #if defined(LIBC_SCCS) && !defined(lint)
 #if 0
@@ -48,11 +48,11 @@ static char sccsid[] = "@(#)kvm_getloadavg.c	8.1 (Berkeley) 6/4/93";
 #include "kvm_private.h"
 
 static struct nlist nl[] = {
-	{ "_averunnable" },
+	{ .n_name = "_averunnable" },
 #define	X_AVERUNNABLE	0
-	{ "_fscale" },
+	{ .n_name = "_fscale" },
 #define	X_FSCALE	1
-	{ "" },
+	{ .n_name = "" },
 };
 
 /*
@@ -62,10 +62,7 @@ static struct nlist nl[] = {
  * Return number of samples retrieved, or -1 on error.
  */
 int
-kvm_getloadavg(kd, loadavg, nelem)
-	kvm_t *kd;
-	double loadavg[];
-	int nelem;
+kvm_getloadavg(kvm_t *kd, double loadavg[], int nelem)
 {
 	struct loadavg loadinfo;
 	struct nlist *p;
@@ -95,7 +92,7 @@ kvm_getloadavg(kd, loadavg, nelem)
 	if (!KREAD(kd, nl[X_FSCALE].n_value, &fscale))
 		loadinfo.fscale = fscale;
 
-	nelem = MIN(nelem, sizeof(loadinfo.ldavg) / sizeof(fixpt_t));
+	nelem = MIN(nelem, (int)(sizeof(loadinfo.ldavg) / sizeof(fixpt_t)));
 	for (i = 0; i < nelem; i++)
 		loadavg[i] = (double) loadinfo.ldavg[i] / loadinfo.fscale;
 	return (nelem);

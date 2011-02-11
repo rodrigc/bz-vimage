@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_atomic.c,v 1.4 2008/11/17 20:49:29 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_atomic.c,v 1.5 2011/01/28 06:12:59 jchandra Exp $");
 
 #include <sys/param.h>
 #include <sys/lock.h>
@@ -52,7 +52,7 @@ atomic_init(void)
 }
 #endif
 
-#ifndef __LP64__
+#if !defined(__LP64__) && !defined(__mips_n32)
 void
 atomic_add_64(volatile uint64_t *target, int64_t delta)
 {

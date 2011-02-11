@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,7 +32,7 @@
 
 /* $KAME: sctp_timer.h,v 1.6 2005/03/06 16:04:18 itojun Exp $	 */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.h,v 1.11 2010/11/07 17:50:56 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.h,v 1.12 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __sctp_timer_h__
 #define __sctp_timer_h__

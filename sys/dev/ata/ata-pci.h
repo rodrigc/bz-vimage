@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ata/ata-pci.h,v 1.123 2010/11/17 17:52:04 mav Exp $
+ * $FreeBSD: src/sys/dev/ata/ata-pci.h,v 1.125 2011/02/01 01:05:11 jfv Exp $
  */
 
 /* structure holding chipset config info */
@@ -227,8 +227,15 @@ struct ata_pci_controller {
 #define ATA_CPT_S3              0x1c088086
 #define ATA_CPT_S4              0x1c098086
 
+#define ATA_PBG_S1		0x1d008086
+#define ATA_PBG_AH1		0x1d028086
+#define ATA_PBG_R1		0x1d048086
+#define ATA_PBG_R2		0x1d068086
+#define ATA_PBG_S2		0x1d088086
+
 #define ATA_I31244              0x32008086
 #define ATA_ISCH                0x811a8086
+#define ATA_DH89XXCC            0x23238086
 
 #define ATA_ITE_ID              0x1283
 #define ATA_IT8211F             0x82111283

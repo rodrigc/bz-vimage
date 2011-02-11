@@ -39,7 +39,7 @@ static char sccsid[] = "@(#)kill.c	8.4 (Berkeley) 4/28/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/kill/kill.c,v 1.23 2010/12/21 22:47:34 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/kill/kill.c,v 1.24 2011/02/04 16:40:50 jilles Exp $");
 
 #include <ctype.h>
 #include <err.h>
@@ -152,7 +152,7 @@ signame_to_signum(const char *sig)
 {
 	int n;
 
-	if (!strncasecmp(sig, "sig", (size_t)3))
+	if (!strncasecmp(sig, "SIG", (size_t)3))
 		sig += 3;
 	for (n = 1; n < sys_nsig; n++) {
 		if (!strcasecmp(sys_signame[n], sig))

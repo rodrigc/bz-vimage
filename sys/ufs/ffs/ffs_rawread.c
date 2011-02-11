@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_rawread.c,v 1.33 2009/12/21 12:29:38 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_rawread.c,v 1.34 2011/02/02 16:35:10 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -243,8 +243,7 @@ ffs_rawread_readahead(struct vnode *vp,
 		if (vmapbuf(bp) < 0)
 			return EFAULT;
 		
-		if (ticks - PCPU_GET(switchticks) >= hogticks)
-			uio_yield();
+		maybe_yield();
 		bzero(bp->b_data, bp->b_bufsize);
 
 		/* Mark operation completed (similar to bufdone()) */

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_debug.h,v 1.2 2010/03/03 17:32:32 rpaulo Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_debug.h,v 1.3 2011/01/26 09:37:43 adrian Exp $
  */
 #ifndef _ATH_AH_DEBUG_H_
 #define _ATH_AH_DEBUG_H_
@@ -42,7 +42,8 @@ enum {
 	HAL_DEBUG_EEPROM	= 0x00008000,
 	HAL_DEBUG_BEACON	= 0x00010000,	/* beacon setup work */
 	HAL_DEBUG_POWER		= 0x00020000,	/* power management */
-	HAL_DEBUG_INTERRUPT	= 0x00000080,	/* interrupt handling */
+	HAL_DEBUG_GPIO		= 0x00040000,	/* GPIO debugging */
+	HAL_DEBUG_INTERRUPT	= 0x00080000,	/* interrupt handling */
 
 	HAL_DEBUG_ANY		= 0xffffffff
 };

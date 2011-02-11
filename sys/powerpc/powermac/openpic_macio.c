@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.16 2010/07/02 02:17:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.17 2011/01/29 20:58:38 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -58,12 +58,12 @@ __FBSDID("$FreeBSD: src/sys/powerpc/powermac/openpic_macio.c,v 1.16 2010/07/02 0
  * MacIO interface
  */
 static int	openpic_macio_probe(device_t);
-static uint32_t	openpic_macio_id(device_t);
+static int	openpic_macio_attach(device_t);
 
 static device_method_t  openpic_macio_methods[] = {
 	/* Device interface */
 	DEVMETHOD(device_probe,		openpic_macio_probe),
-	DEVMETHOD(device_attach,	openpic_attach),
+	DEVMETHOD(device_attach,	openpic_macio_attach),
 
 	/* PIC interface */
 	DEVMETHOD(pic_bind,		openpic_bind),
@@ -74,7 +74,6 @@ static device_method_t  openpic_macio_methods[] = {
 	DEVMETHOD(pic_ipi,		openpic_ipi),
 	DEVMETHOD(pic_mask,		openpic_mask),
 	DEVMETHOD(pic_unmask,		openpic_unmask),
-	DEVMETHOD(pic_id,		openpic_macio_id),
 
 	{ 0, 0 },
 };
@@ -99,9 +98,9 @@ openpic_macio_probe(device_t dev)
 	return (0);
 }
 
-static uint32_t
-openpic_macio_id(device_t dev)
+static int
+openpic_macio_attach(device_t dev)
 {
-	return (ofw_bus_get_node(dev));
+ 
+	return (openpic_common_attach(dev, ofw_bus_get_node(dev)));
 }
-

@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/gpt.h,v 1.15 2010/09/24 19:31:08 pjd Exp $
+ * $FreeBSD: src/sys/sys/gpt.h,v 1.16 2011/01/28 11:13:01 ae Exp $
  */
 
 #ifndef _SYS_GPT_H_
@@ -149,5 +149,11 @@ struct gpt_ent {
 	{0x2db519c4,0xb10f,0x11dc,0xb9,0x9b,{0x00,0x19,0xd1,0x87,0x96,0x48}}
 #define	GPT_ENT_TYPE_NETBSD_CGD		\
 	{0x2db519ec,0xb10f,0x11dc,0xb9,0x9b,{0x00,0x19,0xd1,0x87,0x96,0x48}}
+
+/*
+ * Boot partition used by GRUB 2.
+ */
+#define	GPT_ENT_TYPE_BIOS_BOOT		\
+	{0x21686148,0x6449,0x6e6f,0x74,0x4e,{0x65,0x65,0x64,0x45,0x46,0x49}}
 
 #endif /* _SYS_GPT_H_ */

@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/ofw/ofw_pcib_pci.c,v 1.9 2010/06/18 17:39:56 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/ofw/ofw_pcib_pci.c,v 1.10 2011/02/02 05:58:51 marcel Exp $
  */
 
 #include <sys/param.h>
@@ -171,7 +171,7 @@ ofw_pcib_pci_route_interrupt(device_t bridge, device_t dev, int intpin)
 			 * it again on higher levels - that causes problems
 			 * in some cases, and never seems to be required.
 			 */
-			return (INTR_VEC(iparent, mintr));
+			return (MAP_IRQ(iparent, mintr));
 		}
 	} else if (intpin >= 1 && intpin <= 4) {
 		/*

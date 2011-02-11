@@ -28,7 +28,7 @@
  *
  *	From: $NetBSD: int_fmtio.h,v 1.2 2001/04/26 16:25:21 kleink Exp $
  *	from: src/sys/i386/include/_inttypes.h,v 1.2 2002/06/30 05:48:02 mike
- * $FreeBSD: src/sys/mips/include/_inttypes.h,v 1.6 2011/01/08 18:02:46 tijl Exp $
+ * $FreeBSD: src/sys/mips/include/_inttypes.h,v 1.7 2011/02/04 13:09:46 tijl Exp $
  */
 
 #ifndef _MACHINE_INTTYPES_H_
@@ -38,7 +38,7 @@
  * Macros for format specifiers.
  */
 
-#ifdef __LP64__
+#ifdef __mips_n64
 #define	__PRI64		"l"
 #define	__PRIptr	"l"
 #else

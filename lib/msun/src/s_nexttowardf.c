@@ -10,7 +10,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/s_nexttowardf.c,v 1.2 2008/02/22 02:30:36 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/s_nexttowardf.c,v 1.3 2011/02/10 07:38:38 das Exp $");
 
 #include <float.h>
 
@@ -50,8 +50,8 @@ nexttowardf(float x, long double y)
 	if(ix<0x00800000) {		/* underflow */
 	    t = x*x;
 	    if(t!=x) {		/* raise underflow flag */
-	        SET_FLOAT_WORD(y,hx);
-		return y;
+	        SET_FLOAT_WORD(x,hx);
+		return x;
 	    }
 	}
 	SET_FLOAT_WORD(x,hx);

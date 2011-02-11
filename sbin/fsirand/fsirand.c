@@ -32,12 +32,11 @@
 
 #ifndef lint
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/fsirand/fsirand.c,v 1.14 2010/05/14 14:26:49 uqs Exp $";
+  "$FreeBSD: src/sbin/fsirand/fsirand.c,v 1.15 2011/01/24 06:17:05 mckusick Exp $";
 #endif /* not lint */
 
-#include <sys/disklabel.h>
 #include <sys/param.h>
-#include <sys/time.h>
+#include <sys/disklabel.h>
 #include <sys/resource.h>
 
 #include <ufs/ufs/dinode.h>
@@ -50,6 +49,7 @@ static const char rcsid[] =
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 static void usage(void) __dead2;

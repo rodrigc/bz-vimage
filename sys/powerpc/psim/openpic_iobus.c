@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/psim/openpic_iobus.c,v 1.12 2010/07/02 02:17:39 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/psim/openpic_iobus.c,v 1.13 2011/01/29 20:58:38 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -62,11 +62,12 @@ __FBSDID("$FreeBSD: src/sys/powerpc/psim/openpic_iobus.c,v 1.12 2010/07/02 02:17
  * PSIM IOBus interface
  */
 static int	openpic_iobus_probe(device_t);
+static int	openpic_iobus_attach(device_t);
 
 static device_method_t  openpic_iobus_methods[] = {
 	/* Device interface */
 	DEVMETHOD(device_probe,		openpic_iobus_probe),
-	DEVMETHOD(device_attach,	openpic_attach),
+	DEVMETHOD(device_attach,	openpic_iobus_attach),
 
 	/* PIC interface */
 	DEVMETHOD(pic_config,		openpic_config),
@@ -108,4 +109,11 @@ openpic_iobus_probe(device_t dev)
 	sc->sc_psim = 1;
 
 	return (0);
+}
+
+static int
+openpic_iobus_attach(device_t dev)
+{
+
+	return (openpic_common_attach(dev, 0));
 }

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/calendar/paskha.c,v 1.13 2010/03/29 06:49:20 edwin Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/calendar/paskha.c,v 1.14 2011/02/09 06:38:32 osa Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ __FBSDID("$FreeBSD: src/usr.bin/calendar/paskha.c,v 1.13 2010/03/29 06:49:20 edw
 #define	PASKHALEN	(sizeof(PASKHA) - 1)
 
 /* return year day for Orthodox Easter using Gauss formula */
-/* (old style result) */
+/* (new style result) */
 
 int
 paskha(int R) /*year*/
@@ -53,5 +53,5 @@ paskha(int R) /*year*/
 	d = (19 * a + x) % 30;
 	e = (2 * b + 4 * c + 6 * d + y) % 7;
 	cumday = cumdaytab[isleap(R)];
-	return (((cumday[3] + 1) + 22) + (d + e));
+	return (((cumday[3] + 1) + 22) + (d + e) + 13);
 }

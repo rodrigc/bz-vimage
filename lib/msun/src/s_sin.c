@@ -11,7 +11,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/s_sin.c,v 1.12 2008/02/18 14:02:12 bde Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/s_sin.c,v 1.13 2011/02/10 07:37:50 das Exp $");
 
 /* sin(x)
  * Return sine function of x.
@@ -63,7 +63,7 @@ sin(double x)
     /* |x| ~< pi/4 */
 	ix &= 0x7fffffff;
 	if(ix <= 0x3fe921fb) {
-	    if(ix<0x3e400000)			/* |x| < 2**-27 */
+	    if(ix<0x3e500000)			/* |x| < 2**-26 */
 	       {if((int)x==0) return x;}	/* generate inexact */
 	    return __kernel_sin(x,z,0);
 	}

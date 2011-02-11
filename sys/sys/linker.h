@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/linker.h,v 1.52 2009/06/23 22:42:39 jeff Exp $
+ * $FreeBSD: src/sys/sys/linker.h,v 1.53 2011/02/09 19:08:21 marcel Exp $
  */
 
 #ifndef _SYS_LINKER_H_
@@ -253,7 +253,11 @@ void *linker_hwpmc_list_objects(void);
 /*
  * Module lookup
  */
+extern vm_offset_t	preload_addr_relocate;
 extern caddr_t		preload_metadata;
+
+extern void *		preload_fetch_addr(caddr_t _mod);
+extern size_t		preload_fetch_size(caddr_t _mod);
 extern caddr_t		preload_search_by_name(const char *_name);
 extern caddr_t		preload_search_by_type(const char *_type);
 extern caddr_t		preload_search_next_name(caddr_t _base);

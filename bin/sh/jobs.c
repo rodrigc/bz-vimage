@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)jobs.c	8.5 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/jobs.c,v 1.90 2011/01/18 21:18:31 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/jobs.c,v 1.92 2011/02/04 22:47:55 jilles Exp $");
 
 #include <sys/ioctl.h>
 #include <sys/param.h>
@@ -175,22 +175,6 @@ out:				out2fmt_flush("sh: can't access tty; job control turned off\n");
 	jobctl = on;
 }
 #endif
-
-
-#ifdef mkinit
-INCLUDE <sys/types.h>
-INCLUDE <stdlib.h>
-
-SHELLPROC {
-	backgndpid = -1;
-	bgjob = NULL;
-#if JOBS
-	jobctl = 0;
-#endif
-}
-
-#endif
-
 
 
 #if JOBS
@@ -1056,13 +1040,13 @@ dowait(int block, struct job *job)
 			}
 		if (sig > 0 && sig != SIGINT && sig != SIGPIPE) {
 			if (sig < sys_nsig && sys_siglist[sig])
-				out1str(sys_siglist[sig]);
+				out2str(sys_siglist[sig]);
 			else
-				out1fmt("Signal %d", sig);
+				outfmt(out2, "Signal %d", sig);
 			if (coredump)
-				out1str(" (core dumped)");
-			out1c('\n');
-			flushout(out1);
+				out2str(" (core dumped)");
+			out2c('\n');
+			flushout(out2);
 		}
 	} else {
 		TRACE(("Not printing status, rootshell=%d, job=%p\n", rootshell, job));

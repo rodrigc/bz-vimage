@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)rtsock.c	8.7 (Berkeley) 10/12/95
- * $FreeBSD: src/sys/net/rtsock.c,v 1.190 2010/10/16 19:25:27 bz Exp $
+ * $FreeBSD: src/sys/net/rtsock.c,v 1.191 2011/02/10 01:24:09 mlaier Exp $
  */
 #include "opt_compat.h"
 #include "opt_sctp.h"
@@ -883,7 +883,6 @@ flush:
 			m = NULL;
 		} else if (m->m_pkthdr.len > rtm->rtm_msglen)
 			m_adj(m, rtm->rtm_msglen - m->m_pkthdr.len);
-		Free(rtm);
 	}
 	if (m) {
 		if (rp) {
@@ -898,6 +897,9 @@ flush:
 		} else
 			rt_dispatch(m, info.rti_info[RTAX_DST]);
 	}
+	/* info.rti_info[RTAX_DST] (used above) can point inside of rtm */
+	if (rtm)
+		Free(rtm);
     }
 	return (error);
 #undef	sa_equal

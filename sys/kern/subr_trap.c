@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.320 2010/09/28 01:36:01 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_trap.c,v 1.321 2011/01/25 10:59:21 kib Exp $");
 
 #include "opt_ktrace.h"
 #include "opt_kdtrace.h"
@@ -403,9 +403,9 @@ syscallret(struct thread *td, int error, struct syscall_args *sa __unused)
 	 */
 	STOPEVENT(p, S_SCX, sa->code);
 	PTRACESTOP_SC(p, td, S_PT_SCX);
-	if (traced || (td->td_dbgflags & TDB_EXEC) != 0) {
+	if (traced || (td->td_dbgflags & (TDB_EXEC | TDB_FORK)) != 0) {
 		PROC_LOCK(p);
-		td->td_dbgflags &= ~(TDB_SCX | TDB_EXEC);
+		td->td_dbgflags &= ~(TDB_SCX | TDB_EXEC | TDB_FORK);
 		PROC_UNLOCK(p);
 	}
 }

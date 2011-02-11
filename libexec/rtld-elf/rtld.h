@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.49 2011/01/08 17:11:49 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld.h,v 1.50 2011/02/09 09:20:27 kib Exp $
  */
 
 #ifndef RTLD_H /* { */
@@ -276,7 +276,7 @@ typedef struct Struct_DoneList {
 
 struct Struct_RtldLockState {
 	int lockstate;
-	jmp_buf env;
+	sigjmp_buf env;
 };
 
 /*

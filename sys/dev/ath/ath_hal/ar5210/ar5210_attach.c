@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_attach.c,v 1.10 2011/01/21 05:21:00 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5210/ar5210_attach.c,v 1.11 2011/02/08 12:49:01 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -376,6 +376,8 @@ ar5210FillCapabilityInfo(struct ath_hal *ah)
 			| HAL_INT_TX
 			| HAL_INT_FATAL
 			;
+
+	pCap->hal4kbSplitTransSupport = AH_TRUE;
 
 	ahpriv->ah_rxornIsFatal = AH_TRUE;
 	return AH_TRUE;

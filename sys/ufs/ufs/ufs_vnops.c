@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.324 2010/12/30 10:52:07 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.326 2011/02/10 08:06:56 netchild Exp $");
 
 #include "opt_quota.h"
 #include "opt_suiddir.h"
@@ -82,7 +82,19 @@ __FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_vnops.c,v 1.324 2010/12/30 10:52:07 kib 
 #endif
 #ifdef UFS_GJOURNAL
 #include <ufs/ufs/gjournal.h>
+FEATURE(ufs_gjournal, "Journaling support through GEOM for UFS");
 #endif
+
+#ifdef QUOTA
+FEATURE(ufs_quota, "UFS disk quotas support");
+FEATURE(ufs_quota64, "64bit UFS disk quotas support");
+#endif
+
+#ifdef SUIDDIR
+FEATURE(suiddir,
+    "Give all new files in directory the same ownership as the directory");
+#endif
+
 
 #include <ufs/ffs/ffs_extern.h>
 

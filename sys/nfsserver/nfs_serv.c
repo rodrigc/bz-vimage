@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsserver/nfs_serv.c,v 1.207 2010/12/28 21:12:15 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsserver/nfs_serv.c,v 1.208 2011/02/05 21:21:27 alc Exp $");
 
 /*
  * nfs version 2 and 3 server calls to vnode ops
@@ -3480,7 +3480,8 @@ nfsrv_commit(struct nfsrv_descript *nfsd, struct nfssvc_sock *slp,
 		if (vp->v_object &&
 		   (vp->v_object->flags & OBJ_MIGHTBEDIRTY)) {
 			VM_OBJECT_LOCK(vp->v_object);
-			vm_object_page_clean(vp->v_object, off / PAGE_SIZE, (cnt + PAGE_MASK) / PAGE_SIZE, OBJPC_SYNC);
+			vm_object_page_clean(vp->v_object, off, off + cnt,
+			    OBJPC_SYNC);
 			VM_OBJECT_UNLOCK(vp->v_object);
 		}
 

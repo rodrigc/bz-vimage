@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/mips/uio_machdep.c,v 1.3 2010/05/26 22:38:45 gonzo Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/mips/uio_machdep.c,v 1.5 2011/02/02 16:35:10 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -92,9 +92,9 @@ uiomove_fromphys(vm_page_t ma[], vm_offset_t offset, int n, struct uio *uio)
 		cnt = ulmin(cnt, PAGE_SIZE - page_offset);
 		m = ma[offset >> PAGE_SHIFT];
 		pa = VM_PAGE_TO_PHYS(m);
-		if (pa < MIPS_KSEG0_LARGEST_PHYS) {
+		if (MIPS_DIRECT_MAPPABLE(pa)) {
 			sf = NULL;
-			cp = (char *)MIPS_PHYS_TO_KSEG0(pa) + page_offset;
+			cp = (char *)MIPS_PHYS_TO_DIRECT(pa) + page_offset;
 			/*
 			 * flush all mappings to this page, KSEG0 address first
 			 * in order to get it overwritten by correct data
@@ -107,8 +107,7 @@ uiomove_fromphys(vm_page_t ma[], vm_offset_t offset, int n, struct uio *uio)
 		}
 		switch (uio->uio_segflg) {
 		case UIO_USERSPACE:
-			if (ticks - PCPU_GET(switchticks) >= hogticks)
-				uio_yield();
+			maybe_yield();
 			if (uio->uio_rw == UIO_READ)
 				error = copyout(cp, iov->iov_base, cnt);
 			else

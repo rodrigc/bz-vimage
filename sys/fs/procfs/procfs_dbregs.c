@@ -40,7 +40,7 @@
  *
  * From:
  *	$Id$
- * $FreeBSD: src/sys/fs/procfs/procfs_dbregs.c,v 1.30 2010/03/11 14:49:06 nwhitehorn Exp $
+ * $FreeBSD: src/sys/fs/procfs/procfs_dbregs.c,v 1.31 2011/01/26 20:03:58 dchagin Exp $
  */
 
 #include "opt_compat.h"
@@ -107,7 +107,7 @@ procfs_doprocdbregs(PFS_FILL_ARGS)
 	td2 = FIRST_THREAD_IN_PROC(p);
 #ifdef COMPAT_FREEBSD32
 	if (SV_CURPROC_FLAG(SV_ILP32)) {
-		if ((td2->td_proc->p_sysent->sv_flags & SV_ILP32) == 0) {
+		if (SV_PROC_FLAG(td2->td_proc, SV_ILP32) == 0) {
 			PROC_UNLOCK(p);
 			return (EINVAL);
 		}

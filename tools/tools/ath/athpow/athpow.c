@@ -26,7 +26,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/tools/tools/ath/athpow/athpow.c,v 1.1 2008/12/07 19:17:33 sam Exp $
+ * $FreeBSD: src/tools/tools/ath/athpow/athpow.c,v 1.2 2011/01/29 04:34:30 adrian Exp $
  */
 #include "diag.h"
 
@@ -78,7 +78,7 @@ main(int argc, char *argv[])
 	const char *ifname;
 	HAL_REVS revs;
 	u_int16_t pcdacTable[MAX(PWR_TABLE_SIZE,PWR_TABLE_SIZE_2413)];
-	u_int16_t ratesArray[16];
+	u_int16_t ratesArray[37];
 	u_int nrates, npcdac;
 
 	s = socket(AF_INET, SOCK_DGRAM, 0);

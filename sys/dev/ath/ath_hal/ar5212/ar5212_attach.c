@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_attach.c,v 1.13 2011/01/21 05:21:00 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5212/ar5212_attach.c,v 1.14 2011/02/08 12:49:01 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -859,6 +859,8 @@ ar5212FillCapabilityInfo(struct ath_hal *ah)
 			;
 	if (AH_PRIVATE(ah)->ah_macVersion < AR_SREV_VERSION_GRIFFIN)
 		pCap->halIntrMask &= ~HAL_INT_TBTT;
+
+	pCap->hal4kbSplitTransSupport = AH_TRUE;
 
 	return AH_TRUE;
 #undef IS_COBRA

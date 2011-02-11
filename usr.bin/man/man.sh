@@ -24,7 +24,7 @@
 #  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 #  SUCH DAMAGE.
 #
-# $FreeBSD: src/usr.bin/man/man.sh,v 1.6 2010/12/14 06:07:18 gordon Exp $
+# $FreeBSD: src/usr.bin/man/man.sh,v 1.7 2011/01/25 18:32:21 uqs Exp $
 
 # Usage: add_to_manpath path
 # Adds a variable to manpath while ensuring we don't have duplicates.
@@ -200,8 +200,8 @@ find_file() {
 # Usage: is_newer file1 file2
 # Returns true if file1 is newer than file2 as calculated by mtime.
 is_newer() {
-	if [ $(stat -f %m $1) -gt $(stat -f %m $2) ]; then
-		decho "    mtime: $1 newer than $2" 3
+	if ! [ "$1" -ot "$2" ]; then
+		decho "    mtime: $1 not older than $2" 3
 		return 0
 	else
 		decho "    mtime: $1 older than $2" 3

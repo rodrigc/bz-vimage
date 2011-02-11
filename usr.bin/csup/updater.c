@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.bin/csup/updater.c,v 1.1 2010/03/02 07:26:07 lulf Exp $
+ * $FreeBSD: src/usr.bin/csup/updater.c,v 1.2 2011/01/25 22:21:05 jhb Exp $
  */
 
 #include <sys/types.h>
@@ -770,7 +770,6 @@ updater_docoll(struct updater *up, struct file_update *fup, int isfixups)
 			if (sr->sr_serverattr == NULL)
 				return (UPDATER_ERR_PROTO);
 
-			error = 0;
 			error = updater_rcsedit(up, fup, name, rcsopt);
 			if (error)
 				return (error);

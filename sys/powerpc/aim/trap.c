@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.90 2011/01/13 04:37:48 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/aim/trap.c,v 1.91 2011/01/26 20:03:58 dchagin Exp $");
 
 #include <sys/param.h>
 #include <sys/kdb.h>
@@ -389,7 +389,7 @@ cpu_fetch_syscall_args(struct thread *td, struct syscall_args *sa)
 		 * so as to maintain quad alignment
 		 * for the rest of the args.
 		 */
-		if (p->p_sysent->sv_flags & SV_ILP32) {
+		if (SV_PROC_FLAG(p, SV_ILP32)) {
 			params += sizeof(register_t);
 			sa->code = *(register_t *) params;
 			params += sizeof(register_t);
@@ -410,7 +410,7 @@ cpu_fetch_syscall_args(struct thread *td, struct syscall_args *sa)
 
 	sa->narg = sa->callp->sy_narg;
 
-	if (p->p_sysent->sv_flags & SV_ILP32) {
+	if (SV_PROC_FLAG(p, SV_ILP32)) {
 		argsz = sizeof(uint32_t);
 
 		for (i = 0; i < n; i++)
@@ -430,7 +430,7 @@ cpu_fetch_syscall_args(struct thread *td, struct syscall_args *sa)
 		error = 0;
 
 #ifdef __powerpc64__
-	if (p->p_sysent->sv_flags & SV_ILP32 && sa->narg > n) {
+	if (SV_PROC_FLAG(p, SV_ILP32) && sa->narg > n) {
 		/* Expand the size of arguments copied from the stack */
 
 		for (i = sa->narg; i >= n; i--)

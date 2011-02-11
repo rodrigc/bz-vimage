@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.27 2011/01/11 13:59:06 jhb Exp $ */
+/* $FreeBSD: src/sys/dev/usb/quirk/usb_quirk.c,v 1.28 2011/02/07 22:37:27 n_hibma Exp $ */
 /*-
  * Copyright (c) 1998 The NetBSD Foundation, Inc. All rights reserved.
  * Copyright (c) 1998 Lennart Augustsson. All rights reserved.
@@ -136,6 +136,7 @@ static struct usb_quirk_entry usb_quirks[USB_DEV_QUIRKS_MAX] = {
 	USB_QUIRK(SIEMENS2, ES75, 0x000, 0x000, UQ_ASSUME_CM_OVER_DATA),
 	USB_QUIRK(QUALCOMM, CDMA_MSM, 0x0000, 0xffff, UQ_ASSUME_CM_OVER_DATA),
 	USB_QUIRK(QUALCOMM2, CDMA_MSM, 0x0000, 0xffff, UQ_ASSUME_CM_OVER_DATA),
+	USB_QUIRK(CURITEL, UM150, 0x0000, 0xffff, UQ_ASSUME_CM_OVER_DATA),
 	USB_QUIRK(CURITEL, UM175, 0x0000, 0xffff, UQ_ASSUME_CM_OVER_DATA),
 
 	/* USB Mass Storage Class Quirks */

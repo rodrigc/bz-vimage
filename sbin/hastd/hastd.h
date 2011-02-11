@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/hastd.h,v 1.4 2010/09/22 19:08:11 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/hastd.h,v 1.7 2011/01/28 21:56:47 pjd Exp $
  */
 
 #ifndef	_HASTD_H_
@@ -43,7 +43,12 @@ extern const char *cfgpath;
 extern bool sigexit_received;
 extern struct pidfh *pfh;
 
+void descriptors_cleanup(struct hast_resource *res);
+void descriptors_assert(const struct hast_resource *res, int pjdlogmode);
+
 void hastd_primary(struct hast_resource *res);
 void hastd_secondary(struct hast_resource *res, struct nv *nvin);
+
+void primary_config_reload(struct hast_resource *res, struct nv *nv);
 
 #endif	/* !_HASTD_H_ */

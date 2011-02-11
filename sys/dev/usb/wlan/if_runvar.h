@@ -17,7 +17,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/wlan/if_runvar.h,v 1.6 2010/06/14 00:40:23 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/wlan/if_runvar.h,v 1.7 2011/02/09 18:09:27 bschmidt Exp $
  */
 
 #ifndef _IF_RUNVAR_H_
@@ -121,6 +121,7 @@ struct run_cmdq {
 struct run_vap {
 	struct ieee80211vap             vap;
 	struct ieee80211_beacon_offsets bo;
+	struct mbuf			*beacon_mbuf;
 
 	int                             (*newstate)(struct ieee80211vap *,
                                             enum ieee80211_state, int);

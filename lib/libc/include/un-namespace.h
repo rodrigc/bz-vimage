@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/lib/libc/include/un-namespace.h,v 1.24 2010/10/20 02:34:02 davidxu Exp $
+ * $FreeBSD: src/lib/libc/include/un-namespace.h,v 1.25 2011/02/07 21:26:46 jkim Exp $
  */
 
 #ifndef _UN_NAMESPACE_H_
@@ -118,6 +118,7 @@
 #undef		pthread_getprio
 #undef		pthread_getschedparam
 #undef		pthread_getspecific
+#undef		pthread_getthreadid_np
 #undef		pthread_join
 #undef		pthread_key_create
 #undef		pthread_key_delete

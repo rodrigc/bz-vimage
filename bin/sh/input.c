@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)input.c	8.3 (Berkeley) 6/9/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/input.c,v 1.31 2010/10/13 22:18:03 obrien Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/input.c,v 1.32 2011/02/04 22:47:55 jilles Exp $");
 
 #include <stdio.h>	/* defines BUFSIZ */
 #include <fcntl.h>
@@ -119,12 +119,7 @@ INIT {
 
 RESET {
 	popallfiles();
-	if (exception != EXSHELLPROC)
-		parselleft = parsenleft = 0;	/* clear input buffer */
-}
-
-SHELLPROC {
-	popallfiles();
+	parselleft = parsenleft = 0;	/* clear input buffer */
 }
 #endif
 

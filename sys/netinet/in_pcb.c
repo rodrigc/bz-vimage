@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.269 2011/01/08 22:33:46 deischen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/in_pcb.c,v 1.270 2011/01/26 17:31:03 deischen Exp $");
 
 #include "opt_ddb.h"
 #include "opt_ipsec.h"
@@ -885,17 +885,20 @@ in_pcbconnect_setup(struct inpcb *inp, struct sockaddr *nam,
 			if (imo->imo_multicast_ifp != NULL) {
 				ifp = imo->imo_multicast_ifp;
 				IN_IFADDR_RLOCK();
-				TAILQ_FOREACH(ia, &V_in_ifaddrhead, ia_link)
-					if (ia->ia_ifp == ifp)
+				TAILQ_FOREACH(ia, &V_in_ifaddrhead, ia_link) {
+					if ((ia->ia_ifp == ifp) &&
+					    (cred == NULL ||
+					    prison_check_ip4(cred,
+					    &ia->ia_addr.sin_addr) == 0))
 						break;
-				if (ia == NULL) {
-					IN_IFADDR_RUNLOCK();
+				}
+				if (ia == NULL)
 					error = EADDRNOTAVAIL;
-				} else {
+				else {
 					laddr = ia->ia_addr.sin_addr;
-					IN_IFADDR_RUNLOCK();
 					error = 0;
 				}
+				IN_IFADDR_RUNLOCK();
 			}
 		}
 		if (error)

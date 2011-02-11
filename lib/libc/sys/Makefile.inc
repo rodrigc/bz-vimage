@@ -1,5 +1,5 @@
 #	@(#)Makefile.inc	8.3 (Berkeley) 10/24/94
-# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.148 2011/01/07 14:28:54 kib Exp $
+# $FreeBSD: src/lib/libc/sys/Makefile.inc,v 1.149 2011/01/25 21:06:49 kib Exp $
 
 # sys sources
 .PATH: ${.CURDIR}/${LIBC_ARCH}/sys ${.CURDIR}/sys
@@ -53,16 +53,23 @@ SYM_MAPS+=	${.CURDIR}/sys/Symbol.map
 # Generated files
 CLEANFILES+=	${SASM} ${SPSEUDO}
 
+.if ${MACHINE_CPUARCH} == "amd64" || ${MACHINE_CPUARCH} == "i386" || \
+    ${MACHINE_CPUARCH} == "powerpc"
+NOTE_GNU_STACK='\t.section .note.GNU-stack,"",%%progbits\n'
+.else
+NOTE_GNU_STACK=''
+.endif
+
 ${SASM}:
 	printf '#include "compat.h"\n' > ${.TARGET}
 	printf '#include "SYS.h"\nRSYSCALL(${.PREFIX})\n' >> ${.TARGET}
-	printf '\t.section .note.GNU-stack,"",%%progbits\n' >>${.TARGET}
+	printf  ${NOTE_GNU_STACK} >>${.TARGET}
 
 ${SPSEUDO}:
 	printf '#include "compat.h"\n' > ${.TARGET}
 	printf '#include "SYS.h"\nPSEUDO(${.PREFIX:S/_//})\n' \
 	    >> ${.TARGET}
-	printf '\t.section .note.GNU-stack,"",%%progbits\n' >>${.TARGET}
+	printf ${NOTE_GNU_STACK} >>${.TARGET}
 
 MAN+=	abort2.2 accept.2 access.2 acct.2 adjtime.2 \
 	aio_cancel.2 aio_error.2 aio_read.2 aio_return.2 \

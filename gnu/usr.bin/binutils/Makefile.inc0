@@ -1,4 +1,4 @@
-# $FreeBSD: src/gnu/usr.bin/binutils/Makefile.inc0,v 1.44 2011/01/07 20:26:33 imp Exp $
+# $FreeBSD: src/gnu/usr.bin/binutils/Makefile.inc0,v 1.45 2011/01/27 14:16:12 jchandra Exp $
 #
 # This is included explicitly at the top of each sub-Makefile.  We can't
 # use the normal "Makefile.inc" mechanism, because we need some of these
@@ -28,7 +28,7 @@ SRCDIR=	${.CURDIR}/${RELSRC}
 
 .if ${TARGET_CPUARCH} == "arm" || ${TARGET_CPUARCH} == "i386" || \
 	${TARGET_ARCH} == "powerpc" || \
-	${TARGET_ARCH} == "mipsel" || ${TARGET_ARCH} == "mipseb"
+	(${TARGET_CPUARCH} == "mips" && ${TARGET_ARCH:Mmips64*} == "")
 CFLAGS+= -DBFD_DEFAULT_TARGET_SIZE=32
 .else
 CFLAGS+= -DBFD_DEFAULT_TARGET_SIZE=64

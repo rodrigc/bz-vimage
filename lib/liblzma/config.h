@@ -1,4 +1,4 @@
-// $FreeBSD: src/lib/liblzma/config.h,v 1.5 2010/11/12 16:53:17 mm Exp $
+// $FreeBSD: src/lib/liblzma/config.h,v 1.6 2011/02/01 10:28:05 mm Exp $
 #define ASSUME_RAM 128
 #define HAVE_CHECK_CRC32 1
 #define HAVE_CHECK_CRC64 1
@@ -66,7 +66,6 @@
 #define SIZEOF_SIZE_T 8
 #define STDC_HEADERS 1
 #define TUKLIB_CPUCORES_SYSCTL 1
-#define TUKLIB_FAST_UNALIGNED_ACCESS 1
 #define TUKLIB_PHYSMEM_SYSCONF 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1

@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)options.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.32 2010/11/20 14:14:52 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/options.c,v 1.33 2011/02/04 22:47:55 jilles Exp $");
 
 #include <signal.h>
 #include <unistd.h>
@@ -302,21 +302,6 @@ setoption(int flag, int val)
 		}
 	error("Illegal option -%c", flag);
 }
-
-
-
-#ifdef mkinit
-INCLUDE "options.h"
-
-SHELLPROC {
-	int i;
-
-	for (i = 0; i < NOPTS; i++)
-		optlist[i].val = 0;
-	optschanged();
-
-}
-#endif
 
 
 /*

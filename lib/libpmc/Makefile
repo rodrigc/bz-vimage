@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libpmc/Makefile,v 1.17 2010/08/23 22:24:11 imp Exp $
+# $FreeBSD: src/lib/libpmc/Makefile,v 1.19 2011/02/11 02:34:26 imp Exp $
 
 LIB=	pmc
 

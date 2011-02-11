@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)alias.c	8.3 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/alias.c,v 1.29 2010/12/21 20:47:06 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/alias.c,v 1.30 2011/02/04 22:47:55 jilles Exp $");
 
 #include <stdlib.h>
 #include "shell.h"
@@ -145,15 +145,7 @@ unalias(const char *name)
 	return (1);
 }
 
-#ifdef mkinit
-MKINIT void rmaliases(void);
-
-SHELLPROC {
-	rmaliases();
-}
-#endif
-
-void
+static void
 rmaliases(void)
 {
 	struct alias *ap, *tmp;

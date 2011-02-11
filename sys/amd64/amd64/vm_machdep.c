@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/vm_machdep.c,v 1.274 2010/12/22 00:18:42 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/vm_machdep.c,v 1.275 2011/01/26 20:03:58 dchagin Exp $");
 
 #include "opt_isa.h"
 #include "opt_cpu.h"
@@ -445,7 +445,7 @@ cpu_set_upcall_kse(struct thread *td, void (*entry)(void *), void *arg,
 	cpu_thread_clean(td);
 
 #ifdef COMPAT_FREEBSD32
-	if (td->td_proc->p_sysent->sv_flags & SV_ILP32) {
+	if (SV_PROC_FLAG(td->td_proc, SV_ILP32)) {
 		/*
 	 	 * Set the trap frame to point at the beginning of the uts
 		 * function.
@@ -498,7 +498,7 @@ cpu_set_user_tls(struct thread *td, void *tls_base)
 
 	pcb = td->td_pcb;
 #ifdef COMPAT_FREEBSD32
-	if (td->td_proc->p_sysent->sv_flags & SV_ILP32) {
+	if (SV_PROC_FLAG(td->td_proc, SV_ILP32)) {
 		pcb->pcb_gsbase = (register_t)tls_base;
 		return (0);
 	}

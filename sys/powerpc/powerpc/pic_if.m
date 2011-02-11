@@ -24,7 +24,7 @@
 # SUCH DAMAGE.
 #
 # from: src/sys/kern/bus_if.m,v 1.21 2002/04/21 11:16:10 markm Exp
-# $FreeBSD: src/sys/powerpc/powerpc/pic_if.m,v 1.8 2010/06/23 22:33:03 nwhitehorn Exp $
+# $FreeBSD: src/sys/powerpc/powerpc/pic_if.m,v 1.9 2011/01/29 20:58:38 marcel Exp $
 #
 
 #include <sys/bus.h>
@@ -64,10 +64,6 @@ METHOD void eoi {
 METHOD void ipi {
 	device_t	dev;
 	u_int		cpu;
-};
-
-METHOD uint32_t id {
-	device_t	dev;
 };
 
 METHOD void mask {

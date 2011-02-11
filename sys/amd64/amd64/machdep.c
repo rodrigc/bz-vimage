@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.739 2011/01/21 10:26:26 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.741 2011/02/05 15:10:27 kib Exp $");
 
 #include "opt_atalk.h"
 #include "opt_atpic.h"
@@ -331,6 +331,9 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	fpstate_drop(td);
 	sf.sf_uc.uc_mcontext.mc_fsbase = pcb->pcb_fsbase;
 	sf.sf_uc.uc_mcontext.mc_gsbase = pcb->pcb_gsbase;
+	bzero(sf.sf_uc.uc_mcontext.mc_spare,
+	    sizeof(sf.sf_uc.uc_mcontext.mc_spare));
+	bzero(sf.sf_uc.__spare__, sizeof(sf.sf_uc.__spare__));
 
 	/* Allocate space for the signal handler context. */
 	if ((td->td_pflags & TDP_ALTSTACK) != 0 && !oonstack &&
@@ -352,6 +355,7 @@ sendsig(sig_t catcher, ksiginfo_t *ksi, sigset_t *mask)
 	/* Build the argument list for the signal handler. */
 	regs->tf_rdi = sig;			/* arg 1 in %rdi */
 	regs->tf_rdx = (register_t)&sfp->sf_uc;	/* arg 3 in %rdx */
+	bzero(&sf.sf_si, sizeof(sf.sf_si));
 	if (SIGISMEMBER(psp->ps_siginfo, sig)) {
 		/* Signal handler installed with SA_SIGINFO. */
 		regs->tf_rsi = (register_t)&sfp->sf_si;	/* arg 2 in %rsi */
@@ -1527,12 +1531,14 @@ hammer_time(u_int64_t modulep, u_int64_t physfree)
 	struct nmi_pcpu *np;
 	u_int64_t msr;
 	char *env;
+	size_t kstack0_sz;
 
 	thread0.td_kstack = physfree + KERNBASE;
-	bzero((void *)thread0.td_kstack, KSTACK_PAGES * PAGE_SIZE);
-	physfree += KSTACK_PAGES * PAGE_SIZE;
-	thread0.td_pcb = (struct pcb *)
-	   (thread0.td_kstack + KSTACK_PAGES * PAGE_SIZE) - 1;
+	thread0.td_kstack_pages = KSTACK_PAGES;
+	kstack0_sz = thread0.td_kstack_pages * PAGE_SIZE;
+	bzero((void *)thread0.td_kstack, kstack0_sz);
+	physfree += kstack0_sz;
+	thread0.td_pcb = (struct pcb *)(thread0.td_kstack + kstack0_sz) - 1;
 
 	/*
  	 * This may be done better later if it gets more high level
@@ -1674,8 +1680,8 @@ hammer_time(u_int64_t modulep, u_int64_t physfree)
 	initializecpucache();
 
 	/* make an initial tss so cpu can get interrupt stack on syscall! */
-	common_tss[0].tss_rsp0 = thread0.td_kstack + \
-	    KSTACK_PAGES * PAGE_SIZE - sizeof(struct pcb);
+	common_tss[0].tss_rsp0 = thread0.td_kstack +
+	    kstack0_sz - sizeof(struct pcb);
 	/* Ensure the stack is aligned to 16 bytes */
 	common_tss[0].tss_rsp0 &= ~0xFul;
 	PCPU_SET(rsp0, common_tss[0].tss_rsp0);
@@ -2041,6 +2047,7 @@ get_mcontext(struct thread *td, mcontext_t *mcp, int flags)
 	get_fpcontext(td, mcp);
 	mcp->mc_fsbase = pcb->pcb_fsbase;
 	mcp->mc_gsbase = pcb->pcb_gsbase;
+	bzero(mcp->mc_spare, sizeof(mcp->mc_spare));
 	return (0);
 }
 

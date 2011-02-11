@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2008, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_auth.h,v 1.8 2010/01/22 07:53:41 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_auth.h,v 1.9 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __SCTP_AUTH_H__
 #define __SCTP_AUTH_H__

@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 ***************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_sge.c,v 1.98 2011/01/19 23:00:25 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cxgb/cxgb_sge.c,v 1.99 2011/01/27 00:34:12 mdf Exp $");
 
 #include "opt_inet.h"
 
@@ -3251,7 +3251,9 @@ t3_dump_rspq(SYSCTL_HANDLER_ARGS)
 	err = t3_sge_read_rspq(qs->port->adapter, rspq->cntxt_id, data);
 	if (err)
 		return (err);
-
+	err = sysctl_wire_old_buffer(req, 0);
+	if (err)
+		return (err);
 	sb = sbuf_new_for_sysctl(NULL, NULL, QDUMP_SBUF_SIZE, req);
 
 	sbuf_printf(sb, " \n index=%u size=%u MSI-X/RspQ=%u intr enable=%u intr armed=%u\n",
@@ -3316,7 +3318,9 @@ t3_dump_txq_eth(SYSCTL_HANDLER_ARGS)
 	err = t3_sge_read_ecntxt(qs->port->adapter, qs->rspq.cntxt_id, data);
 	if (err)
 		return (err);
-	
+	err = sysctl_wire_old_buffer(req, 0);
+	if (err)
+		return (err);
 	sb = sbuf_new_for_sysctl(NULL, NULL, QDUMP_SBUF_SIZE, req);
 
 	sbuf_printf(sb, " \n credits=%u GTS=%u index=%u size=%u rspq#=%u cmdq#=%u\n",
@@ -3381,6 +3385,9 @@ t3_dump_txq_ctrl(SYSCTL_HANDLER_ARGS)
 		return (EINVAL);
 	}
 
+	err = sysctl_wire_old_buffer(req, 0);
+	if (err != 0)
+		return (err);
 	sb = sbuf_new_for_sysctl(NULL, NULL, QDUMP_SBUF_SIZE, req);
 	sbuf_printf(sb, " qid=%d start=%d -> end=%d\n", qs->idx,
 	    txq->txq_dump_start,

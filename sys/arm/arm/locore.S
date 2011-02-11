@@ -37,7 +37,7 @@
 #include <machine/asm.h>
 #include <machine/armreg.h>
 #include <machine/pte.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/locore.S,v 1.23 2009/06/09 17:21:47 marcel Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/locore.S,v 1.24 2011/02/03 17:35:16 marcel Exp $");
 
 /* What size should this really be ? It is only used by initarm() */
 #define INIT_ARM_STACK_SIZE	2048
@@ -65,14 +65,20 @@ __FBSDID("$FreeBSD: src/sys/arm/arm/locore.S,v 1.23 2009/06/09 17:21:47 marcel E
 
 ENTRY_NP(btext)
 
+/*
+ * On entry:
+ *	r0 - metadata pointer or 0
+ *	r1 - if (r0 == 0) then metadata pointer
+ */
 ASENTRY_NP(_start)
 
-/*
- * Move metadata ptr to r12 (ip)
- */
-
+	/* Move metadata ptr to r12 (ip) */
 	mov	ip, r0
-
+	ldr	r0, =0
+	cmp	ip, r0
+	bne	1f
+	mov	ip, r1
+1:
 	/* Make sure interrupts are disabled. */
 	mrs	r7, cpsr
 	orr	r7, r7, #(I32_bit|F32_bit)

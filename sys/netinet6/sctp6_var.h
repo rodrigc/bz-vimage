@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,7 +35,7 @@
 #define _NETINET6_SCTP6_VAR_H_
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/sctp6_var.h,v 1.10 2008/07/09 16:45:30 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/sctp6_var.h,v 1.11 2011/02/05 12:12:51 rrs Exp $");
 
 /* TODO __Userspace__ IPv6 stuff... */
 #if defined(_KERNEL)

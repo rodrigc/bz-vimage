@@ -28,7 +28,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man3/pthread_self.3,v 1.14 2007/10/22 10:08:01 ru Exp $
+.\" $FreeBSD: src/share/man/man3/pthread_self.3,v 1.15 2011/02/07 21:26:46 jkim Exp $
 .\"
 .Dd April 4, 1996
 .Dt PTHREAD_SELF 3
@@ -54,7 +54,8 @@ function returns the thread ID of the calling thread.
 None.
 .Sh SEE ALSO
 .Xr pthread_create 3 ,
-.Xr pthread_equal 3
+.Xr pthread_equal 3 ,
+.Xr pthread_getthreadid_np 3
 .Sh STANDARDS
 The
 .Fn pthread_self

@@ -64,9 +64,9 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-#	$FreeBSD: src/share/examples/kld/Makefile,v 1.4 2006/01/29 02:52:39 mlaier Exp $
+#	$FreeBSD: src/share/examples/kld/Makefile,v 1.5 2011/02/11 07:26:17 lstewart Exp $
 #
 
-SUBDIR=	cdev dyn_sysctl firmware syscall
+SUBDIR=	cdev dyn_sysctl firmware khelp syscall
 
 .include <bsd.subdir.mk>

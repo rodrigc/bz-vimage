@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/usb/usb_pf.c,v 1.8 2010/12/07 20:23:47 weongyo Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/usb/usb_pf.c,v 1.9 2011/02/01 10:25:48 hselasky Exp $");
 #include <sys/param.h>
 #include <sys/kernel.h>
 #include <sys/bus.h>
@@ -228,10 +228,10 @@ usbpf_xfertap(struct usb_xfer *xfer, int type)
 	ptr += sizeof(struct usbpf_pkthdr);
 
 	for (i = 0; i < up->up_frames; i++) {
-		if (ptr + sizeof(u_int32_t) >= end)
+		if (ptr + sizeof(uint32_t) >= end)
 			goto done;
-		*((u_int32_t *)ptr) = htole32(xfer->frlengths[i]);
-		ptr += sizeof(u_int32_t);
+		*((uint32_t *)ptr) = htole32(xfer->frlengths[i]);
+		ptr += sizeof(uint32_t);
 
 		if (ptr + xfer->frlengths[i] >= end)
 			goto done;

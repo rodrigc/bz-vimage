@@ -1,5 +1,5 @@
 /*
- * $FreeBSD: src/lib/libthr/pthread.map,v 1.41 2011/01/09 12:38:40 kib Exp $
+ * $FreeBSD: src/lib/libthr/pthread.map,v 1.42 2011/02/07 21:26:46 jkim Exp $
  */
 
 /*
@@ -272,6 +272,7 @@ FBSDprivate_1.0 {
 	_pthread_getprio;
 	_pthread_getschedparam;
 	_pthread_getspecific;
+	_pthread_getthreadid_np;
 	_pthread_join;
 	_pthread_key_create;
 	_pthread_key_delete;
@@ -403,6 +404,7 @@ FBSD_1.1 {
 
 FBSD_1.2 {
 	openat;
+	pthread_getthreadid_np;
 	setcontext;
 	swapcontext;
 };

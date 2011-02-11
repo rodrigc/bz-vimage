@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/cs/if_cs.c,v 1.59 2011/01/18 15:23:16 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/cs/if_cs.c,v 1.60 2011/01/29 00:53:58 andrew Exp $");
 
 /*
  *
@@ -271,8 +271,6 @@ cs_cs89x0_probe(device_t dev)
 	error = cs_alloc_port(dev, 0, CS_89x0_IO_PORTS);
 	if (error)
 		return (error);
-
-	sc->nic_addr = rman_get_start(sc->port_res);
 
 	if ((cs_inw(sc, ADD_PORT) & ADD_MASK) != ADD_SIG) {
 		/* Chip not detected. Let's try to reset it */
@@ -704,7 +702,7 @@ static int
 cs_get_packet(struct cs_softc *sc)
 {
 	struct ifnet *ifp = sc->ifp;
-	int iobase = sc->nic_addr, status, length;
+	int status, length;
 	struct ether_header *eh;
 	struct mbuf *m;
 
@@ -746,7 +744,8 @@ cs_get_packet(struct cs_softc *sc)
 	m->m_len = length;
 
 	/* Get the data */
-	insw(iobase + RX_FRAME_PORT, m->m_data, (length+1)>>1);
+	bus_read_multi_2(sc->port_res, RX_FRAME_PORT, mtod(m, uint16_t *),
+	    (length + 1) >> 1);
 
 	eh = mtod(m, struct ether_header *);
 
@@ -869,7 +868,8 @@ cs_write_mbufs( struct cs_softc *sc, struct mbuf *m )
 static void
 cs_xmit_buf( struct cs_softc *sc )
 {
-	outsw(sc->nic_addr+TX_FRAME_PORT, sc->buffer, (sc->buf_len+1)>>1);
+	bus_write_multi_2(sc->port_res, TX_FRAME_PORT, (uint16_t *)sc->buffer,
+	    (sc->buf_len + 1) >> 1);
 	sc->buf_len = 0;
 }
 

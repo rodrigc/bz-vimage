@@ -23,14 +23,41 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/include/sf_buf.h,v 1.2 2010/04/16 23:48:28 jmallett Exp $
+ * $FreeBSD: src/sys/mips/include/sf_buf.h,v 1.3 2011/01/27 14:49:22 jchandra Exp $
  */
 
 #ifndef _MACHINE_SF_BUF_H_
 #define _MACHINE_SF_BUF_H_
 
+#ifdef __mips_n64
+#include <vm/vm.h>
+#include <vm/vm_param.h>
+#include <vm/vm_page.h>
+#else
 #include <sys/queue.h>
+#endif
 
+#ifdef __mips_n64
+/* In 64 bit the whole memory is directly mapped */
+struct	sf_buf;
+
+static __inline vm_offset_t
+sf_buf_kva(struct sf_buf *sf)
+{
+	vm_page_t	m;
+
+	m = (vm_page_t)sf;
+	return (MIPS_PHYS_TO_DIRECT(VM_PAGE_TO_PHYS(m)));
+}
+
+static __inline struct vm_page *
+sf_buf_page(struct sf_buf *sf)
+{
+
+	return ((vm_page_t)sf);
+}
+
+#else /* ! __mips_n64 */
 struct vm_page;
 
 struct sf_buf {
@@ -52,5 +79,6 @@ sf_buf_page(struct sf_buf *sf)
 
 	return (sf->m);
 }
+#endif /* __mips_n64 */
 
 #endif /* !_MACHINE_SF_BUF_H_ */

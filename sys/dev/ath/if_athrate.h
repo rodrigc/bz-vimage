@@ -27,7 +27,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/ath/if_athrate.h,v 1.8 2008/10/27 16:58:06 sam Exp $
+ * $FreeBSD: src/sys/dev/ath/if_athrate.h,v 1.9 2011/02/01 08:10:18 adrian Exp $
  */
 #ifndef _ATH_RATECTRL_H_
 #define _ATH_RATECTRL_H_
@@ -101,6 +101,12 @@ void	ath_rate_newassoc(struct ath_softc *, struct ath_node *,
 /*
  * Transmit handling.
  */
+/*
+ * Return the four TX rate index and try counts for the current data packet.
+ */
+void	ath_rate_getxtxrates(struct ath_softc *sc, struct ath_node *an,
+		uint8_t rix0, uint8_t *rix, uint8_t *try);
+
 /*
  * Return the transmit info for a data packet.  If multi-rate state
  * is to be setup then try0 should contain a value other than ATH_TXMATRY

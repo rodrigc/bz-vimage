@@ -24,14 +24,14 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	$FreeBSD: src/lib/libdevinfo/devinfo.h,v 1.7 2009/11/15 16:44:43 attilio Exp $
+ *	$FreeBSD: src/lib/libdevinfo/devinfo.h,v 1.8 2011/02/10 04:53:09 imp Exp $
  */
 
 #ifndef _DEVINFO_H_INCLUDED
 #define _DEVINFO_H_INCLUDED
 
 #include <sys/cdefs.h>
-#include <sys/_types.h>
+#include <sys/types.h>
 #include <sys/bus.h>
 
 typedef __uintptr_t	devinfo_handle_t;

@@ -1,4 +1,4 @@
-/* $FreeBSD: src/lib/libkvm/kvm_ia64.c,v 1.8 2007/05/19 13:11:26 marcel Exp $ */
+/* $FreeBSD: src/lib/libkvm/kvm_ia64.c,v 1.9 2011/01/23 11:08:28 uqs Exp $ */
 /*	$NetBSD: kvm_alpha.c,v 1.7.2.1 1997/11/02 20:34:26 mellon Exp $	*/
 
 /*
@@ -32,6 +32,7 @@
 #include <sys/elf64.h>
 #include <sys/mman.h>
 
+#include <machine/atomic.h>
 #include <machine/pte.h>
 
 #include <kvm.h>
@@ -123,7 +124,7 @@ _kvm_freevtop(kvm_t *kd)
 int
 _kvm_initvtop(kvm_t *kd)
 {
-	struct nlist nlist[2];
+	struct nlist nl[2];
 	uint64_t va;
 	Elf64_Ehdr *ehdr;
 	size_t hdrsz;
@@ -150,15 +151,15 @@ _kvm_initvtop(kvm_t *kd)
 	 * addresses/values.
 	 */
 
-	nlist[0].n_name = "ia64_kptdir";
-	nlist[1].n_name = 0;
+	nl[0].n_name = "ia64_kptdir";
+	nl[1].n_name = 0;
 
-	if (kvm_nlist(kd, nlist) != 0) {
+	if (kvm_nlist(kd, nl) != 0) {
 		_kvm_err(kd, kd->program, "bad namelist");
 		return (-1);
 	}
 
-	if (kvm_read(kd, (nlist[0].n_value), &va, sizeof(va)) != sizeof(va)) {
+	if (kvm_read(kd, (nl[0].n_value), &va, sizeof(va)) != sizeof(va)) {
 		_kvm_err(kd, kd->program, "cannot read kptdir");
 		return (-1);
 	}

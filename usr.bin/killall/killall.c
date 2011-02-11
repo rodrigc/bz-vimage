@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/killall/killall.c,v 1.37 2009/12/13 03:14:06 delphij Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/killall/killall.c,v 1.38 2011/02/04 16:40:50 jilles Exp $");
 
 #include <sys/param.h>
 #include <sys/jail.h>
@@ -218,7 +218,7 @@ main(int ac, char **av)
 				break;
 			default:
 				if (isalpha((unsigned char)**av)) {
-					if (strncasecmp(*av, "sig", 3) == 0)
+					if (strncasecmp(*av, "SIG", 3) == 0)
 						*av += 3;
 					for (sig = NSIG, p = sys_signame + 1;
 					     --sig; ++p)

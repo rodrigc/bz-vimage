@@ -1,7 +1,8 @@
-/* $FreeBSD: src/lib/bind/isc/isc/platform.h,v 1.8 2010/10/31 04:45:25 dougb Exp $ */
+/* $FreeBSD: src/lib/bind/isc/isc/platform.h,v 1.9 2011/02/06 22:46:07 dougb Exp $ */
+
 
 /*
- * Copyright (C) 2004-2009  Internet Systems Consortium, Inc. ("ISC")
+ * Copyright (C) 2004-2010  Internet Systems Consortium, Inc. ("ISC")
  * Copyright (C) 1999-2003  Internet Software Consortium.
  *
  * Permission to use, copy, modify, and/or distribute this software for any
@@ -213,6 +214,12 @@
 /*
  * Defined to <gssapi.h> or <gssapi/gssapi.h> for how to include
  * the GSSAPI header.
+ */
+
+
+/*
+ * Defined to <krb5.h> or <krb5/krb5.h> for how to include
+ * the KRB5 header.
  */
 
 

@@ -801,13 +801,6 @@ find(dns_db_t *db, dns_name_t *name, dns_dbversion_t *version,
 
 	for (i = olabels; i <= nlabels; i++) {
 		/*
-		 * Unless this is an explicit lookup at the origin, don't
-		 * look at the origin.
-		 */
-		if (i == olabels && i != nlabels)
-			continue;
-
-		/*
 		 * Look up the next label.
 		 */
 		dns_name_getlabelsequence(name, nlabels - i, i, xname);

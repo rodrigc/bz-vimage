@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.1 (Berkeley) 6/4/93
-# $FreeBSD: src/lib/libkvm/Makefile,v 1.26 2010/11/07 03:26:22 gonzo Exp $
+# $FreeBSD: src/lib/libkvm/Makefile,v 1.27 2011/01/23 11:08:36 uqs Exp $
 
 LIB=	kvm
 SHLIBDIR?= /lib
@@ -15,7 +15,7 @@ KVM_ARCH=${MACHINE_ARCH}
 KVM_ARCH=${MACHINE_CPUARCH}
 .endif
 
-WARNS?=	0
+WARNS?=	3
 
 SRCS=	kvm.c kvm_${KVM_ARCH}.c kvm_cptime.c kvm_file.c kvm_getloadavg.c \
 	kvm_getswapinfo.c kvm_pcpu.c kvm_proc.c kvm_vnet.c

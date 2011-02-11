@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)if.c	8.5 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/net/if.c,v 1.394 2011/01/12 19:53:50 mdf Exp $
+ * $FreeBSD: src/sys/net/if.c,v 1.395 2011/01/24 22:21:58 jhb Exp $
  */
 
 #include "opt_compat.h"
@@ -269,6 +269,7 @@ ifindex_alloc_locked(u_short *idxp)
 
 	IFNET_WLOCK_ASSERT();
 
+retry:
 	/*
 	 * Try to find an empty slot below V_if_index.  If we fail, take the
 	 * next slot.
@@ -281,10 +282,12 @@ ifindex_alloc_locked(u_short *idxp)
 	/* Catch if_index overflow. */
 	if (idx < 1)
 		return (ENOSPC);
+	if (idx >= V_if_indexlim) {
+		if_grow();
+		goto retry;
+	}
 	if (idx > V_if_index)
 		V_if_index = idx;
-	if (V_if_index >= V_if_indexlim)
-		if_grow();
 	*idxp = idx;
 	return (0);
 }
@@ -354,7 +357,9 @@ vnet_if_init(const void *unused __unused)
 
 	TAILQ_INIT(&V_ifnet);
 	TAILQ_INIT(&V_ifg_head);
+	IFNET_WLOCK();
 	if_grow();				/* create initial table */
+	IFNET_WUNLOCK();
 }
 VNET_SYSINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_SECOND, vnet_if_init, NULL);
 
@@ -400,16 +405,25 @@ VNET_SYSUNINIT(interfaces, SI_SUB_INIT_IF, SI_ORDER_ANY,
 static void
 if_grow(void)
 {
+	int oldlim;
 	u_int n;
 	struct ifindex_entry *e;
 
-	V_if_indexlim <<= 1;
-	n = V_if_indexlim * sizeof(*e);
+	IFNET_WLOCK_ASSERT();
+	oldlim = V_if_indexlim;
+	IFNET_WUNLOCK();
+	n = (oldlim << 1) * sizeof(*e);
 	e = malloc(n, M_IFNET, M_WAITOK | M_ZERO);
+	IFNET_WLOCK();
+	if (V_if_indexlim != oldlim) {
+		free(e, M_IFNET);
+		return;
+	}
 	if (V_ifindex_table != NULL) {
 		memcpy((caddr_t)e, (caddr_t)V_ifindex_table, n/2);
 		free((caddr_t)V_ifindex_table, M_IFNET);
 	}
+	V_if_indexlim <<= 1;
 	V_ifindex_table = e;
 }
 

@@ -23,7 +23,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man4/amdtemp.4,v 1.3 2010/05/13 12:07:55 uqs Exp $
+.\" $FreeBSD: src/share/man/man4/amdtemp.4,v 1.4 2011/02/07 11:20:58 gjb Exp $
 .\"
 .Dd April 8, 2008
 .Dt AMDTEMP 4
@@ -53,7 +53,7 @@ in AMD K8, K10 and K11 processors.
 .Pp
 For the K8 family, the
 .Nm
-driver reports each cores' temperature through a sysctl node in the
+driver reports each core's temperature through a sysctl node in the
 corresponding CPU devices's sysctl tree, named
 .Va dev.amdtemp.%d.sensor{0,1}.core{0,1} .
 The driver also creates

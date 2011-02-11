@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/siis/siis.h,v 1.10 2010/05/02 12:07:47 mav Exp $
+ * $FreeBSD: src/sys/dev/siis/siis.h,v 1.11 2011/01/26 13:10:07 mav Exp $
  */
 
 /* ATA register defines */
@@ -371,6 +371,7 @@ struct siis_channel {
 	struct ata_dma		dma;            /* DMA data */
 	struct cam_sim		*sim;
 	struct cam_path		*path;
+	struct cdev		*led;		/* Activity led led(4) cdev. */
 	int			quirks;
 	int			pm_level;	/* power management level */
 

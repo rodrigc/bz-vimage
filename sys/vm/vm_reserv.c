@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_reserv.c,v 1.9 2010/11/19 04:30:33 mlaier Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_reserv.c,v 1.10 2011/01/27 00:34:12 mdf Exp $");
 
 #include "opt_vm.h"
 
@@ -182,6 +182,9 @@ sysctl_vm_reserv_partpopq(SYSCTL_HANDLER_ARGS)
 	vm_reserv_t rv;
 	int counter, error, level, unused_pages;
 
+	error = sysctl_wire_old_buffer(req, 0);
+	if (error != 0)
+		return (error);
 	sbuf_new_for_sysctl(&sbuf, NULL, 128, req);
 	sbuf_printf(&sbuf, "\nLEVEL     SIZE  NUMBER\n\n");
 	for (level = -1; level <= VM_NRESERVLEVEL - 2; level++) {

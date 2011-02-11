@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.234 2011/01/12 23:07:51 csjp Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/if_ether.c,v 1.235 2011/01/25 17:15:23 thompsa Exp $");
 
 #include "opt_inet.h"
 
@@ -564,7 +564,7 @@ in_arpinput(struct mbuf *m)
 	 */
 	IN_IFADDR_RLOCK();
 	LIST_FOREACH(ia, INADDR_HASH(itaddr.s_addr), ia_hash) {
-		if (((bridged && ia->ia_ifp->if_bridge != NULL) ||
+		if (((bridged && ia->ia_ifp->if_bridge == ifp->if_bridge) ||
 		    ia->ia_ifp == ifp) &&
 		    itaddr.s_addr == ia->ia_addr.sin_addr.s_addr) {
 			ifa_ref(&ia->ia_ifa);
@@ -581,7 +581,7 @@ in_arpinput(struct mbuf *m)
 		}
 	}
 	LIST_FOREACH(ia, INADDR_HASH(isaddr.s_addr), ia_hash)
-		if (((bridged && ia->ia_ifp->if_bridge != NULL) ||
+		if (((bridged && ia->ia_ifp->if_bridge == ifp->if_bridge) ||
 		    ia->ia_ifp == ifp) &&
 		    isaddr.s_addr == ia->ia_addr.sin_addr.s_addr) {
 			ifa_ref(&ia->ia_ifa);

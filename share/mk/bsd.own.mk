@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/mk/bsd.own.mk,v 1.92 2010/12/22 14:59:22 nwhitehorn Exp $
+# $FreeBSD: src/share/mk/bsd.own.mk,v 1.93 2011/02/10 19:13:54 keramida Exp $
 #
 # The include file <bsd.own.mk> set common variables for owner,
 # group, mode, and directories. Defaults are in brackets.
@@ -29,6 +29,8 @@
 # LIBCOMPATDIR	Base path for compat libraries. [/usr/lib/compat]
 #
 # LIBDATADIR	Base path for misc. utility data files. [/usr/libdata]
+#
+# LIBEXECDIR	Base path for system daemons and utilities. [/usr/libexec]
 #
 # LINTLIBDIR	Base path for lint libraries. [/usr/libdata/lint]
 #
@@ -129,6 +131,7 @@ KMODMODE?=	${BINMODE}
 LIBDIR?=	/usr/lib
 LIBCOMPATDIR?=	/usr/lib/compat
 LIBDATADIR?=	/usr/libdata
+LIBEXECDIR?=	/usr/libexec
 LINTLIBDIR?=	/usr/libdata/lint
 SHLIBDIR?=	${LIBDIR}
 LIBOWN?=	${BINOWN}

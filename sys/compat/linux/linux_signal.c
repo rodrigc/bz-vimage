@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linux/linux_signal.c,v 1.69 2010/06/29 20:41:52 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linux/linux_signal.c,v 1.70 2011/01/23 09:50:39 dchagin Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -526,7 +526,7 @@ linux_kill(struct thread *td, struct linux_kill_args *args)
 	 * Allow signal 0 as a means to check for privileges
 	 */
 	if (!LINUX_SIG_VALID(args->signum) && args->signum != 0)
-		return EINVAL;
+		return (EINVAL);
 
 	if (args->signum > 0 && args->signum <= LINUX_SIGTBLSZ)
 		tmp.signum = linux_to_bsd_signal[_SIG_IDX(args->signum)];

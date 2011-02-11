@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,7 +33,7 @@
 /* $KAME: sctp_output.h,v 1.14 2005/03/06 16:04:18 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.h,v 1.21 2010/09/15 23:10:45 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_output.h,v 1.24 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __sctp_output_h__
 #define __sctp_output_h__
@@ -135,11 +137,6 @@ int
 sctp_output(struct sctp_inpcb *, struct mbuf *, struct sockaddr *,
     struct mbuf *, struct thread *, int);
 
-void
-sctp_insert_on_wheel(struct sctp_tcb *stcb,
-    struct sctp_association *asoc,
-    struct sctp_stream_out *strq, int holdslock);
-
 void 
 sctp_chunk_output(struct sctp_inpcb *, struct sctp_tcb *, int, int
 #if !defined(__APPLE__) && !defined(SCTP_SO_LOCK_TESTING)
@@ -168,7 +165,7 @@ sctp_send_packet_dropped(struct sctp_tcb *, struct sctp_nets *, struct mbuf *,
 
 
 
-void sctp_send_cwr(struct sctp_tcb *, struct sctp_nets *, uint32_t);
+void sctp_send_cwr(struct sctp_tcb *, struct sctp_nets *, uint32_t, uint8_t);
 
 
 void

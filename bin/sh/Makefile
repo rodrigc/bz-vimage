@@ -1,24 +1,24 @@
 #	@(#)Makefile	8.4 (Berkeley) 5/5/95
-# $FreeBSD: src/bin/sh/Makefile,v 1.55 2010/12/21 22:47:34 jilles Exp $
+# $FreeBSD: src/bin/sh/Makefile,v 1.56 2011/02/08 23:18:06 jilles Exp $
 
 PROG=	sh
 INSTALLFLAGS= -S
-SHSRCS=	alias.c arith.y arith_lex.l cd.c echo.c error.c eval.c exec.c expand.c \
+SHSRCS=	alias.c arith_yacc.c arith_yylex.c cd.c echo.c error.c eval.c \
+	exec.c expand.c \
 	histedit.c input.c jobs.c kill.c mail.c main.c memalloc.c miscbltin.c \
 	mystring.c options.c output.c parser.c printf.c redir.c show.c \
 	test.c trap.c var.c
 GENSRCS= builtins.c init.c nodes.c syntax.c
 GENHDRS= builtins.h nodes.h syntax.h token.h
-SRCS= ${SHSRCS} ${GENSRCS} ${GENHDRS} y.tab.h
+SRCS= ${SHSRCS} ${GENSRCS} ${GENHDRS}
 
 # MLINKS for Shell built in commands for which there are no userland
 # utilities of the same name are handled with the associated manpage,
 # builtin.1 in share/man/man1/.
 
-DPADD= ${LIBL} ${LIBEDIT} ${LIBTERMCAP}
-LDADD= -ll -ledit -ltermcap
+DPADD= ${LIBEDIT} ${LIBTERMCAP}
+LDADD= -ledit -ltermcap
 
-LFLAGS= -8	# 8-bit lex scanner for arithmetic
 CFLAGS+=-DSHELL -I. -I${.CURDIR}
 # for debug:
 # DEBUG_FLAGS+= -g -DDEBUG=2 -fno-inline

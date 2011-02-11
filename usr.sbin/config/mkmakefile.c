@@ -32,7 +32,7 @@
 static char sccsid[] = "@(#)mkmakefile.c	8.1 (Berkeley) 6/6/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.101 2010/11/02 05:27:05 obrien Exp $";
+  "$FreeBSD: src/usr.sbin/config/mkmakefile.c,v 1.102 2011/02/11 06:35:53 imp Exp $";
 #endif /* not lint */
 
 /*
@@ -140,6 +140,8 @@ makefile(void)
 	if (ofp == 0)
 		err(1, "%s", path("Makefile.new"));
 	fprintf(ofp, "KERN_IDENT=%s\n", ident);
+	fprintf(ofp, "MACHINE=%s\n", machinename);
+	fprintf(ofp, "MACHINE_ARCH=%s\n", machinearch);
 	SLIST_FOREACH_SAFE(op, &mkopt, op_next, t) {
 		fprintf(ofp, "%s=%s", op->op_name, op->op_value);
 		while ((op = SLIST_NEXT(op, op_append)) != NULL)

@@ -1,6 +1,6 @@
 /*-
- * Copyright (c) 2010, by Randall Stewart & Michael Tuexen,
- * All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_dtrace_define.h,v 1.1 2010/11/25 13:39:55 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_dtrace_define.h,v 1.2 2011/02/05 12:12:51 rrs Exp $");
 #ifndef __sctp_dtrace_define_h__
 #include "opt_kdtrace.h"
 #include <sys/kernel.h>

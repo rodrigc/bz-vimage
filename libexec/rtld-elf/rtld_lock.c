@@ -23,7 +23,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *	from: FreeBSD: src/libexec/rtld-elf/sparc64/lockdflt.c,v 1.3 2002/10/09
- * $FreeBSD: src/libexec/rtld-elf/rtld_lock.c,v 1.10 2010/12/25 08:51:20 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/rtld_lock.c,v 1.11 2011/02/09 09:20:27 kib Exp $
  */
 
 /*
@@ -259,7 +259,7 @@ lock_restart_for_upgrade(RtldLockState *lockstate)
 	case RTLD_LOCK_WLOCKED:
 		break;
 	case RTLD_LOCK_RLOCKED:
-		longjmp(lockstate->env, 1);
+		siglongjmp(lockstate->env, 1);
 		break;
 	default:
 		assert(0);

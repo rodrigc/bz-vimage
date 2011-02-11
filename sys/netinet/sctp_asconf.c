@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,7 +33,7 @@
 /* $KAME: sctp_asconf.c,v 1.24 2005/03/06 16:04:16 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.50 2010/12/30 21:32:35 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_asconf.c,v 1.53 2011/02/10 14:46:37 tuexen Exp $");
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_var.h>
 #include <netinet/sctp_sysctl.h>
@@ -1348,7 +1350,7 @@ sctp_asconf_queue_mgmt(struct sctp_tcb *stcb, struct sctp_ifa *ifa,
 
 	TAILQ_INSERT_TAIL(&stcb->asoc.asconf_queue, aa, next);
 #ifdef SCTP_DEBUG
-	if (SCTP_BASE_SYSCTL(sctp_debug_on) && SCTP_DEBUG_ASCONF2) {
+	if (SCTP_BASE_SYSCTL(sctp_debug_on) & SCTP_DEBUG_ASCONF2) {
 		if (type == SCTP_ADD_IP_ADDRESS) {
 			SCTP_PRINTF("asconf_queue_mgmt: inserted asconf ADD_IP_ADDRESS: ");
 			SCTPDBG_ADDR(SCTP_DEBUG_ASCONF2, sa);
@@ -3102,6 +3104,7 @@ sctp_addr_mgmt_ep_sa(struct sctp_inpcb *inp, struct sockaddr *sa,
     uint32_t type, uint32_t vrf_id, struct sctp_ifa *sctp_ifap)
 {
 	struct sctp_ifa *ifa;
+	struct sctp_laddr *laddr, *nladdr;
 
 	if (sa->sa_len == 0) {
 		SCTP_LTRACE_ERR_RET(inp, NULL, NULL, SCTP_FROM_SCTP_ASCONF, EINVAL);
@@ -3122,8 +3125,6 @@ sctp_addr_mgmt_ep_sa(struct sctp_inpcb *inp, struct sockaddr *sa,
 		if (type == SCTP_ADD_IP_ADDRESS) {
 			sctp_add_local_addr_ep(inp, ifa, type);
 		} else if (type == SCTP_DEL_IP_ADDRESS) {
-			struct sctp_laddr *laddr;
-
 			if (inp->laddr_count < 2) {
 				/* can't delete the last local address */
 				SCTP_LTRACE_ERR_RET(inp, NULL, NULL, SCTP_FROM_SCTP_ASCONF, EINVAL);
@@ -3137,11 +3138,19 @@ sctp_addr_mgmt_ep_sa(struct sctp_inpcb *inp, struct sockaddr *sa,
 				}
 			}
 		}
-		if (!LIST_EMPTY(&inp->sctp_asoc_list)) {
+		if (LIST_EMPTY(&inp->sctp_asoc_list)) {
 			/*
 			 * There is no need to start the iterator if the inp
 			 * has no associations.
 			 */
+			if (type == SCTP_DEL_IP_ADDRESS) {
+				LIST_FOREACH_SAFE(laddr, &inp->sctp_addr_list, sctp_nxt_addr, nladdr) {
+					if (laddr->ifa == ifa) {
+						sctp_del_local_addr_ep(inp, ifa);
+					}
+				}
+			}
+		} else {
 			struct sctp_asconf_iterator *asc;
 			struct sctp_laddr *wi;
 

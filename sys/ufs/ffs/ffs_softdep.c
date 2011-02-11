@@ -40,7 +40,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_softdep.c,v 1.263 2011/01/12 19:54:19 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_softdep.c,v 1.266 2011/02/09 15:33:13 netchild Exp $");
 
 #include "opt_ffs.h"
 #include "opt_ddb.h"
@@ -575,6 +575,9 @@ softdep_get_depcounts(struct mount *mp,
 }
 
 #else
+
+FEATURE(softupdates, "FFS soft-updates support");
+
 /*
  * These definitions need to be adapted to the system to which
  * this file is being ported.
@@ -1342,7 +1345,7 @@ softdep_process_worklist(mp, full)
 	int full;
 {
 	struct thread *td = curthread;
-	int cnt, matchcnt, loopcount;
+	int cnt, matchcnt;
 	struct ufsmount *ump;
 	long starttime;
 
@@ -1354,7 +1357,6 @@ softdep_process_worklist(mp, full)
 	matchcnt = 0;
 	ump = VFSTOUFS(mp);
 	ACQUIRE_LOCK(&lk);
-	loopcount = 1;
 	starttime = time_second;
 	softdep_process_journal(mp, full?MNT_WAIT:0);
 	while (ump->softdep_on_worklist > 0) {
@@ -1379,9 +1381,9 @@ softdep_process_worklist(mp, full)
 		 * We do not generally want to stop for buffer space, but if
 		 * we are really being a buffer hog, we will stop and wait.
 		 */
-		if (loopcount++ % 128 == 0) {
+		if (should_yield()) {
 			FREE_LOCK(&lk);
-			uio_yield();
+			kern_yield(-1);
 			bwillwrite();
 			ACQUIRE_LOCK(&lk);
 		}

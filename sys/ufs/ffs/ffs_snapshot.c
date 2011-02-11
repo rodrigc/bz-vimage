@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_snapshot.c,v 1.153 2010/05/07 08:45:21 jeff Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ffs/ffs_snapshot.c,v 1.154 2011/02/09 15:33:13 netchild Exp $");
 
 #include "opt_quota.h"
 
@@ -124,6 +124,7 @@ ffs_copyonwrite(devvp, bp)
 }
 
 #else
+FEATURE(ffs_snapshot, "FFS snapshot support");
 
 TAILQ_HEAD(snaphead, inode);
 

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9280.c,v 1.1 2011/01/20 09:03:40 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9280.c,v 1.2 2011/02/07 21:30:56 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -118,7 +118,7 @@ ar9280SetChannel(struct ath_hal *ah, const struct ieee80211_channel *chan)
 			channelSel = (freq * 0x8000)/15;
 
 			/* RefDivA setting */
-			OS_REG_RMW_FIELD(ah, AR_AN_SYNTH9,
+			OS_A_REG_RMW_FIELD(ah, AR_AN_SYNTH9,
 			    AR_AN_SYNTH9_REFDIVA, refDivA);
 		}
 		if (!fracMode) {

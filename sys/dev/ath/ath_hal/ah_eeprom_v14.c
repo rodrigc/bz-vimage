@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v14.c,v 1.5 2011/01/21 06:42:25 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v14.c,v 1.6 2011/02/07 21:48:26 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -91,7 +91,7 @@ v14EepromGet(struct ath_hal *ah, int param, void *val)
 		return pBase->openLoopPwrCntl ?  HAL_OK : HAL_EIO;
 	case AR_EEP_DAC_HPWR_5G:
 		if (IS_VERS(>=, AR5416_EEP_MINOR_VER_20)) {
-			*(uint8_t *) val = pBase->dacHiPwrMode;
+			*(uint8_t *) val = pBase->dacHiPwrMode_5G;
 			return HAL_OK;
 		} else
 			return HAL_EIO;

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/aac/aac.c,v 1.165 2010/09/29 14:22:00 emaste Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/aac/aac.c,v 1.166 2011/02/03 02:14:53 emaste Exp $");
 
 /*
  * Driver for the Adaptec 'FSA' family of PCI/SCSI RAID adapters.
@@ -1415,11 +1415,7 @@ aac_release_command(struct aac_command *cm)
 
 	aac_enqueue_free(cm);
 
-	/*
-	 * Dequeue all events so that there's no risk of events getting
-	 * stranded.
-	 */
-	while ((event = TAILQ_FIRST(&sc->aac_ev_cmfree)) != NULL) {
+	if ((event = TAILQ_FIRST(&sc->aac_ev_cmfree)) != NULL) {
 		TAILQ_REMOVE(&sc->aac_ev_cmfree, event, ev_links);
 		event->ev_callback(sc, event, event->ev_arg);
 	}

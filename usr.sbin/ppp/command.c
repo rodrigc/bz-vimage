@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/usr.sbin/ppp/command.c,v 1.308 2008/03/12 14:34:34 piso Exp $
+ * $FreeBSD: src/usr.sbin/ppp/command.c,v 1.309 2011/02/07 11:18:18 brian Exp $
  */
 
 #include <sys/param.h>
@@ -184,6 +184,7 @@ static int DeleteCommand(struct cmdargs const *);
 static int NegotiateCommand(struct cmdargs const *);
 static int ClearCommand(struct cmdargs const *);
 static int RunListCommand(struct cmdargs const *);
+static int IfaceNameCommand(struct cmdargs const *arg);
 static int IfaceAddCommand(struct cmdargs const *);
 static int IfaceDeleteCommand(struct cmdargs const *);
 static int IfaceClearCommand(struct cmdargs const *);
@@ -823,6 +824,10 @@ static struct cmdtab const IfaceCommands[] =
    "Delete iface address", "iface delete addr", (void *)1},
   {NULL, "delete!", IfaceDeleteCommand, LOCAL_AUTH,
    "Delete iface address", "iface delete addr", (void *)1},
+  {"name", NULL, IfaceNameCommand, LOCAL_AUTH,
+    "Set iface name", "iface name name", NULL},
+  {"description", NULL, iface_Descr, LOCAL_AUTH,
+    "Set iface description", "iface description text", NULL},
   {"show", NULL, iface_Show, LOCAL_AUTH,
    "Show iface address(es)", "iface show", NULL},
   {"help", "?", HelpCommand, LOCAL_AUTH | LOCAL_NO_AUTH,
@@ -3172,6 +3177,21 @@ RunListCommand(struct cmdargs const *arg)
   else
     log_Printf(LogWARN, "%s command must have arguments\n", cmd);
 
+  return 0;
+}
+
+static int
+IfaceNameCommand(struct cmdargs const *arg)
+{
+  int n = arg->argn;
+
+  if (arg->argc != n + 1)
+    return -1;
+
+  if (!iface_Name(arg->bundle->iface, arg->argv[n]))
+    return 1;
+
+  log_SetTun(arg->bundle->unit, arg->bundle->iface->name);
   return 0;
 }
 

@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,7 +32,7 @@
 /*	$KAME: sctp6_usrreq.c,v 1.38 2005/08/24 08:08:56 suz Exp $	*/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet6/sctp6_usrreq.c,v 1.54 2010/12/22 17:59:38 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet6/sctp6_usrreq.c,v 1.56 2011/02/07 15:04:23 tuexen Exp $");
 
 #include <netinet/sctp_os.h>
 #include <sys/proc.h>
@@ -168,6 +170,12 @@ sctp6_input(struct mbuf **i_pak, int *offp, int proto)
 			}
 			net->port = port;
 		}
+		if ((net != NULL) && (m->m_flags & M_FLOWID)) {
+			net->flowid = m->m_pkthdr.flowid;
+#ifdef INVARIANTS
+			net->flowidset = 1;
+#endif
+		}
 		/* in6p's ref-count increased && stcb locked */
 		if ((in6p) && (stcb)) {
 			sctp_send_packet_dropped(stcb, net, m, iphlen, 1);
@@ -195,6 +203,12 @@ sctp_skip_csum:
 			sctp_pathmtu_adjustment(in6p, stcb, net, net->mtu - sizeof(struct udphdr));
 		}
 		net->port = port;
+	}
+	if ((net != NULL) && (m->m_flags & M_FLOWID)) {
+		net->flowid = m->m_pkthdr.flowid;
+#ifdef INVARIANTS
+		net->flowidset = 1;
+#endif
 	}
 	/* in6p's ref-count increased */
 	if (in6p == NULL) {

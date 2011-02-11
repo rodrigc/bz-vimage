@@ -42,7 +42,7 @@
 #include "opt_compat.h"
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.155 2010/11/08 15:14:14 des Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linprocfs/linprocfs.c,v 1.157 2011/01/31 00:09:52 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/queue.h>
@@ -928,7 +928,7 @@ do {									\
 
 #ifdef COMPAT_FREEBSD32
 	env_vector32 = NULL;
-	if ((p->p_sysent->sv_flags & SV_ILP32) != 0) {
+	if (SV_PROC_FLAG(p, SV_ILP32) != 0) {
 		env_vector32 = malloc(sizeof(*env_vector32) * MAX_ARGV_STR,
 		    M_TEMP, M_WAITOK);
 		elm_len = sizeof(int32_t);

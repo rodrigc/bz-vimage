@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.402 2010/10/14 08:01:33 davidxu Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_sig.c,v 1.403 2011/01/25 10:59:21 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_kdtrace.h"
@@ -2393,6 +2393,10 @@ ptracestop(struct thread *td, int sig)
 		p->p_xthread = td;
 		p->p_flag |= (P_STOPPED_SIG|P_STOPPED_TRACE);
 		sig_suspend_threads(td, p, 0);
+		if ((td->td_dbgflags & TDB_STOPATFORK) != 0) {
+			td->td_dbgflags &= ~TDB_STOPATFORK;
+			cv_broadcast(&p->p_dbgwait);
+		}
 stopme:
 		thread_suspend_switch(td);
 		if (!(p->p_flag & P_TRACED)) {

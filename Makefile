@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/Makefile,v 1.380 2011/01/22 23:16:44 bz Exp $
+# $FreeBSD: src/Makefile,v 1.385 2011/02/10 18:54:52 jhb Exp $
 #
 # The user-driven targets are:
 #
@@ -28,7 +28,9 @@
 # delete-old-dirs     - Delete obsolete directories.
 # delete-old-files    - Delete obsolete files.
 # delete-old-libs     - Delete obsolete libraries.
-# targets             - Print a list of supported TARGET/TARGET_ARCH pairs.
+# targets             - Print a list of supported TARGET/TARGET_ARCH pairs
+#                       for world and kernel targets.
+# toolchains          - Build a toolchain for all world and kernel targets.
 #
 # This makefile is simple by design. The FreeBSD make automatically reads
 # the /usr/share/mk/sys.mk unless the -m argument is specified on the
@@ -127,7 +129,39 @@ MAKEPATH=	${MAKEOBJDIRPREFIX}${.CURDIR}/make.${MACHINE}
 BINMAKE= \
 	`if [ -x ${MAKEPATH}/make ]; then echo ${MAKEPATH}/make; else echo ${MAKE}; fi` \
 	-m ${.CURDIR}/share/mk
-_MAKE=	PATH=${PATH} ${BINMAKE} -f Makefile.inc1
+_MAKE=	PATH=${PATH} ${BINMAKE} -f Makefile.inc1 TARGET=${_TARGET} TARGET_ARCH=${_TARGET_ARCH}
+
+# Guess machine architecture from machine type, and vice versa.
+.if !defined(TARGET_ARCH) && defined(TARGET)
+_TARGET_ARCH=	${TARGET:S/pc98/i386/:S/sun4v/sparc64/:S/mips/mipsel/}
+.elif !defined(TARGET) && defined(TARGET_ARCH) && \
+    ${TARGET_ARCH} != ${MACHINE_ARCH}
+_TARGET=		${TARGET_ARCH:C/mips.*e[lb]/mips/:C/armeb/arm/}
+.endif
+# Legacy names, for a transition period mips:mips -> mipsel:mips
+.if defined(TARGET) && defined(TARGET_ARCH) && \
+    ${TARGET_ARCH} == "mips" && ${TARGET} == "mips"
+.warning "TARGET_ARCH of mips is deprecated in favor of mipsel or mipseb"
+.if defined(TARGET_BIG_ENDIAN)
+_TARGET_ARCH=mipseb
+.else
+_TARGET_ARCH=mipsel
+.endif
+.endif
+# arm with TARGET_BIG_ENDIAN -> armeb
+.if defined(TARGET_ARCH) && ${TARGET_ARCH} == "arm" && defined(TARGET_BIG_ENDIAN)
+.warning "TARGET_ARCH of arm with TARGET_BIG_ENDIAN is deprecated.  use armeb"
+_TARGET_ARCH=armeb
+.endif
+.if defined(TARGET) && !defined(_TARGET)
+_TARGET=${TARGET}
+.endif
+.if defined(TARGET_ARCH) && !defined(_TARGET_ARCH)
+_TARGET_ARCH=${TARGET_ARCH}
+.endif
+# Otherwise, default to current machine type and architecture.
+_TARGET?=	${MACHINE}
+_TARGET_ARCH?=	${MACHINE_ARCH}
 
 #
 # Make sure we have an up-to-date make(1). Only world and buildworld
@@ -176,8 +210,7 @@ cleanworld:
 #
 
 ${TGTS}:
-	${_+_}@cd ${.CURDIR}; \
-		${_MAKE} ${.TARGET}
+	${_+_}@cd ${.CURDIR}; ${_MAKE} ${.TARGET}
 
 # Set a reasonable default
 .MAIN:	all
@@ -279,8 +312,10 @@ make: .PHONY
 		${MMAKE} install DESTDIR=${MAKEPATH} BINDIR=
 
 tinderbox:
-	cd ${.CURDIR} && \
-		DOING_TINDERBOX=YES ${MAKE} JFLAG=${JFLAG} universe
+	@cd ${.CURDIR} && ${MAKE} DOING_TINDERBOX=YES universe
+
+toolchains:
+	@cd ${.CURDIR} && ${MAKE} UNIVERSE_TARGET=toolchain universe
 
 #
 # universe
@@ -300,8 +335,14 @@ TARGET_ARCHES_sun4v?=	sparc64
 TARGET_ARCHES_${target}?= ${target}
 .endfor
 
+.if defined(UNIVERSE_TARGET)
+MAKE_JUST_WORLDS=	YES
+.else
+UNIVERSE_TARGET?=	buildworld
+.endif
+
 targets:
-	@echo "Supported TARGETS/TARGET_ARCH pairs"
+	@echo "Supported TARGET/TARGET_ARCH pairs for world and kernel targets"
 .for target in ${TARGETS}
 .for target_arch in ${TARGET_ARCHES_${target}}
 	@echo "    ${target}/${target_arch}"
@@ -321,7 +362,7 @@ universe_prologue:
 	@echo ">>> make universe started on ${STARTTIME}"
 	@echo "--------------------------------------------------------------"
 .if defined(DOING_TINDERBOX)
-	rm -f ${FAILFILE}
+	@rm -f ${FAILFILE}
 .endif
 .for target in ${TARGETS}
 universe: universe_${target}
@@ -333,16 +374,16 @@ universe_${target}_prologue:
 .for target_arch in ${TARGET_ARCHES_${target}}
 universe_${target}: universe_${target}_${target_arch}
 universe_${target}_${target_arch}: universe_${target}_prologue
-	@echo ">> ${target}.${target_arch} buildworld started on `LC_ALL=C date`"
+	@echo ">> ${target}.${target_arch} ${UNIVERSE_TARGET} started on `LC_ALL=C date`"
 	@(cd ${.CURDIR} && env __MAKE_CONF=/dev/null \
-	    ${MAKE} ${JFLAG} buildworld \
+	    ${MAKE} ${JFLAG} ${UNIVERSE_TARGET} \
 	    TARGET=${target} \
 	    TARGET_ARCH=${target_arch} \
-	    > _.${target}.${target_arch}.buildworld 2>&1 || \
-	    (echo "${target}.${target_arch} world failed," \
-	    "check _.${target}.${target_arch}.buildworld for details" | \
+	    > _.${target}.${target_arch}.${UNIVERSE_TARGET} 2>&1 || \
+	    (echo "${target}.${target_arch} ${UNIVERSE_TARGET} failed," \
+	    "check _.${target}.${target_arch}.${UNIVERSE_TARGET} for details" | \
 	    ${MAKEFAIL}))
-	@echo ">> ${target}.${target_arch} buildworld completed on `LC_ALL=C date`"
+	@echo ">> ${target}.${target_arch} ${UNIVERSE_TARGET} completed on `LC_ALL=C date`"
 .endfor
 .endif
 .if !defined(MAKE_JUST_WORLDS)

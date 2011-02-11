@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -43,7 +45,7 @@
 #include <netinet/sctp_asconf.h>
 #include <netinet/sctp_dtrace_declare.h>
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_cc_functions.c,v 1.15 2011/01/19 22:10:35 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_cc_functions.c,v 1.20 2011/02/05 12:12:51 rrs Exp $");
 
 static void
 sctp_set_initial_cc_param(struct sctp_tcb *stcb, struct sctp_nets *net)
@@ -167,13 +169,6 @@ sctp_cwnd_update_after_fr(struct sctp_tcb *stcb,
 				} else {
 					net->fast_recovery_tsn = lchk->rec.data.TSN_seq - 1;
 				}
-
-				/*
-				 * Disable Nonce Sum Checking and store the
-				 * resync tsn
-				 */
-				asoc->nonce_sum_check = 0;
-				asoc->nonce_resync_tsn = asoc->fast_recovery_tsn + 1;
 
 				sctp_timer_stop(SCTP_TIMER_TYPE_SEND,
 				    stcb->sctp_ep, stcb, net, SCTP_FROM_SCTP_INDATA + SCTP_LOC_32);
@@ -382,8 +377,6 @@ sctp_cwnd_update_after_sack(struct sctp_tcb *stcb,
 				}
 			} else {
 				/* We are in congestion avoidance */
-				uint32_t incr;
-
 				/*
 				 * Add to pba
 				 */
@@ -488,26 +481,30 @@ sctp_cwnd_update_after_timeout(struct sctp_tcb *stcb, struct sctp_nets *net)
 	}
 }
 
+
 static void
-sctp_cwnd_update_after_ecn_echo(struct sctp_tcb *stcb, struct sctp_nets *net)
+sctp_cwnd_update_after_ecn_echo(struct sctp_tcb *stcb, struct sctp_nets *net,
+    int in_window, int num_pkt_lost)
 {
 	int old_cwnd = net->cwnd;
 
-	SCTP_STAT_INCR(sctps_ecnereducedcwnd);
-	net->ssthresh = net->cwnd / 2;
-	if (net->ssthresh < net->mtu) {
-		net->ssthresh = net->mtu;
-		/* here back off the timer as well, to slow us down */
-		net->RTO <<= 1;
-	}
-	net->cwnd = net->ssthresh;
-	SDT_PROBE(sctp, cwnd, net, ecn,
-	    stcb->asoc.my_vtag,
-	    ((stcb->sctp_ep->sctp_lport << 16) | (stcb->rport)),
-	    net,
-	    old_cwnd, net->cwnd);
-	if (SCTP_BASE_SYSCTL(sctp_logging_level) & SCTP_CWND_MONITOR_ENABLE) {
-		sctp_log_cwnd(stcb, net, (net->cwnd - old_cwnd), SCTP_CWND_LOG_FROM_SAT);
+	if (in_window == 0) {
+		SCTP_STAT_INCR(sctps_ecnereducedcwnd);
+		net->ssthresh = net->cwnd / 2;
+		if (net->ssthresh < net->mtu) {
+			net->ssthresh = net->mtu;
+			/* here back off the timer as well, to slow us down */
+			net->RTO <<= 1;
+		}
+		net->cwnd = net->ssthresh;
+		SDT_PROBE(sctp, cwnd, net, ecn,
+		    stcb->asoc.my_vtag,
+		    ((stcb->sctp_ep->sctp_lport << 16) | (stcb->rport)),
+		    net,
+		    old_cwnd, net->cwnd);
+		if (SCTP_BASE_SYSCTL(sctp_logging_level) & SCTP_CWND_MONITOR_ENABLE) {
+			sctp_log_cwnd(stcb, net, (net->cwnd - old_cwnd), SCTP_CWND_LOG_FROM_SAT);
+		}
 	}
 }
 
@@ -517,7 +514,8 @@ sctp_cwnd_update_after_packet_dropped(struct sctp_tcb *stcb,
     uint32_t * bottle_bw, uint32_t * on_queue)
 {
 	uint32_t bw_avail;
-	int rtt, incr;
+	int rtt;
+	unsigned int incr;
 	int old_cwnd = net->cwnd;
 
 	/* need real RTT for this calc */
@@ -601,8 +599,11 @@ sctp_cwnd_update_after_packet_dropped(struct sctp_tcb *stcb,
 		 * Take 1/4 of the space left or max burst up .. whichever
 		 * is less.
 		 */
-		incr = min((bw_avail - *on_queue) >> 2,
-		    stcb->asoc.max_burst * net->mtu);
+		incr = (bw_avail - *on_queue) >> 2;
+		if ((stcb->asoc.max_burst > 0) &&
+		    (stcb->asoc.max_burst * net->mtu < incr)) {
+			incr = stcb->asoc.max_burst * net->mtu;
+		}
 		net->cwnd += incr;
 	}
 	if (net->cwnd > bw_avail) {
@@ -884,13 +885,6 @@ sctp_hs_cwnd_update_after_fr(struct sctp_tcb *stcb,
 				} else {
 					net->fast_recovery_tsn = lchk->rec.data.TSN_seq - 1;
 				}
-
-				/*
-				 * Disable Nonce Sum Checking and store the
-				 * resync tsn
-				 */
-				asoc->nonce_sum_check = 0;
-				asoc->nonce_resync_tsn = asoc->fast_recovery_tsn + 1;
 
 				sctp_timer_stop(SCTP_TIMER_TYPE_SEND,
 				    stcb->sctp_ep, stcb, net, SCTP_FROM_SCTP_INDATA + SCTP_LOC_32);
@@ -1606,13 +1600,6 @@ sctp_htcp_cwnd_update_after_fr(struct sctp_tcb *stcb,
 					net->fast_recovery_tsn = lchk->rec.data.TSN_seq - 1;
 				}
 
-				/*
-				 * Disable Nonce Sum Checking and store the
-				 * resync tsn
-				 */
-				asoc->nonce_sum_check = 0;
-				asoc->nonce_resync_tsn = asoc->fast_recovery_tsn + 1;
-
 				sctp_timer_stop(SCTP_TIMER_TYPE_SEND,
 				    stcb->sctp_ep, stcb, net, SCTP_FROM_SCTP_INDATA + SCTP_LOC_32);
 				sctp_timer_start(SCTP_TIMER_TYPE_SEND,
@@ -1670,24 +1657,26 @@ sctp_htcp_cwnd_update_after_fr_timer(struct sctp_inpcb *inp,
 
 static void
 sctp_htcp_cwnd_update_after_ecn_echo(struct sctp_tcb *stcb,
-    struct sctp_nets *net)
+    struct sctp_nets *net, int in_window, int num_pkt_lost)
 {
 	int old_cwnd;
 
 	old_cwnd = net->cwnd;
 
 	/* JRS - reset hctp as if state changed */
-	htcp_reset(&net->htcp_ca);
-	SCTP_STAT_INCR(sctps_ecnereducedcwnd);
-	net->ssthresh = htcp_recalc_ssthresh(stcb, net);
-	if (net->ssthresh < net->mtu) {
-		net->ssthresh = net->mtu;
-		/* here back off the timer as well, to slow us down */
-		net->RTO <<= 1;
-	}
-	net->cwnd = net->ssthresh;
-	if (SCTP_BASE_SYSCTL(sctp_logging_level) & SCTP_CWND_MONITOR_ENABLE) {
-		sctp_log_cwnd(stcb, net, (net->cwnd - old_cwnd), SCTP_CWND_LOG_FROM_SAT);
+	if (in_window == 0) {
+		htcp_reset(&net->htcp_ca);
+		SCTP_STAT_INCR(sctps_ecnereducedcwnd);
+		net->ssthresh = htcp_recalc_ssthresh(stcb, net);
+		if (net->ssthresh < net->mtu) {
+			net->ssthresh = net->mtu;
+			/* here back off the timer as well, to slow us down */
+			net->RTO <<= 1;
+		}
+		net->cwnd = net->ssthresh;
+		if (SCTP_BASE_SYSCTL(sctp_logging_level) & SCTP_CWND_MONITOR_ENABLE) {
+			sctp_log_cwnd(stcb, net, (net->cwnd - old_cwnd), SCTP_CWND_LOG_FROM_SAT);
+		}
 	}
 }
 

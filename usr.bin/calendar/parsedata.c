@@ -26,7 +26,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.7 2010/12/25 11:52:04 osa Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/calendar/parsedata.c,v 1.8 2011/02/09 05:30:38 osa Exp $");
 
 #include <ctype.h>
 #include <math.h>
@@ -459,6 +459,7 @@ parsedaymonth(char *date, int *yearp, int *monthp, int *dayp, int *flags,
 
 			yearinfo->mondays = mondaytab[isleap(year)];
 			yearinfo->ieaster = easter(year);
+			yearinfo->ipaskha = paskha(year);
 			fpom(year, UTCOffset, yearinfo->ffullmoon,
 			    yearinfo->fnewmoon);
 			fpom(year, UTCOFFSET_CNY, yearinfo->ffullmooncny,

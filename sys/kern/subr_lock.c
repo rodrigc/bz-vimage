@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.33 2011/01/11 13:59:06 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_lock.c,v 1.34 2011/01/27 00:34:12 mdf Exp $");
 
 #include "opt_ddb.h"
 #include "opt_mprof.h"
@@ -393,6 +393,9 @@ dump_lock_prof_stats(SYSCTL_HANDLER_ARGS)
 	int error, cpu, t;
 	int enabled;
 
+	error = sysctl_wire_old_buffer(req, 0);
+	if (error != 0)
+		return (error);
 	sb = sbuf_new_for_sysctl(NULL, NULL, LPROF_SBUF_SIZE, req);
 	sbuf_printf(sb, "\n%8s %9s %11s %11s %11s %6s %6s %2s %6s %s\n",
 	    "max", "wait_max", "total", "wait_total", "count", "avg", "wait_avg", "cnt_hold", "cnt_lock", "name");

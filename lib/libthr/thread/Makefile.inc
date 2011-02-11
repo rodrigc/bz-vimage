@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/libthr/thread/Makefile.inc,v 1.21 2010/12/22 05:01:52 davidxu Exp $
+# $FreeBSD: src/lib/libthr/thread/Makefile.inc,v 1.22 2011/02/07 21:26:46 jkim Exp $
 
 # thr sources
 .PATH: ${.CURDIR}/thread
@@ -22,6 +22,7 @@ SRCS+= \
 	thr_getprio.c \
 	thr_getcpuclockid.c \
 	thr_getschedparam.c \
+	thr_getthreadid_np.c \
 	thr_info.c \
 	thr_init.c \
 	thr_join.c \

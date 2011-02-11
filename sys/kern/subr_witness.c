@@ -85,7 +85,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.279 2010/09/16 16:13:12 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_witness.c,v 1.280 2011/01/27 00:34:12 mdf Exp $");
 
 #include "opt_ddb.h"
 #include "opt_hwpmc_hooks.h"
@@ -2544,6 +2544,10 @@ sysctl_debug_witness_fullgraph(SYSCTL_HANDLER_ARGS)
 		return (error);
 	}
 	error = 0;
+
+	error = sysctl_wire_old_buffer(req, 0);
+	if (error != 0)
+		return (error);
 	sb = sbuf_new_for_sysctl(NULL, NULL, FULLGRAPH_SBUF_SIZE, req);
 	if (sb == NULL)
 		return (ENOMEM);

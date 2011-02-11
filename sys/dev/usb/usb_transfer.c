@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.45 2011/01/18 21:18:51 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_transfer.c,v 1.46 2011/02/09 08:01:45 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -1148,7 +1148,9 @@ done:
 static void
 usbd_transfer_unsetup_sub(struct usb_xfer_root *info, uint8_t needs_delay)
 {
+#if USB_HAVE_BUSDMA
 	struct usb_page_cache *pc;
+#endif
 
 	USB_BUS_LOCK_ASSERT(info->bus, MA_OWNED);
 

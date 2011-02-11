@@ -18,7 +18,7 @@
 #
 # For hardware specific information check HARDWARE.TXT
 #
-# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.116 2010/07/28 15:36:12 mdf Exp $
+# $FreeBSD: src/sys/ia64/conf/GENERIC,v 1.117 2011/02/06 22:18:37 marcel Exp $
 
 cpu		ITANIUM2
 ident		GENERIC
@@ -31,7 +31,8 @@ options 	COMPAT_FREEBSD7	# Compatible with FreeBSD7
 options 	DDB		# Support DDB
 options 	DEADLKRES	# Enable the deadlock resolver
 options 	FFS		# Berkeley Fast Filesystem
-options 	FLOWTABLE	# per-cpu routing cache
+#options 	FLOWTABLE	# per-cpu routing cache (removed due to
+				# misaligned access -- see kern/148018)
 options 	GDB		# Support remote GDB
 options 	GEOM_LABEL	# Provides labelization
 options 	INCLUDE_CONFIG_FILE     # Include this file in kernel

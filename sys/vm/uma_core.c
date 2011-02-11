@@ -48,7 +48,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.166 2010/11/04 15:33:50 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/uma_core.c,v 1.167 2011/01/27 00:34:12 mdf Exp $");
 
 /* I should really use ktr.. */
 /*
@@ -3224,6 +3224,9 @@ sysctl_vm_zone_stats(SYSCTL_HANDLER_ARGS)
 	uma_keg_t k;
 	int count, error, i;
 
+	error = sysctl_wire_old_buffer(req, 0);
+	if (error != 0)
+		return (error);
 	sbuf_new_for_sysctl(&sbuf, NULL, 128, req);
 
 	count = 0;

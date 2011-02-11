@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/fdisk/fdisk.c,v 1.98 2011/01/22 05:21:20 sobomax Exp $");
+__FBSDID("$FreeBSD: src/sbin/fdisk/fdisk.c,v 1.100 2011/01/25 04:35:07 sobomax Exp $");
 
 #include <sys/disk.h>
 #include <sys/disklabel.h>
@@ -49,7 +49,10 @@ __FBSDID("$FreeBSD: src/sbin/fdisk/fdisk.c,v 1.98 2011/01/22 05:21:20 sobomax Ex
 
 int iotest;
 
-#define NOSECTORS ((u_int32_t)-1)
+#define NO_DISK_SECTORS ((u_int32_t)-1)
+#define NO_TRACK_CYLINDERS 1023
+#define NO_TRACK_HEADS 255
+#define NO_TRACK_SECTORS 63
 #define LBUF 100
 static char lbuf[LBUF];
 
@@ -62,7 +65,7 @@ static char lbuf[LBUF];
  *	Created.
  */
 
-#define Decimal(str, ans, tmp, size) if (decimal(str, &tmp, ans, size)) ans = tmp
+#define Decimal(str, ans, tmp, maxval) if (decimal(str, &tmp, ans, maxval)) ans = tmp
 
 #define RoundCyl(x) ((((x) + cylsecs - 1) / cylsecs) * cylsecs)
 
@@ -247,7 +250,7 @@ static int get_params(void);
 static int read_s0(void);
 static int write_s0(void);
 static int ok(const char *str);
-static int decimal(const char *str, int *num, int deflt, int size);
+static int decimal(const char *str, int *num, int deflt, uint32_t maxval);
 static int read_config(char *config_file);
 static void reset_boot(void);
 static int sanitize_partition(struct dos_partition *);
@@ -572,9 +575,9 @@ change_part(int i)
 	}
 
 	do {
-		Decimal("sysid (165=FreeBSD)", partp->dp_typ, tmp, sizeof(partp->dp_typ));
-		Decimal("start", partp->dp_start, tmp, sizeof(partp->dp_start));
-		Decimal("size", partp->dp_size, tmp, sizeof(partp->dp_size));
+		Decimal("sysid (165=FreeBSD)", partp->dp_typ, tmp, 255);
+		Decimal("start", partp->dp_start, tmp, NO_DISK_SECTORS);
+		Decimal("size", partp->dp_size, tmp, NO_DISK_SECTORS);
 		if (!sanitize_partition(partp)) {
 			warnx("ERROR: failed to adjust; setting sysid to 0");
 			partp->dp_typ = 0;
@@ -586,9 +589,9 @@ change_part(int i)
 			tcyl = DPCYL(partp->dp_scyl,partp->dp_ssect);
 			thd = partp->dp_shd;
 			tsec = DPSECT(partp->dp_ssect);
-			Decimal("beginning cylinder", tcyl, tmp, sizeof(partp->dp_scyl));
-			Decimal("beginning head", thd, tmp, sizeof(partp->dp_shd));
-			Decimal("beginning sector", tsec, tmp, sizeof(partp->dp_ssect));
+			Decimal("beginning cylinder", tcyl, tmp, NO_TRACK_CYLINDERS);
+			Decimal("beginning head", thd, tmp, NO_TRACK_HEADS);
+			Decimal("beginning sector", tsec, tmp, NO_TRACK_SECTORS);
 			partp->dp_scyl = DOSCYL(tcyl);
 			partp->dp_ssect = DOSSECT(tsec,tcyl);
 			partp->dp_shd = thd;
@@ -596,9 +599,9 @@ change_part(int i)
 			tcyl = DPCYL(partp->dp_ecyl,partp->dp_esect);
 			thd = partp->dp_ehd;
 			tsec = DPSECT(partp->dp_esect);
-			Decimal("ending cylinder", tcyl, tmp, sizeof(partp->dp_ecyl));
-			Decimal("ending head", thd, tmp, sizeof(partp->dp_ehd));
-			Decimal("ending sector", tsec, tmp, sizeof(partp->dp_esect));
+			Decimal("ending cylinder", tcyl, tmp, NO_TRACK_CYLINDERS);
+			Decimal("ending head", thd, tmp, NO_TRACK_HEADS);
+			Decimal("ending sector", tsec, tmp, NO_TRACK_SECTORS);
 			partp->dp_ecyl = DOSCYL(tcyl);
 			partp->dp_esect = DOSSECT(tsec,tcyl);
 			partp->dp_ehd = thd;
@@ -915,16 +918,12 @@ ok(const char *str)
 }
 
 static int
-decimal(const char *str, int *num, int deflt, int size)
+decimal(const char *str, int *num, int deflt, uint32_t maxval)
 {
-	long long acc = 0, maxval;
+	long long acc = 0;
 	int c;
 	char *cp;
 
-	if (size == 0) {
-		size = sizeof(*num);
-	}
-	maxval = (long long)1 << (size * 8);
 	while (1) {
 		printf("Supply a decimal value for \"%s\" [%d] ", str, deflt);
 		fflush(stdout);
@@ -941,7 +940,7 @@ decimal(const char *str, int *num, int deflt, int size)
 			return 0;
 		while ((c = *cp++)) {
 			if (c <= '9' && c >= '0') {
-				if (acc < maxval)
+				if (maxval > 0 && acc <= maxval)
 					acc = acc * 10 + c - '0';
 			} else
 				break;
@@ -949,10 +948,11 @@ decimal(const char *str, int *num, int deflt, int size)
 		if (c == ' ' || c == '\t')
 			while ((c = *cp) && (c == ' ' || c == '\t')) cp++;
 		if (!c) {
-			if (acc >= maxval) {
-				acc = maxval - 1;
-				printf("%s is too big, it will be truncated to %lld\n",
-				    lbuf, acc);
+			if (maxval > 0 && acc > maxval) {
+				acc = maxval;
+				printf("%s exceeds maximum value allowed for "
+				  "this field. The value has been reduced "
+				  "to %lld\n", lbuf, acc);
 			}
 			*num = acc;
 			return 1;
@@ -1108,7 +1108,7 @@ str2sectors(const char *str)
 	if (str == end || *end == '\0') {
 		warnx("ERROR line %d: unexpected size: \'%s\'",
 		    current_line_number, str);
-		return NOSECTORS;
+		return NO_DISK_SECTORS;
 	}
 
 	if (*end == 'K') 
@@ -1120,7 +1120,7 @@ str2sectors(const char *str)
 	else {
 		warnx("ERROR line %d: unexpected modifier: %c "
 		    "(not K/M/G)", current_line_number, *end);
-		return NOSECTORS;
+		return NO_DISK_SECTORS;
 	}
 
 	return val;
@@ -1170,7 +1170,7 @@ process_partition(CMD *command)
 			}
 		} else {
 			partp->dp_start = str2sectors(command->args[2].arg_str);
-			if (partp->dp_start == NOSECTORS)
+			if (partp->dp_start == NO_DISK_SECTORS)
 				break;
 		}
 	} else
@@ -1182,7 +1182,7 @@ process_partition(CMD *command)
 			    dos_cylsecs) - partp->dp_start;
 		else {
 			partp->dp_size = str2sectors(command->args[3].arg_str);
-			if (partp->dp_size == NOSECTORS)
+			if (partp->dp_size == NO_DISK_SECTORS)
 				break;
 		}
 		prev_cyl_boundary = ((partp->dp_start + partp->dp_size) /

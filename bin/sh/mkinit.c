@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)mkinit.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/mkinit.c,v 1.20 2009/12/27 18:04:05 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/mkinit.c,v 1.21 2011/02/04 22:47:55 jilles Exp $");
 
 /*
  * This program scans all the source files for code to handle various
@@ -126,16 +126,10 @@ char reset[] = "\
  * interactive shell and control is returned to the main command loop.\n\
  */\n";
 
-char shellproc[] = "\
-/*\n\
- * This routine is called to initialize the shell to run a shell procedure.\n\
- */\n";
-
 
 struct event event[] = {
 	{ "INIT", "init", init, { NULL, 0, NULL, NULL } },
 	{ "RESET", "reset", reset, { NULL, 0, NULL, NULL } },
-	{ "SHELLPROC", "initshellproc", shellproc, { NULL, 0, NULL, NULL } },
 	{ NULL, NULL, NULL, { NULL, 0, NULL, NULL } }
 };
 

@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/types.h,v 1.6 2008/11/17 20:49:29 pjd Exp $
+ * $FreeBSD: src/sys/cddl/compat/opensolaris/sys/types.h,v 1.9 2011/02/01 23:12:13 mm Exp $
  */
 
 #ifndef _OPENSOLARIS_SYS_TYPES_H_
@@ -34,6 +34,12 @@
  */
 
 #include <sys/stdint.h>
+
+#ifdef _KERNEL
+typedef	int64_t		clock_t;
+#define	_CLOCK_T_DECLARED
+#endif
+
 #include_next <sys/types.h>
 
 #define	MAXNAMELEN	256

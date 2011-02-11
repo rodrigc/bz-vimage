@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/pkill/pkill.c,v 1.11 2010/06/20 08:48:30 brian Exp $");
+__FBSDID("$FreeBSD: src/bin/pkill/pkill.c,v 1.12 2011/02/04 16:40:50 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -156,7 +156,7 @@ main(int argc, char **argv)
 				argv++;
 				argc--;
 			} else {
-				if (strncasecmp(p, "sig", 3) == 0)
+				if (strncasecmp(p, "SIG", 3) == 0)
 					p += 3;
 				for (i = 1; i < NSIG; i++)
 					if (strcasecmp(sys_signame[i], p) == 0)

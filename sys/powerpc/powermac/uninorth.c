@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.29 2011/01/06 20:19:01 andreast Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/uninorth.c,v 1.30 2011/02/02 05:58:51 marcel Exp $
  */
 
 #include <sys/param.h>
@@ -175,18 +175,18 @@ unin_chip_add_intr(phandle_t devnode, struct unin_chip_devinfo *dinfo)
 		icells = 1;
 
 	for (i = 0; i < nintr; i+=icells) {
+		u_int irq = MAP_IRQ(iparent, intr[i]);
+
 		resource_list_add(&dinfo->udi_resources, SYS_RES_IRQ,
-		    dinfo->udi_ninterrupts, INTR_VEC(iparent, intr[i]),
-		    INTR_VEC(iparent, intr[i]), 1);
+		    dinfo->udi_ninterrupts, irq, irq, 1);
 
 		if (icells > 1) {
-			powerpc_config_intr(INTR_VEC(iparent, intr[i]),
+			powerpc_config_intr(irq,
 			    (intr[i+1] & 1) ? INTR_TRIGGER_LEVEL :
 			    INTR_TRIGGER_EDGE, INTR_POLARITY_LOW);
 		}
 
-		dinfo->udi_interrupts[dinfo->udi_ninterrupts] =
-		    INTR_VEC(iparent, intr[i]);
+		dinfo->udi_interrupts[dinfo->udi_ninterrupts] = irq;
 		dinfo->udi_ninterrupts++;
 	}
 }

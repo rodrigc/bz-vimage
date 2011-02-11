@@ -66,7 +66,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/makefs/ffs.c,v 1.3 2010/11/07 16:05:04 cognet Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/makefs/ffs.c,v 1.4 2011/01/24 06:17:05 mckusick Exp $");
 
 #include <sys/param.h>
 
@@ -80,6 +80,7 @@ __FBSDID("$FreeBSD: src/usr.sbin/makefs/ffs.c,v 1.3 2010/11/07 16:05:04 cognet E
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "makefs.h"

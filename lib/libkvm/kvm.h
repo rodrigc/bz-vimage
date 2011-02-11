@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)kvm.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/lib/libkvm/kvm.h,v 1.21 2010/03/01 09:46:27 rwatson Exp $
+ * $FreeBSD: src/lib/libkvm/kvm.h,v 1.22 2011/01/23 11:08:28 uqs Exp $
  */
 
 #ifndef _KVM_H_
@@ -88,7 +88,7 @@ kvm_t	 *kvm_openfiles
 	    (const char *, const char *, const char *, int, char *);
 ssize_t	  kvm_read(kvm_t *, unsigned long, void *, size_t);
 ssize_t	  kvm_uread
-	    (kvm_t *, struct kinfo_proc *, unsigned long, char *, size_t);
+	    (kvm_t *, const struct kinfo_proc *, unsigned long, char *, size_t);
 ssize_t	  kvm_write(kvm_t *, unsigned long, const void *, size_t);
 int	  kvm_select_vnet_by_jid(kvm_t *, int);
 __END_DECLS

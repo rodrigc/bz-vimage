@@ -24,7 +24,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/flash/mx25l.c,v 1.6 2010/08/17 16:27:13 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/flash/mx25l.c,v 1.7 2011/01/30 12:14:06 adrian Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -90,6 +90,7 @@ static void mx25l_task(void *arg);
 
 struct mx25l_flash_ident flash_devices[] = {
 	{ "mx25ll32",  0xc2, 0x2016, 64 * 1024,  64, FL_NONE },
+	{ "m25p64",    0x20, 0x2017, 64 * 1024, 128, FL_NONE },
 	{ "mx25ll64",  0xc2, 0x2017, 64 * 1024, 128, FL_NONE },
 	{ "mx25ll128", 0xc2, 0x2018, 64 * 1024, 256, FL_ERASE_4K | FL_ERASE_32K },
 	{ "s25fl128",  0x01, 0x2018, 64 * 1024, 256, FL_NONE },

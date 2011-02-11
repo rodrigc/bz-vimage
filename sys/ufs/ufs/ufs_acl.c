@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_acl.c,v 1.26 2010/01/25 16:09:50 trasz Exp $");
+__FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_acl.c,v 1.27 2011/02/09 15:33:13 netchild Exp $");
 
 #include "opt_ufs.h"
 #include "opt_quota.h"
@@ -56,6 +56,8 @@ __FBSDID("$FreeBSD: src/sys/ufs/ufs/ufs_acl.c,v 1.26 2010/01/25 16:09:50 trasz E
 #include <ufs/ffs/fs.h>
 
 #ifdef UFS_ACL
+
+FEATURE(ufs_acl, "ACL support for UFS");
 
 /*
  * Synchronize an ACL and an inode by copying over appropriate inode fields

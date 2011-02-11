@@ -39,14 +39,13 @@ static char sccsid[] = "@(#)main.c	8.6 (Berkeley) 5/14/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/fsck_ffs/main.c,v 1.61 2010/08/03 09:21:13 bz Exp $");
+__FBSDID("$FreeBSD: src/sbin/fsck_ffs/main.c,v 1.62 2011/01/24 06:17:05 mckusick Exp $");
 
 #include <sys/param.h>
-#include <sys/stat.h>
 #include <sys/file.h>
-#include <sys/time.h>
 #include <sys/mount.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
 #include <sys/sysctl.h>
 #include <sys/uio.h>
 #include <sys/disklabel.h>
@@ -62,6 +61,7 @@ __FBSDID("$FreeBSD: src/sbin/fsck_ffs/main.c,v 1.61 2010/08/03 09:21:13 bz Exp $
 #include <paths.h>
 #include <stdint.h>
 #include <string.h>
+#include <time.h>
 
 #include "fsck.h"
 

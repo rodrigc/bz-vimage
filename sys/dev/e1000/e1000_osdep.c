@@ -1,6 +1,6 @@
 /******************************************************************************
 
-  Copyright (c) 2001-2009, Intel Corporation 
+  Copyright (c) 2001-2010, Intel Corporation 
   All rights reserved.
   
   Redistribution and use in source and binary forms, with or without 
@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_osdep.c,v 1.3 2009/06/24 17:41:29 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_osdep.c,v 1.4 2011/02/11 01:00:26 jfv Exp $*/
 
 #include "e1000_api.h"
 

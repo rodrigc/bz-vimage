@@ -15,7 +15,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.c,v 1.3 2011/01/21 06:42:25 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_eeprom_v4k.c,v 1.4 2011/01/25 05:35:09 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -65,9 +65,9 @@ v4kEepromGet(struct ath_hal *ah, int param, void *val)
         case AR_EEP_RFSILENT:
 		return pBase->rfSilent;
     	case AR_EEP_OB_2:
-		return pModal->ob;
+		return pModal->ob_0;
     	case AR_EEP_DB_2:
-		return pModal->db;
+		return pModal->db1_1;
 	case AR_EEP_TXMASK:
 		return pBase->txMask;
 	case AR_EEP_RXMASK:

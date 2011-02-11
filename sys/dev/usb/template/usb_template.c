@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/template/usb_template.c,v 1.12 2011/01/11 13:59:06 jhb Exp $ */
+/* $FreeBSD: src/sys/dev/usb/template/usb_template.c,v 1.13 2011/02/09 08:01:45 hselasky Exp $ */
 /*-
  * Copyright (c) 2007 Hans Petter Selasky. All rights reserved.
  *
@@ -125,7 +125,7 @@ usb_make_raw_desc(struct usb_temp_setup *temp,
 		len = raw[0];
 		if (temp->buf) {
 			dst = USB_ADD_BYTES(temp->buf, temp->size);
-			bcopy(raw, dst, len);
+			memcpy(dst, raw, len);
 
 			/* check if we have got a CDC union descriptor */
 

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part_bsd.c,v 1.19 2010/12/02 19:47:27 ivoras Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part_bsd.c,v 1.20 2011/01/27 08:02:26 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -426,6 +426,8 @@ g_part_bsd_read(struct g_part_table *basetable, struct g_consumer *cp)
 			continue;
 		if (part.p_offset < table->offset)
 			continue;
+		if (part.p_offset - table->offset > basetable->gpt_last)
+			goto invalid_label;
 		baseentry = g_part_new_entry(basetable, index + 1,
 		    part.p_offset - table->offset,
 		    part.p_offset - table->offset + part.p_size - 1);
@@ -440,6 +442,7 @@ g_part_bsd_read(struct g_part_table *basetable, struct g_consumer *cp)
  invalid_label:
 	printf("GEOM: %s: invalid disklabel.\n", pp->name);
 	g_free(table->bbarea);
+	table->bbarea = NULL;
 	return (EINVAL);
 }
 

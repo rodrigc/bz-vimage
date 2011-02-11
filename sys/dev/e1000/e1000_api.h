@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.6 2010/09/28 00:13:15 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_api.h,v 1.8 2011/02/11 09:58:38 bz Exp $*/
 
 #ifndef _E1000_API_H_
 #define _E1000_API_H_
@@ -96,7 +96,6 @@ s32  e1000_phy_commit(struct e1000_hw *hw);
 void e1000_power_up_phy(struct e1000_hw *hw);
 void e1000_power_down_phy(struct e1000_hw *hw);
 s32  e1000_read_mac_addr(struct e1000_hw *hw);
-s32  e1000_read_pba_num(struct e1000_hw *hw, u32 *part_num);
 s32  e1000_read_pba_string(struct e1000_hw *hw, u8 *pba_num, 
                            u32 pba_num_size);
 s32  e1000_read_pba_length(struct e1000_hw *hw, u32 *pba_num_size);
@@ -121,6 +120,9 @@ s32  e1000_mng_write_cmd_header(struct e1000_hw *hw,
 s32  e1000_mng_write_dhcp_info(struct e1000_hw * hw,
                                     u8 *buffer, u16 length);
 u32  e1000_translate_register_82542(u32 reg);
+s32  e1000_set_default_fc_generic(struct e1000_hw *hw);
+s32 e1000_commit_fc_settings_generic(struct e1000_hw *hw);
+s32  e1000_poll_fiber_serdes_link_generic(struct e1000_hw *hw);
 
 /*
  * TBI_ACCEPT macro definition:

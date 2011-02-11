@@ -30,7 +30,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)exec.h	8.3 (Berkeley) 6/8/95
- * $FreeBSD: src/bin/sh/exec.h,v 1.20 2010/03/06 16:57:53 jilles Exp $
+ * $FreeBSD: src/bin/sh/exec.h,v 1.22 2011/02/05 14:08:51 jilles Exp $
  */
 
 /* values of cmdtype */
@@ -71,10 +71,9 @@ void find_command(const char *, struct cmdentry *, int, const char *);
 int find_builtin(const char *, int *);
 void hashcd(void);
 void changepath(const char *);
-void deletefuncs(void);
 void addcmdentry(const char *, struct cmdentry *);
 void defun(const char *, union node *);
 int unsetfunc(const char *);
 int typecmd_impl(int, char **, int, const char *);
 int typecmd(int, char **);
-void clearcmdentry(int);
+void clearcmdentry(void);

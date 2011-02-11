@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm_mips.c,v 1.5 2010/11/07 03:26:22 gonzo Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm_mips.c,v 1.6 2011/01/23 11:08:28 uqs Exp $");
 
 #include <sys/param.h>
 #include <sys/elf32.h>
@@ -94,11 +94,8 @@ _kvm_initvtop(kvm_t *kd)
 }
 
 int
-_kvm_kvatop(kvm_t *kd, u_long va , off_t *pa)
+_kvm_kvatop(kvm_t *kd, u_long va, off_t *pa)
 {
-
-	u_long offset = va & (PAGE_SIZE - 1);
-	struct vmstate *vm = kd->vmst;
 
 	if (kd->vmst->minidump)
 		return _kvm_minidump_kvatop(kd, va, pa);
@@ -113,9 +110,11 @@ _kvm_kvatop(kvm_t *kd, u_long va , off_t *pa)
  * not just those for a kernel crash dump.  Some architectures
  * have to deal with these NOT being constants!  (i.e. m68k)
  */
+#ifdef FBSD_NOT_YET
 int
 _kvm_mdopen(kvm_t *kd __unused)
 {
 
 	return (0);
 }
+#endif

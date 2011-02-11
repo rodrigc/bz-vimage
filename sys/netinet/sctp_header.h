@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,7 +33,7 @@
 /* $KAME: sctp_header.h,v 1.14 2005/03/06 16:04:17 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_header.h,v 1.12 2010/02/13 21:38:15 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_header.h,v 1.15 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __sctp_header_h__
 #define __sctp_header_h__
@@ -140,12 +142,6 @@ struct sctp_supported_chunk_types_param {
 	struct sctp_paramhdr ph;/* type = 0x8008  len = x */
 	uint8_t chunk_types[];
 }                                SCTP_PACKED;
-
-
-/* ECN Nonce: draft-ladha-sctp-ecn-nonce */
-struct sctp_ecn_nonce_supported_param {
-	struct sctp_paramhdr ph;/* type = 0x8001  len = 4 */
-}                              SCTP_PACKED;
 
 
 /*
@@ -360,9 +356,15 @@ struct sctp_cookie_ack_chunk {
 }                     SCTP_PACKED;
 
 /* Explicit Congestion Notification Echo (ECNE) */
+struct old_sctp_ecne_chunk {
+	struct sctp_chunkhdr ch;
+	uint32_t tsn;
+}                   SCTP_PACKED;
+
 struct sctp_ecne_chunk {
 	struct sctp_chunkhdr ch;
 	uint32_t tsn;
+	uint32_t num_pkts_since_cwr;
 }               SCTP_PACKED;
 
 /* Congestion Window Reduced (CWR) */

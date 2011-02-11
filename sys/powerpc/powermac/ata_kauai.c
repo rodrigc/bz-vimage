@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.20 2010/09/11 22:09:16 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/powerpc/powermac/ata_kauai.c,v 1.21 2011/01/23 17:20:11 nwhitehorn Exp $");
 
 /*
  * Mac 'Kauai' PCI ATA controller
@@ -217,10 +217,8 @@ ata_kauai_probe(device_t dev)
 	ch = &sc->sc_ch.sc_ch;
 
 	compatstring = ofw_bus_get_compat(dev);
-	if (compatstring != NULL && strcmp(compatstring,"shasta-ata") == 0) {
-		ch->flags |= ATA_NO_ATAPI_DMA;
+	if (compatstring != NULL && strcmp(compatstring,"shasta-ata") == 0)
 		sc->shasta = 1;
-	}
 
 	/* Pre-K2 controllers apparently need this hack */
 	if (!sc->shasta &&
@@ -246,8 +244,11 @@ ata_kauai_probe(device_t dev)
         ch->r_io[ATA_CONTROL].offset = ATA_KAUAI_ALTOFFSET;
 	ata_default_registers(dev);
 
-        ch->unit = 0;
-        ch->flags |= ATA_USE_16BIT;
+	ch->unit = 0;
+	ch->flags |= ATA_USE_16BIT;
+	
+	/* XXX: ATAPI DMA is unreliable. We should find out why. */
+	ch->flags |= ATA_NO_ATAPI_DMA;
 	ata_generic_hw(dev);
 
         return (ata_probe(dev));

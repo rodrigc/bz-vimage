@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/proto.h,v 1.3 2010/08/30 22:26:42 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/proto.h,v 1.7 2011/02/02 15:53:09 pjd Exp $
  */
 
 #ifndef	_PROTO_H_
@@ -38,11 +38,16 @@
 struct proto_conn;
 
 int proto_client(const char *addr, struct proto_conn **connp);
-int proto_connect(struct proto_conn *conn);
+int proto_connect(struct proto_conn *conn, int timeout);
+int proto_connect_wait(struct proto_conn *conn, int timeout);
 int proto_server(const char *addr, struct proto_conn **connp);
 int proto_accept(struct proto_conn *conn, struct proto_conn **newconnp);
 int proto_send(const struct proto_conn *conn, const void *data, size_t size);
 int proto_recv(const struct proto_conn *conn, void *data, size_t size);
+int proto_connection_send(const struct proto_conn *conn,
+    struct proto_conn *mconn);
+int proto_connection_recv(const struct proto_conn *conn, bool client,
+    struct proto_conn **newconnp);
 int proto_descriptor(const struct proto_conn *conn);
 bool proto_address_match(const struct proto_conn *conn, const char *addr);
 void proto_local_address(const struct proto_conn *conn, char *addr,

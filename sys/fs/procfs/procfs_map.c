@@ -32,7 +32,7 @@
  *
  *	@(#)procfs_status.c	8.3 (Berkeley) 2/17/94
  *
- * $FreeBSD: src/sys/fs/procfs/procfs_map.c,v 1.53 2010/12/02 17:37:16 trasz Exp $
+ * $FreeBSD: src/sys/fs/procfs/procfs_map.c,v 1.54 2011/01/26 20:03:58 dchagin Exp $
  */
 
 #include "opt_compat.h"
@@ -100,8 +100,8 @@ procfs_doprocmap(PFS_FILL_ARGS)
 		return (EOPNOTSUPP);
 
 #ifdef COMPAT_FREEBSD32
-        if (curproc->p_sysent->sv_flags & SV_ILP32) {
-                if (!(p->p_sysent->sv_flags & SV_ILP32))
+        if (SV_CURPROC_FLAG(SV_ILP32)) {
+                if (!(SV_PROC_FLAG(p, SV_ILP32)))
                         return (EOPNOTSUPP);
                 wrap32 = 1;
         }

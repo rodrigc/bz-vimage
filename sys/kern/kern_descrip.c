@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.361 2011/01/04 10:59:38 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_descrip.c,v 1.362 2011/01/28 15:29:35 jilles Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -2026,10 +2026,10 @@ fdcheckstd(struct thread *td)
 			error = kern_open(td, "/dev/null", UIO_SYSSPACE,
 			    O_RDWR, 0);
 			devnull = td->td_retval[0];
-			KASSERT(devnull == i, ("oof, we didn't get our fd"));
 			td->td_retval[0] = save;
 			if (error)
 				break;
+			KASSERT(devnull == i, ("oof, we didn't get our fd"));
 		} else {
 			error = do_dup(td, DUP_FIXED, devnull, i, &retval);
 			if (error != 0)

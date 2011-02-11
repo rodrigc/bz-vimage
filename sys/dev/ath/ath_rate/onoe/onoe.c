@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ath/ath_rate/onoe/onoe.c,v 1.20 2009/01/06 01:36:36 sam Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ath/ath_rate/onoe/onoe.c,v 1.21 2011/02/01 08:10:18 adrian Exp $");
 
 /*
  * Atsushi Onoe's rate control algorithm.
@@ -120,6 +120,29 @@ ath_rate_findrate(struct ath_softc *sc, struct ath_node *an,
 		*txrate = on->on_tx_rate0sp;
 	else
 		*txrate = on->on_tx_rate0;
+}
+
+/*
+ * Get the TX rates.
+ *
+ * The short preamble bits aren't set here; the caller should augment
+ * the returned rate with the relevant preamble rate flag.
+ */
+void
+ath_rate_getxtxrates(struct ath_softc *sc, struct ath_node *an,
+    uint8_t rix0, uint8_t *rix, uint8_t *try)
+{
+	struct onoe_node *on = ATH_NODE_ONOE(an);
+
+/*	rix[0] = on->on_tx_rate0; */
+	rix[1] = on->on_tx_rate1;
+	rix[2] = on->on_tx_rate2;
+	rix[3] = on->on_tx_rate3;
+
+	try[0] = on->on_tx_try0;
+	try[1] = 2;
+	try[2] = 2;
+	try[3] = 2;
 }
 
 void

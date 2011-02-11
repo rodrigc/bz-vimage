@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.120 2010/12/27 23:52:40 cperciva Exp $
+# $FreeBSD: src/sys/conf/kern.pre.mk,v 1.122 2011/02/11 05:50:28 imp Exp $
 
 # Part of a unified Makefile for building kernels.  This part contains all
 # of the definitions that need to be before %BEFORE_DEPEND.
@@ -15,7 +15,7 @@ KODIR?=		/boot/${KERNEL}
 LDSCRIPT_NAME?=	ldscript.$M
 LDSCRIPT?=	$S/conf/${LDSCRIPT_NAME}
 
-M=	${MACHINE_CPUARCH}
+M=		${MACHINE_CPUARCH}
 
 AWK?=		awk
 LINT?=		lint
@@ -81,9 +81,6 @@ INCLUDES+= -I$S/dev/twa
 
 # ...  and XFS
 INCLUDES+= -I$S/gnu/fs/xfs/FreeBSD -I$S/gnu/fs/xfs/FreeBSD/support -I$S/gnu/fs/xfs
-
-# ...  and OpenSolaris
-INCLUDES+= -I$S/contrib/opensolaris/compat
 
 # ... and the same for cxgb
 INCLUDES+= -I$S/dev/cxgb

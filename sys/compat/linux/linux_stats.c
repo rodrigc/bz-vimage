@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linux/linux_stats.c,v 1.99 2010/03/28 13:13:22 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linux/linux_stats.c,v 1.100 2011/02/09 20:23:22 netchild Exp $");
 
 #include "opt_compat.h"
 
@@ -57,6 +57,8 @@ __FBSDID("$FreeBSD: src/sys/compat/linux/linux_stats.c,v 1.99 2010/03/28 13:13:2
 
 #include <compat/linux/linux_util.h>
 #include <compat/linux/linux_file.h>
+
+#define	LINUX_SHMFS_MAGIC 0x01021994
 
 static void
 translate_vnhook_major_minor(struct vnode *vp, struct stat *sb)
@@ -394,7 +396,7 @@ linux_statfs(struct thread *td, struct linux_statfs_args *args)
 	struct l_statfs linux_statfs;
 	struct statfs bsd_statfs;
 	char *path;
-	int error;
+	int error, dev_shm;
 
 	LCONVPATHEXIST(td, args->path, &path);
 
@@ -402,11 +404,17 @@ linux_statfs(struct thread *td, struct linux_statfs_args *args)
 	if (ldebug(statfs))
 		printf(ARGS(statfs, "%s, *"), path);
 #endif
+	dev_shm = 0;
 	error = kern_statfs(td, path, UIO_SYSSPACE, &bsd_statfs);
+	if (strncmp(path, "/dev/shm", sizeof("/dev/shm") - 1) == 0)
+		dev_shm = (path[8] == '\0'
+		    || (path[8] == '/' && path[9] == '\0'));
 	LFREEPATH(path);
 	if (error)
 		return (error);
 	bsd_to_linux_statfs(&bsd_statfs, &linux_statfs);
+	if (dev_shm)
+		linux_statfs.f_type = LINUX_SHMFS_MAGIC;
 	return copyout(&linux_statfs, args->buf, sizeof(linux_statfs));
 }
 

@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.802 2011/01/18 21:14:18 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_subr.c,v 1.805 2011/02/08 00:16:36 mdf Exp $");
 
 #include "opt_ddb.h"
 
@@ -707,15 +707,15 @@ vlrureclaim(struct mount *mp)
 		vdropl(vp);
 		done++;
 next_iter_mntunlocked:
-		if ((count % 256) != 0)
+		if (!should_yield())
 			goto relock_mnt;
 		goto yield;
 next_iter:
-		if ((count % 256) != 0)
+		if (!should_yield())
 			continue;
 		MNT_IUNLOCK(mp);
 yield:
-		uio_yield();
+		kern_yield(-1);
 relock_mnt:
 		MNT_ILOCK(mp);
 	}
@@ -828,7 +828,7 @@ vnlru_proc(void)
 			vnlru_nowhere++;
 			tsleep(vnlruproc, PPAUSE, "vlrup", hz * 3);
 		} else
-			uio_yield();
+			kern_yield(-1);
 	}
 }
 
@@ -1337,13 +1337,14 @@ restart:
 			brelse(bp);
 			anyfreed = 1;
 
+			BO_LOCK(bo);
 			if (nbp != NULL &&
 			    (((nbp->b_xflags & BX_VNCLEAN) == 0) ||
 			    (nbp->b_vp != vp) ||
 			    (nbp->b_flags & B_DELWRI))) {
+				BO_UNLOCK(bo);
 				goto restart;
 			}
-			BO_LOCK(bo);
 		}
 
 		TAILQ_FOREACH_SAFE(bp, &bo->bo_dirty.bv_hd, b_bobufs, nbp) {
@@ -1360,13 +1361,15 @@ restart:
 			bp->b_flags &= ~B_ASYNC;
 			brelse(bp);
 			anyfreed = 1;
+
+			BO_LOCK(bo);
 			if (nbp != NULL &&
 			    (((nbp->b_xflags & BX_VNDIRTY) == 0) ||
 			    (nbp->b_vp != vp) ||
 			    (nbp->b_flags & B_DELWRI) == 0)) {
+				BO_UNLOCK(bo);
 				goto restart;
 			}
-			BO_LOCK(bo);
 		}
 	}
 

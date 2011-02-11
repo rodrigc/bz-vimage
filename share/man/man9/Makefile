@@ -1,4 +1,4 @@
-# $FreeBSD: src/share/man/man9/Makefile,v 1.384 2011/01/19 17:04:07 mdf Exp $
+# $FreeBSD: src/share/man/man9/Makefile,v 1.385 2011/01/25 17:39:52 mdf Exp $
 
 MAN=	accept_filter.9 \
 	accf_data.9 \
@@ -1032,6 +1032,7 @@ MLINKS+=sbuf.9 sbuf_bcat.9 \
 	sbuf.9 sbuf_finish.9 \
 	sbuf.9 sbuf_len.9 \
 	sbuf.9 sbuf_new.9 \
+	sbuf.9 sbuf_new_for_sysctl.9 \
 	sbuf.9 sbuf_printf.9 \
 	sbuf.9 sbuf_putc.9 \
 	sbuf.9 sbuf_set_drain.9 \

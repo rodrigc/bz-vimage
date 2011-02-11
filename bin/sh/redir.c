@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)redir.c	8.2 (Berkeley) 5/4/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.33 2010/12/31 18:20:17 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/redir.c,v 1.34 2011/02/04 22:47:55 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -322,10 +322,6 @@ INCLUDE "redir.h"
 RESET {
 	while (redirlist)
 		popredir();
-}
-
-SHELLPROC {
-	clearredir();
 }
 
 #endif

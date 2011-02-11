@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)expand.c	8.5 (Berkeley) 5/15/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.81 2010/12/28 21:27:08 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/expand.c,v 1.82 2011/02/02 21:48:53 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -155,8 +155,7 @@ stputs_quotes(const char *data, const char *syntax, char *p)
  * expansion are always performed; additional expansions can be requested
  * via flag (EXP_*).
  * The result is left in the stack string.
- * When arglist is NULL, perform here document expansion.  A partial result
- * may be written to herefd, which is then not included in the stack string.
+ * When arglist is NULL, perform here document expansion.
  *
  * Caution: this function uses global state and is not reentrant.
  * However, a new invocation after an interrupted invocation is safe

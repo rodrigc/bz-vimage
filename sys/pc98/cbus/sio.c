@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/pc98/cbus/sio.c,v 1.250 2008/09/07 04:35:04 nyan Exp $
+ * $FreeBSD: src/sys/pc98/cbus/sio.c,v 1.251 2011/02/08 00:16:36 mdf Exp $
  *	from: @(#)com.c	7.5 (Berkeley) 5/16/91
  *	from: i386/isa sio.c,v 1.234
  */
@@ -2250,7 +2250,6 @@ sysctl_siots(SYSCTL_HANDLER_ARGS)
 		error = SYSCTL_OUT(req, buf, len);
 		if (error != 0)
 			return (error);
-		uio_yield();
 	}
 	return (0);
 }

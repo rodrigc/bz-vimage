@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.308 2010/11/14 16:10:15 brucec Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_proc.c,v 1.309 2011/01/25 10:59:21 kib Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -230,6 +230,7 @@ proc_init(void *mem, int size, int flags)
 	mtx_init(&p->p_mtx, "process lock", NULL, MTX_DEF | MTX_DUPOK);
 	mtx_init(&p->p_slock, "process slock", NULL, MTX_SPIN | MTX_RECURSE);
 	cv_init(&p->p_pwait, "ppwait");
+	cv_init(&p->p_dbgwait, "dbgwait");
 	TAILQ_INIT(&p->p_threads);	     /* all threads in proc */
 	EVENTHANDLER_INVOKE(process_init, p);
 	p->p_stats = pstats_alloc();

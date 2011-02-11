@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/linux/linux_misc.h,v 1.6 2009/05/10 18:16:07 dchagin Exp $
+ * $FreeBSD: src/sys/compat/linux/linux_misc.h,v 1.7 2011/01/28 18:47:07 dchagin Exp $
  */
 
 #ifndef _LINUX_MISC_H_
@@ -66,5 +66,10 @@ extern const char *linux_platform;
 #endif
 
 extern int stclohz;
+
+#define __WCLONE 0x80000000
+
+int linux_common_wait(struct thread *td, int pid, int *status,
+			int options, struct rusage *ru);
 
 #endif	/* _LINUX_MISC_H_ */

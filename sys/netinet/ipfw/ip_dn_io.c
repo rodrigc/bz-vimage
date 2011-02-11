@@ -28,7 +28,7 @@
  * Dummynet portions related to packet handling.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dn_io.c,v 1.11 2011/01/12 19:53:50 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/ipfw/ip_dn_io.c,v 1.12 2011/02/05 23:32:17 luigi Exp $");
 
 #include "opt_inet6.h"
 
@@ -471,7 +471,7 @@ serve_sched(struct mq *q, struct dn_sch_inst *si, uint64_t now)
 			(m->m_pkthdr.len * 8 + extra_bits(m, s));
 		si->credit -= len_scaled;
 		/* Move packet in the delay line */
-		dn_tag_get(m)->output_time += s->link.delay ;
+		dn_tag_get(m)->output_time = dn_cfg.curr_time + s->link.delay ;
 		mq_append(&si->dline.mq, m);
 	}
 

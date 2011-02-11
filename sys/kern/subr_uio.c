@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_uio.c,v 1.3 2010/05/08 20:34:01 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_uio.c,v 1.6 2011/02/08 00:36:46 mdf Exp $");
 
 #include "opt_zero.h"
 
@@ -158,8 +158,7 @@ uiomove(void *cp, int n, struct uio *uio)
 		switch (uio->uio_segflg) {
 
 		case UIO_USERSPACE:
-			if (ticks - PCPU_GET(switchticks) >= hogticks)
-				uio_yield();
+			maybe_yield();
 			if (uio->uio_rw == UIO_READ)
 				error = copyout(cp, iov->iov_base, cnt);
 			else
@@ -283,11 +282,8 @@ uiomoveco(void *cp, int n, struct uio *uio, int disposable)
 		switch (uio->uio_segflg) {
 
 		case UIO_USERSPACE:
-			if (ticks - PCPU_GET(switchticks) >= hogticks)
-				uio_yield();
-
+			maybe_yield();
 			error = userspaceco(cp, cnt, uio, disposable);
-
 			if (error)
 				return (error);
 			break;
@@ -354,20 +350,6 @@ again:
 	uio->uio_resid--;
 	uio->uio_offset++;
 	return (0);
-}
-
-void
-uio_yield(void)
-{
-	struct thread *td;
-
-	td = curthread;
-	DROP_GIANT();
-	thread_lock(td);
-	sched_prio(td, td->td_user_pri);
-	mi_switch(SW_INVOL | SWT_RELINQUISH, NULL);
-	thread_unlock(td);
-	PICKUP_GIANT();
 }
 
 int

@@ -42,7 +42,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/pmap.c,v 1.208 2011/01/21 10:26:26 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/sparc64/sparc64/pmap.c,v 1.209 2011/02/08 21:58:13 marius Exp $");
 
 /*
  * Manages physical address maps.
@@ -389,7 +389,8 @@ pmap_bootstrap(u_int cpu_impl)
 	 * not support it, yet.
 	 */
 	virtsz = roundup(physsz, PAGE_SIZE_4M << (PAGE_SHIFT - TTE_SHIFT));
-	if (cpu_impl >= CPU_IMPL_ULTRASPARCIIIp)
+	if (cpu_impl == CPU_IMPL_SPARC64V ||
+	    cpu_impl >= CPU_IMPL_ULTRASPARCIIIp)
 		tsb_kernel_ldd_phys = 1;
 	else {
 		dtlb_slots_avail = 0;

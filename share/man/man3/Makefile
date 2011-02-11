@@ -1,5 +1,5 @@
 #	@(#)Makefile	8.2 (Berkeley) 12/13/93
-# $FreeBSD: src/share/man/man3/Makefile,v 1.53 2010/09/11 09:26:36 davidxu Exp $
+# $FreeBSD: src/share/man/man3/Makefile,v 1.54 2011/02/07 21:26:46 jkim Exp $
 
 .include <bsd.own.mk>
 
@@ -179,6 +179,7 @@ PTHREAD_MAN=	pthread.3 \
 		pthread_exit.3 \
 		pthread_getconcurrency.3 \
 		pthread_getspecific.3 \
+		pthread_getthreadid_np.3 \
 		pthread_join.3 \
 		pthread_key_create.3 \
 		pthread_key_delete.3 \

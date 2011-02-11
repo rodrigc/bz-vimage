@@ -22,20 +22,16 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/intr_machdep.h,v 1.17 2010/09/11 04:45:51 mav Exp $
+ * $FreeBSD: src/sys/powerpc/include/intr_machdep.h,v 1.19 2011/02/02 05:58:51 marcel Exp $
  */
 
 #ifndef	_MACHINE_INTR_MACHDEP_H_
 #define	_MACHINE_INTR_MACHDEP_H_
 
 #define	INTR_VECTORS	256
-#define	MAX_PICS	5
 
-#define	IGN_SHIFT	8
-#define	INTR_INTLINE(irq) (irq & ((1 << IGN_SHIFT) - 1))
-#define	INTR_IGN(irq)	(irq >> IGN_SHIFT)
-
-#define	INTR_VEC(pic_id, irq) ((powerpc_ign_lookup(pic_id) << IGN_SHIFT) | (irq))
+#define	MAX_PICS		5
+#define	MAP_IRQ(node, pin)	powerpc_get_irq(node, pin)
 
 /*
  * Default base address for MSI messages on PowerPC
@@ -50,8 +46,8 @@ driver_filter_t powerpc_ipi_handler;
 
 void	intrcnt_add(const char *name, u_long **countp);
 
-void	powerpc_register_pic(device_t, u_int);
-int	powerpc_ign_lookup(uint32_t pic_id);
+void	powerpc_register_pic(device_t, uint32_t, u_int, u_int, u_int);
+u_int	powerpc_get_irq(uint32_t, u_int);
 
 void	powerpc_dispatch_intr(u_int, struct trapframe *);
 int	powerpc_enable_intr(void);

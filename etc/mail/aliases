@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/mail/aliases,v 1.22 2009/03/23 00:40:07 gshapiro Exp $
+# $FreeBSD: src/etc/mail/aliases,v 1.23 2011/01/31 07:47:28 maxim Exp $
 #	@(#)aliases	5.3 (Berkeley) 5/24/90
 #
 #  Aliases in this file will NOT be expanded in the header from
@@ -30,6 +30,7 @@ bin:	root
 bind:	root
 daemon:	root
 games:	root
+hast:	root
 kmem:	root
 mailnull: postmaster
 man:	root

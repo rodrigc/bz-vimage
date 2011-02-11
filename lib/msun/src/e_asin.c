@@ -12,7 +12,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/e_asin.c,v 1.14 2008/08/03 17:49:05 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/e_asin.c,v 1.15 2011/02/10 07:37:50 das Exp $");
 
 /* __ieee754_asin(x)
  * Method :                  
@@ -82,7 +82,7 @@ __ieee754_asin(double x)
 		return x*pio2_hi+x*pio2_lo;	
 	    return (x-x)/(x-x);		/* asin(|x|>1) is NaN */   
 	} else if (ix<0x3fe00000) {	/* |x|<0.5 */
-	    if(ix<0x3e400000) {		/* if |x| < 2**-27 */
+	    if(ix<0x3e500000) {		/* if |x| < 2**-26 */
 		if(huge+x>one) return x;/* return x with inexact if x!=0*/
 	    }
 	    t = x*x;

@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ptrace.h	8.2 (Berkeley) 1/4/94
- * $FreeBSD: src/sys/sys/ptrace.h,v 1.34 2010/11/22 14:42:13 attilio Exp $
+ * $FreeBSD: src/sys/sys/ptrace.h,v 1.35 2011/01/25 10:59:21 kib Exp $
  */
 
 #ifndef	_SYS_PTRACE_H_
@@ -62,6 +62,8 @@
 #define	PT_TO_SCE	20
 #define	PT_TO_SCX	21
 #define	PT_SYSCALL	22
+
+#define	PT_FOLLOW_FORK	23
 
 #define PT_GETREGS      33	/* get general-purpose registers */
 #define PT_SETREGS      34	/* set general-purpose registers */
@@ -104,10 +106,12 @@ struct ptrace_lwpinfo {
 #define	PL_FLAG_SCX	0x08	/* syscall leave point */
 #define	PL_FLAG_EXEC	0x10	/* exec(2) succeeded */
 #define	PL_FLAG_SI	0x20	/* siginfo is valid */
+#define	PL_FLAG_FORKED	0x40	/* new child */
 	sigset_t	pl_sigmask;	/* LWP signal mask */
 	sigset_t	pl_siglist;	/* LWP pending signal */
 	struct __siginfo pl_siginfo;	/* siginfo for signal */
 	char		pl_tdname[MAXCOMLEN + 1]; /* LWP name */
+	int		pl_child_pid;	/* New child pid */
 };
 
 /* Argument structure for PT_VM_ENTRY. */

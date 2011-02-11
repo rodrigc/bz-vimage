@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/taskqueue.h,v 1.28 2010/11/08 20:56:31 mdf Exp $
+ * $FreeBSD: src/sys/sys/taskqueue.h,v 1.29 2011/02/04 14:06:57 jhb Exp $
  */
 
 #ifndef _SYS_TASKQUEUE_H_
@@ -96,7 +96,7 @@ static void								\
 taskqueue_define_##name(void *arg)					\
 {									\
 	taskqueue_##name =						\
-	    taskqueue_create(#name, M_NOWAIT, (enqueue), (context));	\
+	    taskqueue_create(#name, M_WAITOK, (enqueue), (context));	\
 	init;								\
 }									\
 									\
@@ -120,7 +120,7 @@ static void								\
 taskqueue_define_##name(void *arg)					\
 {									\
 	taskqueue_##name =						\
-	    taskqueue_create_fast(#name, M_NOWAIT, (enqueue),		\
+	    taskqueue_create_fast(#name, M_WAITOK, (enqueue),		\
 	    (context));							\
 	init;								\
 }									\

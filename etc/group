@@ -1,4 +1,4 @@
-# $FreeBSD: src/etc/group,v 1.35 2007/06/11 18:36:39 ceri Exp $
+# $FreeBSD: src/etc/group,v 1.36 2011/01/28 22:28:12 pjd Exp $
 #
 wheel:*:0:root
 daemon:*:1:
@@ -27,5 +27,6 @@ dialer:*:68:
 network:*:69:
 audit:*:77:
 www:*:80:
+hast:*:845:
 nogroup:*:65533:
 nobody:*:65534:

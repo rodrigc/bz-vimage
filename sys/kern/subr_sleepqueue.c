@@ -60,7 +60,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.73 2011/01/14 17:06:54 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_sleepqueue.c,v 1.74 2011/01/27 00:34:12 mdf Exp $");
 
 #include "opt_sleepqueue_profiling.h"
 #include "opt_ddb.h"
@@ -1130,6 +1130,9 @@ dump_sleepq_prof_stats(SYSCTL_HANDLER_ARGS)
 	int error;
 	int i;
 
+	error = sysctl_wire_old_buffer(req, 0);
+	if (error != 0)
+		return (error);
 	sb = sbuf_new_for_sysctl(NULL, NULL, SLEEPQ_SBUFSIZE, req);
 	sbuf_printf(sb, "\nwmesg\tcount\n");
 	enabled = prof_enabled;

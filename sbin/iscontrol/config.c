@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/iscontrol/config.c,v 1.4 2010/08/09 12:36:36 des Exp $");
+__FBSDID("$FreeBSD: src/sbin/iscontrol/config.c,v 1.5 2011/01/25 22:25:16 cracauer Exp $");
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -295,7 +295,7 @@ keyLookup(char *key)
 {
      textkey_t	*tk;
 
-     for(tk = keyMap; tk->name; tk++) {
+     for(tk = keyMap; tk->name && strcmp(tk->name, "end"); tk++) {
 	  if(strcasecmp(key, tk->name) == 0)
 	       return tk;
      }

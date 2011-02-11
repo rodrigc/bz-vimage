@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/sio/sio.c,v 1.475 2008/10/08 08:08:03 imp Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/sio/sio.c,v 1.476 2011/02/08 00:16:36 mdf Exp $");
 
 #include "opt_comconsole.h"
 #include "opt_compat.h"
@@ -1466,7 +1466,6 @@ sysctl_siots(SYSCTL_HANDLER_ARGS)
 		error = SYSCTL_OUT(req, buf, len);
 		if (error != 0)
 			return (error);
-		uio_yield();
 	}
 	return (0);
 }

@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/include/openpicvar.h,v 1.10 2010/06/23 22:33:03 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/include/openpicvar.h,v 1.11 2011/01/29 20:58:38 marcel Exp $
  */
 
 #ifndef	_POWERPC_OPENPICVAR_H_
@@ -52,7 +52,7 @@ extern devclass_t openpic_devclass;
 /*
  * Bus-independent attach i/f
  */
-int	openpic_attach(device_t);
+int	openpic_common_attach(device_t, uint32_t);
 
 /*
  * PIC interface.

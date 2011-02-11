@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)uio.h	8.5 (Berkeley) 2/22/94
- * $FreeBSD: src/sys/sys/uio.h,v 1.42 2009/06/25 18:46:30 kib Exp $
+ * $FreeBSD: src/sys/sys/uio.h,v 1.45 2011/02/08 00:36:46 mdf Exp $
  */
 
 #ifndef _SYS_UIO_H_
@@ -94,7 +94,6 @@ int	copyiniov(struct iovec *iovp, u_int iovcnt, struct iovec **iov,
 int	copyinstrfrom(const void * __restrict src, void * __restrict dst,
 	    size_t len, size_t * __restrict copied, int seg);
 int	copyinuio(struct iovec *iovp, u_int iovcnt, struct uio **uiop);
-void	uio_yield(void);
 int	uiomove(void *cp, int n, struct uio *uio);
 int	uiomove_frombuf(void *buf, int buflen, struct uio *uio);
 int	uiomove_fromphys(struct vm_page *ma[], vm_offset_t offset, int n,

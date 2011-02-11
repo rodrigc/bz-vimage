@@ -32,7 +32,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.41 2011/01/14 23:30:35 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/fs/nfsserver/nfs_nfsdport.c,v 1.42 2011/02/05 21:21:27 alc Exp $");
 
 /*
  * Functions that perform the vfs operations required by the routines in
@@ -1225,7 +1225,8 @@ nfsvno_fsync(struct vnode *vp, u_int64_t off, int cnt, struct ucred *cred,
 		if (vp->v_object &&
 		   (vp->v_object->flags & OBJ_MIGHTBEDIRTY)) {
 			VM_OBJECT_LOCK(vp->v_object);
-			vm_object_page_clean(vp->v_object, off / PAGE_SIZE, (cnt + PAGE_MASK) / PAGE_SIZE, OBJPC_SYNC);
+			vm_object_page_clean(vp->v_object, off, off + cnt,
+			    OBJPC_SYNC);
 			VM_OBJECT_UNLOCK(vp->v_object);
 		}
 

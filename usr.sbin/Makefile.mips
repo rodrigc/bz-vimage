@@ -1,6 +1,7 @@
-# $FreeBSD: src/usr.sbin/Makefile.mips,v 1.2 2011/01/07 20:26:33 imp Exp $
+# $FreeBSD: src/usr.sbin/Makefile.mips,v 1.3 2011/01/27 14:16:12 jchandra Exp $
 
 SUBDIR:=	${SUBDIR:Nsysinstall}
-.if ${MACHINE_ARCH:Mmips64*} != ""
+# uathload broken for n32 and n64 due to toolchain issues
+.if ${MACHINE_ARCH:Mmipse[lb]} == ""
 SUBDIR:=	${SUBDIR:Nuathload}
 .endif

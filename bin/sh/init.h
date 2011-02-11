@@ -30,9 +30,8 @@
  * SUCH DAMAGE.
  *
  *	@(#)init.h	8.2 (Berkeley) 5/4/95
- * $FreeBSD: src/bin/sh/init.h,v 1.8 2004/04/06 20:06:51 markm Exp $
+ * $FreeBSD: src/bin/sh/init.h,v 1.9 2011/02/04 22:47:55 jilles Exp $
  */
 
 void init(void);
 void reset(void);
-void initshellproc(void);

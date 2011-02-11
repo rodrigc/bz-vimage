@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/include/pthread_np.h,v 1.21 2008/03/03 08:28:13 davidxu Exp $
+ * $FreeBSD: src/include/pthread_np.h,v 1.22 2011/02/07 21:26:46 jkim Exp $
  */
 #ifndef _PTHREAD_NP_H_
 #define _PTHREAD_NP_H_
@@ -48,6 +48,7 @@ int pthread_attr_get_np(pthread_t, pthread_attr_t *);
 int pthread_attr_getaffinity_np(const pthread_attr_t *, size_t, cpuset_t *);
 int pthread_attr_setaffinity_np(pthread_attr_t *, size_t, const cpuset_t *);
 int pthread_getaffinity_np(pthread_t, size_t, cpuset_t *);
+int pthread_getthreadid_np(void);
 int pthread_main_np(void);
 int pthread_multi_np(void);
 int pthread_mutexattr_getkind_np(pthread_mutexattr_t);

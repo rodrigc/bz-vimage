@@ -14,7 +14,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/e_expf.c,v 1.14 2008/02/22 02:30:34 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/e_expf.c,v 1.15 2011/02/10 07:37:29 das Exp $");
 
 #include "math.h"
 #include "math_private.h"
@@ -72,7 +72,7 @@ __ieee754_expf(float x)	/* default IEEE double exp */
 	    }
 	    x  = hi - lo;
 	}
-	else if(hx < 0x31800000)  {	/* when |x|<2**-28 */
+	else if(hx < 0x39000000)  {	/* when |x|<2**-14 */
 	    if(huge+x>one) return one+x;/* trigger inexact */
 	}
 	else k = 0;

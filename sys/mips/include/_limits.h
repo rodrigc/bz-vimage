@@ -28,7 +28,7 @@
  *
  *	@(#)limits.h	8.3 (Berkeley) 1/4/94
  *	from: src/sys/i386/include/_limits.h,v 1.27 2005/01/06 22:18:15 imp
- * $FreeBSD: src/sys/mips/include/_limits.h,v 1.4 2011/01/08 11:13:34 tijl Exp $
+ * $FreeBSD: src/sys/mips/include/_limits.h,v 1.5 2011/02/04 13:09:46 tijl Exp $
  */
 
 #ifndef _MACHINE__LIMITS_H_
@@ -58,7 +58,7 @@
 #define	__INT_MAX	0x7fffffff	/* max value for an int */
 #define	__INT_MIN	(-0x7fffffff - 1)	/* min value for an int */
 
-#ifdef __LP64__
+#ifdef __mips_n64
 #define	__ULONG_MAX	0xffffffffffffffff
 #define	__LONG_MAX	0x7fffffffffffffff
 #define	__LONG_MIN	(-0x7fffffffffffffff - 1)

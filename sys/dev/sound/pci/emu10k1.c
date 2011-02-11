@@ -41,7 +41,7 @@
 #include <dev/sound/midi/mpu401.h>
 #include "mpufoi_if.h"
 
-SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/emu10k1.c,v 1.71 2009/06/07 19:12:08 ariff Exp $");
+SND_DECLARE_FILE("$FreeBSD: src/sys/dev/sound/pci/emu10k1.c,v 1.72 2011/02/09 11:28:57 marius Exp $");
 
 /* -------------------------------------------------------------------- */
 
@@ -2017,7 +2017,7 @@ emu_pci_attach(device_t dev)
 
 	if (bus_dma_tag_create(/*parent*/bus_get_dma_tag(dev), /*alignment*/2,
 		/*boundary*/0,
-		/*lowaddr*/1 << 31, /* can only access 0-2gb */
+		/*lowaddr*/(1U << 31) - 1, /* can only access 0-2gb */
 		/*highaddr*/BUS_SPACE_MAXADDR,
 		/*filter*/NULL, /*filterarg*/NULL,
 		/*maxsize*/sc->bufsz, /*nsegments*/1, /*maxsegz*/0x3ffff,

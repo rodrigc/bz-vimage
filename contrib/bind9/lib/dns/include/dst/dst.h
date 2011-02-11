@@ -509,6 +509,16 @@ dst_key_paramcompare(const dst_key_t *key1, const dst_key_t *key2);
  */
 
 void
+dst_key_attach(dst_key_t *source, dst_key_t **target);
+/*
+ * Attach to a existing key increasing the reference count.
+ *
+ * Requires:
+ *\li 'source' to be a valid key.
+ *\li 'target' to be non-NULL and '*target' to be NULL.
+ */
+
+void
 dst_key_free(dst_key_t **keyp);
 /*%<
  * Release all memory associated with the key.

@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.63 2011/01/06 03:36:04 nwhitehorn Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/part/g_part.c,v 1.64 2011/01/28 11:13:01 ae Exp $");
 
 #include <sys/param.h>
 #include <sys/bio.h>
@@ -76,7 +76,10 @@ struct g_part_alias_list {
 	{ "apple-raid-offline", G_PART_ALIAS_APPLE_RAID_OFFLINE },
 	{ "apple-tv-recovery", G_PART_ALIAS_APPLE_TV_RECOVERY },
 	{ "apple-ufs", G_PART_ALIAS_APPLE_UFS },
+	{ "bios-boot", G_PART_ALIAS_BIOS_BOOT },
+	{ "ebr", G_PART_ALIAS_EBR },
 	{ "efi", G_PART_ALIAS_EFI },
+	{ "fat32", G_PART_ALIAS_MS_FAT32 },
 	{ "freebsd", G_PART_ALIAS_FREEBSD },
 	{ "freebsd-boot", G_PART_ALIAS_FREEBSD_BOOT },
 	{ "freebsd-swap", G_PART_ALIAS_FREEBSD_SWAP },
@@ -87,6 +90,7 @@ struct g_part_alias_list {
 	{ "linux-lvm", G_PART_ALIAS_LINUX_LVM },
 	{ "linux-raid", G_PART_ALIAS_LINUX_RAID },
 	{ "linux-swap", G_PART_ALIAS_LINUX_SWAP },
+	{ "mbr", G_PART_ALIAS_MBR },
 	{ "ms-basic-data", G_PART_ALIAS_MS_BASIC_DATA },
 	{ "ms-ldm-data", G_PART_ALIAS_MS_LDM_DATA },
 	{ "ms-ldm-metadata", G_PART_ALIAS_MS_LDM_METADATA },
@@ -98,7 +102,6 @@ struct g_part_alias_list {
 	{ "netbsd-lfs", G_PART_ALIAS_NETBSD_LFS },
 	{ "netbsd-raid", G_PART_ALIAS_NETBSD_RAID },
 	{ "netbsd-swap", G_PART_ALIAS_NETBSD_SWAP },
-	{ "mbr", G_PART_ALIAS_MBR }
 };
 
 /*

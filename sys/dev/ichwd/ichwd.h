@@ -25,7 +25,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/ichwd/ichwd.h,v 1.13 2010/12/08 15:32:54 attilio Exp $
+ * $FreeBSD: src/sys/dev/ichwd/ichwd.h,v 1.15 2011/02/01 01:05:11 jfv Exp $
  */
 
 #ifndef _ICHWD_H_
@@ -96,6 +96,9 @@ struct ichwd_softc {
 #define DEVICEID_CPT29		0x1c5d
 #define DEVICEID_CPT30		0x1c5e
 #define DEVICEID_CPT31		0x1c5f
+#define DEVICEID_PATSBURG_LPC1	0x1d40
+#define DEVICEID_PATSBURG_LPC2	0x1d41
+#define DEVICEID_DH89XXCC_LPC	0x2310
 #define DEVICEID_82801AA	0x2410
 #define DEVICEID_82801AB	0x2420
 #define DEVICEID_82801BA	0x2440

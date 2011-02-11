@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/linux/imgact_linux.c,v 1.58 2008/01/13 14:44:08 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/linux/imgact_linux.c,v 1.59 2011/02/09 18:45:33 alc Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -217,9 +217,6 @@ exec_linux_imgact(struct image_params *imgp)
 #endif
 
 	}
-	/* Indicate that this file should not be modified */
-	mp_fixme("Unlocked v_flag access");
-	imgp->vp->v_vflag |= VV_TEXT;
     }
     /* Fill in process VM information */
     vmspace->vm_tsize = round_page(a_out->a_text) >> PAGE_SHIFT;

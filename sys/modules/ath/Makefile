@@ -26,7 +26,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGES.
 #
-# $FreeBSD: src/sys/modules/ath/Makefile,v 1.14 2011/01/20 09:03:40 adrian Exp $
+# $FreeBSD: src/sys/modules/ath/Makefile,v 1.17 2011/02/01 08:03:01 adrian Exp $
 #
 
 ATH_RATE?=	sample		# tx rate control algorithm
@@ -35,7 +35,7 @@ ATH_RATE?=	sample		# tx rate control algorithm
 .PATH:	${.CURDIR}/../../dev/ath/ath_hal
 
 KMOD=	if_ath
-SRCS=	if_ath.c if_ath_pci.c
+SRCS=	if_ath.c if_ath_pci.c if_ath_debug.c if_ath_tx.c if_ath_tx_ht.c
 # NB: v3 eeprom support used by both AR5211 and AR5212; just include it
 SRCS+=	ah_osdep.c ah.c ah_regdomain.c ah_eeprom_v3.c
 SRCS+=	device_if.h bus_if.h pci_if.h opt_inet.h opt_ath.h opt_ah.h opt_wlan.h

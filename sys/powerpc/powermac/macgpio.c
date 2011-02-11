@@ -22,7 +22,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/macgpio.c,v 1.6 2011/01/06 20:19:01 andreast Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/macgpio.c,v 1.7 2011/02/02 05:58:51 marcel Exp $
  */
 
 /*
@@ -191,7 +191,7 @@ macgpio_attach(device_t dev)
 			OF_searchprop(child, "interrupt-parent", &iparent,
 			    sizeof(iparent));
 			resource_list_add(&dinfo->mdi_resources, SYS_RES_IRQ,
-			    0, INTR_VEC(iparent, irq), INTR_VEC(iparent, irq),
+			    0, MAP_IRQ(iparent, irq), MAP_IRQ(iparent, irq),
 			    1);
 		}
 

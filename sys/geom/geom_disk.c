@@ -34,7 +34,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.113 2010/12/29 12:11:07 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/geom/geom_disk.c,v 1.114 2011/01/26 22:48:09 mdf Exp $");
 
 #include "opt_geom.h"
 
@@ -527,6 +527,7 @@ sysctl_disks(SYSCTL_HANDLER_ARGS)
 	return error;
 }
  
-SYSCTL_PROC(_kern, OID_AUTO, disks, CTLTYPE_STRING | CTLFLAG_RD | CTLFLAG_NOLOCK, 0, 0, 
+SYSCTL_PROC(_kern, OID_AUTO, disks,
+    CTLTYPE_STRING | CTLFLAG_RD | CTLFLAG_MPSAFE, NULL, 0,
     sysctl_disks, "A", "names of available disks");
 

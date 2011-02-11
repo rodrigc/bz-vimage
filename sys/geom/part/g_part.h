@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/geom/part/g_part.h,v 1.18 2010/10/25 16:23:35 ae Exp $
+ * $FreeBSD: src/sys/geom/part/g_part.h,v 1.19 2011/01/28 11:13:01 ae Exp $
  */
 
 #ifndef _GEOM_PART_H_
@@ -66,6 +66,9 @@ enum g_part_alias {
 	G_PART_ALIAS_NETBSD_RAID,	/* A NetBSD RAID partition entry. */
 	G_PART_ALIAS_NETBSD_SWAP,	/* A NetBSD swap partition entry. */
 	G_PART_ALIAS_NETBSD_LFS,	/* A NetBSD LFS partition entry. */
+	G_PART_ALIAS_EBR,		/* A EBR partition entry. */
+	G_PART_ALIAS_MS_FAT32,		/* A Microsoft FAT32 partition entry. */
+	G_PART_ALIAS_BIOS_BOOT,		/* A GRUB 2 boot partition entry. */
 	/* Keep the following last */
 	G_PART_ALIAS_COUNT
 };

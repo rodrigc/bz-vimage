@@ -1,6 +1,12 @@
-# $FreeBSD: src/tools/regression/bin/sh/builtins/command6.0,v 1.2 2010/08/16 17:18:08 jilles Exp $
+# $FreeBSD: src/tools/regression/bin/sh/builtins/command6.0,v 1.3 2011/02/05 23:00:24 jilles Exp $
 PATH=/var/empty
-command -pV ls
+case $(command -pV ls) in
+*/var/empty/ls*)
+	echo "Failed: \$(command -pV ls) should not match */var/empty/ls*" ;;
+"ls is"*" "/*/ls) ;;
+*)
+	echo "Failed: \$(command -pV ls) match \"ls is\"*\" \"/*/ls" ;;
+esac
 command -pV true
 command -pV /bin/ls
 

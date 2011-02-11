@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/ia64/rtld_machdep.h,v 1.7 2009/04/19 23:02:50 rwatson Exp $
+ * $FreeBSD: src/libexec/rtld-elf/ia64/rtld_machdep.h,v 1.8 2011/01/25 21:12:31 kib Exp $
  */
 
 #ifndef RTLD_MACHDEP_H
@@ -64,5 +64,8 @@ void call_initfini_pointer(const struct Struct_Obj_Entry *, Elf_Addr);
 #define calculate_tls_end(off, size) 	((off) + (size))
 
 extern void *__tls_get_addr(unsigned long module, unsigned long offset);
+
+#define	RTLD_DEFAULT_STACK_PF_EXEC	0
+#define	RTLD_DEFAULT_STACK_EXEC		0
 
 #endif

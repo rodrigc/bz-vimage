@@ -455,6 +455,8 @@ parse_command_line(int argc, char *argv[]) {
 				ns_g_clienttest = ISC_TRUE;
 			else if (!strcmp(isc_commandline_argument, "nosoa"))
 				ns_g_nosoa = ISC_TRUE;
+			else if (!strcmp(isc_commandline_argument, "noaa"))
+				ns_g_noaa = ISC_TRUE;
 			else
 				fprintf(stderr, "unknown -T flag '%s\n",
 					isc_commandline_argument);

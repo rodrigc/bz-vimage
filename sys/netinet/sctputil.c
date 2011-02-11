@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2008, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,7 +33,7 @@
 /* $KAME: sctputil.c,v 1.37 2005/03/07 23:26:09 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctputil.c,v 1.126 2011/01/19 22:10:35 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctputil.c,v 1.135 2011/02/05 12:12:51 rrs Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp_pcb.h>
@@ -55,6 +57,7 @@ __FBSDID("$FreeBSD: src/sys/netinet/sctputil.c,v 1.126 2011/01/19 22:10:35 tuexe
 #endif
 
 extern struct sctp_cc_functions sctp_cc_functions[];
+extern struct sctp_ss_functions sctp_ss_functions[];
 
 void
 sctp_sblog(struct sockbuf *sb,
@@ -912,9 +915,11 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 	/* init all variables to a known value. */
 	SCTP_SET_STATE(&stcb->asoc, SCTP_STATE_INUSE);
 	asoc->max_burst = m->sctp_ep.max_burst;
+	asoc->fr_max_burst = m->sctp_ep.fr_max_burst;
 	asoc->heart_beat_delay = TICKS_TO_MSEC(m->sctp_ep.sctp_timeoutticks[SCTP_TIMER_HEARTBEAT]);
 	asoc->cookie_life = m->sctp_ep.def_cookie_life;
 	asoc->sctp_cmt_on_off = m->sctp_cmt_on_off;
+	asoc->ecn_allowed = m->sctp_ecn_enable;
 	asoc->sctp_nr_sack_on_off = (uint8_t) SCTP_BASE_SYSCTL(sctp_nr_sack_on_off);
 	asoc->sctp_cmt_pf = (uint8_t) SCTP_BASE_SYSCTL(sctp_cmt_pf);
 	asoc->sctp_frag_point = m->sctp_frag_point;
@@ -970,7 +975,6 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 	asoc->last_net_cmt_send_started = NULL;
 
 	/* This will need to be adjusted */
-	asoc->last_cwr_tsn = asoc->init_seq_number - 1;
 	asoc->last_acked_seq = asoc->init_seq_number - 1;
 	asoc->advanced_peer_ack_point = asoc->last_acked_seq;
 	asoc->asconf_seq_in = asoc->last_acked_seq;
@@ -987,16 +991,9 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 	asoc->free_chunk_cnt = 0;
 
 	asoc->iam_blocking = 0;
-	/* ECN Nonce initialization */
+
 	asoc->context = m->sctp_context;
 	asoc->def_send = m->def_send;
-	asoc->ecn_nonce_allowed = 0;
-	asoc->receiver_nonce_sum = 1;
-	asoc->nonce_sum_expect_base = 1;
-	asoc->nonce_sum_check = 1;
-	asoc->nonce_resync_tsn = 0;
-	asoc->nonce_wait_for_ecne = 0;
-	asoc->nonce_wait_tsn = 0;
 	asoc->delayed_ack = TICKS_TO_MSEC(m->sctp_ep.sctp_timeoutticks[SCTP_TIMER_RECV]);
 	asoc->sack_freq = m->sctp_ep.sctp_sack_freq;
 	asoc->pr_sctp_cnt = 0;
@@ -1045,18 +1042,11 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 
 	asoc->sctp_autoclose_ticks = m->sctp_ep.auto_close_time;
 
-	switch (m->sctp_ep.sctp_default_cc_module) {
-	case SCTP_CC_RFC2581:
-	case SCTP_CC_HSTCP:
-	case SCTP_CC_HTCP:
-		stcb->asoc.congestion_control_module = m->sctp_ep.sctp_default_cc_module;
-		stcb->asoc.cc_functions = sctp_cc_functions[m->sctp_ep.sctp_default_cc_module];
-		break;
-	default:
-		stcb->asoc.congestion_control_module = SCTP_CC_RFC2581;
-		stcb->asoc.cc_functions = sctp_cc_functions[SCTP_CC_RFC2581];
-		break;
-	}
+	stcb->asoc.congestion_control_module = m->sctp_ep.sctp_default_cc_module;
+	stcb->asoc.cc_functions = sctp_cc_functions[m->sctp_ep.sctp_default_cc_module];
+
+	stcb->asoc.stream_scheduling_module = m->sctp_ep.sctp_default_ss_module;
+	stcb->asoc.ss_functions = sctp_ss_functions[m->sctp_ep.sctp_default_ss_module];
 
 	/*
 	 * Now the stream parameters, here we allocate space for all streams
@@ -1085,9 +1075,10 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 		TAILQ_INIT(&asoc->strmout[i].outqueue);
 		asoc->strmout[i].stream_no = i;
 		asoc->strmout[i].last_msg_incomplete = 0;
-		asoc->strmout[i].next_spoke.tqe_next = 0;
-		asoc->strmout[i].next_spoke.tqe_prev = 0;
+		asoc->ss_functions.sctp_ss_init_stream(&asoc->strmout[i], NULL);
 	}
+	asoc->ss_functions.sctp_ss_init(stcb, asoc, 0);
+
 	/* Now the mapping array */
 	asoc->mapping_array_size = SCTP_INITIAL_MAPPING_ARRAY;
 	SCTP_MALLOC(asoc->mapping_array, uint8_t *, asoc->mapping_array_size,
@@ -1110,7 +1101,6 @@ sctp_init_asoc(struct sctp_inpcb *m, struct sctp_tcb *stcb,
 
 	/* Now the init of the other outqueues */
 	TAILQ_INIT(&asoc->free_chunks);
-	TAILQ_INIT(&asoc->out_wheel);
 	TAILQ_INIT(&asoc->control_send_queue);
 	TAILQ_INIT(&asoc->asconf_send_queue);
 	TAILQ_INIT(&asoc->send_queue);
@@ -2473,12 +2463,13 @@ sctp_mtu_size_reset(struct sctp_inpcb *inp,
  * given an association and starting time of the current RTT period return
  * RTO in number of msecs net should point to the current network
  */
+
 uint32_t
 sctp_calculate_rto(struct sctp_tcb *stcb,
     struct sctp_association *asoc,
     struct sctp_nets *net,
     struct timeval *told,
-    int safe)
+    int safe, int local_lan_determine)
 {
 	/*-
 	 * given an association and the starting time of the current RTT
@@ -2506,6 +2497,21 @@ sctp_calculate_rto(struct sctp_tcb *stcb,
 	/************************/
 	/* get the current time */
 	(void)SCTP_GETTIME_TIMEVAL(&now);
+	/*
+	 * Record the real time of the last RTT for use in DC-CC.
+	 */
+	net->last_measured_rtt = now;
+	timevalsub(&net->last_measured_rtt, old);
+
+	/* Do we need to determine the lan type? */
+	if ((local_lan_determine == SCTP_DETERMINE_LL_OK) && (net->lan_type == SCTP_LAN_UNKNOWN)) {
+		if ((net->last_measured_rtt.tv_sec) ||
+		    (net->last_measured_rtt.tv_usec > SCTP_LOCAL_LAN_RTT)) {
+			net->lan_type = SCTP_LAN_INTERNET;
+		} else {
+			net->lan_type = SCTP_LAN_LOCAL;
+		}
+	}
 	/* compute the RTT value */
 	if ((u_long)now.tv_sec > (u_long)old->tv_sec) {
 		calc_time = ((u_long)now.tv_sec - (u_long)old->tv_sec) * 1000;

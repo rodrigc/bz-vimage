@@ -32,12 +32,11 @@
 static char sccsid[] = "@(#)itime.c	8.1 (Berkeley) 6/5/93";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/dump/itime.c,v 1.18 2010/02/03 23:56:12 delphij Exp $";
+  "$FreeBSD: src/sbin/dump/itime.c,v 1.19 2011/01/24 06:17:05 mckusick Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/queue.h>
-#include <sys/time.h>
 
 #include <ufs/ufs/dinode.h>
 
@@ -49,6 +48,7 @@ static const char rcsid[] =
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <timeconv.h>
 
 #include "dump.h"

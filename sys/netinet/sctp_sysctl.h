@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -29,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_sysctl.h,v 1.27 2010/12/22 19:04:14 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_sysctl.h,v 1.33 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __sctp_sysctl_h__
 #define __sctp_sysctl_h__
@@ -43,7 +45,7 @@ struct sctp_sysctl {
 	uint32_t sctp_auto_asconf;
 	uint32_t sctp_multiple_asconfs;
 	uint32_t sctp_ecn_enable;
-	uint32_t sctp_ecn_nonce;
+	uint32_t sctp_fr_max_burst_default;
 	uint32_t sctp_strict_sacks;
 #if !defined(SCTP_WITH_NO_CSUM)
 	uint32_t sctp_no_csum_on_loopback;
@@ -96,6 +98,8 @@ struct sctp_sysctl {
 	uint32_t sctp_logging_level;
 	/* JRS - Variable for default congestion control module */
 	uint32_t sctp_default_cc_module;
+	/* RS - Variable for default stream scheduling module */
+	uint32_t sctp_default_ss_module;
 	uint32_t sctp_default_frag_interleave;
 	uint32_t sctp_mobility_base;
 	uint32_t sctp_mobility_fasthandoff;
@@ -150,12 +154,6 @@ struct sctp_sysctl {
 #define SCTPCTL_ECN_ENABLE_MAX		1
 #define SCTPCTL_ECN_ENABLE_DEFAULT	1
 
-/* ecn_nonce: Enable SCTP ECN Nonce */
-#define SCTPCTL_ECN_NONCE_DESC		"Enable SCTP ECN Nonce"
-#define SCTPCTL_ECN_NONCE_MIN		0
-#define SCTPCTL_ECN_NONCE_MAX		1
-#define SCTPCTL_ECN_NONCE_DEFAULT	0
-
 /* strict_sacks: Enable SCTP Strict SACK checking */
 #define SCTPCTL_STRICT_SACKS_DESC	"Enable SCTP Strict SACK checking"
 #define SCTPCTL_STRICT_SACKS_MIN	0
@@ -182,9 +180,16 @@ struct sctp_sysctl {
 
 /* maxburst: Default max burst for sctp endpoints */
 #define SCTPCTL_MAXBURST_DESC		"Default max burst for sctp endpoints"
-#define SCTPCTL_MAXBURST_MIN		1
+#define SCTPCTL_MAXBURST_MIN		0
 #define SCTPCTL_MAXBURST_MAX		0xFFFFFFFF
 #define SCTPCTL_MAXBURST_DEFAULT	SCTP_DEF_MAX_BURST
+
+/* fr_maxburst: Default max burst for sctp endpoints when fast retransmitting */
+#define SCTPCTL_FRMAXBURST_DESC		"Default fr max burst for sctp endpoints"
+#define SCTPCTL_FRMAXBURST_MIN		0
+#define SCTPCTL_FRMAXBURST_MAX		0xFFFFFFFF
+#define SCTPCTL_FRMAXBURST_DEFAULT	SCTP_DEF_FRMAX_BURST
+
 
 /* maxchunks: Default max chunks on queue per asoc */
 #define SCTPCTL_MAXCHUNKS_DESC		"Default max chunks on queue per asoc"
@@ -192,13 +197,13 @@ struct sctp_sysctl {
 #define SCTPCTL_MAXCHUNKS_MAX		0xFFFFFFFF
 #define SCTPCTL_MAXCHUNKS_DEFAULT	SCTP_ASOC_MAX_CHUNKS_ON_QUEUE
 
-/* tcbhashsize: Tuneable for Hash table sizes */
+/* tcbhashsize: Tunable for Hash table sizes */
 #define SCTPCTL_TCBHASHSIZE_DESC	"Tunable for TCB hash table sizes"
 #define SCTPCTL_TCBHASHSIZE_MIN		1
 #define SCTPCTL_TCBHASHSIZE_MAX		0xFFFFFFFF
 #define SCTPCTL_TCBHASHSIZE_DEFAULT	SCTP_TCBHASHSIZE
 
-/* pcbhashsize: Tuneable for PCB Hash table sizes */
+/* pcbhashsize: Tunable for PCB Hash table sizes */
 #define SCTPCTL_PCBHASHSIZE_DESC	"Tunable for PCB hash table sizes"
 #define SCTPCTL_PCBHASHSIZE_MIN		1
 #define SCTPCTL_PCBHASHSIZE_MAX		0xFFFFFFFF
@@ -210,8 +215,8 @@ struct sctp_sysctl {
 #define SCTPCTL_MIN_SPLIT_POINT_MAX	0xFFFFFFFF
 #define SCTPCTL_MIN_SPLIT_POINT_DEFAULT	SCTP_DEFAULT_SPLIT_POINT_MIN
 
-/* chunkscale: Tuneable for Scaling of number of chunks and messages */
-#define SCTPCTL_CHUNKSCALE_DESC		"Tuneable for Scaling of number of chunks and messages"
+/* chunkscale: Tunable for Scaling of number of chunks and messages */
+#define SCTPCTL_CHUNKSCALE_DESC		"Tunable for Scaling of number of chunks and messages"
 #define SCTPCTL_CHUNKSCALE_MIN		1
 #define SCTPCTL_CHUNKSCALE_MAX		0xFFFFFFFF
 #define SCTPCTL_CHUNKSCALE_DEFAULT	SCTP_CHUNKQUEUE_SCALE
@@ -406,7 +411,7 @@ struct sctp_sysctl {
 #define SCTPCTL_HB_MAX_BURST_DESC	"Confirmation Heartbeat max burst"
 #define SCTPCTL_HB_MAX_BURST_MIN	1
 #define SCTPCTL_HB_MAX_BURST_MAX	0xFFFFFFFF
-#define SCTPCTL_HB_MAX_BURST_DEFAULT	SCTP_DEF_MAX_BURST
+#define SCTPCTL_HB_MAX_BURST_DEFAULT	SCTP_DEF_HBMAX_BURST
 
 /* abort_at_limit: When one-2-one hits qlimit abort */
 #define SCTPCTL_ABORT_AT_LIMIT_DESC	"When one-2-one hits qlimit abort"
@@ -443,6 +448,12 @@ struct sctp_sysctl {
 #define SCTPCTL_DEFAULT_CC_MODULE_MIN		0
 #define SCTPCTL_DEFAULT_CC_MODULE_MAX		2
 #define SCTPCTL_DEFAULT_CC_MODULE_DEFAULT	0
+
+/* RS - default stream scheduling module sysctl */
+#define SCTPCTL_DEFAULT_SS_MODULE_DESC		"Default stream scheduling module"
+#define SCTPCTL_DEFAULT_SS_MODULE_MIN		0
+#define SCTPCTL_DEFAULT_SS_MODULE_MAX		5
+#define SCTPCTL_DEFAULT_SS_MODULE_DEFAULT	0
 
 /* RRS - default fragment interleave */
 #define SCTPCTL_DEFAULT_FRAG_INTERLEAVE_DESC	"Default fragment interleave level"

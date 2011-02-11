@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,7 +34,7 @@
 
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_crc32.c,v 1.20 2010/11/14 14:37:20 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_crc32.c,v 1.21 2011/02/05 12:12:51 rrs Exp $");
 
 #include <netinet/sctp_os.h>
 #include <netinet/sctp.h>

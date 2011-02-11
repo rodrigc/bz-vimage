@@ -56,7 +56,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ichwd/ichwd.c,v 1.27 2010/12/08 15:32:54 attilio Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ichwd/ichwd.c,v 1.29 2011/02/01 01:05:11 jfv Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -157,6 +157,9 @@ static struct ichwd_device ichwd_devices[] = {
 	{ DEVICEID_CPT29,    "Intel Cougar Point watchdog timer",	10 },
 	{ DEVICEID_CPT30,    "Intel Cougar Point watchdog timer",	10 },
 	{ DEVICEID_CPT31,    "Intel Cougar Point watchdog timer",	10 },
+	{ DEVICEID_DH89XXCC_LPC,  "Intel DH89xxCC watchdog timer",	10 },
+	{ DEVICEID_PATSBURG_LPC1, "Intel Patsburg watchdog timer",	10 },
+	{ DEVICEID_PATSBURG_LPC2, "Intel Patsburg watchdog timer",	10 },
 	{ 0, NULL, 0 },
 };
 

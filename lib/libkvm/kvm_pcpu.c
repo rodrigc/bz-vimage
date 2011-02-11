@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/libkvm/kvm_pcpu.c,v 1.3 2010/11/14 20:14:25 dim Exp $");
+__FBSDID("$FreeBSD: src/lib/libkvm/kvm_pcpu.c,v 1.4 2011/01/23 11:08:28 uqs Exp $");
 
 #include <sys/param.h>
 #include <sys/pcpu.h>
@@ -48,9 +48,9 @@ __FBSDID("$FreeBSD: src/lib/libkvm/kvm_pcpu.c,v 1.3 2010/11/14 20:14:25 dim Exp 
 #include "kvm_private.h"
 
 static struct nlist kvm_pcpu_nl[] = {
-	{ "_cpuid_to_pcpu" },
-	{ "_mp_maxcpus" },
-	{ NULL },
+	{ .n_name = "_cpuid_to_pcpu" },
+	{ .n_name = "_mp_maxcpus" },
+	{ .n_name = NULL },
 };
 
 /*
@@ -96,7 +96,7 @@ _kvm_pcpu_init(kvm_t *kd)
 		return (-1);
 	}
 	if (kvm_read(kd, kvm_pcpu_nl[NL_CPUID_TO_PCPU].n_value, data, len) !=
-	    len) {
+	   (ssize_t)len) {
 		_kvm_err(kd, kd->program, "cannot read cpuid_to_pcpu array");
 		free(data);
 		return (-1);
@@ -119,7 +119,6 @@ void *
 kvm_getpcpu(kvm_t *kd, int cpu)
 {
 	char *buf;
-	int i;
 
 	if (kd == NULL) {
 		_kvm_pcpu_clear();
@@ -197,14 +196,14 @@ _kvm_dpcpu_init(kvm_t *kd)
 {
 	struct nlist nl[] = {
 #define	NLIST_START_SET_PCPU	0
-		{ "___start_" DPCPU_SETNAME },
+		{ .n_name = "___start_" DPCPU_SETNAME },
 #define	NLIST_STOP_SET_PCPU	1
-		{ "___stop_" DPCPU_SETNAME },
+		{ .n_name = "___stop_" DPCPU_SETNAME },
 #define	NLIST_DPCPU_OFF		2
-		{ "_dpcpu_off" },
+		{ .n_name = "_dpcpu_off" },
 #define	NLIST_MP_MAXCPUS	3
-		{ "_mp_maxcpus" },
-		{ NULL },
+		{ .n_name = "_mp_maxcpus" },
+		{ .n_name = NULL },
 	};
 	uintptr_t *dpcpu_off_buf;
 	size_t len;
@@ -225,7 +224,7 @@ _kvm_dpcpu_init(kvm_t *kd)
 	if (dpcpu_off_buf == NULL)
 		return (-1);
 	if (kvm_read(kd, nl[NLIST_DPCPU_OFF].n_value, dpcpu_off_buf, len) !=
-	    len) {
+	    (ssize_t)len) {
 		free(dpcpu_off_buf);
 		return (-1);
 	}

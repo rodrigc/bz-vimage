@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/sys/sysent.h,v 1.71 2011/01/08 16:13:44 kib Exp $
+ * $FreeBSD: src/sys/sys/sysent.h,v 1.72 2011/01/26 20:03:58 dchagin Exp $
  */
 
 #ifndef _SYS_SYSENT_H_
@@ -129,8 +129,10 @@ struct sysentvec {
 #define	SV_SHP		0x010000
 
 #define	SV_ABI_MASK	0xff
-#define	SV_CURPROC_FLAG(x) (curproc->p_sysent->sv_flags & (x))
-#define	SV_CURPROC_ABI() (curproc->p_sysent->sv_flags & SV_ABI_MASK)
+#define	SV_PROC_FLAG(p, x)	((p)->p_sysent->sv_flags & (x))
+#define	SV_PROC_ABI(p)		((p)->p_sysent->sv_flags & SV_ABI_MASK)
+#define	SV_CURPROC_FLAG(x)	SV_PROC_FLAG(curproc, x)
+#define	SV_CURPROC_ABI()	SV_PROC_ABI(curproc)
 /* same as ELFOSABI_XXX, to prevent header pollution */
 #define	SV_ABI_LINUX	3
 #define	SV_ABI_FREEBSD 	9

@@ -22,7 +22,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powerpc/openpic.c,v 1.31 2010/07/06 15:38:38 nwhitehorn Exp $
+ * $FreeBSD: src/sys/powerpc/powerpc/openpic.c,v 1.32 2011/01/29 20:58:38 marcel Exp $
  */
 
 #include <sys/param.h>
@@ -83,7 +83,7 @@ openpic_set_priority(struct openpic_softc *sc, int pri)
 }
 
 int
-openpic_attach(device_t dev)
+openpic_common_attach(device_t dev, uint32_t node)
 {
 	struct openpic_softc *sc;
 	u_int     cpu, ipi, irq;
@@ -217,7 +217,7 @@ openpic_attach(device_t dev)
 	for (cpu = 0; cpu < sc->sc_ncpu; cpu++)
 		openpic_write(sc, OPENPIC_PCPU_TPR(cpu), 0);
 
-	powerpc_register_pic(dev, sc->sc_nirq);
+	powerpc_register_pic(dev, node, sc->sc_nirq, 4, FALSE);
 
 	/* If this is not a cascaded PIC, it must be the root PIC */
 	if (sc->sc_intr == NULL)
@@ -285,7 +285,6 @@ openpic_dispatch(device_t dev, struct trapframe *tf)
 	cpuid = (dev == root_pic) ? PCPU_GET(cpuid) : 0;
 
 	sc = device_get_softc(dev);
-
 	while (1) {
 		vector = openpic_read(sc, OPENPIC_PCPU_IACK(cpuid));
 		vector &= OPENPIC_VECTOR_MASK;

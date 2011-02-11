@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/uart/uart_tty.c,v 1.35 2009/11/28 11:13:50 ed Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/uart/uart_tty.c,v 1.36 2011/01/24 18:34:16 marcel Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -166,6 +166,14 @@ uart_tty_outwakeup(struct tty *tp)
 		return;
 
 	if (sc->sc_txbusy)
+		return;
+
+	/*
+	 * Respect RTS/CTS (output) flow control if enabled and not already
+	 * handled by hardware.
+	 */
+	if ((tp->t_termios.c_cflag & CCTS_OFLOW) && !sc->sc_hwoflow &&
+	    !(sc->sc_hwsig & SER_CTS))
 		return;
 
 	sc->sc_txdatasz = ttydisc_getc(tp, sc->sc_txbuf, sc->sc_txfifosz);
@@ -315,11 +323,8 @@ uart_tty_intr(void *arg)
 		sig = pend & SER_INT_SIGMASK;
 		if (sig & SER_DDCD)
 			ttydisc_modem(tp, sig & SER_DCD);
-		if ((sig & SER_DCTS) && (tp->t_termios.c_cflag & CCTS_OFLOW) &&
-		    !sc->sc_hwoflow) {
-			if (sig & SER_CTS)
-				uart_tty_outwakeup(tp);
-		}
+		if (sig & SER_DCTS)
+			uart_tty_outwakeup(tp);
 	}
 
 	if (pend & SER_INT_TXIDLE)

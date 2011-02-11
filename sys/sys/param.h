@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)param.h	8.3 (Berkeley) 4/4/95
- * $FreeBSD: src/sys/sys/param.h,v 1.472 2011/01/12 14:55:02 nwhitehorn Exp $
+ * $FreeBSD: src/sys/sys/param.h,v 1.474 2011/02/08 00:36:46 mdf Exp $
  */
 
 #ifndef _SYS_PARAM_H_
@@ -58,7 +58,7 @@
  *		in the range 5 to 9.
  */
 #undef __FreeBSD_version
-#define __FreeBSD_version 900030	/* Master, propagated to newvers */
+#define __FreeBSD_version 900032	/* Master, propagated to newvers */
 
 #ifdef _KERNEL
 #define	P_OSREL_SIGSEGV		700004

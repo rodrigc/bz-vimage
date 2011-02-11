@@ -32,13 +32,12 @@
 static char sccsid[] = "@(#)optr.c	8.2 (Berkeley) 1/6/94";
 #endif
 static const char rcsid[] =
-  "$FreeBSD: src/sbin/dump/optr.c,v 1.37 2009/05/29 07:26:44 brian Exp $";
+  "$FreeBSD: src/sbin/dump/optr.c,v 1.38 2011/01/24 06:17:05 mckusick Exp $";
 #endif /* not lint */
 
 #include <sys/param.h>
 #include <sys/queue.h>
 #include <sys/wait.h>
-#include <sys/time.h>
 
 #include <ufs/ufs/dinode.h>
 
@@ -51,6 +50,7 @@ static const char rcsid[] =
 #include <string.h>
 #include <stdarg.h>
 #include <signal.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "dump.h"

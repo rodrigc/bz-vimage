@@ -1,7 +1,7 @@
 /*-
  * This file is in the public domain
  *
- * $FreeBSD: src/usr.sbin/config/configvers.h,v 1.51 2010/11/09 10:59:09 brucec Exp $
+ * $FreeBSD: src/usr.sbin/config/configvers.h,v 1.52 2011/02/11 06:35:53 imp Exp $
  */
 
 /*
@@ -47,7 +47,7 @@
  *     %VERSREQ field in the Makefile.$ARCH of all the affected makefiles
  *     (typically all of them).
  *
- * $FreeBSD: src/usr.sbin/config/configvers.h,v 1.51 2010/11/09 10:59:09 brucec Exp $
+ * $FreeBSD: src/usr.sbin/config/configvers.h,v 1.52 2011/02/11 06:35:53 imp Exp $
  */
-#define	CONFIGVERS	600011
+#define	CONFIGVERS	600012
 #define	MAJOR_VERS(x)	((x) / 100000)

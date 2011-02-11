@@ -24,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/powerpc/powermac/grackle.c,v 1.19 2011/01/20 20:22:19 andreast Exp $
+ * $FreeBSD: src/sys/powerpc/powermac/grackle.c,v 1.20 2011/02/02 05:58:51 marcel Exp $
  */
 
 #include <sys/param.h>
@@ -353,7 +353,7 @@ grackle_route_interrupt(device_t bus, device_t dev, int pin)
 	if (ofw_bus_lookup_imap(ofw_bus_get_node(dev), &sc->sc_pci_iinfo, &reg,
 	    sizeof(reg), &pintr, sizeof(pintr), &mintr, sizeof(mintr),
 	    &iparent, maskbuf))
-		return (INTR_VEC(iparent, mintr));
+		return (MAP_IRQ(iparent, mintr));
 
 	/* Maybe it's a real interrupt, not an intpin */
 	if (pin > 4)

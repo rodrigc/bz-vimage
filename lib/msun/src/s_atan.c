@@ -11,7 +11,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/s_atan.c,v 1.12 2008/07/31 22:41:26 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/s_atan.c,v 1.13 2011/02/10 07:37:50 das Exp $");
 
 /* atan(x)
  * Method
@@ -87,7 +87,7 @@ atan(double x)
 	    if(hx>0) return  atanhi[3]+*(volatile double *)&atanlo[3];
 	    else     return -atanhi[3]-*(volatile double *)&atanlo[3];
 	} if (ix < 0x3fdc0000) {	/* |x| < 0.4375 */
-	    if (ix < 0x3e200000) {	/* |x| < 2^-29 */
+	    if (ix < 0x3e400000) {	/* |x| < 2^-27 */
 		if(huge+x>one) return x;	/* raise inexact */
 	    }
 	    id = -1;

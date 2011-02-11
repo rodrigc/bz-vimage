@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/imgact_elf.c,v 1.214 2011/01/08 18:41:19 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/imgact_elf.c,v 1.215 2011/02/02 16:35:10 mdf Exp $");
 
 #include "opt_compat.h"
 #include "opt_core.h"
@@ -1622,8 +1622,7 @@ compress_core (gzFile file, char *inbuf, char *dest_buf, unsigned int len,
 		}
 		inbuf += chunk_len;
 		len -= chunk_len;
-		if (ticks - PCPU_GET(switchticks) >= hogticks)
-			uio_yield();
+		maybe_yield();
 	}
 
 	return (error);

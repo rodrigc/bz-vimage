@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/libexec/rtld-elf/map_object.c,v 1.24 2011/01/08 17:11:49 kib Exp $
+ * $FreeBSD: src/libexec/rtld-elf/map_object.c,v 1.25 2011/01/25 21:12:31 kib Exp $
  */
 
 #include <sys/param.h>
@@ -101,7 +101,7 @@ map_object(int fd, const char *path, const struct stat *sb)
     phdyn = phinterp = phtls = NULL;
     phdr_vaddr = 0;
     segs = alloca(sizeof(segs[0]) * hdr->e_phnum);
-    stack_flags = PF_X | PF_R | PF_W;
+    stack_flags = RTLD_DEFAULT_STACK_PF_EXEC | PF_R | PF_W;
     while (phdr < phlimit) {
 	switch (phdr->p_type) {
 

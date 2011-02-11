@@ -35,7 +35,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/vfs_mount.c,v 1.325 2010/11/23 13:49:15 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/vfs_mount.c,v 1.328 2011/02/08 00:16:36 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/conf.h>
@@ -816,7 +816,7 @@ vfs_domount_first(
 	 * XXX The final recipients of VFS_MOUNT just overwrite the ndp they
 	 * get.  No freeing of cn_pnbuf.
 	 */
-        error = VFS_MOUNT(mp);
+	error = VFS_MOUNT(mp);
 	if (error != 0) {
 		vfs_unbusy(mp);
 		vfs_mount_destroy(mp);
@@ -940,7 +940,7 @@ vfs_domount_update(
 	 * XXX The final recipients of VFS_MOUNT just overwrite the ndp they
 	 * get.  No freeing of cn_pnbuf.
 	 */
-        error = VFS_MOUNT(mp);
+	error = VFS_MOUNT(mp);
 
 	if (error == 0) {
 		/* Process the export option. */
@@ -1659,10 +1659,9 @@ __mnt_vnode_next(struct vnode **mvp, struct mount *mp)
 	mtx_assert(MNT_MTX(mp), MA_OWNED);
 
 	KASSERT((*mvp)->v_mount == mp, ("marker vnode mount list mismatch"));
-	if ((*mvp)->v_yield++ == 500) {
+	if (should_yield()) {
 		MNT_IUNLOCK(mp);
-		(*mvp)->v_yield = 0;
-		uio_yield();
+		kern_yield(-1);
 		MNT_ILOCK(mp);
 	}
 	vp = TAILQ_NEXT(*mvp, v_nmntvnodes);

@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -31,7 +33,7 @@
 /* $KAME: sctp_timer.c,v 1.29 2005/03/06 16:04:18 itojun Exp $	 */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.c,v 1.58 2010/12/30 21:32:35 tuexen Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_timer.c,v 1.63 2011/02/05 12:12:51 rrs Exp $");
 
 #define _IP_VHL
 #include <netinet/sctp_os.h>
@@ -934,19 +936,6 @@ start_again:
 			}
 		}
 	}
-	/*
-	 * Setup the ecn nonce re-sync point. We do this since
-	 * retranmissions are NOT setup for ECN. This means that do to
-	 * Karn's rule, we don't know the total of the peers ecn bits.
-	 */
-	chk = TAILQ_FIRST(&stcb->asoc.send_queue);
-	if (chk == NULL) {
-		stcb->asoc.nonce_resync_tsn = stcb->asoc.sending_seq;
-	} else {
-		stcb->asoc.nonce_resync_tsn = chk->rec.data.TSN_seq;
-	}
-	stcb->asoc.nonce_wait_for_ecne = 0;
-	stcb->asoc.nonce_sum_check = 0;
 	/* We return 1 if we only have a window probe outstanding */
 	return (0);
 }
@@ -1144,11 +1133,6 @@ sctp_t3rxt_timer(struct sctp_inpcb *inp,
 		lchk = sctp_try_advance_peer_ack_point(stcb, &stcb->asoc);
 		/* C3. See if we need to send a Fwd-TSN */
 		if (SCTP_TSN_GT(stcb->asoc.advanced_peer_ack_point, stcb->asoc.last_acked_seq)) {
-			/*
-			 * ISSUE with ECN, see FWD-TSN processing for notes
-			 * on issues that will occur when the ECN NONCE
-			 * stuff is put into SCTP for cross checking.
-			 */
 			send_forward_tsn(stcb, &stcb->asoc);
 			if (lchk) {
 				/* Assure a timer is up */
@@ -1513,9 +1497,8 @@ static void
 sctp_audit_stream_queues_for_size(struct sctp_inpcb *inp,
     struct sctp_tcb *stcb)
 {
-	struct sctp_stream_out *outs;
 	struct sctp_stream_queue_pending *sp;
-	unsigned int chks_in_queue = 0;
+	unsigned int i, chks_in_queue = 0;
 	int being_filled = 0;
 
 	/*
@@ -1529,32 +1512,21 @@ sctp_audit_stream_queues_for_size(struct sctp_inpcb *inp,
 		    stcb->asoc.sent_queue_retran_cnt);
 		stcb->asoc.sent_queue_retran_cnt = 0;
 	}
-	SCTP_TCB_SEND_LOCK(stcb);
-	if (TAILQ_EMPTY(&stcb->asoc.out_wheel)) {
-		int i, cnt = 0;
-
-		/* Check to see if a spoke fell off the wheel */
-		for (i = 0; i < stcb->asoc.streamoutcnt; i++) {
-			if (!TAILQ_EMPTY(&stcb->asoc.strmout[i].outqueue)) {
-				sctp_insert_on_wheel(stcb, &stcb->asoc, &stcb->asoc.strmout[i], 1);
-				cnt++;
-			}
-		}
-		if (cnt) {
-			/* yep, we lost a spoke or two */
-			SCTP_PRINTF("Found an additional %d streams NOT on outwheel, corrected\n", cnt);
+	if (stcb->asoc.ss_functions.sctp_ss_is_empty(stcb, &stcb->asoc)) {
+		/* No stream scheduler information, initialize scheduler */
+		stcb->asoc.ss_functions.sctp_ss_init(stcb, &stcb->asoc, 0);
+		if (!stcb->asoc.ss_functions.sctp_ss_is_empty(stcb, &stcb->asoc)) {
+			/* yep, we lost a stream or two */
+			SCTP_PRINTF("Found additional streams NOT managed by scheduler, corrected\n");
 		} else {
-			/* no spokes lost, */
+			/* no streams lost */
 			stcb->asoc.total_output_queue_size = 0;
 		}
-		SCTP_TCB_SEND_UNLOCK(stcb);
-		return;
 	}
-	SCTP_TCB_SEND_UNLOCK(stcb);
 	/* Check to see if some data queued, if so report it */
-	TAILQ_FOREACH(outs, &stcb->asoc.out_wheel, next_spoke) {
-		if (!TAILQ_EMPTY(&outs->outqueue)) {
-			TAILQ_FOREACH(sp, &outs->outqueue, next) {
+	for (i = 0; i < stcb->asoc.streamoutcnt; i++) {
+		if (!TAILQ_EMPTY(&stcb->asoc.strmout[i].outqueue)) {
+			TAILQ_FOREACH(sp, &stcb->asoc.strmout[i].outqueue, next) {
 				if (sp->msg_is_complete)
 					being_filled++;
 				chks_in_queue++;
@@ -1645,7 +1617,8 @@ sctp_heartbeat_timer(struct sctp_inpcb *inp, struct sctp_tcb *stcb,
 				else if (ret == 0) {
 					break;
 				}
-				if (cnt_sent >= SCTP_BASE_SYSCTL(sctp_hb_maxburst))
+				if (SCTP_BASE_SYSCTL(sctp_hb_maxburst) &&
+				    (cnt_sent >= SCTP_BASE_SYSCTL(sctp_hb_maxburst)))
 					break;
 			}
 		}

@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/dev/cs/if_csvar.h,v 1.12 2008/06/06 05:25:24 imp Exp $
+ * $FreeBSD: src/sys/dev/cs/if_csvar.h,v 1.13 2011/01/29 00:53:58 andrew Exp $
  */
 
 #ifndef _IF_CSVAR_H
@@ -57,7 +57,6 @@ struct cs_softc {
 
 	int	flags;
 #define	CS_NO_IRQ	0x1
-	int 	nic_addr; 		/* Base IO address of card */
 	int	send_cmd;
 	int	line_ctl;		/* */
 	int	send_underrun;

@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/mii/rlphy.c,v 1.36 2010/10/15 14:52:11 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/mii/rlphy.c,v 1.37 2011/01/26 21:07:44 yongari Exp $");
 
 /*
  * driver for RealTek 8139 internal PHYs
@@ -98,6 +98,7 @@ static const struct mii_phydesc rlintphys[] = {
 
 static const struct mii_phydesc rlphys[] = {
 	MII_PHY_DESC(REALTEK, RTL8201L),
+	MII_PHY_DESC(xxREALTEK, RTL8201E),
 	MII_PHY_DESC(ICPLUS, IP101),
 	MII_PHY_END
 };

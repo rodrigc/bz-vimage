@@ -1,4 +1,4 @@
-/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.5 2011/01/22 13:52:23 hselasky Exp $ */
+/* $FreeBSD: src/sys/dev/usb/usb_freebsd.h,v 1.6 2011/01/24 17:38:37 hselasky Exp $ */
 /*-
  * Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
  *
@@ -46,11 +46,14 @@
 #define	USB_TD_GET_PROC(td) (td)->td_proc
 #define	USB_PROC_GET_GID(td) (td)->p_pgid
 
-#if defined(USB_HOST_ALIGN) && (USB_HOST_ALIGN != 0)
-/* USB_HOST_ALIGN is already defined and valid */
-#else
+#if (!defined(USB_HOST_ALIGN)) || (USB_HOST_ALIGN <= 0)
+/* Use default value. */
 #undef USB_HOST_ALIGN
 #define	USB_HOST_ALIGN    8		/* bytes, must be power of two */
+#endif
+/* Sanity check for USB_HOST_ALIGN: Verify power of two. */
+#if ((-USB_HOST_ALIGN) & USB_HOST_ALIGN) != USB_HOST_ALIGN
+#error "USB_HOST_ALIGN is not power of two."
 #endif
 #define	USB_FS_ISOC_UFRAME_MAX 4	/* exclusive unit */
 #define	USB_BUS_MAX 256			/* units */

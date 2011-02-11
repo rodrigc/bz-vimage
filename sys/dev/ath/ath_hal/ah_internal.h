@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ah_internal.h,v 1.19 2011/01/20 07:56:09 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ah_internal.h,v 1.22 2011/02/08 12:49:01 adrian Exp $
  */
 #ifndef _ATH_AH_INTERAL_H_
 #define _ATH_AH_INTERAL_H_
@@ -195,7 +195,8 @@ typedef struct {
 			halForcePpmSupport		: 1,
 			halEnhancedPmSupport		: 1,
 			halMbssidAggrSupport		: 1,
-			halBssidMatchSupport		: 1;
+			halBssidMatchSupport		: 1,
+			hal4kbSplitTransSupport		: 1;
 	uint32_t	halWirelessModes;
 	uint16_t	halTotalQueues;
 	uint16_t	halKeyCacheSize;
@@ -209,6 +210,8 @@ typedef struct {
 	uint8_t		halNumAntCfg2GHz;
 	uint8_t		halNumAntCfg5GHz;
 	uint32_t	halIntrMask;
+	uint8_t		halTxStreams;
+	uint8_t		halRxStreams;
 } HAL_CAPABILITIES;
 
 struct regDomain;
@@ -463,6 +466,10 @@ isBigEndian(void)
 	OS_REG_WRITE(_a, _r, OS_REG_READ(_a, _r) | (_f))
 #define	OS_REG_CLR_BIT(_a, _r, _f) \
 	OS_REG_WRITE(_a, _r, OS_REG_READ(_a, _r) &~ (_f))
+
+/* Analog register writes may require a delay between each one (eg Merlin?) */
+#define	OS_A_REG_RMW_FIELD(_a, _r, _f, _v) \
+	do { OS_REG_WRITE(_a, _r, (OS_REG_READ(_a, _r) &~ (_f)) | (((_v) << _f##_S) & (_f))) ; OS_DELAY(100); } while (0)
 
 /* system-configurable parameters */
 extern	int ath_hal_dma_beacon_response_time;	/* in TU's */

@@ -1,5 +1,7 @@
 /*-
  * Copyright (c) 2001-2007, by Cisco Systems, Inc. All rights reserved.
+ * Copyright (c) 2008-2011, by Randall Stewart. All rights reserved.
+ * Copyright (c) 2008-2011, by Michael Tuexen. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,7 +32,7 @@
 
 /* $KAME: sctp_uio.h,v 1.11 2005/03/06 16:04:18 itojun Exp $	 */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/sctp_uio.h,v 1.53 2011/01/20 12:40:09 rrs Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/sctp_uio.h,v 1.56 2011/02/05 12:12:51 rrs Exp $");
 
 #ifndef __sctp_uio_h__
 #define __sctp_uio_h__
@@ -531,6 +533,12 @@ struct sctp_assoc_value {
 	uint32_t assoc_value;
 };
 
+struct sctp_stream_value {
+	sctp_assoc_t assoc_id;
+	uint16_t stream_id;
+	uint16_t stream_value;
+};
+
 struct sctp_assoc_ids {
 	uint32_t gaids_number_of_ids;
 	sctp_assoc_t gaids_assoc_id[];
@@ -940,8 +948,9 @@ struct sctpstat {
 					 * max burst inflight to net */
 	uint32_t sctps_fwdtsn_map_over;	/* number of map array over-runs via
 					 * fwd-tsn's */
-
-	uint32_t sctps_reserved[32];	/* Future ABI compat - remove int's
+	uint32_t sctps_queue_upd_ecne;	/* Number of times we queued or
+					 * updated an ECN chunk on send queue */
+	uint32_t sctps_reserved[31];	/* Future ABI compat - remove int's
 					 * from here when adding new */
 };
 

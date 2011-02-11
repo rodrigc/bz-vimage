@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)ufsmount.h	8.6 (Berkeley) 3/30/95
- * $FreeBSD: src/sys/fs/ext2fs/ext2_mount.h,v 1.1 2010/01/14 14:30:54 lulf Exp $
+ * $FreeBSD: src/sys/fs/ext2fs/ext2_mount.h,v 1.2 2011/02/01 18:30:52 jhb Exp $
  */
 
 #ifndef _FS_EXT2FS_EXT2_MOUNT_H_
@@ -76,4 +76,4 @@ struct ext2mount {
 #define	is_sequential(ump, a, b)	((b) == (a) + ump->um_seqinc)
 #endif /* _KERNEL */
 
-#endif
+#endif	/* !_FS_EXT2FS_EXT2_MOUNT_H_ */

@@ -29,7 +29,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.20 2011/01/06 20:31:33 rmacklem Exp $
+ * $FreeBSD: src/sys/fs/nfs/nfsport.h,v 1.21 2011/01/27 03:32:16 gnn Exp $
  */
 
 #ifndef _NFS_NFSPORT_H_
@@ -639,9 +639,9 @@ int nfsmsleep(void *, void *, int, const char *, struct timespec *);
 #define	TAILQ_END(head)		NULL
 
 /*
- * This must be defined to be a global variable the increments once
+ * This must be defined to be a global variable that increments once
  * per second, but never stops or goes backwards, even when a "date"
- * command changes the tod clock. It is used for delta times for
+ * command changes the TOD clock. It is used for delta times for
  * leases, etc.
  */
 #define	NFSD_MONOSEC		time_uptime

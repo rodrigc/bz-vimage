@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/netinet/cc/cc.c,v 1.6 2010/11/16 09:34:31 lstewart Exp $");
+__FBSDID("$FreeBSD: src/sys/netinet/cc/cc.c,v 1.7 2011/01/23 13:00:25 lstewart Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -128,20 +128,37 @@ cc_list_available(SYSCTL_HANDLER_ARGS)
 {
 	struct cc_algo *algo;
 	struct sbuf *s;
-	int err, first;
+	int err, first, nalgos;
 
-	err = 0;
+	err = nalgos = 0;
 	first = 1;
-	s = sbuf_new(NULL, NULL, TCP_CA_NAME_MAX, SBUF_AUTOEXTEND);
+
+	CC_LIST_RLOCK();
+	STAILQ_FOREACH(algo, &cc_list, entries) {
+		nalgos++;
+	}
+	CC_LIST_RUNLOCK();
+
+	s = sbuf_new(NULL, NULL, nalgos * TCP_CA_NAME_MAX, SBUF_FIXEDLEN);
 
 	if (s == NULL)
 		return (ENOMEM);
 
+	/*
+	 * It is theoretically possible for the CC list to have grown in size
+	 * since the call to sbuf_new() and therefore for the sbuf to be too
+	 * small. If this were to happen (incredibly unlikely), the sbuf will
+	 * reach an overflow condition, sbuf_printf() will return an error and
+	 * the sysctl will fail gracefully.
+	 */
 	CC_LIST_RLOCK();
 	STAILQ_FOREACH(algo, &cc_list, entries) {
 		err = sbuf_printf(s, first ? "%s" : ", %s", algo->name);
-		if (err)
+		if (err) {
+			/* Sbuf overflow condition. */
+			err = EOVERFLOW;
 			break;
+		}
 		first = 0;
 	}
 	CC_LIST_RUNLOCK();

@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/arm/vm_machdep.c,v 1.46 2011/01/18 21:57:02 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/arm/vm_machdep.c,v 1.47 2011/02/05 03:30:29 imp Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -146,7 +146,7 @@ cpu_fork(register struct thread *td1, register struct proc *p2,
 	/* Setup to release spin count in fork_exit(). */
 	td2->td_md.md_spinlock_count = 1;
 	td2->td_md.md_saved_cspr = 0;
-	td2->td_md.md_tp = *(uint32_t **)ARM_TP_ADDRESS;
+	td2->td_md.md_tp = *(register_t *)ARM_TP_ADDRESS;
 }
 				
 void
@@ -370,10 +370,10 @@ cpu_set_user_tls(struct thread *td, void *tls_base)
 {
 
 	if (td != curthread)
-		td->td_md.md_tp = tls_base;
+		td->td_md.md_tp = (register_t)tls_base;
 	else {
 		critical_enter();
-		*(void **)ARM_TP_ADDRESS = tls_base;
+		*(register_t *)ARM_TP_ADDRESS = (register_t)tls_base;
 		critical_exit();
 	}
 	return (0);

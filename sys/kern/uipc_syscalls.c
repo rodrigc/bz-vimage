@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.302 2010/12/14 06:19:13 pjd Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_syscalls.c,v 1.304 2011/02/03 14:42:46 alc Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2102,8 +2102,7 @@ retry_space:
 				 * then free it.
 				 */
 				if (pg->wire_count == 0 && pg->valid == 0 &&
-				    pg->busy == 0 && !(pg->oflags & VPO_BUSY) &&
-				    pg->hold_count == 0)
+				    pg->busy == 0 && !(pg->oflags & VPO_BUSY))
 					vm_page_free(pg);
 				vm_page_unlock(pg);
 				VM_OBJECT_UNLOCK(obj);
@@ -2113,18 +2112,25 @@ retry_space:
 			}
 
 			/*
-			 * Get a sendfile buf.  We usually wait as long
-			 * as necessary, but this wait can be interrupted.
+			 * Get a sendfile buf.  When allocating the
+			 * first buffer for mbuf chain, we usually
+			 * wait as long as necessary, but this wait
+			 * can be interrupted.  For consequent
+			 * buffers, do not sleep, since several
+			 * threads might exhaust the buffers and then
+			 * deadlock.
 			 */
-			if ((sf = sf_buf_alloc(pg,
-			    (mnw ? SFB_NOWAIT : SFB_CATCH))) == NULL) {
+			sf = sf_buf_alloc(pg, (mnw || m != NULL) ? SFB_NOWAIT :
+			    SFB_CATCH);
+			if (sf == NULL) {
 				mbstat.sf_allocfail++;
 				vm_page_lock(pg);
 				vm_page_unwire(pg, 0);
 				KASSERT(pg->object != NULL,
 				    ("kern_sendfile: object disappeared"));
 				vm_page_unlock(pg);
-				error = (mnw ? EAGAIN : EINTR);
+				if (m == NULL)
+					error = (mnw ? EAGAIN : EINTR);
 				break;
 			}
 

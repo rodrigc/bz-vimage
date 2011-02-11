@@ -21,7 +21,7 @@
 /* Driver for NVIDIA nForce MCP Fast Ethernet and Gigabit Ethernet */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/nfe/if_nfe.c,v 1.45 2011/01/12 19:53:56 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/nfe/if_nfe.c,v 1.46 2011/01/24 17:53:58 yongari Exp $");
 
 #ifdef HAVE_KERNEL_OPTION_HEADERS
 #include "opt_device_polling.h"
@@ -1709,8 +1709,10 @@ nfe_ioctl(struct ifnet *ifp, u_long cmd, caddr_t data)
 			else {
 				NFE_LOCK(sc);
 				ifp->if_mtu = ifr->ifr_mtu;
-				if ((ifp->if_drv_flags & IFF_DRV_RUNNING) != 0)
+				if (ifp->if_drv_flags & IFF_DRV_RUNNING) {
+					ifp->if_drv_flags &= ~IFF_DRV_RUNNING;
 					nfe_init_locked(sc);
+				}
 				NFE_UNLOCK(sc);
 			}
 		}

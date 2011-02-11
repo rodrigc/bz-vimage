@@ -121,7 +121,7 @@ LIBISC_EXTERNAL_DATA extern unsigned int isc_mem_debugging;
 
 #if ISC_MEM_TRACKLINES
 #define _ISC_MEM_FILELINE	, __FILE__, __LINE__
-#define _ISC_MEM_FLARG		, const char *, int
+#define _ISC_MEM_FLARG		, const char *, unsigned int
 #else
 #define _ISC_MEM_FILELINE
 #define _ISC_MEM_FLARG

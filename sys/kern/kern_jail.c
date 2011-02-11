@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.139 2010/12/31 22:49:13 bz Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/kern_jail.c,v 1.140 2011/01/26 20:03:58 dchagin Exp $");
 
 #include "opt_compat.h"
 #include "opt_ddb.h"
@@ -746,7 +746,7 @@ kern_jail_set(struct thread *td, struct uio *optuio, int flags)
 	}
 
 #ifdef COMPAT_FREEBSD32
-	if (td->td_proc->p_sysent->sv_flags & SV_ILP32) {
+	if (SV_PROC_FLAG(td->td_proc, SV_ILP32)) {
 		uint32_t hid32;
 
 		error = vfs_copyopt(opts, "host.hostid", &hid32, sizeof(hid32));
@@ -1973,7 +1973,7 @@ kern_jail_get(struct thread *td, struct uio *optuio, int flags)
 	if (error != 0 && error != ENOENT)
 		goto done_deref;
 #ifdef COMPAT_FREEBSD32
-	if (td->td_proc->p_sysent->sv_flags & SV_ILP32) {
+	if (SV_PROC_FLAG(td->td_proc, SV_ILP32)) {
 		uint32_t hid32 = pr->pr_hostid;
 
 		error = vfs_setopt(opts, "host.hostid", &hid32, sizeof(hid32));

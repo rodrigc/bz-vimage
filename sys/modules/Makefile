@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/Makefile,v 1.668 2010/12/31 00:21:41 yongari Exp $
+# $FreeBSD: src/sys/modules/Makefile,v 1.669 2011/01/24 07:50:29 lstewart Exp $
 
 .include <bsd.own.mk>
 
@@ -151,6 +151,7 @@ SUBDIR=	${_3dfx} \
 	jme \
 	joy \
 	kbdmux \
+	khelp \
 	krpc \
 	ksyms \
 	le \

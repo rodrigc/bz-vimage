@@ -11,7 +11,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/lib/msun/src/s_nexttoward.c,v 1.2 2008/02/22 02:30:36 das Exp $");
+__FBSDID("$FreeBSD: src/lib/msun/src/s_nexttoward.c,v 1.3 2011/02/10 07:38:13 das Exp $");
 
 /*
  * We assume that a long double has a 15-bit exponent.  On systems
@@ -63,8 +63,8 @@ nexttoward(double x, long double y)
 	if(ix<0x00100000) {		/* underflow */
 	    t = x*x;
 	    if(t!=x) {		/* raise underflow flag */
-	        INSERT_WORDS(y,hx,lx);
-		return y;
+	        INSERT_WORDS(x,hx,lx);
+		return x;
 	    }
 	}
 	INSERT_WORDS(x,hx,lx);

@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/uio_machdep.c,v 1.2 2006/12/07 02:03:18 kmacy Exp $");
+__FBSDID("$FreeBSD: src/sys/sun4v/sun4v/uio_machdep.c,v 1.3 2011/02/02 16:35:10 mdf Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -94,8 +94,7 @@ uiomove_fromphys(vm_page_t ma[], vm_offset_t offset, int n, struct uio *uio)
 		cp = (char *)TLB_PHYS_TO_DIRECT(pa) + page_offset;
 		switch (uio->uio_segflg) {
 		case UIO_USERSPACE:
-			if (ticks - PCPU_GET(switchticks) >= hogticks)
-				uio_yield();
+			maybe_yield();
 			if (uio->uio_rw == UIO_READ)
 				error = copyout(cp, iov->iov_base, cnt);
 			else

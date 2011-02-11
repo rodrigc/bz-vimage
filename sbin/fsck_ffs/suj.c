@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/fsck_ffs/suj.c,v 1.4 2010/07/06 07:07:29 jeff Exp $");
+__FBSDID("$FreeBSD: src/sbin/fsck_ffs/suj.c,v 1.5 2011/01/24 06:17:05 mckusick Exp $");
 
 #include <sys/param.h>
 #include <sys/disklabel.h>
@@ -37,6 +37,8 @@ __FBSDID("$FreeBSD: src/sbin/fsck_ffs/suj.c,v 1.4 2010/07/06 07:07:29 jeff Exp $
 #include <ufs/ufs/dir.h>
 #include <ufs/ffs/fs.h>
 
+#include <assert.h>
+#include <err.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -46,8 +48,7 @@ __FBSDID("$FreeBSD: src/sbin/fsck_ffs/suj.c,v 1.4 2010/07/06 07:07:29 jeff Exp $
 #include <string.h>
 #include <strings.h>
 #include <sysexits.h>
-#include <err.h>
-#include <assert.h>
+#include <time.h>
 
 #include "fsck.h"
 

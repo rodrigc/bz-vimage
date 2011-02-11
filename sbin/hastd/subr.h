@@ -26,7 +26,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sbin/hastd/subr.h,v 1.1 2010/02/18 23:16:19 pjd Exp $
+ * $FreeBSD: src/sbin/hastd/subr.h,v 1.2 2011/01/28 22:33:47 pjd Exp $
  */
 
 #ifndef	_SUBR_H_
@@ -47,5 +47,6 @@
 
 int provinfo(struct hast_resource *res, bool dowrite);
 const char *role2str(int role);
+int drop_privs(void);
 
 #endif	/* !_SUBR_H_ */

@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/hastctl/hastctl.c,v 1.3 2010/08/06 06:04:27 pjd Exp $");
+__FBSDID("$FreeBSD: src/sbin/hastctl/hastctl.c,v 1.6 2011/02/03 10:44:40 pjd Exp $");
 
 #include <sys/param.h>
 #include <sys/disk.h>
@@ -430,6 +430,7 @@ main(int argc, char *argv[])
 		break;
 	}
 
+	pjdlog_init(PJDLOG_MODE_STD);
 	pjdlog_debug_set(debug);
 
 	cfg = yy_config_parse(cfgpath, true);
@@ -486,10 +487,15 @@ main(int argc, char *argv[])
 		    cfg->hc_controladdr);
 	}
 	/* ...and connect to hastd. */
-	if (proto_connect(controlconn) < 0) {
+	if (proto_connect(controlconn, HAST_TIMEOUT) < 0) {
 		pjdlog_exit(EX_OSERR, "Unable to connect to hastd via %s",
 		    cfg->hc_controladdr);
 	}
+
+	if (drop_privs() != 0)
+		exit(EX_CONFIG);
+	pjdlog_debug(1, "Privileges successfully dropped.");
+
 	/* Send the command to the server... */
 	if (hast_proto_send(NULL, controlconn, nv, NULL, 0) < 0) {
 		pjdlog_exit(EX_UNAVAILABLE,

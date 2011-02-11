@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_vf.c,v 1.1 2010/06/30 21:05:51 jfv Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_vf.c,v 1.2 2011/02/11 01:00:26 jfv Exp $*/
 
 
 #include "e1000_api.h"
@@ -532,8 +532,8 @@ static s32 e1000_check_for_link_vf(struct e1000_hw *hw)
 	 * or a virtual function reset
 	 */
 
-	/* If we were hit with a reset drop the link */
-	if (!mbx->ops.check_for_rst(hw, 0))
+	/* If we were hit with a reset or timeout drop the link */
+	if (!mbx->ops.check_for_rst(hw, 0) || !mbx->timeout)
 		mac->get_link_status = TRUE;
 
 	if (!mac->get_link_status)

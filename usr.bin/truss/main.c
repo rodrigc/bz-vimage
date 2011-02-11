@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.bin/truss/main.c,v 1.58 2010/11/13 09:28:49 jh Exp $");
+__FBSDID("$FreeBSD: src/usr.bin/truss/main.c,v 1.59 2011/02/04 16:40:50 jilles Exp $");
 
 /*
  * The main module for truss.  Suprisingly simple, but, then, the other
@@ -155,7 +155,7 @@ strsig(int sig)
 	ret = NULL;
 	if (sig > 0 && sig < NSIG) {
 		int i;
-		asprintf(&ret, "sig%s", sys_signame[sig]);
+		asprintf(&ret, "SIG%s", sys_signame[sig]);
 		if (ret == NULL)
 			return (NULL);
 		for (i = 0; ret[i] != '\0'; ++i)

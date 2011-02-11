@@ -36,7 +36,7 @@ static char sccsid[] = "@(#)parser.c	8.7 (Berkeley) 5/16/95";
 #endif
 #endif /* not lint */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/parser.c,v 1.104 2010/12/26 13:25:47 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/parser.c,v 1.105 2011/02/05 15:02:19 jilles Exp $");
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -389,8 +389,10 @@ command(void)
 	union node *cp, **cpp;
 	union node *redir, **rpp;
 	int t;
+	int is_subshell;
 
 	checkkwd = CHKNL | CHKKWD | CHKALIAS;
+	is_subshell = 0;
 	redir = NULL;
 	n1 = NULL;
 	rpp = &redir;
@@ -558,6 +560,7 @@ TRACE(("expecting DO got %s %s\n", tokname[got], got == TWORD ? wordtext : ""));
 		if (readtoken() != TRP)
 			synexpect(TRP);
 		checkkwd = CHKKWD | CHKALIAS;
+		is_subshell = 1;
 		break;
 	case TBEGIN:
 		n1 = list(0, 0);
@@ -596,7 +599,7 @@ TRACE(("expecting DO got %s %s\n", tokname[got], got == TWORD ? wordtext : ""));
 	tokpushback++;
 	*rpp = NULL;
 	if (redir) {
-		if (n1->type != NSUBSHELL) {
+		if (!is_subshell) {
 			n2 = (union node *)stalloc(sizeof (struct nredir));
 			n2->type = NREDIR;
 			n2->nredir.n = n1;

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9280_attach.c,v 1.3 2011/01/21 05:21:00 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar9002/ar9280_attach.c,v 1.7 2011/02/08 12:49:01 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -69,7 +69,7 @@ static void
 ar9280AniSetup(struct ath_hal *ah)
 {
 	/* NB: disable ANI for reliable RIFS rx */
-	ar5212AniAttach(ah, AH_NULL, AH_NULL, AH_FALSE);
+	ar5416AniAttach(ah, AH_NULL, AH_NULL, AH_FALSE);
 }
 
 /*
@@ -280,6 +280,15 @@ ar9280Attach(uint16_t devid, HAL_SOFTC sc,
 		OS_REG_WRITE(ah, AR_MISC_MODE, ahp->ah_miscMode);
 
 	ar9280AniSetup(ah);			/* Anti Noise Immunity */
+
+	/* Setup noise floor min/max/nominal values */
+	AH5416(ah)->nf_2g.max = AR_PHY_CCA_MAX_GOOD_VAL_9280_2GHZ;
+	AH5416(ah)->nf_2g.min = AR_PHY_CCA_MIN_GOOD_VAL_9280_2GHZ;
+	AH5416(ah)->nf_2g.nominal = AR_PHY_CCA_NOM_VAL_9280_2GHZ;
+	AH5416(ah)->nf_5g.max = AR_PHY_CCA_MAX_GOOD_VAL_9280_5GHZ;
+	AH5416(ah)->nf_5g.min = AR_PHY_CCA_MIN_GOOD_VAL_9280_5GHZ;
+	AH5416(ah)->nf_5g.nominal = AR_PHY_CCA_NOM_VAL_9280_5GHZ;
+
 	ar5416InitNfHistBuff(AH5416(ah)->ah_cal.nfCalHist);
 
 	HALDEBUG(ah, HAL_DEBUG_ATTACH, "%s: return\n", __func__);
@@ -675,6 +684,10 @@ ar9280FillCapabilityInfo(struct ath_hal *ah)
 #if 0
 	pCap->halWowMatchPatternDword = AH_TRUE;
 #endif
+	/* AR9280 is a 2x2 stream device */
+	pCap->halTxStreams = 2;
+	pCap->halRxStreams = 2;
+
 	pCap->halCSTSupport = AH_TRUE;
 	pCap->halRifsRxSupport = AH_TRUE;
 	pCap->halRifsTxSupport = AH_TRUE;
@@ -685,9 +698,7 @@ ar9280FillCapabilityInfo(struct ath_hal *ah)
 	pCap->halBtCoexSupport = AH_TRUE;
 #endif
 	pCap->halAutoSleepSupport = AH_FALSE;	/* XXX? */
-#if 0
 	pCap->hal4kbSplitTransSupport = AH_FALSE;
-#endif
 	pCap->halRxStbcSupport = 1;
 	pCap->halTxStbcSupport = 1;
 

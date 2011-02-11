@@ -30,13 +30,12 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/usr.sbin/quot/quot.c,v 1.27 2008/09/14 11:50:19 ed Exp $");
+__FBSDID("$FreeBSD: src/usr.sbin/quot/quot.c,v 1.28 2011/01/24 06:17:05 mckusick Exp $");
 
 #include <sys/param.h>
 #include <sys/stdint.h>
 #include <sys/mount.h>
 #include <sys/disklabel.h>
-#include <sys/time.h>
 #include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
 
@@ -49,6 +48,7 @@ __FBSDID("$FreeBSD: src/usr.sbin/quot/quot.c,v 1.27 2008/09/14 11:50:19 ed Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 /* some flags of what to do: */
