@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/sys/modules/usb/Makefile,v 1.35 2010/10/13 21:36:42 hselasky Exp $
+# $FreeBSD: src/sys/modules/usb/Makefile,v 1.36 2011/02/16 08:33:30 hselasky Exp $
 #
 # Copyright (c) 2008 Hans Petter Selasky. All rights reserved.
 #
@@ -31,7 +31,7 @@ SUBDIR += rum run uath upgt ural zyd ${_urtw}
 SUBDIR += atp uhid ukbd ums udbp ufm
 SUBDIR += ucom u3g uark ubsa ubser uchcom ucycom ufoma uftdi ugensa uipaq ulpt \
 	  umct umodem umoscom uplcom uslcom uvisor uvscom
-SUBDIR += uether aue axe cdce cue kue rue udav uhso ipheth
+SUBDIR += uether aue axe cdce cue kue mos rue udav uhso ipheth
 SUBDIR += usfs umass urio
 SUBDIR += quirk template
 

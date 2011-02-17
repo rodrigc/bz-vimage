@@ -29,7 +29,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_sbus.c,v 1.41 2010/05/03 18:39:40 marius Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_sbus.c,v 1.42 2011/02/14 21:50:51 marius Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -401,7 +401,7 @@ isp_sbus_wr_reg(ispsoftc_t *isp, int regoff, uint32_t val)
 	isp_prt(isp, ISP_LOGDEBUG3,
 	    "isp_sbus_wr_reg(off %x) = %x", regoff, val);
 	bus_space_write_2(isp->isp_bus_tag, isp->isp_bus_handle, offset, val);
-	MEMORYBARRIER(isp, SYNC_REG, offset, 2);
+	MEMORYBARRIER(isp, SYNC_REG, offset, 2, -1);
 }
 
 struct imush {
@@ -496,7 +496,7 @@ isp_sbus_mbxdma(ispsoftc_t *isp)
 		return (1);
 	}
 
-	if (bus_dmamem_alloc(isp->isp_osinfo.cdmat, (void **)&base, BUS_DMA_NOWAIT,
+	if (bus_dmamem_alloc(isp->isp_osinfo.cdmat, (void **)&base, BUS_DMA_NOWAIT | BUS_DMA_COHERENT,
 	    &isp->isp_osinfo.cdmap) != 0) {
 		isp_prt(isp, ISP_LOGERR,
 		    "cannot allocate %d bytes of CCB memory", len);

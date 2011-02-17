@@ -27,7 +27,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/i386/linux/linux_sysvec.c,v 1.173 2010/10/12 09:18:17 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/i386/linux/linux_sysvec.c,v 1.174 2011/02/13 19:07:48 dchagin Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -64,8 +64,8 @@ __FBSDID("$FreeBSD: src/sys/i386/linux/linux_sysvec.c,v 1.173 2010/10/12 09:18:1
 
 #include <i386/linux/linux.h>
 #include <i386/linux/linux_proto.h>
-#include <compat/linux/linux_futex.h>
 #include <compat/linux/linux_emul.h>
+#include <compat/linux/linux_futex.h>
 #include <compat/linux/linux_mib.h>
 #include <compat/linux/linux_misc.h>
 #include <compat/linux/linux_signal.h>

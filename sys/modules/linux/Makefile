@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/modules/linux/Makefile,v 1.83 2010/08/23 06:13:29 imp Exp $
+# $FreeBSD: src/sys/modules/linux/Makefile,v 1.84 2011/02/12 18:17:12 dchagin Exp $
 
 .if ${MACHINE_CPUARCH} == "amd64"
 SFX= 32
@@ -8,7 +8,7 @@ CFLAGS+=-DCOMPAT_FREEBSD32 -DCOMPAT_LINUX32
 .PATH: ${.CURDIR}/../../compat/linux ${.CURDIR}/../../${MACHINE_CPUARCH}/linux${SFX}
 
 KMOD=	linux
-SRCS=	linux${SFX}_dummy.c linux_emul.c linux_file.c \
+SRCS=	linux_fork.c linux${SFX}_dummy.c linux_emul.c linux_file.c \
 	linux_futex.c linux_getcwd.c linux_ioctl.c linux_ipc.c \
 	linux${SFX}_machdep.c linux_mib.c linux_misc.c linux_signal.c \
 	linux_socket.c linux_stats.c linux_sysctl.c linux${SFX}_sysent.c \

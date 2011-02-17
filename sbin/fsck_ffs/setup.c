@@ -33,7 +33,7 @@ static const char sccsid[] = "@(#)setup.c	8.10 (Berkeley) 5/9/95";
 #endif /* not lint */
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sbin/fsck_ffs/setup.c,v 1.52 2009/01/30 18:33:05 obrien Exp $");
+__FBSDID("$FreeBSD: src/sbin/fsck_ffs/setup.c,v 1.53 2011/02/12 13:17:14 kib Exp $");
 
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -446,7 +446,7 @@ sblock_init(void)
 	if (sblk.b_un.b_buf == NULL || asblk.b_un.b_buf == NULL)
 		errx(EEXIT, "cannot allocate space for superblock");
 	if ((lp = getdisklabel(NULL, fsreadfd)))
-		dev_bsize = secsize = lp->d_secsize;
+		real_dev_bsize = dev_bsize = secsize = lp->d_secsize;
 	else
 		dev_bsize = secsize = DEV_BSIZE;
 }

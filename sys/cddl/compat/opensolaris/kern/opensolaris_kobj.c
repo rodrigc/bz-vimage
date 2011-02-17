@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_kobj.c,v 1.12 2009/09/08 09:17:34 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/cddl/compat/opensolaris/kern/opensolaris_kobj.c,v 1.13 2011/02/13 19:46:55 marcel Exp $");
 
 #include <sys/types.h>
 #include <sys/systm.h>
@@ -200,10 +200,9 @@ kobj_read_file_loader(struct _buf *file, char *buf, unsigned size, unsigned off)
 {
 	char *ptr;
 
-	ptr = preload_search_info(file->ptr, MODINFO_ADDR);
+	ptr = preload_fetch_addr(file->ptr);
 	if (ptr == NULL)
 		return (ENOENT);
-	ptr = *(void **)ptr;
 	bcopy(ptr + off, buf, size);
 	return (0);
 }

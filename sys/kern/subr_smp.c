@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.223 2011/01/12 19:54:19 mdf Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/subr_smp.c,v 1.224 2011/02/11 22:43:10 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -476,7 +476,7 @@ smp_topo_none(void)
 	top = &group[0];
 	top->cg_parent = NULL;
 	top->cg_child = NULL;
-	top->cg_mask = ~0U >> (32 - mp_ncpus);
+	top->cg_mask = all_cpus;
 	top->cg_count = mp_ncpus;
 	top->cg_children = 0;
 	top->cg_level = CG_SHARE_NONE;

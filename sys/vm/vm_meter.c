@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_meter.c,v 1.102 2011/01/09 12:50:44 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_meter.c,v 1.103 2011/02/12 02:10:08 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -254,16 +254,12 @@ vcnt(SYSCTL_HANDLER_ARGS)
 {
 	int count = *(int *)arg1;
 	int offset = (char *)arg1 - (char *)&cnt;
-#ifdef SMP
 	int i;
 
-	for (i = 0; i < mp_ncpus; ++i) {
+	CPU_FOREACH(i) {
 		struct pcpu *pcpu = pcpu_find(i);
 		count += *(int *)((char *)&pcpu->pc_cnt + offset);
 	}
-#else
-	count += *(int *)((char *)PCPU_PTR(cnt) + offset);
-#endif
 	return (SYSCTL_OUT(req, &count, sizeof(int)));
 }
 

@@ -24,7 +24,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 #
-# $FreeBSD: src/tools/tools/sysbuild/sysbuild.sh,v 1.10 2011/01/18 21:36:51 phk Exp $
+# $FreeBSD: src/tools/tools/sysbuild/sysbuild.sh,v 1.11 2011/02/17 08:54:22 phk Exp $
 #
 
 set -e
@@ -178,7 +178,11 @@ ports_recurse() (
 	do
 		if [ ! -d $d ] ; then
 			echo "Missing port $d" 1>&2
-			exit 2
+			continue
+		fi
+		if [ ! -f $d/Makefile ] ; then
+			echo "Missing port $d" 1>&2
+			continue
 		fi
 		if [ "x$t" != "x." ] ; then
 			echo "\"$t\" -> \"$d\"" >> /tmp/_.plist.dot

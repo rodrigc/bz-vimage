@@ -27,7 +27,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)fs.h	8.13 (Berkeley) 3/21/95
- * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.58 2010/12/29 12:25:28 kib Exp $
+ * $FreeBSD: src/sys/ufs/ffs/fs.h,v 1.59 2011/02/12 12:52:12 kib Exp $
  */
 
 #ifndef _UFS_FFS_FS_H_
@@ -682,7 +682,7 @@ struct jsegrec {
 	uint64_t	jsr_seq;	/* Our sequence number */
 	uint64_t	jsr_oldest;	/* Oldest valid sequence number */
 	uint16_t	jsr_cnt;	/* Count of valid records */
-	uint16_t	jsr_blocks;	/* Count of DEV_BSIZE blocks. */
+	uint16_t	jsr_blocks;	/* Count of device bsize blocks. */
 	uint32_t	jsr_crc;	/* 32bit crc of the valid space */
 	ufs_time_t	jsr_time;	/* timestamp for mount instance */
 };

@@ -31,7 +31,7 @@
  * SUCH DAMAGE.
  *
  *	from: @(#)reg.h	5.5 (Berkeley) 1/18/91
- * $FreeBSD: src/sys/amd64/include/reg.h,v 1.41 2010/03/29 18:47:04 jhb Exp $
+ * $FreeBSD: src/sys/amd64/include/reg.h,v 1.42 2011/02/16 17:50:21 dchagin Exp $
  */
 
 #ifndef _MACHINE_REG_H_
@@ -130,6 +130,7 @@ struct dbreg {
  * XXX these interfaces are MI, so they should be declared in a MI place.
  */
 int	fill_regs(struct thread *, struct reg *);
+int	fill_frame_regs(struct trapframe *, struct reg *);
 int	set_regs(struct thread *, struct reg *);
 int	fill_fpregs(struct thread *, struct fpreg *);
 int	set_fpregs(struct thread *, struct fpreg *);

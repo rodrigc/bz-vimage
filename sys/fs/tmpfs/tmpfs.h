@@ -29,7 +29,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/fs/tmpfs/tmpfs.h,v 1.20 2010/08/22 05:36:06 ed Exp $
+ * $FreeBSD: src/sys/fs/tmpfs/tmpfs.h,v 1.21 2011/02/13 14:46:39 alc Exp $
  */
 
 #ifndef _FS_TMPFS_TMPFS_H_
@@ -283,7 +283,6 @@ struct tmpfs_node {
 			 * issue the required page ins or page outs whenever
 			 * a position within the file is accessed. */
 			vm_object_t		tn_aobj;
-			size_t			tn_aobj_pages;
 
 		}tn_reg;
 

@@ -34,7 +34,7 @@
 
 /* #pragma ident	"@(#)rpc_generic.c	1.17	94/04/24 SMI" */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/rpc_generic.c,v 1.7 2010/10/13 00:57:14 rmacklem Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/rpc_generic.c,v 1.8 2011/02/16 21:29:13 bz Exp $");
 
 /*
  * rpc_generic.c, Miscl routines for RPC.

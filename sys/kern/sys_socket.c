@@ -30,7 +30,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/sys_socket.c,v 1.84 2010/06/29 20:44:19 jhb Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/sys_socket.c,v 1.85 2011/02/16 21:29:13 bz Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>

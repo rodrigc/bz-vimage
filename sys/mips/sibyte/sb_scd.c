@@ -25,7 +25,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_scd.c,v 1.6 2010/08/06 05:30:55 neel Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/sibyte/sb_scd.c,v 1.7 2011/02/12 02:08:24 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/kernel.h>
@@ -242,11 +242,11 @@ sb_clear_mailbox(int cpu, uint64_t val)
 	sb_store64(regaddr, val);
 }
 
-int
-platform_num_processors(void)
+cpumask_t
+platform_cpu_mask(void)
 {
 
-	return (SYSREV_NUM_PROCESSORS(sb_read_sysrev()));
+	return (~0U >> (32 - SYSREV_NUM_PROCESSORS(sb_read_sysrev())));
 }
 #endif	/* SMP */
 

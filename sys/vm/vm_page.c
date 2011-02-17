@@ -98,7 +98,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.437 2011/01/30 23:55:48 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_page.c,v 1.438 2011/02/12 01:00:00 alc Exp $");
 
 #include "opt_vm.h"
 
@@ -557,6 +557,7 @@ vm_page_io_finish(vm_page_t m)
 {
 
 	VM_OBJECT_LOCK_ASSERT(m->object, MA_OWNED);
+	KASSERT(m->busy > 0, ("vm_page_io_finish: page %p is not busy", m));
 	m->busy--;
 	if (m->busy == 0)
 		vm_page_flash(m);

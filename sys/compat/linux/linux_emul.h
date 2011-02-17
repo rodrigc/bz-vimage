@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/linux/linux_emul.h,v 1.11 2010/11/22 09:06:59 netchild Exp $
+ * $FreeBSD: src/sys/compat/linux/linux_emul.h,v 1.12 2011/02/12 20:58:59 dchagin Exp $
  */
 
 #ifndef _LINUX_EMUL_H_
@@ -55,7 +55,7 @@ struct linux_emuldata {
 	struct linux_emuldata_shared *shared;
 
 	int	pdeath_signal;		/* parent death signal */
-	int	used_requeue;		/* uses deprecated futex op */
+	int	flags;			/* different emuldata flags */
 
 	struct	linux_robust_list_head	*robust_futexes;
 
@@ -75,6 +75,10 @@ struct linux_emuldata	*em_find(struct proc *, int locked);
 /* for em_find use */
 #define	EMUL_DOLOCK		1
 #define	EMUL_DONTLOCK		0
+
+/* emuldata flags */
+#define	LINUX_XDEPR_REQUEUEOP	0x00000001	/* uses deprecated
+						   futex REQUEUE op*/
 
 int	linux_proc_init(struct thread *, pid_t, int);
 void	linux_proc_exit(void *, struct proc *);

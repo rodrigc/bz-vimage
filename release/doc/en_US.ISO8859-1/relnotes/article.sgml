@@ -17,7 +17,7 @@
 
   <corpauthor>The &os; Project</corpauthor>
 
-  <pubdate>$FreeBSD: src/release/doc/en_US.ISO8859-1/relnotes/article.sgml,v 1.1108 2010/06/07 06:38:12 mm Exp $</pubdate>
+  <pubdate>$FreeBSD: src/release/doc/en_US.ISO8859-1/relnotes/article.sgml,v 1.1109 2011/02/11 14:55:17 mm Exp $</pubdate>
 
   <copyright>
     <year>2000</year>
@@ -496,9 +496,8 @@
     <para><application>WPA Supplicant</application> has been
       updated from 0.5.8 to 0.5.10.</para>
 
-    <para role="merged">A snapshot of <application>xz</application> as of
-      12 April 2010 has been added. More information can be found in the 
-      &man.xz.1;, &man.xzdec.1; and &man.lzmainfo.1; manual pages.</para>
+    <para role="merged"><application>xz</application> has been updated
+      from snapshot as of 12 April 2010 to 5.0.0.</para>
 
   </sect2>
 

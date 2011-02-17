@@ -9,9 +9,13 @@
  *
  * This program is in the Public Domain.
  */
+/*
+ * Important: This file is used both as a standalone program /bin/test and
+ * as a builtin for /bin/sh (#define SHELL).
+ */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/test/test.c,v 1.55 2010/03/28 13:16:08 ed Exp $");
+__FBSDID("$FreeBSD: src/bin/test/test.c,v 1.56 2011/02/15 22:17:47 jilles Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>

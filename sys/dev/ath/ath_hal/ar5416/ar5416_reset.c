@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_reset.c,v 1.25 2011/02/07 22:00:31 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_reset.c,v 1.26 2011/02/14 21:35:11 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -2296,7 +2296,7 @@ ar5416Set11nRegs(struct ath_hal *ah, const struct ieee80211_channel *chan)
 
 	/* carrier sense timeout */
 	OS_REG_SET_BIT(ah, AR_GTTM, AR_GTTM_CST_USEC);
-	OS_REG_WRITE(ah, AR_CST, 1 << AR_CST_TIMEOUT_LIMIT_S);
+	OS_REG_WRITE(ah, AR_CST, 0xF << AR_CST_TIMEOUT_LIMIT_S);
 }
 
 void

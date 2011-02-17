@@ -30,7 +30,7 @@
   POSSIBILITY OF SUCH DAMAGE.
 
 ******************************************************************************/
-/*$FreeBSD: src/sys/dev/e1000/e1000_mac.c,v 1.10 2011/02/11 09:58:38 bz Exp $*/
+/*$FreeBSD: src/sys/dev/e1000/e1000_mac.c,v 1.11 2011/02/11 17:18:42 jfv Exp $*/
 
 #include "e1000_api.h"
 
@@ -399,7 +399,10 @@ s32 e1000_check_alt_mac_addr_generic(struct e1000_hw *hw)
 	if (ret_val)
 		goto out;
 
-	if (!(nvm_data & NVM_COMPAT_LOM))
+	/* Check for LOM (vs. NIC) or one of two valid mezzanine cards */
+	if (!((nvm_data & NVM_COMPAT_LOM) ||
+	      (hw->device_id == E1000_DEV_ID_82571EB_SERDES_DUAL) ||
+	      (hw->device_id == E1000_DEV_ID_82571EB_SERDES_QUAD)))
 		goto out;
 
 	ret_val = hw->nvm.ops.read(hw, NVM_ALT_MAC_ADDR_PTR, 1,

@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416.h,v 1.17 2011/01/29 14:27:20 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416.h,v 1.18 2011/02/17 05:52:53 adrian Exp $
  */
 #ifndef _ATH_AR5416_H_
 #define _ATH_AR5416_H_
@@ -86,6 +86,8 @@ struct ath_hal_5416 {
 	uint32_t	ah_extBusy;
 	uint32_t	ah_rx_chainmask;
 	uint32_t	ah_tx_chainmask;
+
+	HAL_ANI_CMD	ah_ani_function;
 
 	struct ar5416PerCal ah_cal;		/* periodic calibration state */
 

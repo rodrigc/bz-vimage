@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/compat/linux/linux_misc.c,v 1.247 2011/01/28 19:04:15 dchagin Exp $");
+__FBSDID("$FreeBSD: src/sys/compat/linux/linux_misc.c,v 1.248 2011/02/15 21:22:09 dchagin Exp $");
 
 #include "opt_compat.h"
 
@@ -91,9 +91,6 @@ __FBSDID("$FreeBSD: src/sys/compat/linux/linux_misc.c,v 1.247 2011/01/28 19:04:1
 #include <compat/linux/linux_misc.h>
 
 int stclohz;				/* Statistics clock frequency */
-
-#define BSD_TO_LINUX_SIGNAL(sig)	\
-	(((sig) <= LINUX_SIGTBLSZ) ? bsd_to_linux_signal[_SIG_IDX(sig)] : sig)
 
 static unsigned int linux_to_bsd_resource[LINUX_RLIM_NLIMITS] = {
 	RLIMIT_CPU, RLIMIT_FSIZE, RLIMIT_DATA, RLIMIT_STACK,

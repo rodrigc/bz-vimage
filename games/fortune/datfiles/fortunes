@@ -1,5 +1,5 @@
 This fortune brought to you by:
-$FreeBSD: src/games/fortune/datfiles/fortunes,v 1.291 2010/09/29 23:47:06 cperciva Exp $
+$FreeBSD: src/games/fortune/datfiles/fortunes,v 1.292 2011/02/13 18:18:56 brucec Exp $
 %
 =======================================================================
 ||								     ||
@@ -38135,10 +38135,6 @@ because they were liars.  The truth was that Plato knew philosophers
 couldn't compete successfully with poets.
 		-- Kilgore Trout (Philip J. Farmer) "Venus on the Half
 		   Shell"
-%
-PLATONIC FRIENDSHIP:
-	What develops when two people get
-	tired of making love to each other.
 %
 Play Rogue, visit exotic locations, meet strange creatures and kill
 them.

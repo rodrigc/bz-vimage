@@ -41,7 +41,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/nfsclient/bootp_subr.c,v 1.89 2010/01/07 21:01:37 mbr Exp $");
+__FBSDID("$FreeBSD: src/sys/nfsclient/bootp_subr.c,v 1.90 2011/02/16 21:29:13 bz Exp $");
 
 #include "opt_bootp.h"
 

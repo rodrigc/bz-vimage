@@ -46,7 +46,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/xscale/i80321/ep80219_machdep.c,v 1.14 2011/01/21 10:26:26 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/xscale/i80321/ep80219_machdep.c,v 1.15 2011/02/13 20:02:46 cognet Exp $");
 
 #define _ARM32_BUS_DMA_PRIVATE
 #include <sys/param.h>
@@ -209,6 +209,9 @@ initarm(void *arg, void *arg2)
 	freemempos -= (np * PAGE_SIZE);		\
 	(var) = freemempos;		\
 	memset((char *)(var), 0, ((np) * PAGE_SIZE));
+
+	/* Do basic tuning, hz etc */
+	init_param1();
 
 	while (((freemempos - L1_TABLE_SIZE) & (L1_TABLE_SIZE - 1)) != 0)
 		freemempos -= PAGE_SIZE;
@@ -411,8 +414,6 @@ initarm(void *arg, void *arg2)
 	phys_avail[i++] = 0;
 	phys_avail[i] = 0;
 	
-	/* Do basic tuning, hz etc */
-	init_param1();
 	init_param2(physmem);
 	kdb_init();
 	return ((void *)(kernelstack.pv_va + USPACE_SVC_STACK_TOP -

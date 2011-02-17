@@ -6,7 +6,7 @@
  * this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
  * ----------------------------------------------------------------------------
  *
- * $FreeBSD: src/sbin/mdconfig/mdconfig.c,v 1.60 2010/11/13 15:28:44 joel Exp $
+ * $FreeBSD: src/sbin/mdconfig/mdconfig.c,v 1.62 2011/02/14 09:58:47 brucec Exp $
  *
  */
 #include <sys/param.h>
@@ -373,7 +373,11 @@ md_list(char *units, int opt)
 					found = 1;
 			}
 			gc = &pp->lg_config;
-			printf("%s", pp->lg_name);
+			if (nflag && strncmp(pp->lg_name, "md", 2) == 0)
+				printf("%s", pp->lg_name + 2);
+			else
+				printf("%s", pp->lg_name);
+
 			if (opt & OPT_VERBOSE || opt & OPT_UNIT) {
 				type = geom_config_get(gc, "type");
 				if (strcmp(type, "vnode") == 0)

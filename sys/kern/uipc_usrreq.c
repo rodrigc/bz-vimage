@@ -57,7 +57,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_usrreq.c,v 1.242 2011/02/01 13:33:49 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_usrreq.c,v 1.243 2011/02/16 21:29:13 bz Exp $");
 
 #include "opt_ddb.h"
 
@@ -2217,7 +2217,7 @@ unp_gc(__unused void *arg, int pending)
 	 * struct files associated with these sockets but leave each socket
 	 * with one remaining ref.
 	 */
-	for (i = 0; i < total; i++)
+	for (i = 0; i < total; i++) {
 		struct socket *so;
 
 		so = unref[i]->f_data;

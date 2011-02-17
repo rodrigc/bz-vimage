@@ -28,7 +28,7 @@
  * Platform (FreeBSD) dependent common attachment code for Qlogic adapters.
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/isp/isp_freebsd.c,v 1.171 2010/11/27 20:33:08 mjacob Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/isp/isp_freebsd.c,v 1.172 2011/02/14 21:50:51 marius Exp $");
 #include <dev/isp/isp_freebsd.h>
 #include <sys/unistd.h>
 #include <sys/kthread.h>
@@ -604,11 +604,11 @@ ispioctl(struct cdev *dev, u_long c, caddr_t addr, int flags, struct thread *td)
 				break;
 			}
 			isp_put_24xx_tmf(isp, tmf, fcp->isp_scratch);
-			MEMORYBARRIER(isp, SYNC_SFORDEV, 0, QENTRY_LEN);
+			MEMORYBARRIER(isp, SYNC_SFORDEV, 0, QENTRY_LEN, chan);
 			sp = (isp24xx_statusreq_t *) local;
 			sp->req_completion_status = 1;
 			retval = isp_control(isp, ISPCTL_RUN_MBOXCMD, &mbs);
-			MEMORYBARRIER(isp, SYNC_SFORCPU, QENTRY_LEN, QENTRY_LEN);
+			MEMORYBARRIER(isp, SYNC_SFORCPU, QENTRY_LEN, QENTRY_LEN, chan);
 			isp_get_24xx_response(isp, &((isp24xx_statusreq_t *)fcp->isp_scratch)[1], sp);
 			FC_SCRATCH_RELEASE(isp, chan);
 			if (retval || sp->req_completion_status != 0) {

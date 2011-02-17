@@ -1,4 +1,4 @@
-# $FreeBSD: src/lib/liblzma/Makefile,v 1.4 2010/10/11 21:16:50 mm Exp $
+# $FreeBSD: src/lib/liblzma/Makefile,v 1.5 2011/02/15 22:03:09 dim Exp $
 
 LIB=		lzma
 LZMADIR=	${.CURDIR}/../../contrib/xz/src/liblzma
@@ -78,6 +78,7 @@ SRCS+=	check.c \
 .if defined(MACHINE_ARCH) && ${MACHINE_ARCH} == "i386"
 SRCS+=	crc32_x86.S \
 	crc64_x86.S
+ACFLAGS+=	-Wa,--noexecstack
 .else
 SRCS+=	crc32_fast.c \
 	crc64_fast.c

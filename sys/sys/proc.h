@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  *	@(#)proc.h	8.15 (Berkeley) 5/19/95
- * $FreeBSD: src/sys/sys/proc.h,v 1.563 2011/02/08 00:16:36 mdf Exp $
+ * $FreeBSD: src/sys/sys/proc.h,v 1.564 2011/02/12 15:24:52 dchagin Exp $
  */
 
 #ifndef _SYS_PROC_H_
@@ -908,7 +908,6 @@ int	thread_unsuspend_one(struct thread *td);
 void	thread_unthread(struct thread *td);
 void	thread_wait(struct proc *p);
 struct thread	*thread_find(struct proc *p, lwpid_t tid);
-void	thr_exit1(void);
 
 #endif	/* _KERNEL */
 

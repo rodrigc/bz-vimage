@@ -23,9 +23,9 @@
 .\" (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 .\" THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .\"
-.\" $FreeBSD: src/share/man/man7/ports.7,v 1.68 2009/01/21 21:29:00 tabthorpe Exp $
+.\" $FreeBSD: src/share/man/man7/ports.7,v 1.69 2011/02/15 07:16:27 keramida Exp $
 .\"
-.Dd January 21, 2009
+.Dd February 14, 2009
 .Dt PORTS 7
 .Os
 .Sh NAME
@@ -477,6 +477,9 @@ Of course, these ports may not work as expected, but if you really know
 what you are doing and are sure about installing a forbidden port, then
 .Va NO_IGNORE
 lets you do it.
+.It Va TRYBROKEN
+If defined, attempt to build a port even if it is marked as
+.Aq Va BROKEN .
 .It Va PORT_DBDIR
 Directory where the results of configuring
 .Va OPTIONS

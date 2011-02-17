@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath_tx.c,v 1.4 2011/02/03 20:30:17 adrian Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/ath/if_ath_tx.c,v 1.5 2011/02/12 02:14:19 adrian Exp $");
 
 /*
  * Driver for the Atheros Wireless LAN controller.
@@ -812,7 +812,7 @@ ath_tx_start(struct ath_softc *sc, struct ieee80211_node *ni, struct ath_buf *bf
         }
 
         if (ath_tx_is_11n(sc)) {
-                ath_buf_set_rate(sc, ni, bf, pktlen, flags, ctsrate, rate, try);
+                ath_buf_set_rate(sc, ni, bf, pktlen, flags, ctsrate, (atype == HAL_PKT_TYPE_PSPOLL), rate, try);
         }
 
 	ath_tx_handoff(sc, txq, bf);
@@ -998,7 +998,7 @@ ath_tx_raw_start(struct ath_softc *sc, struct ieee80211_node *ni,
 		 * notice that rix doesn't include any of the "magic" flags txrate
 		 * does for communicating "other stuff" to the HAL.
 		 */
-		ath_buf_set_rate(sc, ni, bf, pktlen, flags, ctsrate, rate, try);
+		ath_buf_set_rate(sc, ni, bf, pktlen, flags, ctsrate, (atype == HAL_PKT_TYPE_PSPOLL), rate, try);
 	}
 
 	/* NB: no buffered multicast in power save support */

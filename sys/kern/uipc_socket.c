@@ -101,7 +101,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.351 2010/11/12 13:02:26 luigi Exp $");
+__FBSDID("$FreeBSD: src/sys/kern/uipc_socket.c,v 1.354 2011/02/16 21:29:13 bz Exp $");
 
 #include "opt_inet.h"
 #include "opt_inet6.h"
@@ -2496,15 +2496,16 @@ sosetopt(struct socket *so, struct sockopt *sopt)
 		case SO_SETFIB:
 			error = sooptcopyin(sopt, &optval, sizeof optval,
 					    sizeof optval);
-			if (optval < 1 || optval > rt_numfibs) {
+			if (optval < 0 || optval > rt_numfibs) {
 				error = EINVAL;
 				goto bad;
 			}
-			if ((so->so_proto->pr_domain->dom_family == PF_INET) ||
-			    (so->so_proto->pr_domain->dom_family == PF_ROUTE)) {
+			if (so->so_proto != NULL &&
+			   ((so->so_proto->pr_domain->dom_family == PF_INET) ||
+			   (so->so_proto->pr_domain->dom_family == PF_ROUTE))) {
 				so->so_fibnum = optval;
 				/* Note: ignore error */
-				if (so->so_proto && so->so_proto->pr_ctloutput)
+				if (so->so_proto->pr_ctloutput)
 					(*so->so_proto->pr_ctloutput)(so, sopt);
 			} else {
 				so->so_fibnum = 0;

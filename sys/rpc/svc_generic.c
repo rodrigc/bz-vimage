@@ -38,7 +38,7 @@
 static char sccsid[] = "@(#)svc_generic.c 1.21 89/02/28 Copyr 1988 Sun Micro";
 #endif
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/rpc/svc_generic.c,v 1.5 2009/08/24 10:09:30 zec Exp $");
+__FBSDID("$FreeBSD: src/sys/rpc/svc_generic.c,v 1.6 2011/02/16 21:29:13 bz Exp $");
 
 /*
  * svc_generic.c, Server side for RPC.

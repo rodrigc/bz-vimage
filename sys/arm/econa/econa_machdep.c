@@ -36,7 +36,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/arm/econa/econa_machdep.c,v 1.2 2011/01/21 10:26:26 pluknet Exp $");
+__FBSDID("$FreeBSD: src/sys/arm/econa/econa_machdep.c,v 1.3 2011/02/13 20:02:46 cognet Exp $");
 
 #define	_ARM32_BUS_DMA_PRIVATE
 #include <sys/param.h>
@@ -208,6 +208,9 @@ initarm(void *arg, void *arg2)
 	pcpu_init(pcpup, 0, sizeof(struct pcpu));
 	PCPU_SET(curthread, &thread0);
 
+	/* Do basic tuning, hz etc */
+      	init_param1();
+		
 
 	freemempos = (lastaddr + PAGE_MASK) & ~PAGE_MASK;
 	/* Define a macro to simplify memory allocation */
@@ -384,8 +387,6 @@ initarm(void *arg, void *arg2)
 	phys_avail[i++] = PHYSADDR + memsize;
 	phys_avail[i++] = 0;
 	phys_avail[i++] = 0;
-	/* Do basic tuning, hz etc */
-	init_param1();
 	init_param2(physmem);
 	kdb_init();
 

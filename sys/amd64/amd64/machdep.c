@@ -39,7 +39,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.741 2011/02/05 15:10:27 kib Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/amd64/machdep.c,v 1.742 2011/02/16 17:50:21 dchagin Exp $");
 
 #include "opt_atalk.h"
 #include "opt_atpic.h"
@@ -1842,6 +1842,12 @@ fill_regs(struct thread *td, struct reg *regs)
 	struct trapframe *tp;
 
 	tp = td->td_frame;
+	return (fill_frame_regs(tp, regs));
+}
+
+int
+fill_frame_regs(struct trapframe *tp, struct reg *regs)
+{
 	regs->r_r15 = tp->tf_r15;
 	regs->r_r14 = tp->tf_r14;
 	regs->r_r13 = tp->tf_r13;

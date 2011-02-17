@@ -3,7 +3,7 @@
 #
 # modified for PC-9801/PC-9821
 #
-# $FreeBSD: src/sys/conf/files.pc98,v 1.395 2011/01/17 22:58:28 jkim Exp $
+# $FreeBSD: src/sys/conf/files.pc98,v 1.396 2011/02/12 18:17:12 dchagin Exp $
 #
 # The long compile-with and dependency lines are required because of
 # limitations in config: backslash-newline doesn't work in strings, and
@@ -42,6 +42,7 @@ compat/linprocfs/linprocfs.c	optional linprocfs
 compat/linsysfs/linsysfs.c	optional linsysfs
 compat/linux/linux_emul.c	optional compat_linux
 compat/linux/linux_file.c	optional compat_linux
+compat/linux/linux_fork.c	optional compat_linux
 compat/linux/linux_futex.c	optional compat_linux
 compat/linux/linux_getcwd.c	optional compat_linux
 compat/linux/linux_ioctl.c	optional compat_linux

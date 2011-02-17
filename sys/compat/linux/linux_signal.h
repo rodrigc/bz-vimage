@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/compat/linux/linux_signal.h,v 1.8 2008/10/19 10:02:26 kib Exp $
+ * $FreeBSD: src/sys/compat/linux/linux_signal.h,v 1.9 2011/02/15 21:22:09 dchagin Exp $
  */
 
 #ifndef _LINUX_SIGNAL_H_
@@ -39,5 +39,8 @@ int linux_do_sigaction(struct thread *, int, l_sigaction_t *, l_sigaction_t *);
 void ksiginfo_to_lsiginfo(ksiginfo_t *ksi, l_siginfo_t *lsi, l_int sig);
 
 #define LINUX_SIG_VALID(sig)	((sig) <= LINUX_NSIG && (sig) > 0)
+
+#define BSD_TO_LINUX_SIGNAL(sig)				\
+	(((sig) <= LINUX_SIGTBLSZ) ? bsd_to_linux_signal[_SIG_IDX(sig)] : sig)
 
 #endif /* _LINUX_SIGNAL_H_ */

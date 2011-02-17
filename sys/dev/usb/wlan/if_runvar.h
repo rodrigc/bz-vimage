@@ -17,7 +17,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/wlan/if_runvar.h,v 1.7 2011/02/09 18:09:27 bschmidt Exp $
+ * $FreeBSD: src/sys/dev/usb/wlan/if_runvar.h,v 1.8 2011/02/14 08:14:06 hselasky Exp $
  */
 
 #ifndef _IF_RUNVAR_H_
@@ -160,7 +160,10 @@ struct run_softc {
 	device_t			sc_dev;
 	struct usb_device		*sc_udev;
 	struct ifnet			*sc_ifp;
-	struct ieee80211_node		*sc_ni[RT2870_WCID_MAX + 1];
+	uint16_t			wcid_stats[RT2870_WCID_MAX + 1][3];
+#define	RUN_TXCNT	0
+#define	RUN_SUCCESS	1
+#define	RUN_RETRY	2
 
 	int				(*sc_srom_read)(struct run_softc *,
 					    uint16_t, uint16_t *);

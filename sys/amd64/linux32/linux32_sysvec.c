@@ -31,7 +31,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/amd64/linux32/linux32_sysvec.c,v 1.63 2011/01/14 21:09:01 jkim Exp $");
+__FBSDID("$FreeBSD: src/sys/amd64/linux32/linux32_sysvec.c,v 1.64 2011/02/13 19:07:48 dchagin Exp $");
 #include "opt_compat.h"
 
 #ifndef COMPAT_FREEBSD32
@@ -76,8 +76,8 @@ __FBSDID("$FreeBSD: src/sys/amd64/linux32/linux32_sysvec.c,v 1.63 2011/01/14 21:
 
 #include <amd64/linux32/linux.h>
 #include <amd64/linux32/linux32_proto.h>
-#include <compat/linux/linux_futex.h>
 #include <compat/linux/linux_emul.h>
+#include <compat/linux/linux_futex.h>
 #include <compat/linux/linux_mib.h>
 #include <compat/linux/linux_misc.h>
 #include <compat/linux/linux_signal.h>

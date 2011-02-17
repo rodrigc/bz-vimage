@@ -1,5 +1,5 @@
 #
-# $FreeBSD: src/lib/libz/Makefile,v 1.19 2010/03/22 21:11:55 delphij Exp $
+# $FreeBSD: src/lib/libz/Makefile,v 1.20 2011/02/15 22:03:09 dim Exp $
 #
 
 LIB=		z
@@ -39,12 +39,14 @@ SRCS+=		zutil.c
 .PATH:		${.CURDIR}/contrib/asm686
 SRCS+=		match.S
 CFLAGS+=	-DASMV -DNO_UNDERLINE
+ACFLAGS+=	-Wa,--noexecstack
 .endif
 
 .if ${MACHINE_ARCH} == "amd64"
 .PATH:		${.CURDIR}/contrib/gcc_gvmat64
 SRCS+=		gvmat64.S
 CFLAGS+=	-DASMV -DNO_UNDERLINE
+ACFLAGS+=	-Wa,--noexecstack
 .endif
 
 VERSION_DEF=	${.CURDIR}/Versions.def

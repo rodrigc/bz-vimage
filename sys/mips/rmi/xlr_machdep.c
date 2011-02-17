@@ -26,7 +26,7 @@
  *
  */
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.29 2011/01/19 21:45:40 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/rmi/xlr_machdep.c,v 1.30 2011/02/12 02:08:24 jmallett Exp $");
 
 #include "opt_ddb.h"
 
@@ -614,11 +614,11 @@ platform_processor_id(void)
 	return (xlr_hwtid_to_cpuid[xlr_cpu_id()]);
 }
 
-int
-platform_num_processors(void)
+cpumask_t
+platform_cpu_mask(void)
 {
 
-	return (xlr_ncores * xlr_threads_per_core);
+	return (~0U >> (32 - (xlr_ncores * xlr_threads_per_core)));
 }
 
 struct cpu_group *

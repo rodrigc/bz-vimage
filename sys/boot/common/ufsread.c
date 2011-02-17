@@ -44,7 +44,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/common/ufsread.c,v 1.20 2010/08/24 12:56:45 rpaulo Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/common/ufsread.c,v 1.22 2011/02/15 21:01:13 dim Exp $");
 
 #include <ufs/ufs/dinode.h>
 #include <ufs/ufs/dir.h>
@@ -122,7 +122,7 @@ lookup(const char *path)
 	const char *s;
 	ino_t ino;
 	ssize_t n;
-	int dt;
+	uint8_t dt;
 
 	ino = ROOTINO;
 	dt = DT_DIR;

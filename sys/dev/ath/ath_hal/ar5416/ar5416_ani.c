@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_ani.c,v 1.5 2011/01/27 08:42:50 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_ani.c,v 1.6 2011/02/17 05:52:53 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -177,7 +177,7 @@ ar5416AniControl(struct ath_hal *ah, HAL_ANI_CMD cmd, int param)
 
 	OS_MARK(ah, AH_MARK_ANI_CONTROL, cmd);
 
-	switch (cmd) {
+	switch (cmd & AH5416(ah)->ah_ani_function) {
 	case HAL_ANI_NOISE_IMMUNITY_LEVEL: {
 		u_int level = param;
 
@@ -354,13 +354,15 @@ ar5416AniOfdmErrTrigger(struct ath_hal *ah)
 	aniState = ahp->ah_curani;
 	params = aniState->params;
 	/* First, raise noise immunity level, up to max */
-	if (aniState->noiseImmunityLevel+1 < params->maxNoiseImmunityLevel) {
+	if ((AH5416(ah)->ah_ani_function & HAL_ANI_NOISE_IMMUNITY_LEVEL) &&
+	    (aniState->noiseImmunityLevel+1 < params->maxNoiseImmunityLevel)) {
 		ar5416AniControl(ah, HAL_ANI_NOISE_IMMUNITY_LEVEL, 
 				 aniState->noiseImmunityLevel + 1);
 		return;
 	}
 	/* then, raise spur immunity level, up to max */
-	if (aniState->spurImmunityLevel+1 < params->maxSpurImmunityLevel) {
+	if ((AH5416(ah)->ah_ani_function & HAL_ANI_SPUR_IMMUNITY_LEVEL) &&
+	    (aniState->spurImmunityLevel+1 < params->maxSpurImmunityLevel)) {
 		ar5416AniControl(ah, HAL_ANI_SPUR_IMMUNITY_LEVEL,
 				 aniState->spurImmunityLevel + 1);
 		return;

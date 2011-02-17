@@ -28,7 +28,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.311 2010/12/02 03:53:29 yongari Exp $");
+__FBSDID("$FreeBSD: src/sys/dev/fxp/if_fxp.c,v 1.312 2011/02/15 18:16:04 yongari Exp $");
 
 /*
  * Intel EtherExpress Pro/100B PCI Fast Ethernet driver
@@ -2823,8 +2823,10 @@ fxp_ioctl(struct ifnet *ifp, u_long command, caddr_t data)
 
 	case SIOCADDMULTI:
 	case SIOCDELMULTI:
+		FXP_LOCK(sc);
 		if ((ifp->if_drv_flags & IFF_DRV_RUNNING) != 0)
-			fxp_init(sc);
+			fxp_init_body(sc, 0);
+		FXP_UNLOCK(sc);
 		break;
 
 	case SIOCSIFMEDIA:

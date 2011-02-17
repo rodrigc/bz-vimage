@@ -33,7 +33,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGES.
  *
- * $FreeBSD: src/sys/dev/ath/ath_rate/sample/sample.h,v 1.11 2011/02/08 18:31:28 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_rate/sample/sample.h,v 1.12 2011/02/17 05:16:59 adrian Exp $
  */
 
 /*
@@ -115,7 +115,9 @@ struct sample_node {
  */
 static unsigned calc_usecs_unicast_packet(struct ath_softc *sc,
 				int length,
-				int rix, int short_retries, int long_retries) {
+				int rix, int short_retries,
+				int long_retries, int is_ht40)
+{
 	const HAL_RATE_TABLE *rt = sc->sc_currates;
 	struct ifnet *ifp = sc->sc_ifp;
 	struct ieee80211com *ic = ifp->if_l2com;
@@ -198,7 +200,7 @@ static unsigned calc_usecs_unicast_packet(struct ath_softc *sc,
 
 		/* XXX assumes short preamble */
 		/* XXX assumes HT/20; the node info isn't yet available here */
-		ctsduration += ath_hal_pkt_txtime(sc->sc_ah, rt, length, rix, 0, AH_TRUE);
+		ctsduration += ath_hal_pkt_txtime(sc->sc_ah, rt, length, rix, 0, is_ht40);
 
 		if (cts)	/* SIFS + ACK */
 			ctsduration += rt->info[cix].spAckDuration;
@@ -209,7 +211,7 @@ static unsigned calc_usecs_unicast_packet(struct ath_softc *sc,
 
 	/* XXX assumes short preamble */
 	/* XXX assumes HT/20; the node info isn't yet available here */
-	tt += (long_retries+1)*ath_hal_pkt_txtime(sc->sc_ah, rt, length, rix, 0, AH_TRUE);
+	tt += (long_retries+1)*ath_hal_pkt_txtime(sc->sc_ah, rt, length, rix, 0, is_ht40);
 	tt += (long_retries+1)*(t_sifs + rt->info[rix].spAckDuration);
 
 	for (x = 0; x <= short_retries + long_retries; x++) {

@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/i386/linux/linux.h,v 1.88 2010/03/28 13:13:22 ed Exp $
+ * $FreeBSD: src/sys/i386/linux/linux.h,v 1.91 2011/02/15 21:46:36 dchagin Exp $
  */
 
 #ifndef _I386_LINUX_H_
@@ -281,6 +281,7 @@ struct l_new_utsname {
 #define	LINUX_SIGPOLL		LINUX_SIGIO
 #define	LINUX_SIGPWR		30
 #define	LINUX_SIGSYS		31
+#define	LINUX_SIGRTMIN		32
 
 #define	LINUX_SIGTBLSZ		31
 #define	LINUX_NSIG_WORDS	2
@@ -879,5 +880,8 @@ struct linux_robust_list_head {
 	l_long				futex_offset;
 	struct linux_robust_list	*pending_list;
 };
+
+int linux_set_upcall_kse(struct thread *td, register_t stack);
+int linux_set_cloned_tls(struct thread *td, void *desc);
 
 #endif /* !_I386_LINUX_H_ */

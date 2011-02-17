@@ -26,7 +26,7 @@
  * SUCH DAMAGE.
  *
  *	from BSDI $Id$
- * $FreeBSD: src/sys/sys/mutex.h,v 1.107 2010/11/09 20:46:41 jhb Exp $
+ * $FreeBSD: src/sys/sys/mutex.h,v 1.108 2011/02/14 02:37:27 alc Exp $
  */
 
 #ifndef _SYS_MUTEX_H_
@@ -73,16 +73,6 @@
  * Value stored in mutex->mtx_lock to denote a destroyed mutex.
  */
 #define	MTX_DESTROYED	(MTX_CONTESTED | MTX_UNOWNED)
-
-#endif	/* _KERNEL */
-
-/*
- * XXX: Friendly reminder to fix things in MP code that is presently being
- * XXX: worked on.
- */
-#define mp_fixme(string)
-
-#ifdef _KERNEL
 
 /*
  * Prototypes

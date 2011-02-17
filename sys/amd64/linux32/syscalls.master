@@ -1,4 +1,4 @@
- $FreeBSD: src/sys/amd64/linux32/syscalls.master,v 1.39 2011/01/30 20:31:43 dchagin Exp $
+ $FreeBSD: src/sys/amd64/linux32/syscalls.master,v 1.40 2011/02/12 15:33:25 dchagin Exp $
 
 ;	@(#)syscalls.master	8.1 (Berkeley) 7/19/93
 ; System call name/number master file (or rather, slave, from LINUX).
@@ -213,9 +213,8 @@
 118	AUE_FSYNC	NOPROTO	{ int fsync(int fd); }
 119	AUE_SIGRETURN	STD	{ int linux_sigreturn( \
 				    struct l_sigframe *sfp); }
-; linux uses some strange calling convention here so we have to use the dummy arg
 120	AUE_RFORK	STD	{ int linux_clone(l_int flags, void *stack, \
-				    void *parent_tidptr, int dummy, void * child_tidptr); }
+				    void *parent_tidptr, void *tls, void * child_tidptr); }
 121	AUE_SYSCTL	STD	{ int linux_setdomainname(char *name, \
 				    int len); }
 122	AUE_NULL	STD	{ int linux_newuname( \

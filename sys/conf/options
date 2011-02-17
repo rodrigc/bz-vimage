@@ -1,4 +1,4 @@
-# $FreeBSD: src/sys/conf/options,v 1.713 2011/02/03 10:05:30 rrs Exp $
+# $FreeBSD: src/sys/conf/options,v 1.714 2011/02/12 21:17:38 hselasky Exp $
 #
 #        On the handling of kernel options
 #
@@ -643,6 +643,7 @@ BUS_DEBUG		opt_bus.h
 
 # options for USB support
 USB_DEBUG		opt_usb.h
+USB_HOST_ALIGN		opt_usb.h
 USB_REQ_DEBUG		opt_usb.h
 USB_VERBOSE		opt_usb.h
 USB_EHCI_BIG_ENDIAN_DESC	opt_usb.h

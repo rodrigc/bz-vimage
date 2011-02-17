@@ -23,7 +23,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD: src/sys/mips/cavium/if_octm.c,v 1.3 2011/01/10 22:14:30 jmallett Exp $
+ * $FreeBSD: src/sys/mips/cavium/if_octm.c,v 1.4 2011/02/12 02:41:33 jmallett Exp $
  */
 
 /*
@@ -63,6 +63,8 @@
 #include <contrib/octeon-sdk/cvmx.h>
 #include <contrib/octeon-sdk/cvmx-interrupt.h>
 #include <contrib/octeon-sdk/cvmx-mgmt-port.h>
+
+extern cvmx_bootinfo_t *octeon_bootinfo;
 
 struct octm_softc {
 	struct ifnet *sc_ifp;
@@ -173,10 +175,27 @@ octm_attach(device_t dev)
 		return (ENXIO);
 	}
 
-	mac = cvmx_mgmt_port_get_mac(sc->sc_port);
-	if (mac == CVMX_MGMT_PORT_GET_MAC_ERROR) {
-		device_printf(dev, "unable to read MAC.\n");
-		return (ENXIO);
+	switch (cvmx_sysinfo_get()->board_type) {
+#if defined(OCTEON_VENDOR_LANNER)
+	case CVMX_BOARD_TYPE_CUST_LANNER_MR730:
+		/*
+		 * The MR-730 uses its first two MACs for the management
+		 * ports.
+		 */
+		mac = 0;
+		memcpy((u_int8_t *)&mac + 2, octeon_bootinfo->mac_addr_base,
+		       6);
+		mac += sc->sc_port;
+		cvmx_mgmt_port_set_mac(sc->sc_port, mac);
+		break;
+#endif
+	default:
+		mac = cvmx_mgmt_port_get_mac(sc->sc_port);
+		if (mac == CVMX_MGMT_PORT_GET_MAC_ERROR) {
+			device_printf(dev, "unable to read MAC.\n");
+			return (ENXIO);
+		}
+		break;
 	}
 
 	/* No watermark for input ring.  */

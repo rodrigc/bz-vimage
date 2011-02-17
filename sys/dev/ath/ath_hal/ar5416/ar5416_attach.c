@@ -14,7 +14,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_attach.c,v 1.22 2011/02/08 14:15:46 adrian Exp $
+ * $FreeBSD: src/sys/dev/ath/ath_hal/ar5416/ar5416_attach.c,v 1.24 2011/02/17 05:52:53 adrian Exp $
  */
 #include "opt_ah.h"
 
@@ -58,7 +58,7 @@ ar5416AniSetup(struct ath_hal *ah)
 		.period			= 100,
 	};
 	/* NB: ANI is not enabled yet */
-	ar5212AniAttach(ah, &aniparams, &aniparams, AH_FALSE);
+	ar5416AniAttach(ah, &aniparams, &aniparams, AH_FALSE);
 }
 
 /*
@@ -168,6 +168,9 @@ ar5416InitState(struct ath_hal_5416 *ahp5416, uint16_t devid, HAL_SOFTC sc,
 	 */
 	AH5416(ah)->ah_rx_chainmask = AR5416_DEFAULT_RXCHAINMASK;
 	AH5416(ah)->ah_tx_chainmask = AR5416_DEFAULT_TXCHAINMASK;
+
+	/* Enable all ANI functions to begin with */
+	AH5416(ah)->ah_ani_function = HAL_ANI_ALL;
 }
 
 uint32_t

@@ -63,7 +63,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/vm/vm_object.c,v 1.439 2011/02/05 21:21:27 alc Exp $");
+__FBSDID("$FreeBSD: src/sys/vm/vm_object.c,v 1.440 2011/02/13 21:52:26 kib Exp $");
 
 #include "opt_vm.h"
 
@@ -437,16 +437,21 @@ vm_object_vndeallocate(vm_object_t object)
 	}
 #endif
 
-	object->ref_count--;
-	if (object->ref_count == 0) {
-		mp_fixme("Unlocked vflag access.");
-		vp->v_vflag &= ~VV_TEXT;
+	if (object->ref_count > 1) {
+		object->ref_count--;
+		VM_OBJECT_UNLOCK(object);
+		/* vrele may need the vnode lock. */
+		vrele(vp);
+	} else {
+		VM_OBJECT_UNLOCK(object);
+		vn_lock(vp, LK_EXCLUSIVE | LK_RETRY);
+		VM_OBJECT_LOCK(object);
+		object->ref_count--;
+		if (object->ref_count == 0)
+			vp->v_vflag &= ~VV_TEXT;
+		VM_OBJECT_UNLOCK(object);
+		vput(vp);
 	}
-	VM_OBJECT_UNLOCK(object);
-	/*
-	 * vrele may need a vop lock
-	 */
-	vrele(vp);
 }
 
 /*

@@ -15,7 +15,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/boot/pc98/boot2/boot2.c,v 1.4 2010/10/24 02:59:02 nyan Exp $");
+__FBSDID("$FreeBSD: src/sys/boot/pc98/boot2/boot2.c,v 1.5 2011/02/16 15:20:37 nyan Exp $");
 
 #include <sys/param.h>
 #include <sys/disklabel.h>
@@ -134,7 +134,7 @@ static struct dsk {
 } dsk;
 static char cmd[512], cmddup[512];
 static char kname[1024];
-static uint32_t opts;
+static uint16_t opts;
 static int comspeed = SIOSPD;
 static struct bootinfo bootinfo;
 static uint8_t ioctrl = IO_KEYBOARD;
@@ -360,7 +360,7 @@ main(void)
 #ifdef GET_BIOSGEOM
     int i;
 #endif
-    int autoboot;
+    uint8_t autoboot;
     ino_t ino;
 
     dmadat = (void *)(roundup2(__base + (int32_t)&_end, 0x10000) - __base);
@@ -457,7 +457,8 @@ load(void)
     caddr_t p;
     ino_t ino;
     uint32_t addr, x;
-    int fmt, i, j;
+    int i, j;
+    uint8_t fmt;
 
     if (!(ino = lookup(kname))) {
 	if (!ls)

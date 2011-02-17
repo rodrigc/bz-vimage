@@ -28,7 +28,7 @@ AND WITH ALL FAULTS AND CAVIUM  NETWORKS MAKES NO PROMISES, REPRESENTATIONS OR W
 *************************************************************************/
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-common.c,v 1.6 2010/12/16 07:20:38 jmallett Exp $");
+__FBSDID("$FreeBSD: src/sys/mips/cavium/octe/ethernet-common.c,v 1.7 2011/02/12 02:41:33 jmallett Exp $");
 
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -278,6 +278,20 @@ int cvm_oct_common_init(struct ifnet *ifp)
 		octeon_bootinfo->mac_addr_base[4],
 		octeon_bootinfo->mac_addr_base[5] + count};
 	cvm_oct_private_t *priv = (cvm_oct_private_t *)ifp->if_softc;
+
+	switch (cvmx_sysinfo_get()->board_type) {
+#if defined(OCTEON_VENDOR_LANNER)
+	case CVMX_BOARD_TYPE_CUST_LANNER_MR730:
+		/*
+		 * The MR-730 uses its first two MACs for the management
+		 * ports.
+		 */
+		mac[5] += 2;
+		break;
+#endif
+	default:
+		break;
+	}
 
 	ifp->if_mtu = ETHERMTU;
 

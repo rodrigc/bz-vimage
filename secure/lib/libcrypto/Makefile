@@ -1,4 +1,4 @@
-# $FreeBSD: src/secure/lib/libcrypto/Makefile,v 1.87 2010/08/28 15:03:11 nwhitehorn Exp $
+# $FreeBSD: src/secure/lib/libcrypto/Makefile,v 1.88 2011/02/15 22:03:09 dim Exp $
 
 SHLIBDIR?=	/lib
 SUBDIR=		engines
@@ -344,6 +344,10 @@ INCS+=	opensslconf.h evp.h
 INCSDIR=	${INCLUDEDIR}/openssl
 
 CSTD=	gnu89
+
+.if !empty(SRCS:M*.s)
+AFLAGS+=	--noexecstack
+.endif
 
 CLEANFILES=	buildinf.h opensslconf.h evp.h
 

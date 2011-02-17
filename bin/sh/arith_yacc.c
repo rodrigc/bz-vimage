@@ -33,7 +33,7 @@
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD: src/bin/sh/arith_yacc.c,v 1.1 2011/02/08 23:18:06 jilles Exp $");
+__FBSDID("$FreeBSD: src/bin/sh/arith_yacc.c,v 1.2 2011/02/12 23:44:05 jilles Exp $");
 
 #include <sys/limits.h>
 #include <errno.h>
@@ -125,6 +125,8 @@ static arith_t do_binop(int op, arith_t a, arith_t b)
 	case ARITH_DIV:
 		if (!b)
 			yyerror("division by zero");
+		if (a == ARITH_MIN && b == -1)
+			yyerror("divide error");
 		return op == ARITH_REM ? a % b : a / b;
 	case ARITH_MUL:
 		return a * b;

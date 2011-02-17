@@ -16,7 +16,7 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
- * $FreeBSD: src/sys/dev/usb/wlan/if_runreg.h,v 1.3 2010/05/13 00:19:03 thompsa Exp $
+ * $FreeBSD: src/sys/dev/usb/wlan/if_runreg.h,v 1.4 2011/02/14 08:14:06 hselasky Exp $
  */
 
 #ifndef _IF_RUNREG_H_
@@ -1207,5 +1207,18 @@ static const struct rt2860_rate {
 	{ 29, 0x9b },	\
 	{ 30, 0x09 },	\
 	{ 31, 0x10 }
+
+
+union run_stats {
+	uint32_t	raw;
+	struct {
+		uint16_t	fail;
+		uint16_t	pad;
+	} error;
+	struct {
+		uint16_t	success;
+		uint16_t	retry;
+	} tx;
+} __aligned(4);
 
 #endif	/* _IF_RUNREG_H_ */
